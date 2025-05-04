@@ -1,0 +1,4 @@
+concatenate_collection(map_dimension(collection(last_step_failed_triggers, extracting:name), dimension_name:\"unrewarded_reason\"), joinBy:\", \")
+concatenate_collection(PERSON_COLLECTION(event.data.related_person_id, collection:\"FRIENDS\" ,filter:container==\"production\", extracting:otherPersonId), separator:\", \")
+concatenate_collection(reward(event.rewardId).tags, separator:\",\")
+concatenate_collection(PERSON(event.personId).recentRequestContexts,extracting: geoIp.country.name,joinBy:\",\",unique:\"true\")

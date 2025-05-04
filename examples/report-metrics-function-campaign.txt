@@ -1,0 +1,4 @@
+campaign(first(collection(person(event.personId).steps, filter:stepName==\"shared\"), sortBy: \"createdDate\").campaignId)
+CAMPAIGN(STEP_RECORD(event.earnedStepEventContext.id, step_name: event.earnedStepEventContext.name, event_time_name: event.earnedStepEventContext.eventTime).campaignId)
+CAMPAIGN(event.campaignId)
+campaign(event.campaignId)

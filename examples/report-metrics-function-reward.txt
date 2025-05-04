@@ -1,0 +1,7 @@
+REWARD(event.data.reward_id)
+reward(reward_id)
+reward(unconfirmed_reward_id_on_makegoods)
+reward(unconfirmed_earned_reward_pass)
+reward(unconfirmed_reward_id)
+REWARD(event.rewardId)
+reward(event.rewardId)

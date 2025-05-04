@@ -1,0 +1,7 @@
+PERSON_COLLECTION(event.data.related_person_id, collection:\"FRIENDS\" ,filter:container==\"production\", extracting:otherPersonId)
+PERSON_COLLECTION(event.data.related_person_id, collection:\"FRIENDS\", filter:container==\"production\",extracting:otherPersonId, reduce:\"count\")
+PERSON_COLLECTION(event.data.related_person_id, collection:\"STEPS\", filter:stepName==\"shared\", extracting:eventId, reduce:\"count\")
+person_collection(event.personId, collection:\"steps\", filter: campaignId == \"null\" and stepName == \"converted\" and eventDate <= period_start_time, extracting: eventDate, reduce:\"max\")
+person_collection(event.personId, collection:\"steps\", filter: campaignId != \"null\" and stepName == \"converted\" and eventDate <= period_start_time, reduce:\"count\")
+person_collection(event.personId, collection:\"steps\", filter: stepName == \"converted\" and eventDate <= period_start_time, reduce: \"count\")
+person_collection(person_id, collection:\"rewards\", filter: faceValueType == event.faceValueType and personRole like rewardee_role_pattern and name like reward_name_pattern and none(rewardSlots like \".*historical.*\") and any(rewardSlots like tag_pattern) and all(data.journey_name like journey_name_pattern))

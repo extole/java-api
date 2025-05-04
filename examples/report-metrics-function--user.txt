@@ -1,0 +1,1 @@
+user(input_record(property(application_approved_step).rootEventId, event_time_name:property(application_approved_step).eventDate).userId)

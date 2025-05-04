@@ -1,0 +1,2 @@
+INPUT_RECORD(event.rootEventId, event_time_name:event.eventTime)
+input_record(property(application_approved_step).rootEventId, event_time_name:property(application_approved_step).eventDate)

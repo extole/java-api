@@ -1,0 +1,2 @@
+All(MasterReport)
+all(data.journey_name like journey_name_pattern)

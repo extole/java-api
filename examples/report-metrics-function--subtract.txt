@@ -1,0 +1,2 @@
+SUBTRACT(earned_reward_count,reward_count)
+SUBTRACT(current_date, \"31560192000\")

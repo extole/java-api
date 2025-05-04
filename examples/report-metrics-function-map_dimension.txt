@@ -1,0 +1,1 @@
+map_dimension(collection(last_step_failed_triggers, extracting:name), dimension_name:\"unrewarded_reason\")

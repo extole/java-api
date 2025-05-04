@@ -1,0 +1,8 @@
+SPLIT(CONCATENATE(offline_service_ordered_person_ids,comma,online_service_ordered_person_ids,comma,service_activated_person_ids,comma,service_ordered_person_ids))
+split(concatenate(person(event.personId).email, \",\", person(event.data.related_person_id).email), separator:\",\")
+split(concatenate_collection(PERSON(event.personId).recentRequestContexts,extracting: geoIp.country.name,joinBy:\",\",unique:\"true\"),separator:\",\")
+split(concatenate(\"total,\", concatenate_collection(reward(event.rewardId).tags, separator:\",\")), separator:\",\")
+split(concatenate(\"total,\", event.rewardName), separator:\",\")
+split(concatenate(\"total,\", reward(event.rewardId).data.journey_name), separator:\",\")
+split(concatenate(\"total,\", reward(event.rewardId).data.rewardee_role), separator:\",\")
+split(concatenate(\"root_event_id=\", event.rootEventId, \"--partner_event_id=\", reward(event.rewardId).data.partner_event_id_value), separator:\"--\")

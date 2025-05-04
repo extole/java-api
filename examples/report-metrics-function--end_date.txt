@@ -1,0 +1,4 @@
+END_DATE(event.eventTime, period:\"NONE\")
+END_DATE(event.eventTime, period:report_parameters().period)
+END_DATE(event.eventTime,period:report_parameters().period)
+END_DATE(event.eventTime, period:\"TRAILING_WEEK\")

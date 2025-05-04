@@ -1,0 +1,4 @@
+START_DATE(event.eventTime, period:\"NONE\")
+START_DATE(event.eventTime, period:\"MONTH\")
+START_DATE(event.eventTime, period:\"DAY\")
+START_DATE(event.eventTime, period:\"WEEK\")

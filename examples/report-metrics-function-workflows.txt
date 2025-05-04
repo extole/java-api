@@ -1,0 +1,1 @@
+workflows(person:event.personId,person2:event.data.related_person_id, filter:event.rootEventId=step.rootEventId,key:step.rootEventId, key2:step.data.reward_rule_id,key3:step.data.reward_name,key4:step.data.reward_id,mapping:step[stepName=legacy_incentivized].rootEventId=step.data.rewardable_root_event_id)

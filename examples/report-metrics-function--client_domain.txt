@@ -1,0 +1,4 @@
+CLIENT_DOMAIN(FIRST(COLLECTION(PERSON(event.personId).shareables, filter:label==event.programLabel)).clientDomainId)
+CLIENT_DOMAIN(LAST(COLLECTION(person(person(event.personId).id).shareables, filter:label==event.programLabel)).clientDomainId)
+CLIENT_DOMAIN(FIRST(COLLECTION(PERSON(event.personId).shareables, filter: label==event.programLabel)).clientDomainId)
+CLIENT_DOMAIN(FIRST(COLLECTION(PERSON(Internal PersonId).shareables, filter:label==event.programLabel),sortBy:eventDate).clientDomainId)

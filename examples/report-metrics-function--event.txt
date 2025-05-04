@@ -1,0 +1,6 @@
+event(last_cause_event_id)
+event(STEP_RECORD(event.earnedStepEventContext.id,step_name:event.earnedStepEventContext.name,event_time_name:event.earnedStepEventContext.eventTime).rootEventId)
+event(property(main_step).eventId)
+EVENT(EVENT(event.id).causeEventId)
+EVENT(event.id)
+event(event.rootEventId)

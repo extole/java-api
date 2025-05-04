@@ -1,0 +1,4 @@
+STEP_RECORD(event.earnedStepEventContext.id,step_name:event.earnedStepEventContext.name,event_time_name:event.earnedStepEventContext.eventTime)
+STEP_RECORD(event.earnedStepEventContext.id, step_name: event.earnedStepEventContext.name, event_time_name: event.earnedStepEventContext.eventTime)
+step_record(event.earnedStepEventContext.id, step_name:event.earnedStepEventContext.name, event_time_name:event.earnedStepEventContext.eventTime)
+STEP_RECORD(reward(event.rewardId).earnedStepEventContext.id,step_name:reward(event.rewardId).earnedStepEventContext.name,event_time_name:reward(event.rewardId).earnedStepEventContext.eventTime)

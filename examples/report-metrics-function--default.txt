@@ -1,0 +1,1 @@
+DEFAULT(event.data.related_person_id, value:event.personId)

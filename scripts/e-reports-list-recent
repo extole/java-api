@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -eu
+set -o pipefail
+#
+
+usage="Usage: $(basename $0) [-h][-t token]
+    -h - help
+    -t token - super token, if not specified reads EXTOLE_SUPER_USER_API_KEY
+
+Pulls a list of recent reports run by all clients
+"
+
+token="${EXTOLE_SUPER_USER_API_KEY:-}"
+
+project_root=$(git rev-parse --show-toplevel)
+if [ -z "$project_root" ]; then
+    echo "Error: this command must be run in the java-api git repo" 1>&2
+    exit 1
+fi
+
+build_directory=$project_root/build
+
+mkdir -p $build_directory
+
+options=""
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -h|-\?)
+            echo "$usage"
+            exit 0
+        ;;
+        -t)
+            if [ -z "$2" ]; then
+                echo "Error: no token specified" 1>&2
+                exit 1
+            fi
+            token=$2
+            shift
+        ;;
+        *)
+            break
+        ;;
+    esac
+    shift
+done
+
+if [ -z "$token" ]; then
+  echo "Error: no super user token specified" 1>&2
+  exit 1
+fi
+
+for client_id in $(curl -H "Authorization: Bearer $token" -s "https://api.extole.io/v4/clients" | jq -r '.[] | select(.client_type == "CUSTOMER") | .client_id'); do
+    client_token="$(curl -s -H "Authorization: Bearer $token" -H "Content-type: application/json" -X POST -d "{\"client_id\":\"$client_id\"}" "https://api.extole.io/v4/tokens" | jq -r .access_token)"
+    client_json=$(curl -s -H "Authorization: Bearer $token" "https://api.extole.com/v4/clients/$client_id" | jq -r .)
+    client_name=$(echo "$client_json" | jq -r .name)
+    client_short_name=$(echo "$client_json" | jq -r .short_name)
+
+   curl -s -H "Authorization: Bearer $client_token" 'https://api.extole.com/v4/reports' | jq -c -r '.[]'
+done | tee $build_directory/reports-list.jsonl
+

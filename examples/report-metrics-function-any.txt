@@ -1,0 +1,1 @@
+any(rewardSlots like tag_pattern)
