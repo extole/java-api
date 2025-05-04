@@ -52,7 +52,7 @@ fi
 
 (
     cd $code_base
-    git ls-files 'context/*' '*/rest/*' | while read -r file; do
+    git ls-files 'context/api/*' '*/rest/*' | while read -r file; do
         mkdir -p "$api/$(dirname "$file")"
         cp "$file" "$api/$file"
     done
