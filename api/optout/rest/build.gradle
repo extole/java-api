@@ -1,0 +1,11 @@
+description = """Optout REST API"""
+
+dependencies {
+    implementation project(':common-rest')
+    implementation project(':optout-service')
+
+    libraries.with {
+        implementation jackson
+        compileOnly javaWs
+    }
+}

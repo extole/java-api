@@ -1,0 +1,21 @@
+description = """Consumer REST API"""
+
+apply from: rootProject.file("maven_release.gradle")
+
+dependencies {
+    api project(':common-rest')
+    api project(':common-lang')
+    api project(':common-id')
+    
+    testImplementation project(':common-rest-client')
+    
+    libraries.with {
+        implementation jackson
+        implementation jersey
+        implementation jsr305
+        implementation servlet
+        implementation swaggercore
+        compileOnly javaWs
+        testImplementation junit, assertj
+    }
+}

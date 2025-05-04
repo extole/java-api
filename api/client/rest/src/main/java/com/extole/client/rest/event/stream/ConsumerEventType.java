@@ -1,0 +1,30 @@
+package com.extole.client.rest.event.stream;
+
+public enum ConsumerEventType {
+    IDENTIFIED,
+    FORWARDED,
+    REDEEMED,
+    REFERRED,
+    REFERRED_BY,
+    INPUT,
+    STEP,
+    DISPLACED,
+    DISPLACED_BY,
+    SHARE,
+    INTERNAL,
+    MESSAGE_NOT_DELIVERED,
+    MESSAGE,
+    DATA_INTELLIGENCE,
+    REWARD,
+    SEND_REWARD,
+    AUDIENCE_MEMBERSHIP_CREATED,
+    AUDIENCE_MEMBERSHIP_UPDATED,
+    AUDIENCE_MEMBERSHIP_REMOVED,
+    ASSET,
+    SHAREABLE,
+    ADD_SHAREABLE,
+    INCENTIVIZED,
+    @Deprecated // TODO remove consumer event v2 ENG-7272
+    LEGACY_CONSUMER_EVENT,
+    ACTION,
+}

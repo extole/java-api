@@ -1,0 +1,180 @@
+package com.extole.reporting.rest.impl.fixup.transformation;
+
+import javax.ws.rs.ext.Provider;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.extole.authorization.service.Authorization;
+import com.extole.authorization.service.AuthorizationException;
+import com.extole.common.rest.exception.FatalRestRuntimeException;
+import com.extole.common.rest.exception.RestExceptionBuilder;
+import com.extole.common.rest.exception.UserAuthorizationRestException;
+import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
+import com.extole.id.Id;
+import com.extole.reporting.rest.fixup.FixupRestException;
+import com.extole.reporting.rest.fixup.transformation.ContainerFixupTransformationValidationRestException;
+import com.extole.reporting.rest.fixup.transformation.FixupTransformationRestException;
+import com.extole.reporting.rest.fixup.transformation.FixupTransformationValidationRestException;
+import com.extole.reporting.rest.fixup.transformation.ProgramLabelCampaignFixupTransformationCreateRequest;
+import com.extole.reporting.rest.fixup.transformation.ProgramLabelCampaignFixupTransformationEndpoints;
+import com.extole.reporting.rest.fixup.transformation.ProgramLabelCampaignFixupTransformationResponse;
+import com.extole.reporting.rest.fixup.transformation.ProgramLabelCampaignFixupTransformationUpdateRequest;
+import com.extole.reporting.service.fixup.FixupNotFoundException;
+import com.extole.reporting.service.fixup.FixupRuntimeException;
+import com.extole.reporting.service.fixup.transformation.FixupTransformationAlreadyExistsException;
+import com.extole.reporting.service.fixup.transformation.FixupTransformationNotEditableException;
+import com.extole.reporting.service.fixup.transformation.FixupTransformationNotFoundException;
+import com.extole.reporting.service.fixup.transformation.FixupTransformationValidationException;
+import com.extole.reporting.service.fixup.transformation.ProgramLabelCampaignFixupTransformationBuilder;
+import com.extole.reporting.service.fixup.transformation.ProgramLabelCampaignFixupTransformationService;
+
+@Provider
+public class ProgramLabelCampaignFixupTransformationEndpointsImpl
+    implements ProgramLabelCampaignFixupTransformationEndpoints {
+    private final ClientAuthorizationProvider authorizationProvider;
+    private final ProgramLabelCampaignFixupTransformationService programLabelCampaignFixupTransformationService;
+    private final ProgramLabelCampaignFixupTransformationRestMapper restMapper;
+
+    @Autowired
+    public ProgramLabelCampaignFixupTransformationEndpointsImpl(ClientAuthorizationProvider authorizationProvider,
+        ProgramLabelCampaignFixupTransformationService programLabelCampaignFixupTransformationService,
+        ProgramLabelCampaignFixupTransformationRestMapper restMapper) {
+        this.authorizationProvider = authorizationProvider;
+        this.programLabelCampaignFixupTransformationService = programLabelCampaignFixupTransformationService;
+        this.restMapper = restMapper;
+    }
+
+    @Override
+    public ProgramLabelCampaignFixupTransformationResponse getTransformation(String accessToken, String fixupId,
+        String transformationId)
+        throws UserAuthorizationRestException, FixupRestException, FixupTransformationRestException {
+        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        try {
+            return restMapper
+                .toResponse(programLabelCampaignFixupTransformationService.get(authorization, Id.valueOf(fixupId),
+                    Id.valueOf(transformationId)));
+        } catch (AuthorizationException e) {
+            throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
+                .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED).withCause(e).build();
+        } catch (FixupNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(FixupRestException.class)
+                .withErrorCode(FixupRestException.FIXUP_NOT_FOUND)
+                .addParameter("fixup_id", e.getFixupId())
+                .withCause(e).build();
+        } catch (FixupTransformationNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(FixupTransformationRestException.class)
+                .withErrorCode(FixupTransformationRestException.TRANSFORMATION_NOT_FOUND)
+                .withCause(e)
+                .addParameter("fixup_id", e.getFixupId())
+                .addParameter("fixup_transformation_id", e.getTransformationId())
+                .build();
+        }
+    }
+
+    @Override
+    public ProgramLabelCampaignFixupTransformationResponse createTransformation(String accessToken, String fixupId,
+        ProgramLabelCampaignFixupTransformationCreateRequest request)
+        throws UserAuthorizationRestException, FixupRestException, FixupTransformationValidationRestException,
+        ContainerFixupTransformationValidationRestException {
+        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+
+        try {
+            ProgramLabelCampaignFixupTransformationBuilder transformationBuilder =
+                programLabelCampaignFixupTransformationService.create(authorization, Id.valueOf(fixupId))
+                    .withProgramLabel(request.getProgramLabel())
+                    .withCampaignId(request.getCampaignId());
+            return restMapper.toResponse(transformationBuilder.save());
+        } catch (AuthorizationException e) {
+            throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
+                .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED).withCause(e).build();
+        } catch (FixupNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(FixupRestException.class)
+                .withErrorCode(FixupRestException.FIXUP_NOT_FOUND)
+                .withCause(e)
+                .addParameter("fixup_id", e.getFixupId()).build();
+        } catch (FixupTransformationAlreadyExistsException e) {
+            throw RestExceptionBuilder.newBuilder(FixupTransformationValidationRestException.class)
+                .withErrorCode(FixupTransformationValidationRestException.TRANSFORMATION_ALREADY_EXISTS)
+                .addParameter("fixup_id", fixupId)
+                .withCause(e).build();
+        } catch (FixupTransformationValidationException e) {
+            throw RestExceptionBuilder.newBuilder(ContainerFixupTransformationValidationRestException.class)
+                .withErrorCode(ContainerFixupTransformationValidationRestException.TRANSFORMATION_CONTAINER_INVALID)
+                .withCause(e).build();
+        }
+    }
+
+    @Override
+    public ProgramLabelCampaignFixupTransformationResponse updateTransformation(String accessToken, String fixupId,
+        String transformationId, ProgramLabelCampaignFixupTransformationUpdateRequest request)
+        throws UserAuthorizationRestException, FixupRestException, FixupTransformationRestException,
+        ContainerFixupTransformationValidationRestException {
+        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+
+        try {
+            ProgramLabelCampaignFixupTransformationBuilder transformationBuilder =
+                programLabelCampaignFixupTransformationService.update(authorization, Id.valueOf(fixupId),
+                    Id.valueOf(transformationId));
+            request.getProgramLabel().ifPresent(transformationBuilder::withProgramLabel);
+            request.getCampaignId().ifPresent(transformationBuilder::withCampaignId);
+            return restMapper.toResponse(transformationBuilder.save());
+        } catch (AuthorizationException e) {
+            throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
+                .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED).withCause(e).build();
+        } catch (FixupTransformationNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(FixupTransformationRestException.class)
+                .withErrorCode(FixupTransformationRestException.TRANSFORMATION_NOT_FOUND)
+                .withCause(e)
+                .addParameter("fixup_id", e.getFixupId())
+                .addParameter("fixup_transformation_id", e.getTransformationId())
+                .build();
+        } catch (FixupTransformationValidationException e) {
+            throw RestExceptionBuilder.newBuilder(ContainerFixupTransformationValidationRestException.class)
+                .withErrorCode(ContainerFixupTransformationValidationRestException.TRANSFORMATION_CONTAINER_INVALID)
+                .withCause(e).build();
+        } catch (FixupNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(FixupRestException.class)
+                .withErrorCode(FixupRestException.FIXUP_NOT_FOUND)
+                .withCause(e)
+                .addParameter("fixup_id", e.getFixupId())
+                .build();
+        } catch (FixupTransformationNotEditableException e) {
+            throw RestExceptionBuilder.newBuilder(FixupTransformationRestException.class)
+                .withErrorCode(FixupTransformationRestException.NOT_EDITABLE)
+                .withCause(e).build();
+        }
+    }
+
+    @Override
+    public ProgramLabelCampaignFixupTransformationResponse deleteTransformation(String accessToken, String fixupId,
+        String transformationId)
+        throws UserAuthorizationRestException, FixupRestException, FixupTransformationRestException {
+        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        try {
+            return restMapper
+                .toResponse(programLabelCampaignFixupTransformationService.delete(authorization, Id.valueOf(fixupId),
+                    Id.valueOf(transformationId)));
+        } catch (AuthorizationException e) {
+            throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
+                .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED).withCause(e).build();
+        } catch (FixupNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(FixupRestException.class)
+                .withErrorCode(FixupRestException.FIXUP_NOT_FOUND)
+                .withCause(e)
+                .addParameter("fixup_id", e.getFixupId()).build();
+        } catch (FixupTransformationNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(FixupTransformationRestException.class)
+                .withErrorCode(FixupTransformationRestException.TRANSFORMATION_NOT_FOUND)
+                .addParameter("fixup_id", e.getFixupId())
+                .addParameter("fixup_transformation_id", e.getTransformationId())
+                .withCause(e).build();
+        } catch (FixupRuntimeException e) {
+            throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
+                .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR).withCause(e).build();
+        } catch (FixupTransformationNotEditableException e) {
+            throw RestExceptionBuilder.newBuilder(FixupTransformationRestException.class)
+                .withErrorCode(FixupTransformationRestException.NOT_EDITABLE)
+                .withCause(e).build();
+        }
+    }
+}

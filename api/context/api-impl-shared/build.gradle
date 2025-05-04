@@ -1,0 +1,42 @@
+description = """Context API Impl Shared"""
+
+dependencies {
+
+    api project(':common-lang')
+    api project(':common-variant')
+    api project(':running-service')
+    api project(':context-api')
+
+    implementation project(':audience-membership-service')
+    implementation project(':common-backend-security')
+    implementation project(':common-evaluation')
+    implementation project(':common-encoder')
+    implementation project(':common-util')
+    implementation project(':common-jwt')
+    implementation project(':event-model-consumer')
+    implementation project(':event-reward-command')
+    implementation project(':event-report-client')
+    implementation project(':event-data-job-cost-client')
+    implementation project(':event-client')
+    implementation project(':reporting-pojo')
+    implementation project(':event-reward')
+    implementation project(':event-webhook-dispatch-result')
+    implementation project(':event-webhook')
+    implementation project(':consumer-event-service')
+    implementation project(':email-provider-service')
+    implementation project(':model-shared')
+    implementation project(':profile-migration-impl-shared')
+    implementation project(':key-provider-service')
+    implementation project(':model-pojo')
+    implementation project(':event-pending-operation')
+
+    libraries.with {
+        implementation guava, jsr305
+        implementation jsonPath
+        implementation commonsLang
+        implementation ahocorasick
+        implementation commonsHttpComponents
+        testImplementation junit, assertj, springTest
+    }
+
+}

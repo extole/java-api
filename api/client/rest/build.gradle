@@ -1,0 +1,28 @@
+description = """Client REST API"""
+
+apply from: rootProject.file("maven_release.gradle")
+
+dependencies {
+
+    api project(':common-lang')
+    api project(':common-id')
+    api project(':common-evaluatable')
+    api project(':common-dewey-decimal')
+    api project(':common-identity-key')
+
+    implementation project(':common-rest')
+    implementation project(':common-url-template')
+    implementation project(':context-api')
+
+    libraries.with {
+        implementation jackson
+        implementation jersey
+        api servlet
+        implementation jsr305
+        implementation javaWs
+        implementation spring
+        implementation swaggercore
+        implementation swaggerjaxrs2
+    }
+
+}

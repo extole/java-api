@@ -1,0 +1,17 @@
+description = """Webhook Dispatcher REST API"""
+
+dependencies {
+    api project(':common-lang')
+    api project(':common-id')
+    implementation project(':common-rest')
+    implementation project(':common-rest-support')
+    libraries.with {
+        implementation jackson
+        implementation jersey
+        implementation jsr305
+        implementation javaWs
+        implementation spring
+        implementation swaggercore
+    }
+}
+

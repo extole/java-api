@@ -1,0 +1,116 @@
+package com.extole.client.rest.campaign.configuration;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ImmutableMap;
+
+import com.extole.api.campaign.ControllerBuildtimeContext;
+import com.extole.api.step.action.incentivize.status.update.IncentivizeStatusUpdateActionContext;
+import com.extole.common.rest.omissible.Omissible;
+import com.extole.evaluateable.BuildtimeEvaluatable;
+import com.extole.evaluateable.RuntimeEvaluatable;
+import com.extole.id.Id;
+
+public class CampaignControllerActionIncentivizeStatusUpdateConfiguration
+    extends CampaignControllerActionConfiguration {
+
+    private static final String JSON_LEGACY_ACTION_ID = "legacy_action_id";
+    private static final String JSON_PARTNER_EVENT_ID = "partner_event_id";
+    private static final String JSON_EVENT_TYPE = "event_type";
+    private static final String JSON_REVIEW_STATUS = "review_status";
+    private static final String JSON_MESSAGE = "message";
+    private static final String JSON_MOVE_TO_PENDING = "move_to_pending";
+    private static final String JSON_DATA = "data";
+
+    private final BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> legacyActionId;
+    private final BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<IncentivizeActionType>>> eventType;
+    private final BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> partnerEventId;
+    private final BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, String>> reviewStatus;
+    private final BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> message;
+    private final BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> moveToPending;
+    private final Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<Object>>>> data;
+
+    public CampaignControllerActionIncentivizeStatusUpdateConfiguration(
+        @JsonProperty(JSON_ACTION_ID) Omissible<Id<CampaignControllerActionConfiguration>> actionId,
+        @JsonProperty(JSON_QUALITY) CampaignControllerActionQuality quality,
+        @JsonProperty(JSON_LEGACY_ACTION_ID) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> legacyActionId,
+        @JsonProperty(JSON_EVENT_TYPE) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<IncentivizeActionType>>> eventType,
+        @JsonProperty(JSON_PARTNER_EVENT_ID) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> partnerEventId,
+        @JsonProperty(JSON_REVIEW_STATUS) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, String>> reviewStatus,
+        @JsonProperty(JSON_MESSAGE) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> message,
+        @JsonProperty(JSON_ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
+        @JsonProperty(JSON_COMPONENT_REFERENCES) List<CampaignComponentReferenceConfiguration> componentReferences,
+        @JsonProperty(JSON_MOVE_TO_PENDING) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> moveToPending,
+        @JsonProperty(JSON_DATA) Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<Object>>>> data) {
+        super(actionId, CampaignControllerActionType.INCENTIVIZE_STATUS_UPDATE, quality, enabled, componentReferences);
+        this.legacyActionId = legacyActionId;
+        this.eventType = eventType;
+        this.partnerEventId = partnerEventId;
+        this.reviewStatus = reviewStatus;
+        this.message = message;
+        this.moveToPending = moveToPending;
+        this.data = data != null ? ImmutableMap.copyOf(data) : ImmutableMap.of();
+    }
+
+    @JsonProperty(JSON_LEGACY_ACTION_ID)
+    public BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> getLegacyActionId() {
+        return legacyActionId;
+    }
+
+    @JsonProperty(JSON_EVENT_TYPE)
+    public BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<IncentivizeActionType>>> getEventType() {
+        return eventType;
+    }
+
+    @JsonProperty(JSON_PARTNER_EVENT_ID)
+    public BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>>
+        getIncentivizePartnerId() {
+        return partnerEventId;
+    }
+
+    @JsonProperty(JSON_REVIEW_STATUS)
+    public
+        BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, String>>
+        getReviewStatus() {
+        return reviewStatus;
+    }
+
+    @JsonProperty(JSON_MESSAGE)
+    public
+        BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>>
+        getMessage() {
+        return message;
+    }
+
+    @JsonProperty(JSON_MOVE_TO_PENDING)
+    public BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> isMoveToPending() {
+        return moveToPending;
+    }
+
+    @JsonProperty(JSON_DATA)
+    public Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<Object>>>> getData() {
+        return data;
+    }
+
+}
