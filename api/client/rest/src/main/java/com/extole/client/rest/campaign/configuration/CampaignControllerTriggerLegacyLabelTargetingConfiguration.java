@@ -17,12 +17,20 @@ public class CampaignControllerTriggerLegacyLabelTargetingConfiguration extends 
         @JsonProperty(TRIGGER_PHASE) BuildtimeEvaluatable<ControllerBuildtimeContext,
             CampaignControllerTriggerPhase> triggerPhase,
         @JsonProperty(TRIGGER_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            Optional<String>> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
         @JsonProperty(NEGATED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> negated,
         @JsonProperty(COMPONENT_REFERENCES) List<CampaignComponentReferenceConfiguration> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.LEGACY_LABEL_TARGETING, triggerPhase, name, description, enabled,
+        super(triggerId,
+            CampaignControllerTriggerType.LEGACY_LABEL_TARGETING,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
             negated, componentReferences);
     }
 

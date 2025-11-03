@@ -50,11 +50,11 @@ import com.extole.id.Id;
 import com.extole.person.service.profile.Person;
 import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.profile.PersonService;
-import com.extole.person.service.profile.journey.Container;
 import com.extole.person.service.profile.step.PartnerEventId;
 import com.extole.person.service.profile.step.PersonStep;
 import com.extole.person.service.profile.step.PersonStepData;
 import com.extole.person.service.profile.step.PersonStepNotFoundException;
+import com.extole.sandbox.Container;
 
 @Provider
 public class PersonStepV2EndpointsImpl implements PersonStepV2Endpoints {
@@ -193,7 +193,7 @@ public class PersonStepV2EndpointsImpl implements PersonStepV2Endpoints {
                             + " New container: " + stepUpdateRequest.getContainer() + ".");
                     }).build().getProcessedRawEvent();
 
-            consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person)
+            consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person.getId())
                 .withLockDescription(LOCK_DESCRIPTION)
                 .executeAndSend((personBuilder, originalPerson, inputEventBuilder) -> {
                     try {

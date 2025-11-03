@@ -188,24 +188,6 @@ public final class CampaignControllerCreateRequest extends CampaignStepCreateReq
             return this;
         }
 
-        @Deprecated // TODO Remove after that UI will be adjusted ENG-18927
-        public StepDataCreateRequest.Builder<Builder> addData() {
-            StepDataCreateRequest.Builder<Builder> stepDataCreateRequestBuilder = StepDataCreateRequest.builder(this);
-            this.dataBuilders.add(stepDataCreateRequestBuilder);
-            return stepDataCreateRequestBuilder;
-        }
-
-        public <T> StepDataCreateRequest.Builder<T> addData(T caller) {
-            StepDataCreateRequest.Builder<T> stepDataCreateRequestBuilder = StepDataCreateRequest.builder(caller);
-            this.dataBuilders.add(stepDataCreateRequestBuilder);
-            return stepDataCreateRequestBuilder;
-        }
-
-        public Builder clearData() {
-            this.dataBuilders.clear();
-            return this;
-        }
-
         public Builder withJourneyNames(BuildtimeEvaluatable<CampaignBuildtimeContext, Set<String>> journeyNames) {
             this.journeyNames = Omissible.of(journeyNames);
             return this;

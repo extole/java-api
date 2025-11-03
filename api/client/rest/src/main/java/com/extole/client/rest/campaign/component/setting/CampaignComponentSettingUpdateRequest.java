@@ -23,18 +23,22 @@ import com.extole.dewey.decimal.DeweyDecimal;
         name = CampaignComponentClientKeyFlowVariableUpdateRequest.SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentPartnerEnumListVariableUpdateRequest.class,
         name = CampaignComponentPartnerEnumListVariableUpdateRequest.SETTING_TYPE),
+    @JsonSubTypes.Type(value = CampaignComponentPartnerEnumVariableUpdateRequest.class,
+        name = CampaignComponentPartnerEnumVariableUpdateRequest.SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentEnumVariableUpdateRequest.class,
         name = CampaignComponentEnumVariableUpdateRequest.SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentEnumListVariableUpdateRequest.class,
         name = CampaignComponentEnumListVariableUpdateRequest.SETTING_TYPE),
-    @JsonSubTypes.Type(value = CampaignComponentDelayListVariableUpdateRequest.class,
-        name = CampaignComponentDelayListVariableUpdateRequest.SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentSocketUpdateRequest.class,
-        name = CampaignComponentSocketUpdateRequest.SETTING_TYPE),
+        name = CampaignComponentSocketUpdateRequest.MULTI_SOCKET_SETTING_TYPE),
+    @JsonSubTypes.Type(value = CampaignComponentSocketUpdateRequest.class,
+        name = CampaignComponentSocketUpdateRequest.SOCKET_SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentRewardSupplierIdListVariableUpdateRequest.class,
         name = CampaignComponentRewardSupplierIdListVariableUpdateRequest.SETTING_TYPE),
+    @JsonSubTypes.Type(value = CampaignComponentComponentIdVariableUpdateRequest.class,
+        name = CampaignComponentComponentIdVariableUpdateRequest.SETTING_TYPE),
 })
-@SuppressWarnings("rawtypes")
+@SuppressWarnings("unchecked")
 public class CampaignComponentSettingUpdateRequest {
 
     protected static final String JSON_COMPONENT_SETTING_NAME = "name";
@@ -100,8 +104,8 @@ public class CampaignComponentSettingUpdateRequest {
         return new Builder<>(caller);
     }
 
-    public static class Builder<CALLER, RESULT extends CampaignComponentSettingUpdateRequest,
-        BUILDER_TYPE extends CampaignComponentSettingUpdateRequest.Builder<CALLER, RESULT, BUILDER_TYPE>> {
+    public static class Builder<CALLER, RESULT extends CampaignComponentSettingUpdateRequest, BUILDER_TYPE extends CampaignComponentSettingUpdateRequest.Builder<
+        CALLER, RESULT, BUILDER_TYPE>> {
 
         protected final CALLER caller;
         protected Omissible<String> name = Omissible.omitted();

@@ -10,10 +10,7 @@ import com.extole.model.entity.campaign.CampaignComponent;
 import com.extole.model.entity.campaign.CampaignStep;
 import com.extole.model.entity.campaign.StepType;
 
-public interface CampaignStepResponseMapper<
-    ENTITY extends CampaignStep,
-    RESPONSE extends CampaignStepResponse,
-    CONFIGURATION extends CampaignStepConfiguration> {
+public interface CampaignStepResponseMapper<ENTITY extends CampaignStep, RESPONSE extends CampaignStepResponse, CONFIGURATION extends CampaignStepConfiguration> {
 
     StepType getStepType();
 

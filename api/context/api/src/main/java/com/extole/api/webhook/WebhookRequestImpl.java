@@ -3,6 +3,7 @@ package com.extole.api.webhook;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
@@ -65,5 +66,21 @@ public class WebhookRequestImpl implements WebhookRequest {
     @JsonProperty(JSON_URL_TEMPLATE_PARAMETERS)
     public Map<String, String> getUrlTemplateParameters() {
         return urlTemplateParameters;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        WebhookRequestImpl that = (WebhookRequestImpl) other;
+        return Objects.equals(getUrl(), that.getUrl()) && Objects.equals(getMethod(), that.getMethod())
+            && Objects.equals(getHeaders(), that.getHeaders()) && Objects.equals(getBody(), that.getBody())
+            && Objects.equals(getUrlTemplateParameters(), that.getUrlTemplateParameters());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUrl(), getMethod(), getHeaders(), getBody(), getUrlTemplateParameters());
     }
 }

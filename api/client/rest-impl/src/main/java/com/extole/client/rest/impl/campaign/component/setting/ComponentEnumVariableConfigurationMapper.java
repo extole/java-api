@@ -1,5 +1,7 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.extole.client.rest.campaign.component.setting.SettingType;
 import com.extole.client.rest.campaign.configuration.CampaignComponentEnumVariableConfiguration;
 import com.extole.client.rest.campaign.configuration.VariableSource;
+import com.extole.client.rest.impl.campaign.component.CampaignComponentRestMapperContext;
 import com.extole.model.entity.campaign.EnumVariable;
 import com.extole.model.entity.campaign.Setting;
 
@@ -15,7 +18,8 @@ public class ComponentEnumVariableConfigurationMapper
     implements ComponentSettingConfigurationMapper<CampaignComponentEnumVariableConfiguration> {
 
     @Override
-    public CampaignComponentEnumVariableConfiguration mapToSettingConfiguration(Setting setting) {
+    public CampaignComponentEnumVariableConfiguration mapToSettingConfiguration(
+        CampaignComponentRestMapperContext restMapperContext, Setting setting) {
         EnumVariable enumVariable = (EnumVariable) setting;
         return new CampaignComponentEnumVariableConfiguration(enumVariable.getName(),
             enumVariable.getDisplayName(),
@@ -32,8 +36,8 @@ public class ComponentEnumVariableConfigurationMapper
     }
 
     @Override
-    public com.extole.model.entity.campaign.SettingType getSettingType() {
-        return com.extole.model.entity.campaign.SettingType.ENUM;
+    public List<com.extole.model.entity.campaign.SettingType> getSettingTypes() {
+        return Collections.singletonList(com.extole.model.entity.campaign.SettingType.ENUM);
     }
 
 }

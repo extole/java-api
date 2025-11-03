@@ -9,6 +9,7 @@ import javax.ws.rs.ext.Provider;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.extole.authorization.service.Authorization;
+import com.extole.client.rest.campaign.BuildCampaignControllerRestException;
 import com.extole.client.rest.campaign.BuildCampaignRestException;
 import com.extole.client.rest.campaign.CampaignRestException;
 import com.extole.client.rest.campaign.CampaignUpdateRestException;
@@ -21,6 +22,7 @@ import com.extole.client.rest.campaign.controller.trigger.zone.state.CampaignCon
 import com.extole.client.rest.campaign.controller.trigger.zone.state.CampaignControllerTriggerZoneStateResponse;
 import com.extole.client.rest.campaign.controller.trigger.zone.state.CampaignControllerTriggerZoneStateUpdateRequest;
 import com.extole.client.rest.campaign.controller.trigger.zone.state.CampaignControllerTriggerZoneStateValidationRestException;
+import com.extole.client.rest.impl.campaign.BuildCampaignControllerRestExceptionMapper;
 import com.extole.client.rest.impl.campaign.BuildCampaignRestExceptionMapper;
 import com.extole.client.rest.impl.campaign.CampaignProvider;
 import com.extole.client.rest.impl.campaign.component.ComponentReferenceRequestMapper;
@@ -46,12 +48,14 @@ import com.extole.model.service.campaign.ComponentElementBuilder;
 import com.extole.model.service.campaign.ConcurrentCampaignUpdateException;
 import com.extole.model.service.campaign.StaleCampaignVersionException;
 import com.extole.model.service.campaign.component.RedundantComponentReferenceException;
+import com.extole.model.service.campaign.controller.exception.BuildCampaignControllerException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerBuildException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerDescriptionLengthException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerNameLengthException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerNameMissingException;
 import com.extole.model.service.campaign.controller.trigger.TriggerTypeNotSupportedException;
 import com.extole.model.service.campaign.controller.trigger.zone.state.CampaignControllerTriggerZoneStateBuilder;
+import com.extole.model.service.campaign.controller.trigger.zone.state.CampaignControllerTriggerZoneStateMissingZoneNameAndStepNameException;
 import com.extole.model.service.campaign.controller.trigger.zone.state.CampaignControllerTriggerZoneStateStepNameExpressionLengthException;
 import com.extole.model.service.campaign.controller.trigger.zone.state.CampaignControllerTriggerZoneStateZoneNameExpressionLengthException;
 import com.extole.model.service.campaign.step.CampaignStepBuildException;
@@ -90,7 +94,8 @@ public class CampaignControllerTriggerZoneStateEndpointsImpl implements Campaign
         CampaignControllerTriggerZoneStateCreateRequest request)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
         CampaignControllerTriggerZoneStateValidationRestException, CampaignControllerTriggerValidationRestException,
-        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException {
+        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException,
+        BuildCampaignControllerRestException {
 
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         Campaign campaign;
@@ -134,6 +139,8 @@ public class CampaignControllerTriggerZoneStateEndpointsImpl implements Campaign
                 .ifPresent(invertMappingState -> triggerBuilder
                     .withInvertMappingState(invertMappingState.booleanValue()));
             request.getName().ifPresent(name -> triggerBuilder.withName(name));
+            request.getParentTriggerGroupName()
+                .ifPresent(parentTriggerGroupName -> triggerBuilder.withParentTriggerGroupName(parentTriggerGroupName));
             request.getDescription().ifPresent(description -> triggerBuilder.withDescription(description));
             request.getEnabled().ifPresent(enabled -> triggerBuilder.withEnabled(enabled));
             request.getNegated().ifPresent(negated -> triggerBuilder.withNegated(negated));
@@ -187,6 +194,12 @@ public class CampaignControllerTriggerZoneStateEndpointsImpl implements Campaign
                 .addParameter("max_length", Integer.valueOf(e.getMaxLength()))
                 .withCause(e)
                 .build();
+        } catch (CampaignControllerTriggerZoneStateMissingZoneNameAndStepNameException e) {
+            throw RestExceptionBuilder.newBuilder(CampaignControllerTriggerZoneStateValidationRestException.class)
+                .withErrorCode(
+                    CampaignControllerTriggerZoneStateValidationRestException.MISSING_ZONE_NAME_AND_STEP_NAME)
+                .withCause(e)
+                .build();
         } catch (RedundantComponentReferenceException e) {
             throw RestExceptionBuilder.newBuilder(CampaignComponentValidationRestException.class)
                 .withErrorCode(CampaignComponentValidationRestException.REDUNDANT_COMPONENT_REFERENCE)
@@ -211,6 +224,8 @@ public class CampaignControllerTriggerZoneStateEndpointsImpl implements Campaign
                 .build();
         } catch (TriggerTypeNotSupportedException e) {
             throw TriggerTypeNotSupportedRestExceptionMapper.getInstance().map(e);
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (CampaignControllerTriggerBuildException e) {
@@ -230,7 +245,8 @@ public class CampaignControllerTriggerZoneStateEndpointsImpl implements Campaign
         CampaignControllerTriggerZoneStateUpdateRequest request)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
         CampaignControllerTriggerZoneStateValidationRestException, CampaignComponentValidationRestException,
-        BuildCampaignRestException, CampaignUpdateRestException, CampaignControllerTriggerValidationRestException {
+        BuildCampaignRestException, CampaignUpdateRestException, CampaignControllerTriggerValidationRestException,
+        BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         Campaign campaign;
@@ -276,6 +292,8 @@ public class CampaignControllerTriggerZoneStateEndpointsImpl implements Campaign
                 .ifPresent(invertMappingState -> triggerBuilder
                     .withInvertMappingState(invertMappingState.booleanValue()));
             request.getName().ifPresent(name -> triggerBuilder.withName(name));
+            request.getParentTriggerGroupName()
+                .ifPresent(parentTriggerGroupName -> triggerBuilder.withParentTriggerGroupName(parentTriggerGroupName));
             request.getDescription().ifPresent(description -> triggerBuilder.withDescription(description));
             request.getEnabled().ifPresent(enabled -> triggerBuilder.withEnabled(enabled));
             request.getNegated().ifPresent(negated -> triggerBuilder.withNegated(negated));
@@ -352,6 +370,8 @@ public class CampaignControllerTriggerZoneStateEndpointsImpl implements Campaign
                 .addParameter("max_length", Integer.valueOf(e.getMaxLength()))
                 .withCause(e)
                 .build();
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (CampaignControllerTriggerBuildException e) {
@@ -369,7 +389,7 @@ public class CampaignControllerTriggerZoneStateEndpointsImpl implements Campaign
         String controllerId,
         String triggerId) throws UserAuthorizationRestException,
         CampaignRestException, CampaignControllerRestException,
-        BuildCampaignRestException, CampaignUpdateRestException {
+        BuildCampaignRestException, CampaignUpdateRestException, BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         Campaign campaign;
@@ -420,6 +440,8 @@ public class CampaignControllerTriggerZoneStateEndpointsImpl implements Campaign
                 .addParameter("version", e.getVersion())
                 .withCause(e)
                 .build();
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e, true);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (InvalidComponentReferenceException | CampaignStepBuildException e) {

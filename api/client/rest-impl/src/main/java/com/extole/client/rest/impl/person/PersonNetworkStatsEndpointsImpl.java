@@ -19,7 +19,7 @@ import com.extole.id.Id;
 import com.extole.person.service.profile.FullPersonStatsService;
 import com.extole.person.service.profile.PersonNetworkStats;
 import com.extole.person.service.profile.PersonNotFoundException;
-import com.extole.person.service.profile.journey.Container;
+import com.extole.sandbox.Container;
 
 @Provider
 public class PersonNetworkStatsEndpointsImpl implements PersonNetworkStatsEndpoints {

@@ -39,7 +39,10 @@ import com.extole.id.Id;
     @Type(value = CampaignControllerTriggerAudienceMembershipConfiguration.class, name = "AUDIENCE_MEMBERSHIP"),
     @Type(value = CampaignControllerTriggerHasIdentityConfiguration.class, name = "HAS_IDENTITY"),
     @Type(value = CampaignControllerTriggerClientDomainConfiguration.class, name = "CLIENT_DOMAIN"),
-    @Type(value = CampaignControllerTriggerLegacyLabelTargetingConfiguration.class, name = "LEGACY_LABEL_TARGETING")
+    @Type(value = CampaignControllerTriggerLegacyLabelTargetingConfiguration.class, name = "LEGACY_LABEL_TARGETING"),
+    @Type(value = CampaignControllerTriggerStepEventConfiguration.class, name = "STEP_EVENT"),
+    @Type(value = CampaignControllerTriggerTargetingConfiguration.class, name = "TARGETING"),
+    @Type(value = CampaignControllerTriggerGroupConfiguration.class, name = "GROUP")
 })
 public abstract class CampaignControllerTriggerConfiguration {
 
@@ -47,6 +50,7 @@ public abstract class CampaignControllerTriggerConfiguration {
     protected static final String TRIGGER_TYPE = "trigger_type";
     protected static final String TRIGGER_PHASE = "trigger_phase";
     protected static final String TRIGGER_NAME = "trigger_name";
+    protected static final String PARENT_TRIGGER_GROUP_NAME = "parent_trigger_group_name";
     protected static final String TRIGGER_DESCRIPTION = "trigger_description";
     protected static final String ENABLED = "enabled";
     protected static final String NEGATED = "negated";
@@ -56,6 +60,7 @@ public abstract class CampaignControllerTriggerConfiguration {
     private final CampaignControllerTriggerType triggerType;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerPhase> triggerPhase;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, String> name;
+    private final BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>> parentTriggerGroupName;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>> description;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> negated;
@@ -67,15 +72,18 @@ public abstract class CampaignControllerTriggerConfiguration {
         @JsonProperty(TRIGGER_PHASE) BuildtimeEvaluatable<ControllerBuildtimeContext,
             CampaignControllerTriggerPhase> triggerPhase,
         @JsonProperty(TRIGGER_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            Optional<String>> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
-        @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> negated,
+        @JsonProperty(NEGATED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> negated,
         @JsonProperty(COMPONENT_REFERENCES) List<CampaignComponentReferenceConfiguration> componentReferences) {
         this.triggerId = triggerId;
         this.triggerType = triggerType;
         this.triggerPhase = triggerPhase;
         this.name = name;
+        this.parentTriggerGroupName = parentTriggerGroupName;
         this.description = description;
         this.enabled = enabled;
         this.negated = negated;
@@ -107,6 +115,11 @@ public abstract class CampaignControllerTriggerConfiguration {
     @JsonProperty(TRIGGER_NAME)
     public BuildtimeEvaluatable<ControllerBuildtimeContext, String> getName() {
         return name;
+    }
+
+    @JsonProperty(PARENT_TRIGGER_GROUP_NAME)
+    public BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>> getParentTriggerGroupName() {
+        return parentTriggerGroupName;
     }
 
     @JsonProperty(TRIGGER_DESCRIPTION)

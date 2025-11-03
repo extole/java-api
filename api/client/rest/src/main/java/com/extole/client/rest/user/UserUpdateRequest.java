@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.extole.common.lang.ToString;
 import com.extole.common.rest.omissible.Omissible;
 
 public class UserUpdateRequest {
@@ -55,6 +56,11 @@ public class UserUpdateRequest {
     @JsonProperty(JSON_SCOPES)
     public Omissible<Set<UserScope>> getScopes() {
         return scopes;
+    }
+
+    @Override
+    public String toString() {
+        return ToString.create(this);
     }
 
     public static Builder builder() {

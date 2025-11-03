@@ -28,8 +28,8 @@ public interface PersonRelationshipsEndpoints {
     @Operation(summary = "Get a list with relationships", description = "Returns relationships for a person.")
     List<PersonRelationshipResponse> list(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @BeanParam PersonRelationshipsListRequest listRequest,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException, PersonRelationshipsListRestException;

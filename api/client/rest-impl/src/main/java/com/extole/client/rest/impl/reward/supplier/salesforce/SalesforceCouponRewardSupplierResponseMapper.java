@@ -47,6 +47,7 @@ public class SalesforceCouponRewardSupplierResponseMapper
             rewardSupplier.getLimitPerDay(),
             rewardSupplier.getLimitPerHour(),
             rewardSupplier.getName(),
+            rewardSupplier.getDisplayName(),
             rewardSupplier.getCouponPoolId(),
             rewardSupplier.getBalanceRefillAmount(),
             rewardSupplier.getInitialOffset(),

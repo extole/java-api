@@ -14,6 +14,7 @@ import javax.ws.rs.ext.Provider;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.extole.authorization.service.Authorization;
+import com.extole.client.rest.campaign.BuildCampaignControllerRestException;
 import com.extole.client.rest.campaign.BuildCampaignRestException;
 import com.extole.client.rest.campaign.CampaignRestException;
 import com.extole.client.rest.campaign.CampaignUpdateRestException;
@@ -26,6 +27,7 @@ import com.extole.client.rest.campaign.controller.trigger.has.prior.reward.Campa
 import com.extole.client.rest.campaign.controller.trigger.has.prior.reward.CampaignControllerTriggerHasPriorRewardResponse;
 import com.extole.client.rest.campaign.controller.trigger.has.prior.reward.CampaignControllerTriggerHasPriorRewardUpdateRequest;
 import com.extole.client.rest.campaign.controller.trigger.has.prior.reward.CampaignControllerTriggerHasPriorRewardValidationRestException;
+import com.extole.client.rest.impl.campaign.BuildCampaignControllerRestExceptionMapper;
 import com.extole.client.rest.impl.campaign.BuildCampaignRestExceptionMapper;
 import com.extole.client.rest.impl.campaign.CampaignProvider;
 import com.extole.client.rest.impl.campaign.component.ComponentReferenceRequestMapper;
@@ -51,6 +53,7 @@ import com.extole.model.service.campaign.ComponentElementBuilder;
 import com.extole.model.service.campaign.ConcurrentCampaignUpdateException;
 import com.extole.model.service.campaign.StaleCampaignVersionException;
 import com.extole.model.service.campaign.component.RedundantComponentReferenceException;
+import com.extole.model.service.campaign.controller.exception.BuildCampaignControllerException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerBuildException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerDescriptionLengthException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerNameLengthException;
@@ -126,7 +129,7 @@ public class CampaignControllerTriggerHasPriorRewardEndpointsImpl
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
         CampaignControllerTriggerHasPriorRewardValidationRestException,
         CampaignControllerTriggerValidationRestException, CampaignComponentValidationRestException,
-        BuildCampaignRestException, CampaignUpdateRestException {
+        BuildCampaignRestException, CampaignUpdateRestException, BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         Campaign campaign;
         CampaignStep step;
@@ -161,6 +164,8 @@ public class CampaignControllerTriggerHasPriorRewardEndpointsImpl
                 .ifPresent(
                     phase -> triggerBuilder.withTriggerPhase(Evaluatables.remapEnum(phase, new TypeReference<>() {})));
             request.getName().ifPresent(name -> triggerBuilder.withName(name));
+            request.getParentTriggerGroupName()
+                .ifPresent(parentTriggerGroupName -> triggerBuilder.withParentTriggerGroupName(parentTriggerGroupName));
             request.getDescription().ifPresent(description -> triggerBuilder.withDescription(description));
 
             request.getEnabled().ifPresent(enabled -> triggerBuilder.withEnabled(enabled));
@@ -326,6 +331,8 @@ public class CampaignControllerTriggerHasPriorRewardEndpointsImpl
                 .build();
         } catch (TriggerTypeNotSupportedException e) {
             throw TriggerTypeNotSupportedRestExceptionMapper.getInstance().map(e);
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (CampaignControllerTriggerBuildException e) {
@@ -348,7 +355,7 @@ public class CampaignControllerTriggerHasPriorRewardEndpointsImpl
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
         CampaignControllerTriggerHasPriorRewardValidationRestException,
         CampaignControllerTriggerValidationRestException, CampaignComponentValidationRestException,
-        BuildCampaignRestException, CampaignUpdateRestException {
+        BuildCampaignRestException, CampaignUpdateRestException, BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         Campaign campaign;
@@ -385,6 +392,8 @@ public class CampaignControllerTriggerHasPriorRewardEndpointsImpl
             request.getTriggerPhase().ifPresent(
                 phase -> triggerBuilder.withTriggerPhase(Evaluatables.remapEnum(phase, new TypeReference<>() {})));
             request.getName().ifPresent(name -> triggerBuilder.withName(name));
+            request.getParentTriggerGroupName()
+                .ifPresent(parentTriggerGroupName -> triggerBuilder.withParentTriggerGroupName(parentTriggerGroupName));
             request.getDescription().ifPresent(description -> triggerBuilder.withDescription(description));
 
             request.getEnabled().ifPresent(enabled -> triggerBuilder.withEnabled(enabled));
@@ -549,6 +558,8 @@ public class CampaignControllerTriggerHasPriorRewardEndpointsImpl
                 .addParameter("description", e.getMessage())
                 .withCause(e)
                 .build();
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (CampaignControllerTriggerBuildException e) {
@@ -567,7 +578,7 @@ public class CampaignControllerTriggerHasPriorRewardEndpointsImpl
         String triggerId,
         ZoneId timeZone)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
-        BuildCampaignRestException, CampaignUpdateRestException {
+        BuildCampaignRestException, CampaignUpdateRestException, BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         CampaignBuilder campaignBuilder;
@@ -618,6 +629,8 @@ public class CampaignControllerTriggerHasPriorRewardEndpointsImpl
                 .addParameter("version", e.getVersion())
                 .withCause(e)
                 .build();
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e, true);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (InvalidComponentReferenceException | CampaignStepBuildException e) {

@@ -25,8 +25,7 @@ import com.extole.model.entity.campaign.CampaignControllerTriggerType;
 @Component
 public class CampaignControllerTriggerHasPriorStepResponseMapper implements
     CampaignControllerTriggerResponseMapper<CampaignControllerTriggerHasPriorStep,
-        CampaignControllerTriggerHasPriorStepResponse,
-        CampaignControllerTriggerHasPriorStepConfiguration> {
+        CampaignControllerTriggerHasPriorStepResponse, CampaignControllerTriggerHasPriorStepConfiguration> {
 
     private final CampaignComponentRestMapper campaignComponentRestMapper;
 
@@ -39,9 +38,11 @@ public class CampaignControllerTriggerHasPriorStepResponseMapper implements
     @Override
     public CampaignControllerTriggerHasPriorStepResponse toResponse(CampaignControllerTriggerHasPriorStep trigger,
         ZoneId timeZone) {
-        return new CampaignControllerTriggerHasPriorStepResponse(trigger.getId().getValue(),
+        return new CampaignControllerTriggerHasPriorStepResponse(
+            trigger.getId().getValue(),
             Evaluatables.remapEnum(trigger.getPhase(), new TypeReference<>() {}),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
@@ -69,15 +70,16 @@ public class CampaignControllerTriggerHasPriorStepResponseMapper implements
             trigger.getCountMax(),
             trigger.getCountMatches(),
             trigger.getPersonId(),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()),
+            trigger.getHavingAllNames());
     }
 
     @Override
@@ -88,6 +90,7 @@ public class CampaignControllerTriggerHasPriorStepResponseMapper implements
             Omissible.of(Id.valueOf(trigger.getId().getValue())),
             Evaluatables.remapEnum(trigger.getPhase(), new TypeReference<>() {}),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
@@ -115,12 +118,13 @@ public class CampaignControllerTriggerHasPriorStepResponseMapper implements
             trigger.getCountMax(),
             trigger.getCountMatches(),
             trigger.getPersonId(),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,
                     (reference) -> componentNames.get(reference.getComponentId())))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()),
+            trigger.getHavingAllNames());
     }
 
     @Override

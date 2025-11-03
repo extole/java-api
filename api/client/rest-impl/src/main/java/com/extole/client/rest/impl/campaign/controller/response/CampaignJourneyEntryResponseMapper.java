@@ -62,11 +62,11 @@ public class CampaignJourneyEntryResponseMapper implements
                 .stream()
                 .map(trigger -> toTriggerResponse(trigger, timeZone))
                 .collect(Collectors.toUnmodifiableList()),
-            journeyEntry.getCampaignComponentReferences()
+            journeyEntry.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toUnmodifiableList()),
-            journeyEntry.getCampaignComponentReferences()
+            journeyEntry.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -90,7 +90,7 @@ public class CampaignJourneyEntryResponseMapper implements
                 .stream()
                 .map(trigger -> toTriggerConfiguration(trigger, timeZone, componentNames))
                 .collect(Collectors.toList()),
-            journeyEntry.getCampaignComponentReferences()
+            journeyEntry.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,
@@ -131,11 +131,11 @@ public class CampaignJourneyEntryResponseMapper implements
             stepDataValue.getDefaultValue(),
             Evaluatables.remapEnum(stepDataValue.getKeyType(), new TypeReference<>() {}),
             stepDataValue.getEnabled(),
-            stepDataValue.getCampaignComponentReferences()
+            stepDataValue.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            stepDataValue.getCampaignComponentReferences()
+            stepDataValue.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -153,7 +153,7 @@ public class CampaignJourneyEntryResponseMapper implements
         Map<Id<CampaignComponent>, String> componentNames) {
 
         List<CampaignComponentReferenceConfiguration> campaignComponentReferences =
-            stepDataValue.getCampaignComponentReferences()
+            stepDataValue.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference, (reference) -> componentNames.get(reference.getComponentId())))

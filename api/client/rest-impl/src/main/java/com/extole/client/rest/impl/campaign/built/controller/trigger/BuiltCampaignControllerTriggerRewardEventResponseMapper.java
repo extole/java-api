@@ -26,6 +26,7 @@ public class BuiltCampaignControllerTriggerRewardEventResponseMapper implements
         return new BuiltCampaignControllerTriggerRewardEventResponse(trigger.getId().getValue(),
             CampaignControllerTriggerPhase.valueOf(trigger.getPhase().name()),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
@@ -35,11 +36,11 @@ public class BuiltCampaignControllerTriggerRewardEventResponseMapper implements
             trigger.getEventNames(),
             trigger.getTags(),
             trigger.getTags(),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

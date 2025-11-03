@@ -25,8 +25,8 @@ public final class BatchComponentVariableUpdateRequest {
     private final String name;
     private final Optional<String> displayName;
     private final SettingType settingType;
-    private final Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-        RuntimeEvaluatable<Object, Optional<Object>>>> values;
+    private final Map<String,
+        BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values;
 
     @JsonCreator
     private BatchComponentVariableUpdateRequest(
@@ -34,8 +34,8 @@ public final class BatchComponentVariableUpdateRequest {
         @JsonProperty(FIELD_NAME) String name,
         @JsonProperty(FIELD_DISPLAY_NAME) Optional<String> displayName,
         @JsonProperty(FIELD_TYPE) SettingType settingType,
-        @JsonProperty(FIELD_VALUES) Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values) {
+        @JsonProperty(FIELD_VALUES) Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values) {
         this.componentAbsolutePath = componentAbsolutePath;
         this.name = name;
         this.displayName = displayName;
@@ -64,8 +64,8 @@ public final class BatchComponentVariableUpdateRequest {
     }
 
     @JsonProperty(FIELD_VALUES)
-    public Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-        RuntimeEvaluatable<Object, Optional<Object>>>> getValues() {
+    public Map<String, BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>>
+        getValues() {
         return values;
     }
 
@@ -84,8 +84,9 @@ public final class BatchComponentVariableUpdateRequest {
         private String name = StringUtils.EMPTY;
         private Optional<String> displayName = Optional.empty();
         private SettingType settingType;
-        private Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values = Collections.emptyMap();
+        private Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values =
+                Collections.emptyMap();
 
         private Builder() {
         }
@@ -110,8 +111,9 @@ public final class BatchComponentVariableUpdateRequest {
             return this;
         }
 
-        public Builder withValues(Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values) {
+        public Builder withValues(
+            Map<String,
+                BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values) {
             this.values = Objects.requireNonNullElse(values, this.values);
             return this;
         }

@@ -4,8 +4,7 @@ import com.extole.reporting.entity.report.audience.operation.AudienceOperationDa
 import com.extole.reporting.entity.report.audience.operation.AudienceOperationDataSourceType;
 import com.extole.reporting.rest.audience.operation.AudienceOperationDataSourceResponse;
 
-public interface AudienceOperationDataSourceResponseMapper<FROM extends AudienceOperationDataSource,
-    TO extends AudienceOperationDataSourceResponse> {
+public interface AudienceOperationDataSourceResponseMapper<FROM extends AudienceOperationDataSource, TO extends AudienceOperationDataSourceResponse> {
 
     TO toResponse(FROM source);
 

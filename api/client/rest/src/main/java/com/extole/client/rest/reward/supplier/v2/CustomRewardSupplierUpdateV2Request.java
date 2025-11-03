@@ -51,8 +51,8 @@ public class CustomRewardSupplierUpdateV2Request extends ComponentElementRequest
     private static final String STATE_TRANSITIONS = "state_transitions";
 
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> name;
-    private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
-        FaceValueAlgorithmType>> faceValueAlgorithmType;
+    private final Omissible<
+        BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> faceValue;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> cashBackPercentage;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> minCashBack;
@@ -262,8 +262,9 @@ public class CustomRewardSupplierUpdateV2Request extends ComponentElementRequest
     public static final class CustomRewardSupplierUpdateRequestBuilder
         extends ComponentElementRequest.Builder<CustomRewardSupplierUpdateRequestBuilder> {
         private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> name = Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
-            FaceValueAlgorithmType>> faceValueAlgorithmType = Omissible.omitted();
+        private Omissible<
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> faceValue =
             Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> cashBackPercentage =

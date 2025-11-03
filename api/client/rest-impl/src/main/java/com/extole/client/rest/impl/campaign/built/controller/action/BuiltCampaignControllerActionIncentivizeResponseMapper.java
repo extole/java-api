@@ -19,8 +19,7 @@ import com.extole.model.entity.campaign.built.BuiltCampaignControllerActionIncen
 
 @Component
 public class BuiltCampaignControllerActionIncentivizeResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionIncentivize,
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionIncentivize,
         BuiltCampaignControllerActionIncentivizeResponse> {
 
     @Override
@@ -43,11 +42,11 @@ public class BuiltCampaignControllerActionIncentivizeResponseMapper implements
             action.getActionName(),
             action.getData(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

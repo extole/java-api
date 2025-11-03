@@ -11,18 +11,18 @@ import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
 import com.extole.id.Id;
 import com.extole.model.entity.client.sftp.SftpDestination;
-import com.extole.reporting.entity.report.Report;
-import com.extole.reporting.entity.report.ReportType;
-import com.extole.reporting.entity.report.runner.ReportRunner;
-import com.extole.reporting.entity.report.runner.ReportRunnerType;
+import com.extole.model.entity.report.runner.ReportRunner;
+import com.extole.model.entity.report.runner.ReportRunnerType;
+import com.extole.model.entity.report.type.Format;
+import com.extole.model.entity.report.type.ReportType;
+import com.extole.model.service.report.runner.MergingConfigurationBuilder;
+import com.extole.model.service.report.runner.PauseInfoBuilder;
+import com.extole.model.service.report.runner.ReportRunnerBuilder;
+import com.extole.model.service.report.runner.ReportRunnerNotFoundException;
+import com.extole.model.service.report.runner.ReportRunnerService;
 import com.extole.reporting.rest.report.ReportTypeScope;
 import com.extole.reporting.rest.report.runner.ReportRunnerCreateRequest;
 import com.extole.reporting.rest.report.runner.ReportRunnerUpdateRequest;
-import com.extole.reporting.service.report.runner.MergingConfigurationBuilder;
-import com.extole.reporting.service.report.runner.PauseInfoBuilder;
-import com.extole.reporting.service.report.runner.ReportRunnerBuilder;
-import com.extole.reporting.service.report.runner.ReportRunnerNotFoundException;
-import com.extole.reporting.service.report.runner.ReportRunnerService;
 
 @Component
 public class ReportRunnerUploaderBase {
@@ -45,7 +45,8 @@ public class ReportRunnerUploaderBase {
     ReportRunnerBuilder<?, ?> upload(Authorization authorization, ReportRunnerCreateRequest reportRunnerRequest)
         throws AuthorizationException {
         ReportRunnerBuilder<?, ?> builder =
-            reportRunnerService.create(authorization, ReportRunnerType.valueOf(reportRunnerRequest.getType().name()));
+            reportRunnerService.create(authorization,
+                ReportRunnerType.valueOf(reportRunnerRequest.getType().name()));
 
         return applyRequestedChanges(reportRunnerRequest, builder);
     }
@@ -68,7 +69,7 @@ public class ReportRunnerUploaderBase {
         reportRunnerRequest.getFormats().ifPresent(
             formats -> builder.withFormats(
                 formats.stream()
-                    .map(reportFormat -> Report.Format.valueOf(reportFormat.name()))
+                    .map(reportFormat -> Format.valueOf(reportFormat.name()))
                     .collect(Collectors.toCollection(LinkedHashSet::new))));
         reportRunnerRequest.getTags().ifPresent(builder::withTags);
         reportRunnerRequest.getScopes().ifPresent(
@@ -96,7 +97,7 @@ public class ReportRunnerUploaderBase {
                     MergingConfigurationBuilder configurationBuilder = builder.addMergingConfiguration();
                     mergingConfiguration.get().getFormats()
                         .ifPresent(formats -> configurationBuilder.withFormats(formats.stream()
-                            .map(reportFormat -> Report.Format.valueOf(reportFormat.name()))
+                            .map(reportFormat -> Format.valueOf(reportFormat.name()))
                             .collect(Collectors.toCollection(LinkedHashSet::new))));
                     mergingConfiguration.get().getSortBy().ifPresent(configurationBuilder::withSortBy);
                     mergingConfiguration.get().getUniqueBy().ifPresent(configurationBuilder::withUniqueBy);
@@ -124,7 +125,7 @@ public class ReportRunnerUploaderBase {
         reportRunnerRequest.getFormats().ifPresent(
             formats -> builder.withFormats(
                 formats.stream()
-                    .map(reportFormat -> Report.Format.valueOf(reportFormat.name()))
+                    .map(reportFormat -> Format.valueOf(reportFormat.name()))
                     .collect(Collectors.toCollection(LinkedHashSet::new))));
         reportRunnerRequest.getTags().ifPresent(builder::withTags);
         reportRunnerRequest.getScopes().ifPresent(
@@ -152,7 +153,7 @@ public class ReportRunnerUploaderBase {
                     MergingConfigurationBuilder configurationBuilder = builder.addMergingConfiguration();
                     mergingConfiguration.get().getFormats()
                         .ifPresent(formats -> configurationBuilder.withFormats(formats.stream()
-                            .map(reportFormat -> Report.Format.valueOf(reportFormat.name()))
+                            .map(reportFormat -> Format.valueOf(reportFormat.name()))
                             .collect(Collectors.toCollection(LinkedHashSet::new))));
                     mergingConfiguration.get().getSortBy().ifPresent(configurationBuilder::withSortBy);
                     mergingConfiguration.get().getUniqueBy().ifPresent(configurationBuilder::withUniqueBy);

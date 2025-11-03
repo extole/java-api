@@ -8,34 +8,23 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.extole.api.campaign.ControllerBuildtimeContext;
-import com.extole.client.rest.campaign.component.ComponentElementRequest;
 import com.extole.client.rest.campaign.component.ComponentReferenceRequest;
 import com.extole.client.rest.campaign.component.ComponentResponse;
 import com.extole.client.rest.campaign.controller.trigger.CampaignControllerTriggerPhase;
+import com.extole.client.rest.campaign.controller.trigger.CampaignControllerTriggerRequest;
 import com.extole.common.rest.omissible.Omissible;
 import com.extole.evaluateable.BuildtimeEvaluatable;
 import com.extole.evaluateable.Evaluatable;
 import com.extole.evaluateable.provided.Provided;
 import com.extole.id.Id;
 
-public class CampaignControllerTriggerRewardEventCreateRequest extends ComponentElementRequest {
+public class CampaignControllerTriggerRewardEventCreateRequest extends CampaignControllerTriggerRequest {
 
-    private static final String TRIGGER_PHASE = "trigger_phase";
-    private static final String TRIGGER_NAME = "trigger_name";
-    private static final String TRIGGER_DESCRIPTION = "trigger_description";
-    private static final String ENABLED = "enabled";
-    private static final String NEGATED = "negated";
     private static final String REWARD_STATES = "reward_states";
     private static final String EVENT_NAMES = "event_names";
     private static final String SLOTS = "slots";
     private static final String TAGS = "tags";
 
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        CampaignControllerTriggerPhase>> triggerPhase;
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> name;
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>>> description;
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled;
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> negated;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Set<RewardState>>> rewardStates;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Set<String>>> eventNames;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Set<String>>> tags;
@@ -44,23 +33,21 @@ public class CampaignControllerTriggerRewardEventCreateRequest extends Component
         @JsonProperty(TRIGGER_PHASE) Omissible<
             BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerPhase>> triggerPhase,
         @JsonProperty(TRIGGER_NAME) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> name,
-        @JsonProperty(TRIGGER_DESCRIPTION) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            Optional<String>>> description,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>>> parentTriggerGroupName,
+        @JsonProperty(TRIGGER_DESCRIPTION) Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>>> description,
         @JsonProperty(ENABLED) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled,
         @JsonProperty(NEGATED) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> negated,
-        @JsonProperty(REWARD_STATES) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            Set<RewardState>>> rewardStates,
+        @JsonProperty(REWARD_STATES) Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, Set<RewardState>>> rewardStates,
         @JsonProperty(EVENT_NAMES) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Set<String>>> eventNames,
         @JsonProperty(SLOTS) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Set<String>>> slots,
         @JsonProperty(TAGS) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Set<String>>> tags,
         @JsonProperty(JSON_COMPONENT_IDS) Omissible<List<Id<ComponentResponse>>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) Omissible<List<ComponentReferenceRequest>> componentReferences) {
-        super(componentReferences, componentIds);
-        this.triggerPhase = triggerPhase;
-        this.name = name;
-        this.description = description;
-        this.enabled = enabled;
-        this.negated = negated;
+        super(triggerPhase, name, parentTriggerGroupName, description, enabled, negated,
+            componentIds, componentReferences);
         this.rewardStates = rewardStates;
         this.eventNames = eventNames;
         if (tags.isOmitted() || !Evaluatable.isDefined(tags.getValue())) {
@@ -68,32 +55,6 @@ public class CampaignControllerTriggerRewardEventCreateRequest extends Component
         } else {
             this.tags = tags;
         }
-    }
-
-    @JsonProperty(TRIGGER_PHASE)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerPhase>>
-        getTriggerPhase() {
-        return triggerPhase;
-    }
-
-    @JsonProperty(TRIGGER_NAME)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> getName() {
-        return name;
-    }
-
-    @JsonProperty(TRIGGER_DESCRIPTION)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>>> getDescription() {
-        return description;
-    }
-
-    @JsonProperty(ENABLED)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> getEnabled() {
-        return enabled;
-    }
-
-    @JsonProperty(NEGATED)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> getNegated() {
-        return negated;
     }
 
     @JsonProperty(REWARD_STATES)
@@ -121,14 +82,7 @@ public class CampaignControllerTriggerRewardEventCreateRequest extends Component
         return new Builder();
     }
 
-    public static final class Builder extends ComponentElementRequest.Builder<Builder> {
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            CampaignControllerTriggerPhase>> triggerPhase = Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> name = Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>>> description =
-            Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled = Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> negated = Omissible.omitted();
+    public static final class Builder extends CampaignControllerTriggerRequest.Builder<Builder> {
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Set<RewardState>>> rewardStates =
             Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Set<String>>> eventNames =
@@ -137,42 +91,6 @@ public class CampaignControllerTriggerRewardEventCreateRequest extends Component
             Omissible.omitted();
 
         private Builder() {
-        }
-
-        public Builder withTriggerPhase(
-            BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerPhase> triggerPhase) {
-            this.triggerPhase = Omissible.of(triggerPhase);
-            return this;
-        }
-
-        public Builder withTriggerPhase(CampaignControllerTriggerPhase triggerPhase) {
-            this.triggerPhase = Omissible.of(Provided.of(triggerPhase));
-            return this;
-        }
-
-        public Builder withName(BuildtimeEvaluatable<ControllerBuildtimeContext, String> name) {
-            this.name = Omissible.of(name);
-            return this;
-        }
-
-        public Builder withName(String name) {
-            this.name = Omissible.of(Provided.of(name));
-            return this;
-        }
-
-        public Builder withDescription(BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>> description) {
-            this.description = Omissible.of(description);
-            return this;
-        }
-
-        public Builder withEnabled(BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled) {
-            this.enabled = Omissible.of(enabled);
-            return this;
-        }
-
-        public Builder withNegated(BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> negated) {
-            this.negated = Omissible.of(negated);
-            return this;
         }
 
         public Builder withRewardStates(Set<RewardState> eventTypes) {
@@ -190,8 +108,7 @@ public class CampaignControllerTriggerRewardEventCreateRequest extends Component
             return this;
         }
 
-        public Builder withRewardStates(BuildtimeEvaluatable<ControllerBuildtimeContext,
-            Set<RewardState>> eventTypes) {
+        public Builder withRewardStates(BuildtimeEvaluatable<ControllerBuildtimeContext, Set<RewardState>> eventTypes) {
             this.rewardStates = Omissible.of(eventTypes);
             return this;
         }
@@ -218,6 +135,7 @@ public class CampaignControllerTriggerRewardEventCreateRequest extends Component
 
             return new CampaignControllerTriggerRewardEventCreateRequest(triggerPhase,
                 name,
+                parentTriggerGroupName,
                 description,
                 enabled,
                 negated,

@@ -12,7 +12,8 @@ public class FlowRestException extends ExtoleRestException {
         "Mixing of step include and exclude filters is now allowed");
 
     public static final ErrorCode<FlowRestException> CAMPAIGN_STATE_INVALID = new ErrorCode<>(
-        "flow_campaign_state_invalid", 400, "Campaign state invalid. Expected: published or latest", "state");
+        "flow_campaign_version_state_invalid", 400, "Campaign state invalid. Expected: published or latest",
+        "campaign_version_state");
 
     public static final ErrorCode<FlowRestException> PROGRAM_LABEL_NOT_FOUND =
         new ErrorCode<>("flow_program_label_not_found", 400, "Program label not found", "program_label");

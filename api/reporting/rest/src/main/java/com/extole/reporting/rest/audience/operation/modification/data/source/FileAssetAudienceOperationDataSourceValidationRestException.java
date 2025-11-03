@@ -21,6 +21,11 @@ public class FileAssetAudienceOperationDataSourceValidationRestException
             new ErrorCode<>("modification_audience_operation_file_asset_data_source_unsupported_file_asset_format", 400,
                 "File asset format is not supported", "file_asset_id", "format", "supported_formats");
 
+    public static final ErrorCode<
+        FileAssetAudienceOperationDataSourceValidationRestException> EMPTY_FILE =
+            new ErrorCode<>("modification_audience_operation_file_asset_data_source_empty_file_asset", 400,
+                "File is empty", "file_asset_id");
+
     public FileAssetAudienceOperationDataSourceValidationRestException(String uniqueId, ErrorCode<?> errorCode,
         Map<String, Object> parameters, Throwable cause) {
         super(uniqueId, errorCode, parameters, cause);

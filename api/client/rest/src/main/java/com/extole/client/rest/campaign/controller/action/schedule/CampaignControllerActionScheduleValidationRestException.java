@@ -11,9 +11,11 @@ public class CampaignControllerActionScheduleValidationRestException extends Cam
         new ErrorCode<>("campaign_controller_action_schedule_missing_schedule_name", 400, "Missing schedule name");
 
     public static final ErrorCode<
-        CampaignControllerActionScheduleValidationRestException> SCHEDULE_NAME_LENGTH_OUT_OF_RANGE = new ErrorCode<>(
-            "campaign_controller_action_schedule_name_out_of_range", 400,
-            "Schedule name length must be between 2 and 100 characters", "schedule_name", "evaluated_schedule_name");
+        CampaignControllerActionScheduleValidationRestException> SCHEDULE_NAME_LENGTH_OUT_OF_RANGE =
+            new ErrorCode<>(
+                "campaign_controller_action_schedule_name_out_of_range", 400,
+                "Schedule name length must be between 2 and 100 characters", "schedule_name",
+                "evaluated_schedule_name");
 
     public static final ErrorCode<
         CampaignControllerActionScheduleValidationRestException> SCHEDULE_NAME_CONTAINS_ILLEGAL_CHARACTER =
@@ -48,9 +50,11 @@ public class CampaignControllerActionScheduleValidationRestException extends Cam
                 "Data attribute name length is out of range. Max 200 chars", "name");
 
     public static final ErrorCode<
-        CampaignControllerActionScheduleValidationRestException> DATA_ATTRIBUTE_VALUE_INVALID = new ErrorCode<>(
-            "campaign_controller_action_schedule_data_attribute_value_invalid", 400, "Data attribute value is invalid",
-            "name");
+        CampaignControllerActionScheduleValidationRestException> DATA_ATTRIBUTE_VALUE_INVALID =
+            new ErrorCode<>(
+                "campaign_controller_action_schedule_data_attribute_value_invalid", 400,
+                "Data attribute value is invalid",
+                "name");
 
     public static final ErrorCode<
         CampaignControllerActionScheduleValidationRestException> DATA_ATTRIBUTE_VALUE_LENGTH_OUT_OF_RANGE =

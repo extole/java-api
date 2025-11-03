@@ -49,16 +49,17 @@ public interface ClientEndpoints {
     @DELETE
     @Path("/{clientId}")
     @Produces(MediaType.APPLICATION_JSON)
-    ClientResponse delete(@UserAccessTokenParam String accessToken, @PathParam("clientId") String clientId)
-        throws UserAuthorizationRestException;
+    ClientResponse delete(@UserAccessTokenParam(requiredScope = Scope.CLIENT_SUPERUSER) String accessToken,
+        @PathParam("clientId") String clientId) throws UserAuthorizationRestException;
 
     @PUT
     @Path("/{clientId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Used to update client")
-    ClientResponse update(@UserAccessTokenParam String accessToken, @PathParam("clientId") String clientId,
-        ClientUpdateRequest request) throws ClientValidationRestException, UserAuthorizationRestException;
+    ClientResponse update(@UserAccessTokenParam(requiredScope = Scope.CLIENT_SUPERUSER) String accessToken,
+        @PathParam("clientId") String clientId, ClientUpdateRequest request)
+        throws ClientValidationRestException, UserAuthorizationRestException;
 
     /**
      * Undeletes a client by restoring the client and the program domains that were active at the moment of client
@@ -66,7 +67,8 @@ public interface ClientEndpoints {
      * <p>
      * A client can be undeleted only by an Extole SUPER_USER.
      * <p>
-     * <b>WARNING!!!</b> The method does not restore client users and tokens.
+     * <b>WARNING!!!</b> The method does not restore client users and tokens. A redeploy of production is also needed
+     * to restore many of the cached configuration
      *
      * @param accessToken SUPER_USER access token for Extole client
      * @param clientId id of the client to be undeleted
@@ -76,6 +78,6 @@ public interface ClientEndpoints {
     @POST
     @Path("/undelete/{clientId}")
     @Produces(MediaType.APPLICATION_JSON)
-    ClientResponse undelete(@UserAccessTokenParam String accessToken, @PathParam("clientId") String clientId)
-        throws UserAuthorizationRestException;
+    ClientResponse undelete(@UserAccessTokenParam(requiredScope = Scope.CLIENT_SUPERUSER) String accessToken,
+        @PathParam("clientId") String clientId) throws UserAuthorizationRestException;
 }

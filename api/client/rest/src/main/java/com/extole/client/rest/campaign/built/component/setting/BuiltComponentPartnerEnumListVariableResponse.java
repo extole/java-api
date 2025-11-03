@@ -22,7 +22,7 @@ public class BuiltComponentPartnerEnumListVariableResponse extends BuiltCampaign
     private static final String JSON_WEBHOOK_ID = "webhook_id";
     private static final String JSON_OPTIONS = "options";
 
-    private final String webhookId;
+    private final Optional<String> webhookId;
     private final List<PartnerEnumListVariableOptionResponse> options;
 
     @JsonCreator
@@ -34,16 +34,17 @@ public class BuiltComponentPartnerEnumListVariableResponse extends BuiltCampaign
         @JsonProperty(JSON_COMPONENT_VARIABLE_DESCRIPTION) Optional<String> description,
         @JsonProperty(JSON_COMPONENT_SETTING_TAGS) Set<String> tags,
         @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE_COMPONENT_ID) Id<ComponentResponse> sourceComponentId,
+        @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE_VERSION) Optional<Integer> sourceVersion,
         @JsonProperty(JSON_COMPONENT_SETTING_PRIORITY) DeweyDecimal priority,
-        @JsonProperty(JSON_WEBHOOK_ID) String webhookId,
+        @JsonProperty(JSON_WEBHOOK_ID) Optional<String> webhookId,
         @JsonProperty(JSON_OPTIONS) List<PartnerEnumListVariableOptionResponse> options) {
-        super(name, displayName, type, values, source, description, tags, sourceComponentId, priority);
+        super(name, displayName, type, values, source, description, tags, sourceComponentId, sourceVersion, priority);
         this.webhookId = webhookId;
         this.options = options;
     }
 
     @JsonProperty(JSON_WEBHOOK_ID)
-    public String getWebhookId() {
+    public Optional<String> getWebhookId() {
         return webhookId;
     }
 

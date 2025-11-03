@@ -12,10 +12,8 @@ public class FileAssetRequest {
     private final FileInputStreamRequest fileInputStreamRequest;
 
     public FileAssetRequest(
-        @Parameter(description = "Optional FileAsset metadata")
-        FileAssetMetadata fileAssetMetadata,
-        @Parameter(description = "File content")
-        FileInputStreamRequest fileInputStreamRequest) {
+        @Parameter(description = "Optional FileAsset metadata") FileAssetMetadata fileAssetMetadata,
+        @Parameter(description = "File content") FileInputStreamRequest fileInputStreamRequest) {
         this.fileAssetMetadata = fileAssetMetadata;
         this.fileInputStreamRequest = fileInputStreamRequest;
     }

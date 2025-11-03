@@ -29,17 +29,15 @@ public class PersonMembershipsListRequest {
 
     public PersonMembershipsListRequest(
         @Parameter(description = "Optional audience id filter. " +
-            "Will include audience memberships that match at least one of the audience ids.")
-        @QueryParam(PARAMETER_AUDIENCE_IDS) List<String> audienceIds,
+            "Will include audience memberships that match at least one of the audience ids.") @QueryParam(PARAMETER_AUDIENCE_IDS) List<
+                String> audienceIds,
         @Parameter(description = "Optional audience name filter. " +
-            "Will include audience memberships that match at least one of the audience names.")
-        @QueryParam(PARAMETER_AUDIENCE_NAMES) List<String> audienceNames,
-        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".")
-        @DefaultValue("" + DEFAULT_OFFSET)
-        @QueryParam(PARAMETER_OFFSET) Optional<Integer> offset,
-        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".")
-        @DefaultValue("" + DEFAULT_LIMIT)
-        @QueryParam(PARAMETER_LIMIT) Optional<Integer> limit) {
+            "Will include audience memberships that match at least one of the audience names.") @QueryParam(PARAMETER_AUDIENCE_NAMES) List<
+                String> audienceNames,
+        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".") @DefaultValue(""
+            + DEFAULT_OFFSET) @QueryParam(PARAMETER_OFFSET) Optional<Integer> offset,
+        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".") @DefaultValue(""
+            + DEFAULT_LIMIT) @QueryParam(PARAMETER_LIMIT) Optional<Integer> limit) {
         this.audienceIds = audienceIds == null ? ImmutableList.of() : ImmutableList.copyOf(audienceIds);
         this.audienceNames = audienceNames == null ? ImmutableList.of() : ImmutableList.copyOf(audienceNames);
         this.offset = offset.orElse(Integer.valueOf(DEFAULT_OFFSET));

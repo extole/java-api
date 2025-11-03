@@ -11,30 +11,31 @@ import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.id.Id;
+import com.extole.model.entity.report.runner.ReportRunner;
+import com.extole.model.entity.report.runner.ReportRunnerType;
+import com.extole.model.entity.report.runner.ScheduledReportRunner;
+import com.extole.model.entity.report.runner.schedule.ScheduleFrequency;
 import com.extole.model.service.client.sftp.SftpDestinationNotFoundException;
-import com.extole.reporting.entity.report.runner.ReportRunner;
-import com.extole.reporting.entity.report.runner.ReportRunnerType;
-import com.extole.reporting.entity.report.runner.ScheduledReportRunner;
-import com.extole.reporting.entity.report.schedule.ScheduleFrequency;
+import com.extole.model.service.report.runner.ReportRunnerDuplicateException;
+import com.extole.model.service.report.runner.ReportRunnerFormatNotSupportedException;
+import com.extole.model.service.report.runner.ReportRunnerInvalidParametersException;
+import com.extole.model.service.report.runner.ReportRunnerInvalidScopesException;
+import com.extole.model.service.report.runner.ReportRunnerInvalidSortByException;
+import com.extole.model.service.report.runner.ReportRunnerMergeEmptyFormatException;
+import com.extole.model.service.report.runner.ReportRunnerMissingNameException;
+import com.extole.model.service.report.runner.ReportRunnerMissingParametersException;
+import com.extole.model.service.report.runner.ReportRunnerNameInvalidException;
+import com.extole.model.service.report.runner.ReportRunnerNotFoundException;
+import com.extole.model.service.report.runner.ReportRunnerReportTypeMissingException;
+import com.extole.model.service.report.runner.ReportRunnerReportTypeNotFoundException;
+import com.extole.model.service.report.runner.ReportRunnerUpdateManagedByGitException;
+import com.extole.model.service.report.runner.ScheduledReportRunnerBuilder;
+import com.extole.model.service.report.runner.ScheduledReportRunnerFrequencyNotSupportedForLegacySftpException;
+import com.extole.model.service.report.runner.ScheduledReportRunnerMissingFrequencyException;
+import com.extole.model.service.report.runner.ScheduledReportRunnerMissingScheduleStartDateException;
 import com.extole.reporting.rest.report.runner.ReportRunnerValidationRestException;
 import com.extole.reporting.rest.report.runner.ScheduledReportRunnerCreateRequest;
 import com.extole.reporting.rest.report.runner.ScheduledReportRunnerUpdateRequest;
-import com.extole.reporting.service.report.runner.ReportRunnerDuplicateException;
-import com.extole.reporting.service.report.runner.ReportRunnerFormatNotSupportedException;
-import com.extole.reporting.service.report.runner.ReportRunnerInvalidParametersException;
-import com.extole.reporting.service.report.runner.ReportRunnerInvalidScopesException;
-import com.extole.reporting.service.report.runner.ReportRunnerMergeEmptyFormatException;
-import com.extole.reporting.service.report.runner.ReportRunnerMissingNameException;
-import com.extole.reporting.service.report.runner.ReportRunnerMissingParametersException;
-import com.extole.reporting.service.report.runner.ReportRunnerNameInvalidException;
-import com.extole.reporting.service.report.runner.ReportRunnerNotFoundException;
-import com.extole.reporting.service.report.runner.ReportRunnerReportTypeMissingException;
-import com.extole.reporting.service.report.runner.ReportRunnerReportTypeNotFoundException;
-import com.extole.reporting.service.report.runner.ReportRunnerUpdateManagedByGitException;
-import com.extole.reporting.service.report.runner.ScheduledReportRunnerBuilder;
-import com.extole.reporting.service.report.runner.ScheduledReportRunnerFrequencyNotSupportedForLegacySftpException;
-import com.extole.reporting.service.report.runner.ScheduledReportRunnerMissingFrequencyException;
-import com.extole.reporting.service.report.runner.ScheduledReportRunnerMissingScheduleStartDateException;
 
 @Component
 public class ScheduledReportRunnerUploader
@@ -149,6 +150,12 @@ public class ScheduledReportRunnerUploader
                 .addParameter("name", reportRunnerRequest.getName())
                 .withCause(e)
                 .build();
+        } catch (ReportRunnerInvalidSortByException e) {
+            throw RestExceptionBuilder.newBuilder(ReportRunnerValidationRestException.class)
+                .withErrorCode(ReportRunnerValidationRestException.REPORT_RUNNER_INVALID_SORT_BY)
+                .addParameter("sort_by", e.getSortBy())
+                .withCause(e)
+                .build();
         }
     }
 
@@ -204,6 +211,12 @@ public class ScheduledReportRunnerUploader
             throw RestExceptionBuilder.newBuilder(ReportRunnerValidationRestException.class)
                 .withErrorCode(ReportRunnerValidationRestException.REPORT_RUNNER_NAME_ILLEGAL_CHARACTER)
                 .addParameter("name", reportRunnerRequest.getName())
+                .withCause(e)
+                .build();
+        } catch (ReportRunnerInvalidSortByException e) {
+            throw RestExceptionBuilder.newBuilder(ReportRunnerValidationRestException.class)
+                .withErrorCode(ReportRunnerValidationRestException.REPORT_RUNNER_INVALID_SORT_BY)
+                .addParameter("sort_by", e.getSortBy())
                 .withCause(e)
                 .build();
         }

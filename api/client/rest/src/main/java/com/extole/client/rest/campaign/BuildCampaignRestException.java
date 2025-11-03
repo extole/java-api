@@ -11,6 +11,10 @@ public class BuildCampaignRestException extends ExtoleRestException {
         "campaign_build_failed", 400, "Campaign build failed", "campaign_id", "campaign_version",
         "entity", "entity_id", "evaluatable_name", "evaluatable");
 
+    public static final ErrorCode<BuildCampaignRestException> REBUILD_CAMPAIGNS_BUILD_FAILED = new ErrorCode<>(
+        "rebuild_campaigns_build_failed", 400, "Rebuild campaigns build failed", "campaign_id", "campaign_version",
+        "entity", "entity_id", "failed_campaigns");
+
     @Deprecated // TODO replace this with a dedicated validation exception in ENG-23826
     public static final ErrorCode<BuildCampaignRestException> BUILT_FRONTEND_CONTROLLER_STATE_MISCONFIGURATION =
         new ErrorCode<>("controller_state_misconfiguration", 400,
@@ -21,9 +25,8 @@ public class BuildCampaignRestException extends ExtoleRestException {
             "expression_invalid_syntax", 400, "Campaign build failed due expression invalid syntax", "campaign_id",
             "campaign_version", "entity", "entity_id", "evaluatable_name", "evaluatable", "description");
 
-    public BuildCampaignRestException(String uniqueId, ErrorCode<BuildCampaignRestException> code,
-        Map<String, Object> attributes,
-        Throwable cause) {
+    public BuildCampaignRestException(String uniqueId, ErrorCode<? extends BuildCampaignRestException> code,
+        Map<String, Object> attributes, Throwable cause) {
         super(uniqueId, code, attributes, cause);
     }
 }

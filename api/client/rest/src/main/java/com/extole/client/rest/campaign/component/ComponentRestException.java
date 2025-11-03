@@ -16,6 +16,10 @@ public class ComponentRestException extends ExtoleRestException {
     public static final ErrorCode<ComponentRestException> UNSUPPORTED_STATE = new ErrorCode<>(
         "component_state_not_supported", 400, "Component state not supported", "state", "supported_values");
 
+    public static final ErrorCode<ComponentRestException> UNKNOWN_SOURCE_CLIENT_IDS = new ErrorCode<>(
+        "unknown_source_clients", 400, "Some source client ids are unknown", "known_source_client_ids",
+        "unknown_source_client_ids");
+
     public ComponentRestException(String uniqueId, ErrorCode<ComponentRestException> code,
         Map<String, Object> attributes, Throwable cause) {
         super(uniqueId, code, attributes, cause);

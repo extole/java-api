@@ -24,8 +24,7 @@ import com.extole.model.entity.campaign.CampaignControllerActionType;
 
 @Component
 final class CampaignControllerActionIncentivizeStatusUpdateResponseMapper implements
-    CampaignControllerActionResponseMapper<
-        CampaignControllerActionIncentivizeStatusUpdate,
+    CampaignControllerActionResponseMapper<CampaignControllerActionIncentivizeStatusUpdate,
         CampaignControllerActionIncentivizeStatusUpdateResponse,
         CampaignControllerActionIncentivizeStatusUpdateConfiguration> {
 
@@ -45,11 +44,11 @@ final class CampaignControllerActionIncentivizeStatusUpdateResponseMapper implem
             action.getId().getValue(),
             CampaignControllerActionQuality.valueOf(action.getQuality().name()),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -78,7 +77,7 @@ final class CampaignControllerActionIncentivizeStatusUpdateResponseMapper implem
             action.getReviewStatus(),
             action.getMessage(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

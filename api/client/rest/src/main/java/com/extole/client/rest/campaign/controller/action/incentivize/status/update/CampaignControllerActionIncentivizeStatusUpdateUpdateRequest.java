@@ -92,39 +92,41 @@ public class CampaignControllerActionIncentivizeStatusUpdateUpdateRequest extend
     }
 
     @JsonProperty(LEGACY_ACTION_ID)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext,
-            Optional<String>>>>
+    public
+        Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>>>
         getLegacyActionId() {
         return legacyActionId;
     }
 
     @JsonProperty(EVENT_TYPE)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext,
-            Optional<IncentivizeActionType>>>>
+    public
+        Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<IncentivizeActionType>>>>
         getEventType() {
         return eventType;
     }
 
     @JsonProperty(PARTNER_EVENT_ID)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext,
-            Optional<String>>>>
+    public
+        Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>>>
         getPartnerEventId() {
         return partnerEventId;
     }
 
     @JsonProperty(REVIEW_STATUS)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, String>>>
+    public
+        Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, String>>>
         getReviewStatus() {
         return reviewStatus;
     }
 
     @JsonProperty(MESSAGE)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>>>
+    public
+        Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>>>
         getMessage() {
         return message;
     }
@@ -135,8 +137,11 @@ public class CampaignControllerActionIncentivizeStatusUpdateUpdateRequest extend
     }
 
     @JsonProperty(DATA)
-    public Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<Object>>>>> getData() {
+    public
+        Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<Object>>>>>
+        getData() {
         return data;
     }
 
@@ -170,8 +175,10 @@ public class CampaignControllerActionIncentivizeStatusUpdateUpdateRequest extend
                 Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> moveToPending =
             Omissible.omitted();
-        private Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<Object>>>>> data = Omissible.omitted();
+        private Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<Object>>>>> data =
+                    Omissible.omitted();
 
         private Builder() {
         }
@@ -186,32 +193,37 @@ public class CampaignControllerActionIncentivizeStatusUpdateUpdateRequest extend
             return this;
         }
 
-        public Builder withLegacyActionId(BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> legacyActionId) {
+        public Builder withLegacyActionId(
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> legacyActionId) {
             this.legacyActionId = Omissible.of(legacyActionId);
             return this;
         }
 
-        public Builder withEventType(BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<IncentivizeActionType>>> eventType) {
+        public Builder withEventType(
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<IncentivizeActionType>>> eventType) {
             this.eventType = Omissible.of(eventType);
             return this;
         }
 
-        public Builder withPartnerEventId(BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> partnerEventId) {
+        public Builder withPartnerEventId(
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> partnerEventId) {
             this.partnerEventId = Omissible.of(partnerEventId);
             return this;
         }
 
-        public Builder withReviewStatus(BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, String>> reviewStatus) {
+        public Builder withReviewStatus(
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, String>> reviewStatus) {
             this.reviewStatus = Omissible.of(reviewStatus);
             return this;
         }
 
-        public Builder withMessage(BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> message) {
+        public Builder withMessage(
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> message) {
             this.message = Omissible.of(message);
             return this;
         }
@@ -222,8 +234,9 @@ public class CampaignControllerActionIncentivizeStatusUpdateUpdateRequest extend
             return this;
         }
 
-        public Builder withData(Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<Object>>>> data) {
+        public Builder withData(
+            Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<Object>>>> data) {
             this.data = Omissible.of(data);
             return this;
         }

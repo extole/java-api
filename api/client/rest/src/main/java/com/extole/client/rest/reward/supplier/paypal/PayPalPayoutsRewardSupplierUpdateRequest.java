@@ -32,6 +32,8 @@ public class PayPalPayoutsRewardSupplierUpdateRequest extends RewardSupplierUpda
 
     public PayPalPayoutsRewardSupplierUpdateRequest(
         @JsonProperty(NAME) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> name,
+        @JsonProperty(DISPLAY_NAME) Omissible<
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>>> displayName,
         @JsonProperty(MERCHANT_TOKEN) Omissible<String> merchantToken,
         @JsonProperty(FACE_VALUE_ALGORITHM_TYPE) Omissible<
             BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType,
@@ -58,7 +60,8 @@ public class PayPalPayoutsRewardSupplierUpdateRequest extends RewardSupplierUpda
         @JsonProperty(TAGS) Omissible<Set<String>> tags,
         @JsonProperty(DATA) Omissible<Map<String, BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>>> data,
         @JsonProperty(ENABLED) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean>> enabled) {
-        super(RewardSupplierType.PAYPAL_PAYOUTS, name, faceValueAlgorithmType, faceValue, cashBackPercentage,
+        super(RewardSupplierType.PAYPAL_PAYOUTS, name, displayName, faceValueAlgorithmType, faceValue,
+            cashBackPercentage,
             minCashBack, maxCashBack, faceValueType, partnerRewardSupplierId, partnerRewardKeyType, displayType,
             description, limitPerDay, limitPerHour, componentIds, componentReferences, tags, data, enabled);
         this.merchantToken = merchantToken;
@@ -97,6 +100,7 @@ public class PayPalPayoutsRewardSupplierUpdateRequest extends RewardSupplierUpda
 
             return new PayPalPayoutsRewardSupplierUpdateRequest(
                 name,
+                displayName,
                 merchantToken,
                 faceValueAlgorithmType,
                 faceValue,

@@ -23,13 +23,22 @@ public class CampaignControllerTriggerAccessConfiguration extends CampaignContro
         @JsonProperty(TRIGGER_PHASE) BuildtimeEvaluatable<ControllerBuildtimeContext,
             CampaignControllerTriggerPhase> triggerPhase,
         @JsonProperty(TRIGGER_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            Optional<String>> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
         @JsonProperty(NEGATED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> negated,
         @JsonProperty(TRUSTED_SCOPES) Set<Scope> trustedScopes,
         @JsonProperty(COMPONENT_REFERENCES) List<CampaignComponentReferenceConfiguration> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.ACCESS, triggerPhase, name, description, enabled, negated,
+        super(triggerId,
+            CampaignControllerTriggerType.ACCESS,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
             componentReferences);
         this.trustedScopes = ImmutableSet.copyOf(trustedScopes);
     }

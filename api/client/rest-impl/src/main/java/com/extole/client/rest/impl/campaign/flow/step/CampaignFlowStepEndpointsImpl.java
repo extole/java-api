@@ -68,6 +68,7 @@ import com.extole.model.service.campaign.component.CampaignComponentException;
 import com.extole.model.service.campaign.component.CampaignComponentNameDuplicateException;
 import com.extole.model.service.campaign.component.CampaignComponentTypeValidationException;
 import com.extole.model.service.campaign.component.RedundantComponentReferenceException;
+import com.extole.model.service.campaign.component.facet.CampaignComponentFacetsNotFoundException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerBuildException;
 import com.extole.model.service.campaign.flow.CampaignFlowStepWordsBuilder;
 import com.extole.model.service.campaign.flow.step.CampaignFlowStepBuilder;
@@ -463,7 +464,8 @@ public class CampaignFlowStepEndpointsImpl implements CampaignFlowStepEndpoints 
             | CampaignScheduleException | CampaignGlobalDeleteException
             | CampaignGlobalArchiveException | CampaignGlobalStateChangeException
             | CampaignComponentTypeValidationException | AuthorizationException | ComponentTypeNotFoundException
-            | ReferencedExternalElementException | IncompatibleRewardRuleException e) {
+            | ReferencedExternalElementException | IncompatibleRewardRuleException
+            | CampaignComponentFacetsNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)

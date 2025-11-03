@@ -23,6 +23,7 @@ import com.extole.common.lang.ObjectMapperProvider;
 import com.extole.common.rest.omissible.Omissible;
 import com.extole.evaluateable.BuildtimeEvaluatable;
 import com.extole.evaluateable.RuntimeEvaluatable;
+import com.extole.evaluateable.provided.Provided;
 import com.extole.id.Id;
 import com.extole.model.entity.campaign.CampaignComponent;
 import com.extole.model.entity.campaign.CampaignControllerActionEarnReward;
@@ -30,10 +31,8 @@ import com.extole.model.entity.campaign.CampaignControllerActionType;
 
 @Component
 public class CampaignControllerActionEarnRewardResponseMapper implements
-    CampaignControllerActionResponseMapper<
-        CampaignControllerActionEarnReward,
-        CampaignControllerActionEarnRewardResponse,
-        CampaignControllerActionEarnRewardConfiguration> {
+    CampaignControllerActionResponseMapper<CampaignControllerActionEarnReward,
+        CampaignControllerActionEarnRewardResponse, CampaignControllerActionEarnRewardConfiguration> {
 
     private static final BuildtimeEvaluatable<ControllerBuildtimeContext,
         RuntimeEvaluatable<RewardActionContext, Optional<Object>>> DEFAULT_VALUE_OF_VALUE_OF_EVENT_BEING_REWARDED;
@@ -65,19 +64,21 @@ public class CampaignControllerActionEarnRewardResponseMapper implements
             action.getRewardSupplierId(),
             action.getTags(),
             action.getData().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
-            action.getData().getOrDefault("earned_event_value", DEFAULT_VALUE_OF_VALUE_OF_EVENT_BEING_REWARDED),
+            action.getData().getOrDefault(Provided.of("earned_event_value"),
+                DEFAULT_VALUE_OF_VALUE_OF_EVENT_BEING_REWARDED),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
                 .collect(Collectors.toList()),
             action.getEventTime(),
-            action.getRewardActionId());
+            action.getRewardActionId(),
+            action.getExtraData());
     }
 
     @Override
@@ -92,16 +93,18 @@ public class CampaignControllerActionEarnRewardResponseMapper implements
             action.getRewardSupplierId(),
             action.getTags(),
             action.getData().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
-            action.getData().getOrDefault("earned_event_value", DEFAULT_VALUE_OF_VALUE_OF_EVENT_BEING_REWARDED),
+            action.getData().getOrDefault(Provided.of("earned_event_value"),
+                DEFAULT_VALUE_OF_VALUE_OF_EVENT_BEING_REWARDED),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,
                     (reference) -> componentNames.get(reference.getComponentId())))
                 .collect(Collectors.toList()),
             action.getEventTime(),
-            action.getRewardActionId());
+            action.getRewardActionId(),
+            action.getExtraData());
     }
 
     @Override

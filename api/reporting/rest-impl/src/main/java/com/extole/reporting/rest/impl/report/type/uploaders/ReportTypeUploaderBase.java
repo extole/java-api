@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
-import com.extole.reporting.entity.report.ReportType;
-import com.extole.reporting.entity.report.ReportTypeTagType;
+import com.extole.model.entity.report.type.ReportType;
+import com.extole.model.entity.report.type.ReportTypeTagType;
+import com.extole.model.service.report.type.ReportTypeBuilder;
+import com.extole.model.service.report.type.ReportTypeNotFoundException;
+import com.extole.model.service.report.type.ReportTypeService;
 import com.extole.reporting.rest.report.ReportTypeRestException;
 import com.extole.reporting.rest.report.type.ReportTypeCreateRequest;
 import com.extole.reporting.rest.report.type.ReportTypeUpdateRequest;
-import com.extole.reporting.service.ReportTypeNotFoundException;
-import com.extole.reporting.service.report.ReportTypeService;
-import com.extole.reporting.service.report.type.ReportTypeBuilder;
 
 @Component
 public class ReportTypeUploaderBase {

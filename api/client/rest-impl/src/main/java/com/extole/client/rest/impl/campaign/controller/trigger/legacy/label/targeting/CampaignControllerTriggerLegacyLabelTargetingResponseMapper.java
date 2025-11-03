@@ -23,8 +23,7 @@ import com.extole.model.entity.campaign.CampaignControllerTriggerType;
 
 @Component
 public class CampaignControllerTriggerLegacyLabelTargetingResponseMapper implements
-    CampaignControllerTriggerResponseMapper<
-        CampaignControllerTriggerLegacyLabelTargeting,
+    CampaignControllerTriggerResponseMapper<CampaignControllerTriggerLegacyLabelTargeting,
         CampaignControllerTriggerLegacyLabelTargetingResponse,
         CampaignControllerTriggerLegacyLabelTargetingConfiguration> {
 
@@ -42,14 +41,15 @@ public class CampaignControllerTriggerLegacyLabelTargetingResponseMapper impleme
         return new CampaignControllerTriggerLegacyLabelTargetingResponse(trigger.getId().getValue(),
             Evaluatables.remapEnum(trigger.getPhase(), new TypeReference<>() {}),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -65,10 +65,11 @@ public class CampaignControllerTriggerLegacyLabelTargetingResponseMapper impleme
             Omissible.of(Id.valueOf(trigger.getId().getValue())),
             Evaluatables.remapEnum(trigger.getPhase(), new TypeReference<>() {}),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

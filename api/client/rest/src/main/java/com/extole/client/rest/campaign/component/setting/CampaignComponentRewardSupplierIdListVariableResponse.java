@@ -30,15 +30,15 @@ public class CampaignComponentRewardSupplierIdListVariableResponse
     public CampaignComponentRewardSupplierIdListVariableResponse(@JsonProperty(JSON_COMPONENT_SETTING_NAME) String name,
         @JsonProperty(JSON_COMPONENT_SETTING_DISPLAY_NAME) Optional<String> displayName,
         @JsonProperty(JSON_COMPONENT_SETTING_TYPE) SettingType type,
-        @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES) Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values,
+        @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES) Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values,
         @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE) VariableSource source,
         @JsonProperty(JSON_COMPONENT_SETTING_DESCRIPTION) BuildtimeEvaluatable<VariableDescriptionBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(JSON_COMPONENT_SETTING_TAGS) Set<String> tags,
         @JsonProperty(JSON_COMPONENT_SETTING_PRIORITY) DeweyDecimal priority,
-        @JsonProperty(JSON_ALLOWED_REWARD_SUPPLIER_IDS)
-            BuildtimeEvaluatable<CampaignBuildtimeContext, List<Id<?>>> allowedRewardSupplierIds) {
+        @JsonProperty(JSON_ALLOWED_REWARD_SUPPLIER_IDS) BuildtimeEvaluatable<CampaignBuildtimeContext,
+            List<Id<?>>> allowedRewardSupplierIds) {
         super(name, displayName, type, values, source, description, tags, priority);
         this.allowedRewardSupplierIds = allowedRewardSupplierIds;
     }

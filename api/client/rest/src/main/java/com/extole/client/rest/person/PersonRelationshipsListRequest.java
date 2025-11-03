@@ -43,35 +43,33 @@ public class PersonRelationshipsListRequest {
 
     public PersonRelationshipsListRequest(
         @Parameter(description = "Optional roles filter for the current person in the relationship. " +
-            "Will include journeys that match at least one of the roles. Eligible values are FRIEND, ADVOCATE.")
-        @QueryParam(PARAMETER_MY_ROLES) List<PersonReferralRole> myRoles,
+            "Will include journeys that match at least one of the roles. Eligible values are FRIEND, ADVOCATE.") @QueryParam(PARAMETER_MY_ROLES) List<
+                PersonReferralRole> myRoles,
         @Parameter(description = "Optional container filter, defaults to all containers. " +
-            "Will include relationships that match at least one of the containers.")
-        @QueryParam(PARAMETER_CONTAINERS) List<String> containers,
+            "Will include relationships that match at least one of the containers.") @QueryParam(PARAMETER_CONTAINERS) List<
+                String> containers,
         @Parameter(description = "Optional program label filter. " +
-            "Will include relationships that match at least one of the programs.")
-        @QueryParam(PARAMETER_PROGRAMS) List<String> programs,
+            "Will include relationships that match at least one of the programs.") @QueryParam(PARAMETER_PROGRAMS) List<
+                String> programs,
         @Parameter(description = "Optional campaign id filter. " +
-            "Will include relationships that match at least one of the campaign ids.")
-        @QueryParam(PARAMETER_CAMPAIGN_IDS) List<String> campaignIds,
+            "Will include relationships that match at least one of the campaign ids.") @QueryParam(PARAMETER_CAMPAIGN_IDS) List<
+                String> campaignIds,
         @Parameter(description = "Optional filter for existence of specific data keys with non-empty values. " +
-            "Will include relationships that have at least one of the data keys.")
-        @QueryParam(PARAMETER_DATA_KEYS) List<String> dataKeys,
+            "Will include relationships that have at least one of the data keys.") @QueryParam(PARAMETER_DATA_KEYS) List<
+                String> dataKeys,
         @Parameter(description = "Optional filter for existence of specific data values. " +
             "Will include relationships that have at least one of the specified data name-value pair. " +
-            "Valid format is name:value.")
-        @QueryParam(PARAMETER_DATA_VALUES) List<String> dataValues,
-        @Parameter(description = "Optional flag to exclude relationships with anonymous persons.")
-        @DefaultValue("false") @QueryParam(PARAMETER_EXCLUDE_ANONYMOUS) boolean excludeAnonymous,
+            "Valid format is name:value.") @QueryParam(PARAMETER_DATA_VALUES) List<String> dataValues,
+        @Parameter(
+            description = "Optional flag to exclude relationships with anonymous persons.") @DefaultValue("false") @QueryParam(PARAMETER_EXCLUDE_ANONYMOUS) boolean excludeAnonymous,
         @Parameter(description = "Optional flag to return all relationships, not de-duplicate by identity. " +
-            "Default behavior (or when flag is set to false) returns last relationship per person.")
-        @DefaultValue("false") @QueryParam(PARAMETER_INCLUDE_DUPLICATE_IDENTITIES) boolean includeDuplicateIdentities,
-        @Parameter(description = "Optional flag to include self referrals.")
-        @DefaultValue("false") @QueryParam(PARAMETER_INCLUDE_SELF_REFERRALS) boolean includeSelfReferrals,
-        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".")
-        @DefaultValue("" + DEFAULT_OFFSET) @QueryParam("offset") Integer offset,
-        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".")
-        @DefaultValue("" + DEFAULT_LIMIT) @QueryParam("limit") Integer limit) {
+            "Default behavior (or when flag is set to false) returns last relationship per person.") @DefaultValue("false") @QueryParam(PARAMETER_INCLUDE_DUPLICATE_IDENTITIES) boolean includeDuplicateIdentities,
+        @Parameter(
+            description = "Optional flag to include self referrals.") @DefaultValue("false") @QueryParam(PARAMETER_INCLUDE_SELF_REFERRALS) boolean includeSelfReferrals,
+        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".") @DefaultValue(""
+            + DEFAULT_OFFSET) @QueryParam("offset") Integer offset,
+        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".") @DefaultValue(""
+            + DEFAULT_LIMIT) @QueryParam("limit") Integer limit) {
         this.myRoles = myRoles == null ? ImmutableList.of() : ImmutableList.copyOf(myRoles);
         this.containers = containers == null ? ImmutableList.of() : ImmutableList.copyOf(containers);
         this.programs = programs == null ? ImmutableList.of() : ImmutableList.copyOf(programs);

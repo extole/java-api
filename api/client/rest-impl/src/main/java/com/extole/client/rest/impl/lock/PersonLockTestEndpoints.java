@@ -226,7 +226,7 @@ public class PersonLockTestEndpoints {
         Authorization authorization = validateAccess(accessToken);
         try {
             personService.updatePerson(authorization, Id.valueOf(personId), new LockDescription("update-person-sleep"),
-                (personBuilder, person) -> {
+                (personBuilder, initialPerson) -> {
                     try {
                         Thread.sleep(updateRequest.getLockDurationMs());
                         for (Map.Entry<String, String> entry : updateRequest.getData().entrySet()) {

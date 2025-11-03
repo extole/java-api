@@ -334,8 +334,8 @@ class ConsumerRequestContextServiceImpl implements ConsumerRequestContextService
                     try {
                         return authorizationService.authorize(clientId);
                     } catch (AuthorizationException e) {
-                        throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
-                            .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
+                        throw RestExceptionBuilder.newBuilder(AuthorizationRestException.class)
+                            .withErrorCode(AuthorizationRestException.ACCESS_DENIED)
                             .withCause(e).build();
                     }
                 }

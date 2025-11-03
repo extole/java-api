@@ -33,20 +33,18 @@ public class AudienceListQueryParams {
     private final Optional<AudienceOrderDirection> order;
 
     public AudienceListQueryParams(
-        @Parameter(description = "Optional name filter")
-        @Nullable @QueryParam(NAME) String name,
-        @Parameter(description = "Optionally a list of tags filter")
-        @Nullable @QueryParam(TAGS) Set<String> tags,
-        @Parameter(description = "Optionally a list of states filter")
-        @Nullable @QueryParam(STATES) Set<AudienceListState> states,
-        @Parameter(description = "Optional type filter")
-        @Nullable @QueryParam(TYPE) AudienceListType type,
-        @Parameter(description = "Optional includeArchived filter")
-        @Nullable @QueryParam(INCLUDE_ARCHIVED) Boolean includeArchived,
-        @Parameter(description = "Optional limit filter")
-        @Nullable @QueryParam(LIMIT) @DefaultValue("1000") Integer limit,
-        @Parameter(description = "Optional offset filter")
-        @Nullable @QueryParam(OFFSET) @DefaultValue("0") Integer offset,
+        @Parameter(description = "Optional name filter") @Nullable @QueryParam(NAME) String name,
+        @Parameter(description = "Optionally a list of tags filter") @Nullable @QueryParam(TAGS) Set<String> tags,
+        @Parameter(
+            description = "Optionally a list of states filter") @Nullable @QueryParam(STATES) Set<
+                AudienceListState> states,
+        @Parameter(description = "Optional type filter") @Nullable @QueryParam(TYPE) AudienceListType type,
+        @Parameter(
+            description = "Optional includeArchived filter") @Nullable @QueryParam(INCLUDE_ARCHIVED) Boolean includeArchived,
+        @Parameter(
+            description = "Optional limit filter") @Nullable @QueryParam(LIMIT) @DefaultValue("1000") Integer limit,
+        @Parameter(
+            description = "Optional offset filter") @Nullable @QueryParam(OFFSET) @DefaultValue("0") Integer offset,
         @Nullable @QueryParam(ORDER_BY) AudienceOrderBy orderBy,
         @Nullable @QueryParam(ORDER) AudienceOrderDirection order) {
         this.name = Optional.ofNullable(name);

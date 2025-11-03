@@ -14,6 +14,7 @@ import com.extole.model.service.webhook.built.MissingWebhookNameException;
 import com.extole.model.service.webhook.built.MissingWebhookUrlException;
 import com.extole.model.service.webhook.built.RewardSupplierWebhookFilterMissingRewardSupplierIdException;
 import com.extole.model.service.webhook.built.RewardSupplierWebhookFilterNotFoundException;
+import com.extole.model.service.webhook.built.WebhookNameDuplicateException;
 import com.extole.model.service.webhook.reward.filter.supplier.RewardSupplierWebhookStateFilterNotFoundException;
 
 public final class BuildWebhookExceptionMapper {
@@ -26,117 +27,112 @@ public final class BuildWebhookExceptionMapper {
     private BuildWebhookExceptionMapper() {
     }
 
-    public BuildWebhookRestException map(BuildWebhookException e) {
-        return internalMap(e);
+    public BuildWebhookRestException map(BuildWebhookException exception) {
+        return internalMap(exception);
     }
 
-    private BuildWebhookRestException internalMap(BuildWebhookException e) {
-        if (e instanceof InvalidWebhookTagException) {
-            InvalidWebhookTagException ex = (InvalidWebhookTagException) e;
+    private BuildWebhookRestException internalMap(BuildWebhookException exception) {
+        if (exception instanceof InvalidWebhookTagException castedException) {
             return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
                 .withErrorCode(BuildWebhookRestException.WEBHOOK_INVALID_TAG)
-                .addParameter("tag", ex.getTag())
-                .addParameter("tag_max_length", Integer.valueOf(ex.getTagMaxLength()))
-                .withCause(e)
+                .addParameter("tag", castedException.getTag())
+                .addParameter("tag_max_length", Integer.valueOf(castedException.getTagMaxLength()))
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof ClientKeyNotFoundWebhookException) {
-            ClientKeyNotFoundWebhookException ex = (ClientKeyNotFoundWebhookException) e;
+        if (exception instanceof ClientKeyNotFoundWebhookException castedException) {
             return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
                 .withErrorCode(BuildWebhookRestException.WEBHOOK_CLIENT_KEY_NOT_FOUND)
-                .addParameter("client_key_id", ex.getClientKeyId().getValue())
-                .withCause(e)
+                .addParameter("client_key_id", castedException.getClientKeyId().getValue())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof InvalidWebhookDefaultMethodException) {
-            InvalidWebhookDefaultMethodException ex = (InvalidWebhookDefaultMethodException) e;
+        if (exception instanceof InvalidWebhookDefaultMethodException castedException) {
             return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
                 .withErrorCode(BuildWebhookRestException.WEBHOOK_INVALID_DEFAULT_METHOD)
-                .addParameter("default_method", ex.getDefaultMethod())
-                .withCause(e)
+                .addParameter("default_method", castedException.getDefaultMethod())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof InvalidWebhookDescriptionException) {
-            InvalidWebhookDescriptionException ex = (InvalidWebhookDescriptionException) e;
+        if (exception instanceof InvalidWebhookDescriptionException castedException) {
             return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
                 .withErrorCode(BuildWebhookRestException.WEBHOOK_INVALID_DESCRIPTION)
-                .addParameter("description", ex.getDescription())
-                .withCause(e)
+                .addParameter("description", castedException.getDescription())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof InvalidWebhookNameException) {
-            InvalidWebhookNameException ex = (InvalidWebhookNameException) e;
+        if (exception instanceof InvalidWebhookNameException castedException) {
             return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
                 .withErrorCode(BuildWebhookRestException.WEBHOOK_INVALID_NAME)
-                .addParameter("name", ex.getName())
-                .withCause(e)
+                .addParameter("name", castedException.getName())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof LocalOrInternalWebhookUrlException) {
-            LocalOrInternalWebhookUrlException ex = (LocalOrInternalWebhookUrlException) e;
+        if (exception instanceof WebhookNameDuplicateException castedException) {
+            return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
+                .withErrorCode(BuildWebhookRestException.WEBHOOK_NAME_DUPLICATE)
+                .addParameter("webhook_id", castedException.getWebhookId())
+                .addParameter("name", castedException.getName())
+                .withCause(exception)
+                .build();
+        }
+        if (exception instanceof LocalOrInternalWebhookUrlException castedException) {
             return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
                 .withErrorCode(BuildWebhookRestException.WEBHOOK_INVALID_LOCAL_OR_INTERNAL_URL)
-                .addParameter("url", ex.getUrl())
-                .withCause(e)
+                .addParameter("url", castedException.getUrl())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof MalformedWebhookUrlException) {
-            MalformedWebhookUrlException ex = (MalformedWebhookUrlException) e;
+        if (exception instanceof MalformedWebhookUrlException castedException) {
             return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
                 .withErrorCode(BuildWebhookRestException.WEBHOOK_MALFORMED_URL)
-                .addParameter("url", ex.getUrl())
-                .withCause(e)
+                .addParameter("url", castedException.getUrl())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof MissingWebhookNameException) {
+        if (exception instanceof MissingWebhookNameException) {
             return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
                 .withErrorCode(BuildWebhookRestException.WEBHOOK_MISSING_NAME)
-                .withCause(e)
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof MissingWebhookUrlException) {
+        if (exception instanceof MissingWebhookUrlException) {
             return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
                 .withErrorCode(BuildWebhookRestException.WEBHOOK_MISSING_URL)
-                .withCause(e)
+                .withCause(exception)
                 .build();
         }
 
-        if (e instanceof RewardSupplierWebhookFilterMissingRewardSupplierIdException) {
-            RewardSupplierWebhookFilterMissingRewardSupplierIdException ex =
-                (RewardSupplierWebhookFilterMissingRewardSupplierIdException) e;
+        if (exception instanceof RewardSupplierWebhookFilterMissingRewardSupplierIdException castedException) {
             return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
                 .withErrorCode(
                     BuildWebhookRestException.REWARD_SUPPLIER_WEBHOOK_FILTER_IS_MISSING)
-                .addParameter("webhook_id", ex.getWebhookId())
+                .addParameter("webhook_id", castedException.getWebhookId())
                 .build();
         }
-        if (e instanceof RewardSupplierWebhookStateFilterNotFoundException) {
-            RewardSupplierWebhookStateFilterNotFoundException ex =
-                (RewardSupplierWebhookStateFilterNotFoundException) e;
+        if (exception instanceof RewardSupplierWebhookStateFilterNotFoundException castedException) {
             return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
                 .withErrorCode(BuildWebhookRestException.REWARD_SUPPLIER_WEBHOOK_FILTER_NOT_FOUND)
-                .addParameter("webhook_id", ex.getWebhookId())
-                .addParameter("filter_id", ex.getFilterId())
-                .withCause(e)
+                .addParameter("webhook_id", castedException.getWebhookId())
+                .addParameter("filter_id", castedException.getFilterId())
+                .withCause(exception)
                 .build();
         }
 
-        if (e instanceof RewardSupplierWebhookFilterNotFoundException) {
-            RewardSupplierWebhookFilterNotFoundException ex =
-                (RewardSupplierWebhookFilterNotFoundException) e;
+        if (exception instanceof RewardSupplierWebhookFilterNotFoundException castedException) {
             return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
                 .withErrorCode(BuildWebhookRestException.REWARD_SUPPLIER_NOT_FOUND)
-                .addParameter("reward_supplier_id", ex.getRewardSupplierId())
-                .withCause(e)
+                .addParameter("reward_supplier_id", castedException.getRewardSupplierId())
+                .withCause(exception)
                 .build();
         }
 
         return RestExceptionBuilder.newBuilder(BuildWebhookRestException.class)
             .withErrorCode(BuildWebhookRestException.WEBHOOK_BUILD_FAILED)
-            .addParameter("webhook_id", e.getWebhookId())
-            .addParameter("evaluatable_name", e.getEvaluatableName())
-            .addParameter("evaluatable", e.getEvaluatable().toString())
-            .withCause(e)
+            .addParameter("webhook_id", exception.getWebhookId())
+            .addParameter("evaluatable_name", exception.getEvaluatableName())
+            .addParameter("evaluatable", exception.getEvaluatable().toString())
+            .withCause(exception)
             .build();
     }
 }

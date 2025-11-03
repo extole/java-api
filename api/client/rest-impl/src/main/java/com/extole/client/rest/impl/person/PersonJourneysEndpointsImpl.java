@@ -2,6 +2,7 @@ package com.extole.client.rest.impl.person;
 
 import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
 
+import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,8 @@ import javax.ws.rs.ext.Provider;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.extole.authorization.service.Authorization;
@@ -27,23 +30,26 @@ import com.extole.client.rest.person.PersonJourneysEndpoints;
 import com.extole.client.rest.person.PersonJourneysListRequest;
 import com.extole.client.rest.person.PersonJourneysListRestException;
 import com.extole.client.rest.person.PersonRestException;
+import com.extole.common.journey.JourneyName;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.id.Id;
 import com.extole.person.service.CampaignHandle;
 import com.extole.person.service.profile.FullPersonService;
+import com.extole.person.service.profile.Person;
+import com.extole.person.service.profile.PersonJourneyData;
 import com.extole.person.service.profile.PersonJourneyQueryBuilder;
 import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.profile.PersonService;
-import com.extole.person.service.profile.journey.Container;
-import com.extole.person.service.profile.journey.JourneyName;
 import com.extole.person.service.profile.journey.PersonJourney;
+import com.extole.sandbox.Container;
 
 @Provider
 public class PersonJourneysEndpointsImpl implements PersonJourneysEndpoints {
 
     private static final String ALL_CONTAINERS = "*";
+    private static final HashFunction HASHING = Hashing.sha256();
     private final ClientAuthorizationProvider authorizationProvider;
 
     private final PersonService personService;
@@ -95,7 +101,7 @@ public class PersonJourneysEndpointsImpl implements PersonJourneysEndpoints {
                     .collect(Collectors.toList()));
             }
             return builder.list().stream()
-                .map(step -> mapToResponse(step, timeZone))
+                .map(journey -> mapToResponse(personId, journey, timeZone))
                 .collect(Collectors.toList());
         } catch (PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(PersonRestException.class)
@@ -115,11 +121,11 @@ public class PersonJourneysEndpointsImpl implements PersonJourneysEndpoints {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         try {
-            Optional<PersonJourney> personJourney =
-                personService.getPerson(authorization, Id.valueOf(personId))
-                    .getJourneys().stream()
-                    .filter(journey -> journey.getId().getValue().equals(journeyId))
-                    .findFirst();
+            Person person = personService.getPerson(authorization, Id.valueOf(personId));
+            Optional<PersonJourney> personJourney = person
+                .getJourneys().stream()
+                .filter(journey -> journey.getId().getValue().equals(journeyId))
+                .findFirst();
 
             if (personJourney.isEmpty()) {
                 personJourney = fullPersonService.createJourneyQueryBuilder(authorization, Id.valueOf(personId))
@@ -127,7 +133,7 @@ public class PersonJourneysEndpointsImpl implements PersonJourneysEndpoints {
                     .list().stream()
                     .findFirst();
             }
-            return personJourney.map(journey -> mapToResponse(journey, timeZone))
+            return personJourney.map(journey -> mapToResponse(person.getId().getValue(), journey, timeZone))
                 .orElseThrow(() -> RestExceptionBuilder.newBuilder(PersonJourneyRestException.class)
                     .withErrorCode(PersonJourneyRestException.JOURNEY_NOT_FOUND)
                     .addParameter("person_id", personId)
@@ -145,43 +151,49 @@ public class PersonJourneysEndpointsImpl implements PersonJourneysEndpoints {
         }
     }
 
-    private PersonJourneyResponse mapToResponse(PersonJourney journey, ZoneId timeZone) {
+    private PersonJourneyResponse mapToResponse(String profileId, PersonJourney journey, ZoneId timeZone) {
         Map<String, PersonJourneyDataResponse> data = Maps.newHashMap();
-        addData(data, () -> journey.getPublicData(), PersonDataScope.PUBLIC);
-        addData(data, () -> journey.getPrivateData(), PersonDataScope.PRIVATE);
-        addData(data, () -> journey.getClientData(), PersonDataScope.CLIENT);
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_ENTRY_REASON, journey.getEntryReason());
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_ENTRY_ZONE, journey.getEntryZone());
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_LAST_ZONE, journey.getLastZone());
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_ENTRY_SHARE_ID,
+        addData(data, journey.getAllData(), () -> journey.getPublicData(), PersonDataScope.PUBLIC);
+        addData(data, journey.getAllData(), () -> journey.getPrivateData(), PersonDataScope.PRIVATE);
+        addData(data, journey.getAllData(), () -> journey.getClientData(), PersonDataScope.CLIENT);
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_ENTRY_REASON, journey.getEntryReason());
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_ENTRY_ZONE, journey.getEntryZone());
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_LAST_ZONE, journey.getLastZone());
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_ENTRY_SHARE_ID,
             journey.getEntryShareId().map(Id::getValue));
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_LAST_SHARE_ID,
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_LAST_SHARE_ID,
             journey.getLastShareId().map(Id::getValue));
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_ENTRY_SHAREABLE_ID,
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_ENTRY_SHAREABLE_ID,
             journey.getEntryShareableId().map(Id::getValue));
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_LAST_SHAREABLE_ID,
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_LAST_SHAREABLE_ID,
             journey.getLastShareableId().map(Id::getValue));
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_ENTRY_ADVOCATE_CODE, journey.getEntryAdvocateCode());
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_LAST_ADVOCATE_CODE, journey.getLastAdvocateCode());
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_ENTRY_PROMOTABLE_CODE, journey.getEntryPromotableCode());
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_LAST_PROMOTABLE_CODE, journey.getLastPromotableCode());
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_ENTRY_CONSUMER_EVENT_ID,
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_ENTRY_ADVOCATE_CODE,
+            journey.getEntryAdvocateCode());
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_LAST_ADVOCATE_CODE,
+            journey.getLastAdvocateCode());
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_ENTRY_PROMOTABLE_CODE,
+            journey.getEntryPromotableCode());
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_LAST_PROMOTABLE_CODE,
+            journey.getLastPromotableCode());
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_ENTRY_CONSUMER_EVENT_ID,
             journey.getEntryConsumerEventId().map(Id::getValue));
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_LAST_CONSUMER_EVENT_ID,
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_LAST_CONSUMER_EVENT_ID,
             journey.getLastConsumerEventId().map(Id::getValue));
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_ENTRY_PROFILE_ID,
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_ENTRY_PROFILE_ID,
             Optional.of(journey.getEntryProfileId().getValue()));
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_LAST_PROFILE_ID,
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_LAST_PROFILE_ID,
             Optional.of(journey.getLastProfileId().getValue()));
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_ENTRY_ADVOCATE_PARTNER_ID,
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_ENTRY_ADVOCATE_PARTNER_ID,
             journey.getEntryAdvocatePartnerId());
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_LAST_ADVOCATE_PARTNER_ID,
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_LAST_ADVOCATE_PARTNER_ID,
             journey.getLastAdvocatePartnerId());
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_ENTRY_COUPON_CODE, journey.getEntryCouponCode());
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_LAST_COUPON_CODE, journey.getLastCouponCode());
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_ENTRY_REFERRAL_REASON,
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_ENTRY_COUPON_CODE,
+            journey.getEntryCouponCode());
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_LAST_COUPON_CODE,
+            journey.getLastCouponCode());
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_ENTRY_REFERRAL_REASON,
             journey.getEntryReferralReason().map(Enum::name));
-        addDataIfNotNull(data, PersonJourneyResponse.DATA_NAME_LAST_REFERRAL_REASON,
+        addDataIfNotNull(data, profileId, PersonJourneyResponse.DATA_NAME_LAST_REFERRAL_REASON,
             journey.getLastReferralReason().map(Enum::name));
         return new PersonJourneyResponse(
             journey.getId().getValue(),
@@ -195,16 +207,22 @@ public class PersonJourneysEndpointsImpl implements PersonJourneysEndpoints {
             journey.getKey().map(value -> new JourneyKey(value.getName(), value.getValue())));
     }
 
-    private void addDataIfNotNull(Map<String, PersonJourneyDataResponse> data, String name, Optional<String> value) {
+    private void addDataIfNotNull(Map<String, PersonJourneyDataResponse> data, String profileId, String name,
+        Optional<String> value) {
         if (value.isEmpty()) {
             return;
         }
-        data.put(name, new PersonJourneyDataResponse(name, PersonDataScope.PRIVATE, value.get()));
+        String dataId = profileId + "-" + name + "-" + PersonDataScope.PRIVATE.name();
+        data.put(name, new PersonJourneyDataResponse(HASHING.hashString(dataId, StandardCharsets.UTF_8).toString(),
+            name, PersonDataScope.PRIVATE, value.get()));
     }
 
-    private void addData(Map<String, PersonJourneyDataResponse> data, Supplier<Map<String, Object>> dataSupplier,
+    private void addData(Map<String, PersonJourneyDataResponse> data,
+        Map<String, PersonJourneyData> allData,
+        Supplier<Map<String, Object>> dataSupplier,
         PersonDataScope scope) {
-        dataSupplier.get().forEach((name, value) -> data.put(name, new PersonJourneyDataResponse(name, scope, value)));
+        dataSupplier.get().forEach((name, value) -> data.put(name,
+            new PersonJourneyDataResponse(allData.get(name).getId().getValue(), name, scope, value)));
     }
 
     private Multimap<String, Object> parseKeyValuePairs(List<String> valuesToParse, String parameterName)

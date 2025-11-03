@@ -8,7 +8,8 @@ import com.extole.model.entity.subscription.ExtoleClientSlackUserSubscriptionCha
 
 @Component
 public class ExtoleClientSlackUserSubscriptionChannelResponseMapper
-    implements UserSubscriptionChannelResponseMapper<ExtoleClientSlackUserSubscriptionChannel,
+    implements
+    UserSubscriptionChannelResponseMapper<ExtoleClientSlackUserSubscriptionChannel,
         ExtoleClientSlackSubscriptionChannelResponse> {
 
     @Override

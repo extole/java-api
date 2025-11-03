@@ -68,11 +68,11 @@ public class CampaignControllerResponseMapper implements
                 .stream()
                 .map(trigger -> toTriggerResponse(trigger, timeZone))
                 .collect(Collectors.toUnmodifiableList()),
-            controller.getCampaignComponentReferences()
+            controller.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toUnmodifiableList()),
-            controller.getCampaignComponentReferences()
+            controller.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -104,7 +104,7 @@ public class CampaignControllerResponseMapper implements
                 .stream()
                 .map(trigger -> toTriggerConfiguration(trigger, timeZone, componentNames))
                 .collect(Collectors.toList()),
-            controller.getCampaignComponentReferences()
+            controller.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,
@@ -120,7 +120,8 @@ public class CampaignControllerResponseMapper implements
                 .collect(Collectors.toList()),
             controller.getAliases(),
             toStepDataConfiguration(controller.getData(), componentNames),
-            Evaluatables.remapClassToClass(controller.getJourneyNames(), new TypeReference<>() {}));
+            Evaluatables.remapClassToClass(controller.getJourneyNames(), new TypeReference<>() {}),
+            Evaluatables.remapEnum(controller.getSendPolicy(), new TypeReference<>() {}));
     }
 
     private CampaignControllerActionResponse toActionResponse(CampaignControllerAction action, ZoneId timeZone) {
@@ -170,11 +171,11 @@ public class CampaignControllerResponseMapper implements
             stepDataValue.getDefaultValue(),
             Evaluatables.remapEnum(stepDataValue.getKeyType(), new TypeReference<>() {}),
             stepDataValue.getEnabled(),
-            stepDataValue.getCampaignComponentReferences()
+            stepDataValue.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            stepDataValue.getCampaignComponentReferences()
+            stepDataValue.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -185,7 +186,7 @@ public class CampaignControllerResponseMapper implements
         Map<Id<CampaignComponent>, String> componentNames) {
 
         List<CampaignComponentReferenceConfiguration> campaignComponentReferences =
-            stepDataValue.getCampaignComponentReferences()
+            stepDataValue.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference, (reference) -> componentNames.get(reference.getComponentId())))

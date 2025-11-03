@@ -2,6 +2,7 @@ package com.extole.common.rest.support.filter;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -67,11 +68,13 @@ public class CorsHeaderInjector {
         responseHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "DNT,X-Mx-ReqToken,Keep-Alive,User-Agent," +
             "X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authentication,Authorization,X-CSRF-TOKEN," +
             "X-NONCE" + getXExtoleAppHeaders());
-        String headersToExpose = ExtoleHeaderType.TOKEN.getHeaderName();
+        StringJoiner headersToExpose = new StringJoiner(COMMA);
+        headersToExpose.add(ExtoleHeaderType.TOKEN.getHeaderName());
+        headersToExpose.add(ExtoleHeaderType.LOG.getHeaderName());
         if (responseHeaders.containsKey(ExtoleHeaderType.COOKIE_CONSENT.getHeaderName())) {
-            headersToExpose = headersToExpose + "," + ExtoleHeaderType.COOKIE_CONSENT.getHeaderName();
+            headersToExpose.add(ExtoleHeaderType.COOKIE_CONSENT.getHeaderName());
         }
-        responseHeaders.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, headersToExpose);
+        responseHeaders.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, headersToExpose.toString());
         if (varyOrigin) {
             responseHeaders.add(HttpHeaders.VARY, HttpHeaders.ORIGIN);
         }

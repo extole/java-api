@@ -15,6 +15,7 @@ import com.extole.authorization.service.AuthorizationException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.id.Id;
+import com.extole.model.entity.report.type.Format;
 import com.extole.reporting.entity.report.Report;
 import com.extole.reporting.rest.impl.report.ReportResponseMapper;
 import com.extole.reporting.rest.report.execution.PublicReportResponse;
@@ -52,7 +53,7 @@ public class ReportViewEndpointsImpl implements ReportViewEndpoints {
         try {
             report = reportService.getPublicReportById(authorization, Id.valueOf(reportId));
             List<ReportFormatInfo> formatInfo = Lists.newArrayList();
-            for (Report.Format format : report.getFormats()) {
+            for (Format format : report.getFormats()) {
                 try {
                     ReportFormatInfo reportFormatInfo = reportService.getReportInfo(authorization, Id.valueOf(reportId),
                         format);

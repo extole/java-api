@@ -41,8 +41,9 @@ import com.extole.model.service.reward.supplier.paypal.payouts.PayPalPayoutsRewa
 
 @Component
 public class PayPalPayoutsRewardSupplierUpdateRequestMapper
-    extends BaseRewardSupplierUpdateRequestMapper<PayPalPayoutsRewardSupplierUpdateRequest,
-        PayPalPayoutsRewardSupplier, PayPalPayoutsRewardSupplierBuilder> {
+    extends
+    BaseRewardSupplierUpdateRequestMapper<PayPalPayoutsRewardSupplierUpdateRequest, PayPalPayoutsRewardSupplier,
+        PayPalPayoutsRewardSupplierBuilder> {
 
     private final RewardSupplierService rewardSupplierService;
     private final RewardSupplierRestMapper rewardSupplierRestMapper;

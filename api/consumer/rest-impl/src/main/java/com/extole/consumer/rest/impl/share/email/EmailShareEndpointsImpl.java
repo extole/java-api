@@ -16,6 +16,8 @@ import javax.ws.rs.ext.Provider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.hash.Hashing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,9 @@ import com.extole.authorization.service.AuthorizationException;
 import com.extole.authorization.service.person.PersonAuthorization;
 import com.extole.common.lang.JsonMap;
 import com.extole.common.lang.ObjectMapperProvider;
+import com.extole.common.lock.LockClosureException;
+import com.extole.common.lock.LockDescription;
+import com.extole.common.rest.exception.FatalRestRuntimeException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.model.RestExceptionResponse;
 import com.extole.common.rest.model.RestExceptionResponseBuilder;
@@ -56,6 +61,7 @@ import com.extole.consumer.service.event.share.InvalidRecipientException;
 import com.extole.consumer.service.event.share.ShareInputConsumerEventSendBuilder;
 import com.extole.event.consumer.ConsumerEventName;
 import com.extole.id.Id;
+import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.profile.PersonService;
 import com.extole.person.service.shareable.Shareable;
 import com.extole.person.service.shareable.ShareableNotFoundException;
@@ -98,7 +104,9 @@ public class EmailShareEndpointsImpl implements EmailShareEndpoints {
                 .build();
         }
 
-        ShareProcessor shareRequestProcessor = newShareProcessor(accessToken, shareRequest.getData());
+        ConsumerRequestContext context = getContext(accessToken, shareRequest.getData());
+        ShareProcessor shareRequestProcessor = newShareProcessor(context);
+
         return shareRequestProcessor
             .withCampaignId(shareRequest.getCampaignId())
             .withSubject(shareRequest.getSubject())
@@ -111,7 +119,9 @@ public class EmailShareEndpointsImpl implements EmailShareEndpoints {
     @Override
     public EmailShareResponse emailShare(String accessToken, EmailShareRequest shareRequest)
         throws AuthorizationRestException, EmailShareRestException {
-        return newShareProcessor(accessToken, shareRequest.getData())
+        ConsumerRequestContext context = getContext(accessToken, shareRequest.getData());
+
+        return newShareProcessor(context)
             .withCampaignId(shareRequest.getCampaignId())
             .withSubject(shareRequest.getSubject())
             .withMessage(shareRequest.getMessage())
@@ -134,34 +144,71 @@ public class EmailShareEndpointsImpl implements EmailShareEndpoints {
                 .build();
         }
         List<String> sanitizedRecipients = sanitizeRecipients(shareRequest.getRecipientEmails());
+        Map<String, Object> clientParameters =
+            ImmutableMap.of(PARAMETER_BATCH_SHARE_EMAILS, getHashedEmails(sanitizedRecipients));
+        List<ShareProcessor> shareProcessors = new ArrayList<>();
+        PersonAuthorization authorization = null;
 
-        List<EmailShareResponse> responses = new ArrayList<>();
         for (String recipient : sanitizedRecipients) {
-            Map<String, Object> clientParameters = new HashMap<>();
-            clientParameters.put(PARAMETER_BATCH_SHARE_EMAILS, getHashedEmails(sanitizedRecipients));
-            responses.add(newShareProcessor(accessToken, shareRequest.getData())
+            ConsumerRequestContext context = getContext(accessToken, shareRequest.getData());
+            authorization = context.getAuthorization();
+
+            ShareProcessor shareProcessor = newShareProcessor(context)
                 .withCampaignId(shareRequest.getCampaignId())
                 .withSubject(shareRequest.getSubject())
                 .withMessage(shareRequest.getMessage())
                 .withRecipientEmail(recipient)
                 .addData(clientParameters)
-                .withAdvocateCode(shareRequest.getAdvocateCode())
-                .process());
+                .withAdvocateCode(shareRequest.getAdvocateCode());
+
+            shareProcessors.add(shareProcessor);
         }
-        return responses;
+
+        try {
+            return personService.execute(authorization,
+                new LockDescription("consumer-api-v6-email-share-advocate-code-batch"),
+                (person) -> {
+                    ImmutableList.Builder<EmailShareResponse> responseListBuilder = ImmutableList.builder();
+
+                    for (ShareProcessor shareProcessor : shareProcessors) {
+                        try {
+                            responseListBuilder.add(shareProcessor.process());
+                        } catch (AuthorizationRestException | EmailShareRestException e) {
+                            throw new LockClosureException(e);
+                        }
+                    }
+
+                    return responseListBuilder.build();
+                });
+        } catch (LockClosureException e) {
+            if (e.getCause() instanceof AuthorizationRestException authorizationRestException) {
+                throw authorizationRestException;
+            }
+            if (e.getCause() instanceof EmailShareRestException emailShareRestException) {
+                throw emailShareRestException;
+            }
+
+            throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
+                .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
+                .withCause(e)
+                .build();
+        }
     }
 
     @Override
     public List<EmailShareResponse> batchEmailShare(String accessToken, BatchEmailShareRequest shareRequest)
         throws AuthorizationRestException, EmailShareRestException, BatchEmailRecipientRestException {
-
         List<String> sanitizedRecipients = sanitizeRecipients(shareRequest.getRecipientEmails());
+        Map<String, Object> clientParameters =
+            ImmutableMap.of(PARAMETER_BATCH_SHARE_EMAILS, getHashedEmails(sanitizedRecipients));
+        List<ShareProcessor> shareProcessors = new ArrayList<>();
+        PersonAuthorization authorization = null;
 
-        List<EmailShareResponse> responses = new ArrayList<>();
         for (String recipient : sanitizedRecipients) {
-            Map<String, Object> clientParameters = new HashMap<>();
-            clientParameters.put(PARAMETER_BATCH_SHARE_EMAILS, getHashedEmails(sanitizedRecipients));
-            responses.add(newShareProcessor(accessToken, shareRequest.getData())
+            ConsumerRequestContext context = getContext(accessToken, shareRequest.getData());
+            authorization = context.getAuthorization();
+
+            ShareProcessor shareProcessor = newShareProcessor(context)
                 .withCampaignId(shareRequest.getCampaignId())
                 .withSubject(shareRequest.getSubject())
                 .withMessage(shareRequest.getMessage())
@@ -169,10 +216,39 @@ public class EmailShareEndpointsImpl implements EmailShareEndpoints {
                 .addData(clientParameters)
                 .withKey(shareRequest.getKey())
                 .withLabels(shareRequest.getLabels())
-                .withPreferredCodePrefixes(shareRequest.getPreferredCodePrefixes())
-                .process());
+                .withPreferredCodePrefixes(shareRequest.getPreferredCodePrefixes());
+
+            shareProcessors.add(shareProcessor);
         }
-        return responses;
+
+        try {
+            return personService.execute(authorization, new LockDescription("consumer-api-v6-email-share-batch"),
+                (person) -> {
+                    ImmutableList.Builder<EmailShareResponse> responseListBuilder = ImmutableList.builder();
+
+                    for (ShareProcessor shareProcessor : shareProcessors) {
+                        try {
+                            responseListBuilder.add(shareProcessor.process());
+                        } catch (AuthorizationRestException | EmailShareRestException e) {
+                            throw new LockClosureException(e);
+                        }
+                    }
+
+                    return responseListBuilder.build();
+                });
+        } catch (LockClosureException e) {
+            if (e.getCause() instanceof AuthorizationRestException authorizationRestException) {
+                throw authorizationRestException;
+            }
+            if (e.getCause() instanceof EmailShareRestException emailShareRestException) {
+                throw emailShareRestException;
+            }
+
+            throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
+                .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
+                .withCause(e)
+                .build();
+        }
     }
 
     @Override
@@ -214,9 +290,8 @@ public class EmailShareEndpointsImpl implements EmailShareEndpoints {
         }
     }
 
-    private ShareProcessor newShareProcessor(String accessToken, Map<String, String> data)
-        throws AuthorizationRestException {
-        return new ShareProcessor(accessToken, data, servletRequest);
+    private ShareProcessor newShareProcessor(ConsumerRequestContext context) {
+        return new ShareProcessor(shareService, personService, shareableService, context);
     }
 
     private List<String> sanitizeRecipients(List<String> recipientEmails)
@@ -235,8 +310,13 @@ public class EmailShareEndpointsImpl implements EmailShareEndpoints {
             .map(email -> CharMatcher.whitespace().trimFrom(email)).collect(Collectors.toList());
     }
 
-    private final class ShareProcessor {
+    private static final class ShareProcessor {
+
+        private final EmailShareService shareService;
+        private final PersonService personService;
+        private final ShareableService shareableService;
         private final ConsumerRequestContext context;
+
         private String message;
         private String subject;
         private String recipientEmail;
@@ -247,57 +327,55 @@ public class EmailShareEndpointsImpl implements EmailShareEndpoints {
         private String campaignId;
         private Shareable shareable;
 
-        private ShareProcessor(String accessToken, Map<String, String> data, HttpServletRequest servletRequest)
-            throws AuthorizationRestException {
-            this.context = consumerRequestContextService.createBuilder(servletRequest)
-                .withAccessToken(accessToken)
-                .withEventName(ConsumerEventName.SHARE.getEventName())
-                .withEventProcessing(configurator -> {
-                    data.forEach((key, value) -> {
-                        configurator.addData(new EventData(key, value, EventData.Source.REQUEST_BODY, false, true));
-                    });
-                })
-                .build();
+        private ShareProcessor(
+            EmailShareService shareService,
+            PersonService personService,
+            ShareableService shareableService,
+            ConsumerRequestContext context) {
+            this.shareService = shareService;
+            this.personService = personService;
+            this.shareableService = shareableService;
+            this.context = context;
         }
 
-        public ShareProcessor withMessage(String message) {
+        private ShareProcessor withMessage(String message) {
             this.message = message;
             return this;
         }
 
-        ShareProcessor withSubject(String subject) {
+        private ShareProcessor withSubject(String subject) {
             this.subject = subject;
             return this;
         }
 
-        ShareProcessor withRecipientEmail(String recipientEmail) {
+        private ShareProcessor withRecipientEmail(String recipientEmail) {
             if (recipientEmail != null) {
                 this.recipientEmail = CharMatcher.whitespace().trimFrom(recipientEmail);
             }
             return this;
         }
 
-        ShareProcessor withPreferredCodePrefixes(List<String> preferredCodePrefixes) {
+        private ShareProcessor withPreferredCodePrefixes(List<String> preferredCodePrefixes) {
             this.preferredCodePrefixes = preferredCodePrefixes;
             return this;
         }
 
-        ShareProcessor withKey(String key) {
+        private ShareProcessor withKey(String key) {
             this.key = key;
             return this;
         }
 
-        ShareProcessor withLabels(String labels) {
+        private ShareProcessor withLabels(String labels) {
             this.labels = labels;
             return this;
         }
 
-        ShareProcessor withCampaignId(String campaignId) {
+        private ShareProcessor withCampaignId(String campaignId) {
             this.campaignId = campaignId;
             return this;
         }
 
-        ShareProcessor addData(Map<String, Object> data) {
+        private ShareProcessor addData(Map<String, Object> data) {
             if (data == null) {
                 return this;
             }
@@ -308,7 +386,7 @@ public class EmailShareEndpointsImpl implements EmailShareEndpoints {
             return this;
         }
 
-        ShareProcessor withAdvocateCode(String advocateCode) throws AdvocateCodeRestException {
+        private ShareProcessor withAdvocateCode(String advocateCode) throws AdvocateCodeRestException {
             PersonAuthorization authorization = context.getAuthorization();
             try {
                 shareable = shareableService.getByCode(authorization.getClientId(), advocateCode);
@@ -330,7 +408,7 @@ public class EmailShareEndpointsImpl implements EmailShareEndpoints {
             return this;
         }
 
-        EmailShareResponse process() throws AuthorizationRestException, EmailShareRestException {
+        private EmailShareResponse process() throws AuthorizationRestException, EmailShareRestException {
             PersonAuthorization authorization = context.getAuthorization();
             try {
                 String sourceData = null;
@@ -442,7 +520,26 @@ public class EmailShareEndpointsImpl implements EmailShareEndpoints {
                     .addParameter("forbidden_characters_as_unicode", e.getForbiddenCharactersInUnicodeFormat())
                     .addParameter("subject", e.getSubject())
                     .build();
+            } catch (PersonNotFoundException e) {
+                throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
+                    .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
+                    .withCause(e.getCause())
+                    .build();
             }
         }
     }
+
+    private ConsumerRequestContext getContext(String accessToken, Map<String, String> data)
+        throws AuthorizationRestException {
+        return consumerRequestContextService.createBuilder(servletRequest)
+            .withAccessToken(accessToken)
+            .withEventName(ConsumerEventName.SHARE.getEventName())
+            .withEventProcessing(configurator -> {
+                data.forEach((key, value) -> {
+                    configurator.addData(new EventData(key, value, EventData.Source.REQUEST_BODY, false, true));
+                });
+            })
+            .build();
+    }
+
 }

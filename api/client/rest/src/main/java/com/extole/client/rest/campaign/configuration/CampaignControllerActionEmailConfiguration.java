@@ -27,8 +27,9 @@ public class CampaignControllerActionEmailConfiguration extends CampaignControll
         @JsonProperty(JSON_ACTION_ID) Omissible<Id<CampaignControllerActionConfiguration>> actionId,
         @JsonProperty(JSON_QUALITY) CampaignControllerActionQuality quality,
         @JsonProperty(JSON_ZONE_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> zoneName,
-        @JsonProperty(JSON_DATA) Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<EmailActionContext, Optional<Object>>>> data,
+        @JsonProperty(JSON_DATA) Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<EmailActionContext, Optional<Object>>>> data,
         @JsonProperty(JSON_ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<CampaignComponentReferenceConfiguration> componentReferences) {
         super(actionId, CampaignControllerActionType.EMAIL, quality, enabled, componentReferences);
@@ -42,8 +43,10 @@ public class CampaignControllerActionEmailConfiguration extends CampaignControll
     }
 
     @JsonProperty(JSON_DATA)
-    public Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<EmailActionContext, Optional<Object>>>> getData() {
+    public
+        Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<EmailActionContext, Optional<Object>>>>
+        getData() {
         return data;
     }
 

@@ -104,7 +104,8 @@ public class PersonBlockEndpointsImpl implements PersonBlockEndpoints {
                 consumerEventSenderService.createConsumerEventSender()
                     .log("Person block updated via client /v5/persons endpoints. Person id: " + personId);
             Person updatedPerson = personService.updatePerson(authorization, Id.valueOf(personId),
-                new LockDescription("person-block-v5-endpoints-update"), (personBuilder, originalPersonProfile) -> {
+                new LockDescription("person-block-v5-endpoints-update"),
+                (personBuilder, initialPerson) -> {
                     try {
                         if (personBlockRequest.getType() == PersonBlockType.NONE) {
                             personBuilder.removeBlock(authorization.getIdentityId(), personBlockRequest.getReason());
@@ -172,7 +173,7 @@ public class PersonBlockEndpointsImpl implements PersonBlockEndpoints {
     }
 
     private void sendEvents(ClientAuthorization authorization, PersonBlockRequest request, Person person)
-        throws EventProcessorException, AuthorizationException {
+        throws EventProcessorException, AuthorizationException, PersonNotFoundException {
         boolean sendBlockEvent = false;
         if (request.getType() != PersonBlockType.NONE) {
             sendBlockEvent = true;
@@ -187,12 +188,12 @@ public class PersonBlockEndpointsImpl implements PersonBlockEndpoints {
     }
 
     private void sendInputEvent(ClientAuthorization authorization, Person person, String eventName)
-        throws EventProcessorException, AuthorizationException {
+        throws EventProcessorException, AuthorizationException, PersonNotFoundException {
         ProcessedRawEvent processedRawEvent = clientRequestContextService.createBuilder(authorization, servletRequest)
             .withEventName(eventName)
             .withHttpRequestBodyCapturing(ClientRequestContextService.HttpRequestBodyCapturingType.LIMITED)
             .build().getProcessedRawEvent();
-        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person).send();
+        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person.getId()).send();
     }
 
     private void sentProfileBlockClientEvent(Authorization authorization, String eventName, String message,

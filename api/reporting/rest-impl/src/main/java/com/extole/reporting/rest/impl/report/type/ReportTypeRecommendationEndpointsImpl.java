@@ -17,11 +17,11 @@ import com.extole.common.rest.exception.QueryLimitsRestException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
-import com.extole.reporting.entity.report.ReportType;
+import com.extole.model.entity.report.type.ReportType;
+import com.extole.model.service.report.type.ReportTypeRecommendationService;
 import com.extole.reporting.rest.impl.report.type.mappers.ReportTypeResponseMapper;
 import com.extole.reporting.rest.report.type.ReportTypeRecommendationEndpoints;
 import com.extole.reporting.rest.report.type.ReportTypeResponse;
-import com.extole.reporting.service.report.type.ReportTypeRecommendationService;
 
 @Provider
 public class ReportTypeRecommendationEndpointsImpl implements ReportTypeRecommendationEndpoints {

@@ -1216,7 +1216,6 @@ public class CreativeVariableEndpointsImpl
         AuthorizationException, ComponentTypeNotFoundException {
 
         Campaign campaign = campaignProvider.getLatestCampaign(authorization, Id.valueOf(campaignId));
-        CreativeArchiveBuilder archiveBuilder = null;
         ByteSource byteSource = getByteSourceFromInputStream(inputStream);
         Path filePath = cleanImagePath(Paths.get(contentDisposition.getFileName()));
 
@@ -1227,13 +1226,15 @@ public class CreativeVariableEndpointsImpl
             .map(value -> (CampaignControllerActionCreative) value)
             .filter(value -> value.getCreativeArchiveId().isPresent())
             .toArray(CampaignControllerActionCreative[]::new);
+        CampaignBuilder campaignBuilder = getCampaignBuilder(campaign, authorization, expectedCurrentVersion);
 
+        CreativeArchiveBuilder archiveBuilder = null;
         for (CampaignControllerActionCreative actionCreative : creativeActions) {
             if (!archiveHasCampaignVariable(campaign, actionCreative.getCreativeArchiveId().get(), variableName)) {
                 continue;
             }
-            archiveBuilder = getArchiveBuilder(campaign, actionCreative
-                .getCreativeArchiveId().get().getId(), authorization, expectedCurrentVersion);
+            archiveBuilder = getArchiveBuilder(campaign, campaignBuilder,
+                actionCreative.getCreativeArchiveId().get().getId());
             if (locale != null) {
                 archiveBuilder.getCreativeVariable(campaign, variableName)
                     .replaceLocaleImage(locale, filePath, byteSource);

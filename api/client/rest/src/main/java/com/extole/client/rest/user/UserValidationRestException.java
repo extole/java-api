@@ -39,8 +39,11 @@ public class UserValidationRestException extends ExtoleRestException {
     public static final ErrorCode<UserValidationRestException> UNAUTHORIZED_SCOPE =
         new ErrorCode<>("unauthorized_scope", 400, "User is not authorized to have the specified role", "role");
 
-    public static final ErrorCode<UserValidationRestException> USER_SCOPE_SELF_REMOVAL =
-        new ErrorCode<>("suer_scope_self_removal", 400, "User cannot remove role from itself", "role");
+    public static final ErrorCode<UserValidationRestException> USER_SELF_SCOPES_UPDATE =
+        new ErrorCode<>("user_self_scopes_update", 400, "User cannot update its own scopes");
+
+    public static final ErrorCode<UserValidationRestException> USER_SCOPES_MISSING =
+        new ErrorCode<>("user_scopes_missing", 400, "User must have at least one scope");
 
     public UserValidationRestException(
         String uniqueId, ErrorCode<?> errorCode,

@@ -10,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.extole.client.rest.campaign.BuildCampaignControllerRestException;
 import com.extole.client.rest.campaign.BuildCampaignRestException;
 import com.extole.client.rest.campaign.CampaignRestException;
 import com.extole.client.rest.campaign.CampaignUpdateRestException;
@@ -34,7 +35,8 @@ public interface CampaignControllerTriggerEventEndpoints {
         CampaignControllerTriggerEventCreateRequest request)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
         CampaignControllerTriggerEventValidationRestException, CampaignControllerTriggerValidationRestException,
-        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException;
+        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException,
+        BuildCampaignControllerRestException;
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
@@ -48,7 +50,8 @@ public interface CampaignControllerTriggerEventEndpoints {
         CampaignControllerTriggerEventUpdateRequest request)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
         CampaignControllerTriggerEventValidationRestException, CampaignControllerTriggerValidationRestException,
-        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException;
+        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException,
+        BuildCampaignControllerRestException;
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
@@ -60,7 +63,7 @@ public interface CampaignControllerTriggerEventEndpoints {
         @PathParam("controllerId") String controllerId,
         @PathParam("triggerId") String triggerId)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
-        BuildCampaignRestException, CampaignUpdateRestException;
+        BuildCampaignRestException, CampaignUpdateRestException, BuildCampaignControllerRestException;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

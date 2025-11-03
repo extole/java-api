@@ -4,6 +4,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -124,7 +125,7 @@ public class PersonDataEndpointsImpl implements PersonDataEndpoints {
                     .orElse(Integer.valueOf(PersonDataEndpoints.DEFAULT_LIMIT)).intValue());
             return builder.list().stream()
                 .map(data -> mapToResponse(timeZone, data))
-                .collect(Collectors.toMap(PersonDataResponse::getName, data -> data));
+                .collect(Collectors.toMap(PersonDataResponse::getName, Function.identity()));
         } catch (PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(PersonRestException.class)
                 .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
@@ -145,9 +146,9 @@ public class PersonDataEndpointsImpl implements PersonDataEndpoints {
         try {
             Person person = personService.updatePerson(authorization, Id.valueOf(personId),
                 new LockDescription("person-v5-data-endpoints-add-person-data"),
-                (personBuilder, originalPersonProfile) -> {
+                (personBuilder, initialPerson) -> {
                     try {
-                        if (originalPersonProfile.getData().containsKey(createRequest.getName())) {
+                        if (initialPerson.getData().containsKey(createRequest.getName())) {
                             throw new LockClosureException(new PersonDataAlreadyExistsException("Person data already " +
                                 "exists"));
                         }
@@ -228,9 +229,9 @@ public class PersonDataEndpointsImpl implements PersonDataEndpoints {
         try {
             Person person = personService.updatePerson(authorization, Id.valueOf(personId),
                 new LockDescription("person-v5-data-endpoints-edit-person-data"),
-                (personBuilder, originalPersonProfile) -> {
+                (personBuilder, initialPerson) -> {
                     try {
-                        if (!originalPersonProfile.getData().containsKey(name)) {
+                        if (!initialPerson.getData().containsKey(name)) {
                             throw new LockClosureException(new PersonDataNotFoundException("Person data not found"));
                         }
                         PersonDataBuilder builder = personBuilder.addOrReplaceData(name);
@@ -303,17 +304,74 @@ public class PersonDataEndpointsImpl implements PersonDataEndpoints {
         }
     }
 
+    @Override
+    public PersonDataResponse delete(String accessToken, String personId, String name, ZoneId timeZone)
+        throws UserAuthorizationRestException, PersonRestException, PersonDataRestException {
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+
+        try {
+            PersonData deletedPersonDataResult = personService.updatePerson(authorization, Id.valueOf(personId),
+                new LockDescription("person-v5-data-endpoints-delete-person-data"),
+                (personBuilder, initialPerson) -> {
+                    try {
+                        PersonData deletedPersonData = personBuilder.removeData(name);
+                        Person person = personBuilder.save();
+                        sendInputEvent(authorization, person, ConsumerEventName.EXTOLE_PROFILE.getEventName());
+                        return deletedPersonData;
+                    } catch (ReadOnlyPersonDataException | PersonDataNotFoundException | EventProcessorException
+                        | AuthorizationException | PersonNotFoundException e) {
+                        LockClosureException exception = new LockClosureException(e);
+                        exception.addParameter("name", name);
+                        throw exception;
+                    }
+                }, consumerEventSenderService.createConsumerEventSender());
+
+            return mapToResponse(timeZone, deletedPersonDataResult);
+
+        } catch (LockClosureException e) {
+            Throwable cause = e.getCause();
+            if (cause.getClass().isAssignableFrom(PersonDataNotFoundException.class)) {
+                throw RestExceptionBuilder.newBuilder(PersonDataRestException.class)
+                    .withErrorCode(PersonDataRestException.PERSON_DATA_NOT_FOUND)
+                    .addParameter("name", name).withCause(cause).build();
+            } else if (cause.getClass().isAssignableFrom(ReadOnlyPersonDataException.class)) {
+                throw RestExceptionBuilder.newBuilder(PersonDataRestException.class)
+                    .withErrorCode(PersonDataRestException.DATA_NAME_READONLY)
+                    .addParameter("name", e.getParameter("name")).withCause(cause).build();
+            } else if (cause.getClass().isAssignableFrom(EventProcessorException.class)) {
+                throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
+                    .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
+                    .withCause(cause).build();
+            } else if (cause.getClass().isAssignableFrom(AuthorizationException.class)) {
+                throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
+                    .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED).withCause(cause).build();
+            } else {
+                throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
+                    .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR).withCause(cause).build();
+            }
+        } catch (AuthorizationException e) {
+            throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
+                .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED).withCause(e).build();
+        } catch (PersonNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(PersonRestException.class)
+                .withErrorCode(PersonRestException.PERSON_NOT_FOUND).addParameter("person_id", personId).withCause(e)
+                .build();
+        }
+
+    }
+
     private void sendInputEvent(ClientAuthorization authorization, Person person, String eventName)
-        throws EventProcessorException, AuthorizationException {
+        throws EventProcessorException, AuthorizationException, PersonNotFoundException {
         ProcessedRawEvent processedRawEvent = clientRequestContextService.createBuilder(authorization, servletRequest)
             .withEventName(eventName)
             .withHttpRequestBodyCapturing(ClientRequestContextService.HttpRequestBodyCapturingType.LIMITED)
             .build().getProcessedRawEvent();
-        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person).send();
+        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person.getId()).send();
     }
 
     private PersonDataResponse mapToResponse(ZoneId timeZone, PersonData data) {
         return new PersonDataResponse(
+            data.getId().getValue(),
             data.getName(),
             PersonDataScope.valueOf(data.getScope().name()),
             data.getValue(),

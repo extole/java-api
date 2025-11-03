@@ -60,6 +60,7 @@ public class TangoRewardSupplierResponseMapper
             rewardSupplier.getLimitPerHour(),
             rewardSupplierRestMapper.toFaceValueTypeResponse(rewardSupplier.getFaceValueType()),
             rewardSupplier.getName(),
+            rewardSupplier.getDisplayName(),
             metaData.getBrandName(),
             metaData.getBrandDescription(),
             metaData.getBrandDisclaimer(),

@@ -30,7 +30,7 @@ public class ClientAbortExceptionWriterInterceptor implements WriterInterceptor 
         } catch (Throwable t) {
             for (Throwable cause = t; cause != null; cause = cause.getCause()) {
                 if (cause instanceof ClientAbortException) {
-                    LOG.warn("Client cancelled download/read of response to {}", uriInfo.getRequestUri());
+                    LOG.warn("Client cancelled download/read of response to {}", uriInfo.getRequestUri(), cause);
                     return;
                 }
             }

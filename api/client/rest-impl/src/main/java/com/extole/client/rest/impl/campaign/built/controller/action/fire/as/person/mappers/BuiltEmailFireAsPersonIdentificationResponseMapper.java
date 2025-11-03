@@ -8,7 +8,8 @@ import com.extole.model.entity.campaign.built.BuiltEmailFireAsPersonIdentificati
 
 @Component
 public class BuiltEmailFireAsPersonIdentificationResponseMapper
-    implements BuiltFireAsPersonIdentificationResponseMapper<BuiltEmailFireAsPersonIdentification,
+    implements
+    BuiltFireAsPersonIdentificationResponseMapper<BuiltEmailFireAsPersonIdentification,
         EmailFireAsPersonIdentification> {
 
     @Override

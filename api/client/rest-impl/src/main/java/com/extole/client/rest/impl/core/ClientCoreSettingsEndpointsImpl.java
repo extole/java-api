@@ -20,6 +20,7 @@ import com.extole.common.rest.support.authorization.client.ClientAuthorizationPr
 import com.extole.model.entity.client.Client;
 import com.extole.model.entity.client.core.ClientCoreSettings;
 import com.extole.model.entity.client.core.CookieConsentPolicy;
+import com.extole.model.entity.client.core.CookieDomainPolicy;
 import com.extole.model.entity.client.core.CookiePolicy;
 import com.extole.model.service.authorization.ExtoleAuthProviderTypeCredentialsException;
 import com.extole.model.service.client.ClientBuilder;
@@ -122,6 +123,10 @@ public class ClientCoreSettingsEndpointsImpl implements ClientCoreSettingsEndpoi
             if (request.getCookieConsentPolicy() != null) {
                 builder.withCookieConsentPolicy(CookieConsentPolicy.valueOf(request.getCookieConsentPolicy().name()));
             }
+            if (request.getCookieDomainPolicy() != null) {
+                builder
+                    .withCookieDomainPolicy(CookieDomainPolicy.valueOf(request.getCookieDomainPolicy().name()));
+            }
             Client client = clientBuilder.save();
             return toClientCoreSettingsResponse(client.getCoreSettings());
         } catch (AuthorizationException e) {
@@ -159,6 +164,7 @@ public class ClientCoreSettingsEndpointsImpl implements ClientCoreSettingsEndpoi
             coreSettings.isDeprecatedAccessTokenCookieAllowed(),
             coreSettings.getPublicOriginHostOverride().map(HostAndPort::toString).orElse(null),
             ClientCoreSettingsRequest.CookiePolicy.valueOf(coreSettings.getCookiePolicy().name()),
-            ClientCoreSettingsRequest.CookieConsentPolicy.valueOf(coreSettings.getCookieConsentPolicy().name()));
+            ClientCoreSettingsRequest.CookieConsentPolicy.valueOf(coreSettings.getCookieConsentPolicy().name()),
+            ClientCoreSettingsRequest.CookieDomainPolicy.valueOf(coreSettings.getCookieDomainPolicy().name()));
     }
 }

@@ -38,8 +38,8 @@ public class CampaignControllerActionWebhookCreateRequest extends ComponentEleme
         @JsonProperty(JSON_ENABLED) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled,
         @JsonProperty(JSON_COMPONENT_IDS) Omissible<List<Id<ComponentResponse>>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) Omissible<List<ComponentReferenceRequest>> componentReferences,
-        @JsonProperty(JSON_WEBHOOK_ID) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            Optional<Id<?>>>> webhookId,
+        @JsonProperty(JSON_WEBHOOK_ID) Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<Id<?>>>> webhookId,
         @JsonProperty(JSON_DATA) Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
             RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>>> data) {
         super(componentReferences, componentIds);
@@ -66,8 +66,9 @@ public class CampaignControllerActionWebhookCreateRequest extends ComponentEleme
 
     @JsonProperty(JSON_DATA)
     public
-        Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>>>
+        Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>>>
         getData() {
         return data;
     }
@@ -82,8 +83,10 @@ public class CampaignControllerActionWebhookCreateRequest extends ComponentEleme
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<Id<?>>>> webhookId =
             Omissible.omitted();
-        private Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>>> data = Omissible.omitted();
+        private Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>>> data =
+                    Omissible.omitted();
 
         private Builder() {
         }
@@ -103,8 +106,9 @@ public class CampaignControllerActionWebhookCreateRequest extends ComponentEleme
             return this;
         }
 
-        public Builder withData(Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>> data) {
+        public Builder withData(
+            Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>> data) {
             this.data = Omissible.of(data);
             return this;
         }

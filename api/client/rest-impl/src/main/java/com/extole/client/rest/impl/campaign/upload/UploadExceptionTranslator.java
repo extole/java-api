@@ -20,6 +20,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import com.extole.authorization.service.ClientHandle;
 import com.extole.client.rest.campaign.BuildCampaignRestException;
+import com.extole.client.rest.campaign.CampaignUpdateRestException;
 import com.extole.client.rest.campaign.CampaignValidationRestException;
 import com.extole.client.rest.campaign.GlobalCampaignRestException;
 import com.extole.client.rest.campaign.component.CampaignComponentValidationRestException;
@@ -28,6 +29,7 @@ import com.extole.client.rest.campaign.component.setting.SettingValidationRestEx
 import com.extole.client.rest.campaign.controller.CampaignControllerValidationRestException;
 import com.extole.client.rest.campaign.controller.CampaignFrontendControllerValidationRestException;
 import com.extole.client.rest.campaign.controller.action.CampaignControllerActionRestException;
+import com.extole.client.rest.campaign.controller.action.earn.reward.CampaignControllerActionEarnRewardValidationRestException;
 import com.extole.client.rest.campaign.controller.action.email.CampaignControllerActionEmailValidationRestException;
 import com.extole.client.rest.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonValidationRestException;
 import com.extole.client.rest.campaign.controller.action.schedule.CampaignControllerActionScheduleValidationRestException;
@@ -50,6 +52,7 @@ import com.extole.id.Id;
 import com.extole.model.entity.campaign.Campaign;
 import com.extole.model.entity.campaign.InvalidComponentReferenceException;
 import com.extole.model.entity.campaign.InvalidExternalComponentReferenceException;
+import com.extole.model.service.ReferencedExternalElementException;
 import com.extole.model.service.campaign.BuildCampaignEvaluatableException;
 import com.extole.model.service.campaign.BuildCampaignException;
 import com.extole.model.service.campaign.CampaignGlobalArchiveException;
@@ -69,10 +72,14 @@ import com.extole.model.service.campaign.component.CampaignComponentTypeValidati
 import com.extole.model.service.campaign.component.CircularComponentReferenceException;
 import com.extole.model.service.campaign.component.ComponentSocketMissingRequiredParameterException;
 import com.extole.model.service.campaign.component.ExcessiveExternalComponentReferenceException;
+import com.extole.model.service.campaign.component.MultipleComponentsInstalledIntoSingleSocketException;
 import com.extole.model.service.campaign.component.RedundantComponentReferenceException;
 import com.extole.model.service.campaign.component.SelfComponentReferenceException;
 import com.extole.model.service.campaign.component.asset.CampaignComponentAssetContentMissingException;
 import com.extole.model.service.campaign.component.asset.CampaignComponentAssetFilenameMissingException;
+import com.extole.model.service.campaign.component.facet.CampaignComponentFacetsNotFoundException;
+import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardInvalidDataAttributeNameException;
+import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardMissingDataAttributeNameException;
 import com.extole.model.service.campaign.controller.action.email.CampaignControllerActionEmailIllegalCharacterInZoneNameException;
 import com.extole.model.service.campaign.controller.action.email.CampaignControllerActionEmailZoneNameLengthException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonEventNameInvalidException;
@@ -152,6 +159,11 @@ import com.extole.model.service.campaign.label.CampaignLabelMissingNameException
 import com.extole.model.service.campaign.setting.InvalidVariableTranslatableValueException;
 import com.extole.model.service.campaign.setting.SettingNameDuplicateException;
 import com.extole.model.service.campaign.setting.SettingNameMissingException;
+import com.extole.model.service.campaign.setting.SettingValidationException;
+import com.extole.model.service.campaign.setting.SocketFilterInvalidComponentFacetException;
+import com.extole.model.service.campaign.setting.SocketFilterInvalidComponentTypeException;
+import com.extole.model.service.campaign.setting.SocketFilterMissingComponentFacetNameException;
+import com.extole.model.service.campaign.setting.SocketFilterMissingComponentFacetValueException;
 import com.extole.model.service.campaign.step.data.StepDataBuildException;
 import com.extole.model.service.campaign.step.data.StepDataDefaultValueExpressionLengthException;
 import com.extole.model.service.campaign.step.data.StepDataDuplicateNameException;
@@ -165,7 +177,7 @@ import com.extole.model.service.creative.exception.CreativeVariableUnsupportedEx
 
 class UploadExceptionTranslator {
 
-    private void rethrowBuildCampaignRestException(BuildCampaignEvaluatableException e)
+    private void rethrowBuildCampaignRestException(Id<Campaign> campaignId, BuildCampaignEvaluatableException e)
         throws BuildCampaignRestException, CampaignValidationRestException,
         CampaignControllerActionFireAsPersonValidationRestException, CampaignFlowStepValidationRestException,
         CampaignControllerValidationRestException,
@@ -173,7 +185,8 @@ class UploadExceptionTranslator {
         CampaignControllerTriggerValidationRestException, CampaignControllerTriggerHasPriorStepValidationRestException,
         CampaignControllerTriggerSendRewardEventValidationRestException, CampaignFlowStepMetricValidationRestException,
         CampaignFlowStepAppValidationRestException, CampaignControllerTriggerRewardEventValidationRestException,
-        CampaignControllerActionScheduleValidationRestException, CampaignFrontendControllerValidationRestException {
+        CampaignControllerActionScheduleValidationRestException, CampaignFrontendControllerValidationRestException,
+        CampaignControllerActionEarnRewardValidationRestException {
 
         if (e instanceof CampaignControllerAliasLengthException) {
             throw RestExceptionBuilder.newBuilder(CampaignControllerValidationRestException.class)
@@ -211,8 +224,9 @@ class UploadExceptionTranslator {
         throwHasPriorStepTriggerRelatedBuildCampaignRestExceptionIfPossible(e);
         throwHasPriorRewardTriggerRelatedBuildCampaignRestExceptionIfPossible(e);
         throwSendRewardEventTriggerRelatedBuildCampaignRestExceptionIfPossible(e);
-        throwTriggerRewardEventRelatedBuildCampaignRestExceptionIfPossible(e);
+        throwTriggerRewardEventRelatedBuildCampaignRestExceptionIfPossible(campaignId, e);
         throwActionScheduleRelatedBuildCampaignRestExceptionIfPossible(e);
+        throwEarnRewardActionRelatedBuildCampaignRestExceptionIfPossible(e);
 
         if (e instanceof StepDataDuplicateNameException) {
             StepDataDuplicateNameException stepDataDuplicateNameException = (StepDataDuplicateNameException) e;
@@ -402,7 +416,7 @@ class UploadExceptionTranslator {
     }
 
     private void throwTriggerRewardEventRelatedBuildCampaignRestExceptionIfPossible(
-        BuildCampaignEvaluatableException exception)
+        Id<Campaign> campaignId, BuildCampaignEvaluatableException exception)
         throws CampaignControllerTriggerRewardEventValidationRestException {
         Throwable cause = exception.getCause();
         if (cause instanceof CampaignControllerTriggerRewardEventEventNameLengthException) {
@@ -436,6 +450,7 @@ class UploadExceptionTranslator {
             throw RestExceptionBuilder.newBuilder(CampaignControllerTriggerRewardEventValidationRestException.class)
                 .withErrorCode(CampaignControllerTriggerRewardEventValidationRestException.INVALID_TAG)
                 .addParameter("tag", e.getTag())
+                .addParameter("campaign_id", campaignId)
                 .withCause(e)
                 .build();
         }
@@ -945,6 +960,7 @@ class UploadExceptionTranslator {
             .build();
     }
 
+    @SuppressWarnings("MethodLength")
     public void translateAndRethrow(Id<ClientHandle> clientId, Id<Campaign> campaignId, String campaignName,
         FormDataContentDisposition contentDispositionHeader, Exception original)
         throws CampaignValidationRestException, CampaignControllerValidationRestException,
@@ -953,16 +969,31 @@ class UploadExceptionTranslator {
         SettingValidationRestException, BuildCampaignRestException, CampaignComponentValidationRestException,
         CampaignComponentAssetValidationRestException, CampaignFlowStepMetricValidationRestException,
         CampaignFlowStepAppValidationRestException, GlobalCampaignRestException,
-        CampaignFrontendControllerValidationRestException {
+        CampaignFrontendControllerValidationRestException, CampaignUpdateRestException {
         try {
             throw original;
         } catch (BuildCampaignEvaluatableException e) {
-            rethrowBuildCampaignRestException(e);
+            rethrowBuildCampaignRestException(campaignId, e);
+        } catch (StaleCampaignVersionException e) {
+            throw RestExceptionBuilder.newBuilder(CampaignUpdateRestException.class)
+                .withErrorCode(CampaignUpdateRestException.STALE_VERSION)
+                .addParameter("actual_version", e.getActualCampaignVersion())
+                .addParameter("expected_version", e.getExpectedCampaignVersion())
+                .addParameter("campaign_id", e.getCampaignId())
+                .withCause(e).build();
+        } catch (ConcurrentCampaignUpdateException e) {
+            throw RestExceptionBuilder.newBuilder(CampaignUpdateRestException.class)
+                .withErrorCode(CampaignUpdateRestException.CONCURRENT_UPDATE)
+                .addParameter("campaign_id", e.getCampaignId())
+                .addParameter("version", e.getVersion())
+                .withCause(e).build();
         } catch (CampaignComponentTypeValidationException e) {
             throw RestExceptionBuilder.newBuilder(CampaignComponentValidationRestException.class)
                 .withErrorCode(CampaignComponentValidationRestException.TYPE_VALIDATION_FAILED)
                 .addParameter("validation_result", e.getValidationResult())
                 .addParameter("name", e.getName())
+                .addParameter("component_name", e.getComponentName())
+                .addParameter("component_id", e.getComponentId().toString())
                 .withCause(e)
                 .build();
         } catch (CampaignServiceIllegalCharacterInNameException e) {
@@ -1017,6 +1048,14 @@ class UploadExceptionTranslator {
                 .addParameter("socket_parameter_name", e.getSocketParameterName())
                 .addParameter("socket_parameter_type", e.getSocketParameterType())
                 .addParameter("socket_name", e.getSocketName())
+                .withCause(e)
+                .build();
+        } catch (MultipleComponentsInstalledIntoSingleSocketException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.MULTIPLE_COMPONENTS_INSTALLED_INTO_SINGLE_SOCKET)
+                .addParameter("socket_name", e.getSocketName())
+                .addParameter("target_component_id", e.getTargetComponentId())
+                .addParameter("installed_component_ids", e.getInstalledComponentIds())
                 .withCause(e)
                 .build();
         } catch (CampaignComponentAssetNameDuplicateException e) {
@@ -1087,12 +1126,55 @@ class UploadExceptionTranslator {
         } catch (StepDataMissingNameException | StepDataMissingValueException | StepDataValueExpressionLengthException
             | StepDataDefaultValueExpressionLengthException e) {
             throw handleStepDataExceptions(e);
+        } catch (SocketFilterInvalidComponentTypeException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_INVALID_COMPONENT_TYPE)
+                .addParameter("component_type", e.getComponentType())
+                .withCause(e)
+                .build();
+        } catch (SocketFilterInvalidComponentFacetException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_INVALID_COMPONENT_FACET)
+                .addParameter("facet_name", e.getComponentFacetName())
+                .addParameter("facet_value", e.getComponentFacetValue())
+                .withCause(e)
+                .build();
+        } catch (SocketFilterMissingComponentFacetNameException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_COMPONENT_FACET_NAME_MISSING)
+                .withCause(e)
+                .build();
+        } catch (SocketFilterMissingComponentFacetValueException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_COMPONENT_FACET_VALUE_MISSING)
+                .withCause(e)
+                .build();
         } catch (CreativeVariableUnsupportedException | CampaignControllerTriggerBuildException
-            | StaleCampaignVersionException
-            | TransitionRuleAlreadyExistsForActionType | StepDataBuildException | ConcurrentCampaignUpdateException
+            | TransitionRuleAlreadyExistsForActionType | StepDataBuildException
             | CampaignScheduleException | CampaignGlobalDeleteException | CampaignGlobalArchiveException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
+                .withCause(e)
+                .build();
+        } catch (CampaignComponentFacetsNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(CampaignComponentValidationRestException.class)
+                .withErrorCode(CampaignComponentValidationRestException.COMPONENT_FACETS_NOT_FOUND)
+                .addParameter("facets", e.getFacets())
+                .withCause(e)
+                .build();
+        } catch (SettingValidationException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SETTING_VALIDATION)
+                .addParameter("name", e.getPropertyName())
+                .addParameter("details", e.getDetails())
+                .withCause(e)
+                .build();
+        } catch (ReferencedExternalElementException e) {
+            throw RestExceptionBuilder.newBuilder(CampaignComponentValidationRestException.class)
+                .withErrorCode(CampaignComponentValidationRestException.EXTERNAL_ELEMENT_IS_REFERENCED)
+                .addParameter("references", e.getReferences())
+                .addParameter("element_type", e.getElementType().name())
+                .addParameter("element_id", e.getElementId())
                 .withCause(e)
                 .build();
         } catch (Exception e) {
@@ -1102,4 +1184,30 @@ class UploadExceptionTranslator {
                 .build();
         }
     }
+
+    private void throwEarnRewardActionRelatedBuildCampaignRestExceptionIfPossible(
+        BuildCampaignEvaluatableException exception)
+        throws CampaignControllerActionEarnRewardValidationRestException {
+        Throwable cause = exception.getCause();
+
+        if (cause instanceof CampaignControllerActionEarnRewardMissingDataAttributeNameException) {
+            CampaignControllerActionEarnRewardMissingDataAttributeNameException e =
+                (CampaignControllerActionEarnRewardMissingDataAttributeNameException) cause;
+            throw RestExceptionBuilder.newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
+                .withErrorCode(CampaignControllerActionEarnRewardValidationRestException.DATA_ATTRIBUTE_NAME_INVALID)
+                .addParameter("name", e.getAttributeName())
+                .withCause(e)
+                .build();
+        } else if (cause instanceof CampaignControllerActionEarnRewardInvalidDataAttributeNameException) {
+            CampaignControllerActionEarnRewardInvalidDataAttributeNameException e =
+                (CampaignControllerActionEarnRewardInvalidDataAttributeNameException) cause;
+            throw RestExceptionBuilder.newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
+                .withErrorCode(
+                    CampaignControllerActionEarnRewardValidationRestException.DATA_ATTRIBUTE_NAME_LENGTH_OUT_OF_RANGE)
+                .addParameter("name", e.getAttributeName())
+                .withCause(e)
+                .build();
+        }
+    }
+
 }

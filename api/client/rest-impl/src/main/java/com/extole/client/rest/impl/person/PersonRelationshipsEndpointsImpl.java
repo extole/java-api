@@ -30,8 +30,8 @@ import com.extole.person.service.CampaignHandle;
 import com.extole.person.service.profile.FullPersonService;
 import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.profile.PersonRelationshipQueryBuilder;
-import com.extole.person.service.profile.journey.Container;
 import com.extole.person.service.profile.referral.PersonReferral;
+import com.extole.sandbox.Container;
 
 @Provider
 public class PersonRelationshipsEndpointsImpl implements PersonRelationshipsEndpoints {
@@ -99,6 +99,7 @@ public class PersonRelationshipsEndpointsImpl implements PersonRelationshipsEndp
             new PersonRelationshipDataResponse(PersonRelationshipResponse.DATA_NAME_REASON,
                 personReferral.getReason()));
         return PersonRelationshipResponse.builder()
+            .withId(personReferral.getId().getValue())
             .withMyRole(PersonReferralRole.valueOf(personReferral.getMySide().name()))
             .withOtherPersonId(personReferral.getOtherPersonId().getValue())
             .withContainer(personReferral.getContainer().getName())

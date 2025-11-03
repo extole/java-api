@@ -1,6 +1,7 @@
 package com.extole.client.rest.event.stream;
 
 public enum ConsumerEventType {
+
     IDENTIFIED,
     FORWARDED,
     REDEEMED,
@@ -25,6 +26,6 @@ public enum ConsumerEventType {
     ADD_SHAREABLE,
     INCENTIVIZED,
     @Deprecated // TODO remove consumer event v2 ENG-7272
-    LEGACY_CONSUMER_EVENT,
-    ACTION,
+    LEGACY_CONSUMER_EVENT
+
 }

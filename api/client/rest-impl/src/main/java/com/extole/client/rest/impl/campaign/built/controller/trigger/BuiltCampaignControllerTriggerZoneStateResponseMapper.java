@@ -22,16 +22,20 @@ public class BuiltCampaignControllerTriggerZoneStateResponseMapper implements
     public BuiltCampaignControllerTriggerZoneStateResponse toResponse(BuiltCampaignControllerTriggerZoneState trigger,
         ZoneId timeZone) {
         return new BuiltCampaignControllerTriggerZoneStateResponse(trigger.getId().getValue(),
-            CampaignControllerTriggerPhase.valueOf(trigger.getPhase().name()), trigger.getName(),
+            CampaignControllerTriggerPhase.valueOf(trigger.getPhase().name()),
+            trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
-            trigger.getZoneName().orElse(null), trigger.getStepName().orElse(null), trigger.isInvertMappingState(),
-            trigger.getCampaignComponentReferences()
+            trigger.getZoneName().orElse(null),
+            trigger.getStepName().orElse(null),
+            trigger.isInvertMappingState(),
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

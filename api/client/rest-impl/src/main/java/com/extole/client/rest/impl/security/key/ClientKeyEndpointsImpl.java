@@ -223,21 +223,22 @@ public class ClientKeyEndpointsImpl implements ClientKeyEndpoints {
     }
 
     private ClientKeyResponse mapToClientKeyResponse(DecryptedClientKey decryptedClientKey, ZoneId zone) {
-        return new ClientKeyResponse(decryptedClientKey.getId().getValue(),
-            decryptedClientKey.getName(),
-            ClientKeyAlgorithm.valueOf(decryptedClientKey.getAlgorithm().name()),
+        ClientKey clientKey = decryptedClientKey.getClientKey();
+        return new ClientKeyResponse(clientKey.getId().getValue(),
+            clientKey.getName(),
+            ClientKeyAlgorithm.valueOf(clientKey.getAlgorithm().name()),
             new String(decryptedClientKey.getDecryptedKey(), StandardCharsets.ISO_8859_1),
-            ClientKeyType.valueOf(decryptedClientKey.getType().name()),
-            decryptedClientKey.getDescription(),
-            decryptedClientKey.getPartnerKeyId(),
-            decryptedClientKey.getTags(),
-            ZonedDateTime.ofInstant(decryptedClientKey.getCreatedAt(), zone),
-            ZonedDateTime.ofInstant(decryptedClientKey.getUpdatedAt(), zone),
-            decryptedClientKey.getComponentReferences()
+            ClientKeyType.valueOf(clientKey.getType().name()),
+            clientKey.getDescription(),
+            clientKey.getPartnerKeyId(),
+            clientKey.getTags(),
+            ZonedDateTime.ofInstant(clientKey.getCreatedAt(), zone),
+            ZonedDateTime.ofInstant(clientKey.getUpdatedAt(), zone),
+            clientKey.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            decryptedClientKey.getComponentReferences()
+            clientKey.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

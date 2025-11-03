@@ -21,8 +21,8 @@ public class ComponentTypeQueryParams {
 
     public ComponentTypeQueryParams(
         @Parameter(description = "Optional parent filter") @QueryParam(PARENT) String parent,
-        @Parameter(description = "Optional includeArchived filter")
-        @QueryParam(INCLUDE_ARCHIVED) @DefaultValue("false") boolean includeArchived,
+        @Parameter(
+            description = "Optional includeArchived filter") @QueryParam(INCLUDE_ARCHIVED) @DefaultValue("false") boolean includeArchived,
         @Parameter(description = "Optional limit filter") @QueryParam(LIMIT) @DefaultValue("1000") Integer limit,
         @Parameter(description = "Optional offset filter") @QueryParam(OFFSET) @DefaultValue("0") Integer offset) {
         this.parent = Optional.ofNullable(parent);

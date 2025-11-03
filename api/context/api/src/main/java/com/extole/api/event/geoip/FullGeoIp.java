@@ -24,7 +24,7 @@ public interface FullGeoIp {
     Integer getAccuracyRadiusKm();
 
     @Nullable
-    Integer getAutonomousSystemNumber();
+    Long getAutonomousSystemNumber();
 
     @Nullable
     String getAutonomousSystemOrganization();

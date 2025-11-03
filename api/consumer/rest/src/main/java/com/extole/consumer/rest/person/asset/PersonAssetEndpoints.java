@@ -1,5 +1,7 @@
 package com.extole.consumer.rest.person.asset;
 
+import java.util.Optional;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,10 +27,10 @@ public interface PersonAssetEndpoints {
     @Path("/{assetId}/download")
     @Operation(summary = "Download asset by personId and assetId")
     Response downloadAssetById(@AccessTokenParam String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.", required = true)
-        @PathParam("personId") String personId,
-        @Parameter(description = "The Extole unique profile identifier of this asset at Extole.", required = true)
-        @PathParam("assetId") String assetId,
+        @Parameter(description = "The Extole unique profile identifier of this user at Extole.",
+            required = true) @PathParam("personId") String personId,
+        @Parameter(description = "The Extole unique profile identifier of this asset at Extole.",
+            required = true) @PathParam("assetId") String assetId,
         @QueryParam("default_url") String defaultUrl)
         throws AuthorizationRestException, PersonRestException, PersonAssetRestException;
 
@@ -36,9 +38,9 @@ public interface PersonAssetEndpoints {
     @Path("/download")
     @Operation(summary = "Download asset by personId and name")
     Response downloadAssetByName(@AccessTokenParam String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.", required = true)
-        @PathParam("personId") String personId,
-        @QueryParam("name") String name,
-        @QueryParam("default_url") String defaultUrl)
+        @Parameter(description = "The Extole unique profile identifier of this user at Extole.",
+            required = true) @PathParam("personId") String personId,
+        @QueryParam("name") Optional<String> name,
+        @QueryParam("default_url") Optional<String> defaultUrl)
         throws AuthorizationRestException, PersonRestException, PersonAssetRestException;
 }

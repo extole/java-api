@@ -40,6 +40,7 @@ public class PayPalPayoutsRewardSupplierResponseMapper
             PartnerRewardKeyType.valueOf(rewardSupplier.getPartnerRewardKeyType().name()),
             rewardSupplier.getDisplayType(),
             rewardSupplier.getName(),
+            rewardSupplier.getDisplayName(),
             rewardSupplierRestMapper.toFaceValueAlgorithmTypeResponse(rewardSupplier.getFaceValueAlgorithmType()),
             rewardSupplier.getFaceValue(),
             rewardSupplier.getCashBackPercentage(),

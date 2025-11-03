@@ -17,7 +17,7 @@ public class RewardSupplierRestException extends ExtoleRestException {
 
     public static final ErrorCode<RewardSupplierRestException> INVALID_EXPIRATION_DATE =
         new ErrorCode<>("invalid_expiration_date", 400, "Expiration date is invalid or not ISO-8601 compliant",
-            "line_number");
+            "line_number", "reward_supplier_id");
 
     public RewardSupplierRestException(String uniqueId, ErrorCode<RewardSupplierRestException> code,
         Map<String, Object> attributes, Throwable cause) {

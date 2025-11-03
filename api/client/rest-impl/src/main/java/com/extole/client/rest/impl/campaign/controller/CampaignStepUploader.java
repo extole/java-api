@@ -190,6 +190,10 @@ public class CampaignStepUploader {
         controller.getJourneyNames()
             .ifDefined((value) -> controllerBuilder
                 .withJourneyNames(Evaluatables.remapCollection(value, new TypeReference<>() {})));
+
+        controller.getSendPolicy()
+            .ifDefined(value -> controllerBuilder
+                .withSendPolicy(Evaluatables.remapEnum(value, new TypeReference<>() {})));
     }
 
     private void uploadJourneyEntry(CampaignUploadContext context, CampaignJourneyEntryConfiguration journeyEntry,

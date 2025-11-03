@@ -22,16 +22,20 @@ import com.extole.dewey.decimal.DeweyDecimal;
         name = CampaignComponentClientKeyFlowVariableRequest.SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentPartnerEnumListVariableRequest.class,
         name = CampaignComponentPartnerEnumListVariableRequest.SETTING_TYPE),
+    @JsonSubTypes.Type(value = CampaignComponentPartnerEnumVariableRequest.class,
+        name = CampaignComponentPartnerEnumVariableRequest.SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentEnumVariableRequest.class,
         name = CampaignComponentEnumVariableRequest.SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentEnumListVariableRequest.class,
         name = CampaignComponentEnumListVariableRequest.SETTING_TYPE),
-    @JsonSubTypes.Type(value = CampaignComponentDelayListVariableRequest.class,
-        name = CampaignComponentDelayListVariableRequest.SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentSocketRequest.class,
-        name = CampaignComponentSocketRequest.SETTING_TYPE),
+        name = CampaignComponentSocketRequest.MULTI_SOCKET_SETTING_TYPE),
+    @JsonSubTypes.Type(value = CampaignComponentSocketRequest.class,
+        name = CampaignComponentSocketRequest.SOCKET_SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentRewardSupplierIdListVariableRequest.class,
         name = CampaignComponentRewardSupplierIdListVariableRequest.SETTING_TYPE),
+    @JsonSubTypes.Type(value = CampaignComponentComponentIdVariableRequest.class,
+        name = CampaignComponentComponentIdVariableRequest.SETTING_TYPE),
 })
 public class CampaignComponentSettingRequest {
 
@@ -98,8 +102,8 @@ public class CampaignComponentSettingRequest {
         return new Builder<>(caller);
     }
 
-    public static class Builder<CALLER, RESULT extends CampaignComponentSettingRequest,
-        BUILDER_TYPE extends Builder<CALLER, RESULT, BUILDER_TYPE>> {
+    public static class Builder<CALLER, RESULT extends CampaignComponentSettingRequest, BUILDER_TYPE extends Builder<
+        CALLER, RESULT, BUILDER_TYPE>> {
 
         protected final CALLER caller;
         protected String name;

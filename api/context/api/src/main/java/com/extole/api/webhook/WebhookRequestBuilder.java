@@ -14,6 +14,8 @@ public interface WebhookRequestBuilder {
 
     WebhookRequestBuilder addUrlTemplateParameter(String name, String value);
 
+    WebhookRequestBuilder withUserAgent(String userAgent);
+
     WebhookRequest build();
 
 }

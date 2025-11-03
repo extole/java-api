@@ -1,5 +1,8 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.extole.client.rest.campaign.component.setting.SettingType;
@@ -20,7 +23,8 @@ import com.extole.model.service.campaign.setting.VariableValueKeyLengthException
 public class DefaultSettingUploader implements SettingUploader<CampaignComponentVariableConfiguration> {
 
     @Override
-    public void upload(CampaignUploadContext context, CampaignComponentConfiguration component,
+    public void upload(SettingUploaderRegistry uploaderRegistry,
+        CampaignUploadContext context, CampaignComponentConfiguration component,
         CampaignComponentVariableConfiguration variable)
         throws SettingNameLengthException, SettingInvalidNameException, SettingDisplayNameLengthException,
         SettingIllegalCharacterInDisplayNameException, VariableValueKeyLengthException, SettingTagLengthException {
@@ -47,11 +51,12 @@ public class DefaultSettingUploader implements SettingUploader<CampaignComponent
     }
 
     @Override
-    public void upload(CampaignUploadContext context, CampaignComponentSocketConfiguration socket,
+    public void upload(SettingUploaderRegistry uploaderRegistry,
+        CampaignUploadContext context, CampaignComponentSocketConfiguration socket,
         CampaignComponentConfiguration component, CampaignComponentVariableConfiguration variable)
         throws SettingNameLengthException, SettingInvalidNameException, SettingDisplayNameLengthException,
         SettingIllegalCharacterInDisplayNameException, VariableValueKeyLengthException, SettingTagLengthException {
-        VariableBuilder variableBuilder = (VariableBuilder) context.get(component, socket, variable);
+        VariableBuilder variableBuilder = context.get(component, socket, variable);
         if (variable.getName() != null) {
             variableBuilder.withName(variable.getName());
         }
@@ -74,7 +79,7 @@ public class DefaultSettingUploader implements SettingUploader<CampaignComponent
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.STRING;
+    public List<SettingType> getSettingTypes() {
+        return Collections.singletonList(SettingType.STRING);
     }
 }

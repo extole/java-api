@@ -31,7 +31,11 @@ public class ReportValidationRestException extends ExtoleRestException {
         "report_invalid_operation", 400, "Current report state doesn't allow the specified operation", "report_id");
 
     public static final ErrorCode<ReportValidationRestException> REPORT_INVALID_PARAMETER = new ErrorCode<>(
-        "report_invalid_parameter", 400, "Report parameter(s) of invalid format", "parameters");
+        "report_invalid_parameter", 400, "Report parameter(s) of invalid format", "parameters", "details");
+
+    public static final ErrorCode<ReportValidationRestException> REPORT_MISSING_AGGREGATION_PARAMETER = new ErrorCode<>(
+        "report_missing_aggregation_parameter", 400, "Report must have at least one aggregating function",
+        "parameters", "function_names");
 
     public static final ErrorCode<ReportValidationRestException> REPORT_INVALID_FORMATS = new ErrorCode<>(
         "report_invalid_formats", 400, "Report formats not supported", "formats");

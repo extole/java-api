@@ -10,20 +10,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
 
 import com.extole.api.campaign.SocketDescriptionBuildtimeContext;
-import com.extole.common.lang.ToString;
 import com.extole.common.rest.omissible.Omissible;
 import com.extole.dewey.decimal.DeweyDecimal;
 import com.extole.evaluateable.BuildtimeEvaluatable;
 
 public class CampaignComponentSocketUpdateRequest extends CampaignComponentSettingUpdateRequest {
 
-    static final String SETTING_TYPE = "MULTI_SOCKET";
+    static final String MULTI_SOCKET_SETTING_TYPE = "MULTI_SOCKET";
+    static final String SOCKET_SETTING_TYPE = "SOCKET";
 
-    private static final String JSON_COMPONENT_SOCKET_FILTER = "filter";
+    private static final String JSON_COMPONENT_SOCKET_FILTERS = "filters";
     private static final String JSON_COMPONENT_SOCKET_DESCRIPTION = "description";
     private static final String JSON_COMPONENT_SOCKET_PARAMETERS = "parameters";
 
-    private final Omissible<SocketFilterUpdateRequest> filter;
+    private final Omissible<List<SocketFilterUpdateRequest>> filters;
     private final Omissible<BuildtimeEvaluatable<SocketDescriptionBuildtimeContext, Optional<String>>> description;
     private final Omissible<List<CampaignComponentVariableRequest>> parameters;
 
@@ -31,22 +31,21 @@ public class CampaignComponentSocketUpdateRequest extends CampaignComponentSetti
     public CampaignComponentSocketUpdateRequest(@JsonProperty(JSON_COMPONENT_SETTING_NAME) Omissible<String> name,
         @JsonProperty(JSON_COMPONENT_SETTING_DISPLAY_NAME) Omissible<Optional<String>> displayName,
         @JsonProperty(JSON_COMPONENT_SETTING_TYPE) SettingType type,
-        @JsonProperty(JSON_COMPONENT_SOCKET_FILTER) Omissible<SocketFilterUpdateRequest> filter,
+        @JsonProperty(JSON_COMPONENT_SOCKET_FILTERS) Omissible<List<SocketFilterUpdateRequest>> filters,
         @JsonProperty(JSON_COMPONENT_SOCKET_DESCRIPTION) Omissible<
             BuildtimeEvaluatable<SocketDescriptionBuildtimeContext, Optional<String>>> description,
         @JsonProperty(JSON_COMPONENT_SETTING_TAGS) Omissible<Set<String>> tags,
         @JsonProperty(JSON_COMPONENT_SETTING_PRIORITY) Omissible<DeweyDecimal> priority,
-        @JsonProperty(JSON_COMPONENT_SOCKET_PARAMETERS) Omissible<
-            List<CampaignComponentVariableRequest>> parameters) {
+        @JsonProperty(JSON_COMPONENT_SOCKET_PARAMETERS) Omissible<List<CampaignComponentVariableRequest>> parameters) {
         super(name, displayName, type, tags, priority);
-        this.filter = filter;
+        this.filters = filters;
         this.description = description;
         this.parameters = parameters;
     }
 
-    @JsonProperty(JSON_COMPONENT_SOCKET_FILTER)
-    public Omissible<SocketFilterUpdateRequest> getFilter() {
-        return filter;
+    @JsonProperty(JSON_COMPONENT_SOCKET_FILTERS)
+    public Omissible<List<SocketFilterUpdateRequest>> getFilters() {
+        return filters;
     }
 
     @JsonProperty(JSON_COMPONENT_SOCKET_DESCRIPTION)
@@ -59,11 +58,6 @@ public class CampaignComponentSocketUpdateRequest extends CampaignComponentSetti
         return parameters;
     }
 
-    @Override
-    public String toString() {
-        return ToString.create(this);
-    }
-
     public static Builder<?, ?, ?> builder() {
         return new Builder<>();
     }
@@ -72,11 +66,11 @@ public class CampaignComponentSocketUpdateRequest extends CampaignComponentSetti
         return new Builder<>(caller);
     }
 
-    public static final class Builder<CALLER, RESULT extends CampaignComponentSocketUpdateRequest,
-        BUILDER_TYPE extends Builder<CALLER, RESULT, BUILDER_TYPE>>
+    public static final class Builder<CALLER, RESULT extends CampaignComponentSocketUpdateRequest, BUILDER_TYPE extends Builder<
+        CALLER, RESULT, BUILDER_TYPE>>
         extends CampaignComponentSettingUpdateRequest.Builder<CALLER, RESULT, BUILDER_TYPE> {
 
-        private Omissible<SocketFilterUpdateRequest> filter = Omissible.omitted();
+        private Omissible<List<SocketFilterUpdateRequest>> filters = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<SocketDescriptionBuildtimeContext, Optional<String>>> description =
             Omissible.omitted();
         private List<CampaignComponentVariableRequest.Builder> parameterBuilders = Lists.newArrayList();
@@ -89,8 +83,8 @@ public class CampaignComponentSocketUpdateRequest extends CampaignComponentSetti
             super(caller);
         }
 
-        public BUILDER_TYPE withFilter(SocketFilterUpdateRequest filter) {
-            this.filter = Omissible.of(filter);
+        public BUILDER_TYPE withFilters(List<SocketFilterUpdateRequest> filters) {
+            this.filters = Omissible.of(filters);
             return (BUILDER_TYPE) this;
         }
 
@@ -126,7 +120,7 @@ public class CampaignComponentSocketUpdateRequest extends CampaignComponentSetti
                 name,
                 displayName,
                 type,
-                filter,
+                filters,
                 description,
                 tags,
                 priority,

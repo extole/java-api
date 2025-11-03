@@ -1,7 +1,7 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -9,13 +9,20 @@ import org.springframework.stereotype.Component;
 
 import com.extole.client.rest.campaign.component.setting.CampaignComponentSocketRequest;
 import com.extole.client.rest.campaign.component.setting.CampaignComponentVariableRequest;
+import com.extole.client.rest.campaign.component.setting.ComponentFacetSocketFilterCreateRequest;
+import com.extole.client.rest.campaign.component.setting.ComponentTypeSocketFilterCreateRequest;
 import com.extole.client.rest.campaign.component.setting.SettingType;
+import com.extole.client.rest.campaign.component.setting.SocketFilterCreateRequest;
+import com.extole.model.entity.campaign.SocketFilterType;
+import com.extole.model.service.campaign.setting.ComponentFacetSocketFilterBuilder;
+import com.extole.model.service.campaign.setting.ComponentTypeSocketFilterBuilder;
 import com.extole.model.service.campaign.setting.SettingDisplayNameLengthException;
 import com.extole.model.service.campaign.setting.SettingIllegalCharacterInDisplayNameException;
 import com.extole.model.service.campaign.setting.SettingInvalidNameException;
 import com.extole.model.service.campaign.setting.SettingNameLengthException;
 import com.extole.model.service.campaign.setting.SettingTagLengthException;
 import com.extole.model.service.campaign.setting.SocketBuilder;
+import com.extole.model.service.campaign.setting.SocketFilterBuilder;
 import com.extole.model.service.campaign.setting.VariableBuilder;
 import com.extole.model.service.campaign.setting.VariableValueKeyLengthException;
 
@@ -35,8 +42,13 @@ public class SocketCreateRequestMapper
         throws SettingIllegalCharacterInDisplayNameException, SettingTagLengthException,
         SettingDisplayNameLengthException, VariableValueKeyLengthException, SettingNameLengthException,
         SettingInvalidNameException {
-        if (createRequest.getFilter().isPresent() && createRequest.getFilter().getValue().getComponentType() != null) {
-            builder.withFilter().withComponentType(createRequest.getFilter().getValue().getComponentType());
+
+        if (createRequest.getFilters().isPresent()) {
+            for (SocketFilterCreateRequest filterCreateRequest : createRequest.getFilters().getValue()
+                .stream()
+                .filter(value -> Objects.nonNull(value)).toList()) {
+                populateSocketFilterBuilder(builder, filterCreateRequest);
+            }
         }
 
         createRequest.getDescription().ifPresent(builder::withDescription);
@@ -44,15 +56,15 @@ public class SocketCreateRequestMapper
             for (CampaignComponentVariableRequest parameter : createRequest.getParameters()
                 .getValue()
                 .stream()
-                .filter(variableRequest -> Objects.nonNull(variableRequest)).collect(Collectors.toList())) {
+                .filter(variableRequest -> Objects.nonNull(variableRequest)).toList()) {
                 populateVariableBuilder(builder, parameter);
             }
         }
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.MULTI_SOCKET;
+    public List<SettingType> getSettingTypes() {
+        return List.of(SettingType.MULTI_SOCKET, SettingType.SOCKET);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -79,6 +91,28 @@ public class SocketCreateRequestMapper
             variableBuilder.withTags(tags);
         });
         parameter.getPriority().ifPresent(value -> variableBuilder.withPriority(value));
+    }
+
+    private void populateSocketFilterBuilder(SocketBuilder builder, SocketFilterCreateRequest filterCreateRequest) {
+        SocketFilterBuilder filterBuilder =
+            builder.withFilter(SocketFilterType.valueOf(filterCreateRequest.getType().name()));
+
+        if (SocketFilterType.COMPONENT_TYPE == filterBuilder.getType()) {
+            ComponentTypeSocketFilterBuilder exactBuilder = (ComponentTypeSocketFilterBuilder) filterBuilder;
+            ComponentTypeSocketFilterCreateRequest exactRequest =
+                (ComponentTypeSocketFilterCreateRequest) filterCreateRequest;
+            exactBuilder.withComponentType(exactRequest.getComponentType());
+            return;
+        }
+        if (SocketFilterType.FACET == filterBuilder.getType()) {
+            ComponentFacetSocketFilterBuilder exactBuilder = (ComponentFacetSocketFilterBuilder) filterBuilder;
+            ComponentFacetSocketFilterCreateRequest exactRequest =
+                (ComponentFacetSocketFilterCreateRequest) filterCreateRequest;
+            exactBuilder.withName(exactRequest.getName());
+            exactBuilder.withValue(exactRequest.getValue());
+            return;
+        }
+        throw new IllegalArgumentException("Can't map filter type: " + filterBuilder.getType());
     }
 
 }

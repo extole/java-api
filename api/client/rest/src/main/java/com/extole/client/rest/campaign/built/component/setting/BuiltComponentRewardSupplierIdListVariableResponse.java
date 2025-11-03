@@ -31,9 +31,10 @@ public class BuiltComponentRewardSupplierIdListVariableResponse
         @JsonProperty(JSON_COMPONENT_VARIABLE_DESCRIPTION) Optional<String> description,
         @JsonProperty(JSON_COMPONENT_SETTING_TAGS) Set<String> tags,
         @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE_COMPONENT_ID) Id<ComponentResponse> sourceComponentId,
+        @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE_VERSION) Optional<Integer> sourceVersion,
         @JsonProperty(JSON_COMPONENT_SETTING_PRIORITY) DeweyDecimal priority,
         @JsonProperty(ALLOWED_REWARD_SUPPLIER_IDS) List<Id<?>> allowedRewardSupplierIds) {
-        super(name, displayName, type, values, source, description, tags, sourceComponentId, priority);
+        super(name, displayName, type, values, source, description, tags, sourceComponentId, sourceVersion, priority);
         this.allowedRewardSupplierIds = allowedRewardSupplierIds;
     }
 

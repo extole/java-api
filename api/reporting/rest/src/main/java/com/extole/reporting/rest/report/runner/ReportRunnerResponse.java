@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -69,7 +68,6 @@ public abstract class ReportRunnerResponse {
     private final RuntimeEvaluatable<ReportRunnerExecutionContext, String> reportNamePattern;
     private final RuntimeEvaluatable<ReportRunnerExecutionContext, String> sftpReportNamePattern;
 
-    @JsonCreator
     public ReportRunnerResponse(
         @JsonProperty(JSON_TYPE) String type,
         @JsonProperty(JSON_ID) String id,

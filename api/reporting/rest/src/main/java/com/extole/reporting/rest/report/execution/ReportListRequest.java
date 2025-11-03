@@ -53,47 +53,39 @@ public class ReportListRequest {
     private final Optional<ZoneId> timezone;
 
     public ReportListRequest(
-        @Parameter(description = "Optional filter for report type name.")
-        @Nullable @QueryParam(PARAMETER_REPORT_TYPE_NAME) String reportTypeName,
+        @Parameter(
+            description = "Optional filter for report type name.") @Nullable @QueryParam(PARAMETER_REPORT_TYPE_NAME) String reportTypeName,
         @Nullable @QueryParam(PARAMETER_DISPLAY_NAME) String displayName,
         @Nullable @QueryParam(PARAMETER_STATUS) Set<ReportStatus> statuses,
         @Deprecated // TBD - OPEN TICKET
         @Nullable @QueryParam(PARAMETER_USER_ID) String userId,
         @Nullable @QueryParam(PARAMETER_USER_IDS) Set<String> userIds,
         @Parameter(description = "Optional filter for report tags, " +
-            "asks for reports that contain at least one of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_HAVING_ANY_TAGS) String havingAnyTags,
+            "asks for reports that contain at least one of the specified tags.") @Nullable @QueryParam(PARAMETER_HAVING_ANY_TAGS) String havingAnyTags,
         @Parameter(description = "Optional filter for required report tags, " +
-            "asks for reports that contain all of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_HAVING_ALL_TAGS) String havingAllTags,
+            "asks for reports that contain all of the specified tags.") @Nullable @QueryParam(PARAMETER_HAVING_ALL_TAGS) String havingAllTags,
         @Parameter(description = "Optional filter for report exclude tags, " +
-            "asks for reports that do not contain any of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ANY_TAGS) String excludeHavingAnyTags,
+            "asks for reports that do not contain any of the specified tags.") @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ANY_TAGS) String excludeHavingAnyTags,
         @Parameter(description = "Optional filter for report exclude tags, " +
-            "asks for reports that do not contain all of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ALL_TAGS) String excludeHavingAllTags,
+            "asks for reports that do not contain all of the specified tags.") @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ALL_TAGS) String excludeHavingAllTags,
         @Parameter(deprecated = true, description = "Optional filter for report tags, " +
             "asks for reports that contain at least one of the specified tags. Deprecated, " + PARAMETER_HAVING_ANY_TAGS
-            + " should be used instead.")
-        @Nullable @QueryParam(PARAMETER_TAGS) String tags,
+            + " should be used instead.") @Nullable @QueryParam(PARAMETER_TAGS) String tags,
         @Parameter(deprecated = true, description = "Optional filter for required report tags, " +
             "asks for reports that contain all of the specified tags. Deprecated, " + PARAMETER_HAVING_ALL_TAGS
-            + " should be used instead.")
-        @Nullable @QueryParam(PARAMETER_REQUIRED_TAGS) String requiredTags,
+            + " should be used instead.") @Nullable @QueryParam(PARAMETER_REQUIRED_TAGS) String requiredTags,
         @Parameter(deprecated = true, description = "Optional filter for report exclude tags, " +
             "asks for reports that do not contain any of the specified tags. Deprecated, " + PARAMETER_HAVING_ANY_TAGS
-            + " should be used instead.")
-        @Nullable @QueryParam(PARAMETER_EXCLUDE_TAGS) String excludeTags,
+            + " should be used instead.") @Nullable @QueryParam(PARAMETER_EXCLUDE_TAGS) String excludeTags,
         @Nullable @QueryParam(PARAMETER_SEARCH_QUERY) String searchQuery,
         @Parameter(description = "Optional filter for report creation date, " +
             "asks for reports that were created during the specified interval (end date exclusive). " +
             "Unless an explicit timezone if specified in the interval, the timezone from list request will be used," +
-            "defaulting to client's timezone.")
-        @Nullable @QueryParam(PARAMETER_CREATION_INTERVAL) String creationInterval,
-        @Parameter(description = "Optional filter for offset, defaults to 0.")
-        @Nullable @QueryParam(PARAMETER_OFFSET) String offset,
-        @Parameter(description = "Optional filter for limit, defaults to all.")
-        @Nullable @QueryParam(PARAMETER_LIMIT) String limit,
+            "defaulting to client's timezone.") @Nullable @QueryParam(PARAMETER_CREATION_INTERVAL) String creationInterval,
+        @Parameter(
+            description = "Optional filter for offset, defaults to 0.") @Nullable @QueryParam(PARAMETER_OFFSET) String offset,
+        @Parameter(
+            description = "Optional filter for limit, defaults to all.") @Nullable @QueryParam(PARAMETER_LIMIT) String limit,
         @Nullable @QueryParam(PARAMETER_ORDER_BY) ReportOrderBy orderBy,
         @Nullable @QueryParam(PARAMETER_ORDER) ReportOrderDirection order,
         @Nullable @TimeZoneParam ZoneId timezone) {

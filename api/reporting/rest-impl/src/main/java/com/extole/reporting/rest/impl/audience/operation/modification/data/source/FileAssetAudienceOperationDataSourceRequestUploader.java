@@ -13,6 +13,7 @@ import com.extole.reporting.service.audience.operation.AudienceOperationBuilder;
 import com.extole.reporting.service.audience.operation.AudienceOperationDataSourceBuildException;
 import com.extole.reporting.service.audience.operation.AudienceOperationParameterUpdateNotAllowedException;
 import com.extole.reporting.service.audience.operation.modification.data.source.FileAssetAudienceOperationDataSourceBuilder;
+import com.extole.reporting.service.audience.operation.modification.data.source.FileAssetAudienceOperationDataSourceEmptyFileAssetException;
 import com.extole.reporting.service.audience.operation.modification.data.source.FileAssetAudienceOperationDataSourceFormatNotSupportedException;
 import com.extole.reporting.service.audience.operation.modification.data.source.FileAssetAudienceOperationDataSourceMissingFileAssetIdException;
 import com.extole.reporting.service.audience.operation.modification.data.source.FileAssetAudienceOperationDataSourceNotFoundException;
@@ -50,6 +51,12 @@ public class FileAssetAudienceOperationDataSourceRequestUploader
                 .addParameter("file_asset_id", e.getFileAssetId())
                 .addParameter("format", e.getFormat())
                 .addParameter("supported_formats", e.getSupportedFormats())
+                .build();
+        } catch (FileAssetAudienceOperationDataSourceEmptyFileAssetException e) {
+            throw RestExceptionBuilder.newBuilder(FileAssetAudienceOperationDataSourceValidationRestException.class)
+                .withErrorCode(FileAssetAudienceOperationDataSourceValidationRestException.EMPTY_FILE)
+                .withCause(e)
+                .addParameter("file_asset_id", e.getFileAssetId())
                 .build();
         } catch (AudienceOperationDataSourceBuildException | AudienceOperationParameterUpdateNotAllowedException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)

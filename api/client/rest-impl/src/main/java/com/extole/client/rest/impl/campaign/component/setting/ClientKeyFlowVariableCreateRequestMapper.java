@@ -1,5 +1,8 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.extole.client.rest.campaign.component.setting.CampaignComponentClientKeyFlowVariableRequest;
@@ -27,8 +30,8 @@ public class ClientKeyFlowVariableCreateRequestMapper
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.CLIENT_KEY_FLOW;
+    public List<SettingType> getSettingTypes() {
+        return Collections.singletonList(SettingType.CLIENT_KEY_FLOW);
     }
 
 }

@@ -1,5 +1,8 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.extole.client.rest.campaign.component.setting.SettingType;
@@ -20,18 +23,13 @@ import com.extole.model.service.campaign.setting.VariableValueKeyLengthException
 public class ClientKeyFlowVariableUploader
     implements SettingUploader<CampaignComponentClientKeyFlowVariableConfiguration> {
 
-    private final DefaultSettingUploader defaultSettingUploader;
-
-    public ClientKeyFlowVariableUploader(DefaultSettingUploader defaultSettingUploader) {
-        this.defaultSettingUploader = defaultSettingUploader;
-    }
-
     @Override
-    public void upload(CampaignUploadContext context, CampaignComponentConfiguration component,
+    public void upload(SettingUploaderRegistry uploaderRegistry,
+        CampaignUploadContext context, CampaignComponentConfiguration component,
         CampaignComponentClientKeyFlowVariableConfiguration variable)
         throws SettingNameLengthException, SettingInvalidNameException, SettingDisplayNameLengthException,
         SettingIllegalCharacterInDisplayNameException, VariableValueKeyLengthException, SettingTagLengthException {
-        defaultSettingUploader.upload(context, component, variable);
+        uploaderRegistry.getDefaultUploader().upload(uploaderRegistry, context, component, variable);
 
         ClientKeyFlowVariableBuilder variableBuilder = (ClientKeyFlowVariableBuilder) context.get(component, variable);
         variableBuilder.withRedirectUri(variable.getRedirectUri());
@@ -42,11 +40,12 @@ public class ClientKeyFlowVariableUploader
     }
 
     @Override
-    public void upload(CampaignUploadContext context, CampaignComponentSocketConfiguration socket,
+    public void upload(SettingUploaderRegistry uploaderRegistry,
+        CampaignUploadContext context, CampaignComponentSocketConfiguration socket,
         CampaignComponentConfiguration component, CampaignComponentClientKeyFlowVariableConfiguration variable)
         throws SettingNameLengthException, SettingInvalidNameException, SettingDisplayNameLengthException,
         SettingIllegalCharacterInDisplayNameException, VariableValueKeyLengthException, SettingTagLengthException {
-        defaultSettingUploader.upload(context, socket, component, variable);
+        uploaderRegistry.getDefaultUploader().upload(uploaderRegistry, context, socket, component, variable);
 
         ClientKeyFlowVariableBuilder variableBuilder =
             (ClientKeyFlowVariableBuilder) context.get(component, socket, variable);
@@ -58,7 +57,7 @@ public class ClientKeyFlowVariableUploader
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.CLIENT_KEY_FLOW;
+    public List<SettingType> getSettingTypes() {
+        return Collections.singletonList(SettingType.CLIENT_KEY_FLOW);
     }
 }

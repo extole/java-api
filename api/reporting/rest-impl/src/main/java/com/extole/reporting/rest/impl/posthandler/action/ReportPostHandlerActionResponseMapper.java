@@ -4,8 +4,7 @@ import com.extole.reporting.entity.report.posthandler.action.ReportPostHandlerAc
 import com.extole.reporting.entity.report.posthandler.action.ReportPostHandlerAction.ActionType;
 import com.extole.reporting.rest.posthandler.action.ReportPostHandlerActionResponse;
 
-public interface ReportPostHandlerActionResponseMapper<A extends ReportPostHandlerAction,
-    R extends ReportPostHandlerActionResponse> {
+public interface ReportPostHandlerActionResponseMapper<A extends ReportPostHandlerAction, R extends ReportPostHandlerActionResponse> {
 
     R toReponse(A action);
 

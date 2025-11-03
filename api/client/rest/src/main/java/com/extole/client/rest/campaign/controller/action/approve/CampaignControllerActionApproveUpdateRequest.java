@@ -128,8 +128,10 @@ public final class CampaignControllerActionApproveUpdateRequest extends Componen
     }
 
     @JsonProperty(JSON_REWARD_TAGS)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<ApproveActionContext, Set<String>>>> getRewardTags() {
+    public
+        Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<ApproveActionContext, Set<String>>>>
+        getRewardTags() {
         return rewardTags;
     }
 
@@ -155,7 +157,8 @@ public final class CampaignControllerActionApproveUpdateRequest extends Componen
         private Omissible<Optional<String>> pollingId = Omissible.omitted();
         private Omissible<String> pollingName = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<ApproveActionContext, Set<String>>>> rewardTags = Omissible.omitted();
+            RuntimeEvaluatable<ApproveActionContext, Set<String>>>> rewardTags =
+                Omissible.omitted();
 
         private Builder() {
             super();

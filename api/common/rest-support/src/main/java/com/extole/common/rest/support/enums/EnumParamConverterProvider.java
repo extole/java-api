@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import javax.annotation.Priority;
 import javax.inject.Singleton;
 import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.ParamConverterProvider;
@@ -12,6 +13,7 @@ import javax.ws.rs.ext.ParamConverterProvider;
 import org.apache.commons.lang3.EnumUtils;
 
 @Singleton
+@Priority(1)
 public class EnumParamConverterProvider implements ParamConverterProvider {
 
     @Override

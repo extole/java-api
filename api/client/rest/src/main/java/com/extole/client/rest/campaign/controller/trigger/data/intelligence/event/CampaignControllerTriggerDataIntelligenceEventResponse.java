@@ -25,6 +25,8 @@ public class CampaignControllerTriggerDataIntelligenceEventResponse extends Camp
         @JsonProperty(TRIGGER_PHASE) BuildtimeEvaluatable<ControllerBuildtimeContext,
             CampaignControllerTriggerPhase> triggerPhase,
         @JsonProperty(TRIGGER_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            Optional<String>> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
@@ -32,8 +34,8 @@ public class CampaignControllerTriggerDataIntelligenceEventResponse extends Camp
         @JsonProperty(EVENT_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> eventName,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.DATA_INTELLIGENCE_EVENT, triggerPhase, name, description,
-            enabled, negated, componentIds, componentReferences);
+        super(triggerId, CampaignControllerTriggerType.DATA_INTELLIGENCE_EVENT, triggerPhase, name,
+            parentTriggerGroupName, description, enabled, negated, componentIds, componentReferences);
         this.eventName = eventName;
     }
 

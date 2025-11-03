@@ -4,8 +4,7 @@ import com.extole.reporting.entity.report.posthandler.condition.ReportPostHandle
 import com.extole.reporting.entity.report.posthandler.condition.ReportPostHandlerCondition.ConditionType;
 import com.extole.reporting.rest.posthandler.condition.ReportPostHandlerConditionResponse;
 
-public interface ReportPostHandlerConditionResponseMapper<C extends ReportPostHandlerCondition,
-    R extends ReportPostHandlerConditionResponse> {
+public interface ReportPostHandlerConditionResponseMapper<C extends ReportPostHandlerCondition, R extends ReportPostHandlerConditionResponse> {
 
     R toReponse(C condition);
 

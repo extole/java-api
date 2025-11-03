@@ -27,14 +27,12 @@ public class PersonLocationsListRequest {
 
     public PersonLocationsListRequest(
         @Parameter(description = "Optional countries filter. " +
-            "Will include locations that match at least one of the countries.")
-        @QueryParam(PARAMETER_COUNTRIES) List<String> countries,
-        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".")
-        @DefaultValue("" + DEFAULT_OFFSET)
-        @QueryParam(PARAMETER_OFFSET) Optional<Integer> offset,
-        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".")
-        @DefaultValue("" + DEFAULT_LIMIT)
-        @QueryParam(PARAMETER_LIMIT) Optional<Integer> limit) {
+            "Will include locations that match at least one of the countries.") @QueryParam(PARAMETER_COUNTRIES) List<
+                String> countries,
+        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".") @DefaultValue(""
+            + DEFAULT_OFFSET) @QueryParam(PARAMETER_OFFSET) Optional<Integer> offset,
+        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".") @DefaultValue(""
+            + DEFAULT_LIMIT) @QueryParam(PARAMETER_LIMIT) Optional<Integer> limit) {
         this.countries = countries == null ? ImmutableList.of() : ImmutableList.copyOf(countries);
         this.offset = offset.orElse(Integer.valueOf(DEFAULT_OFFSET)).intValue();
         this.limit = limit.orElse(Integer.valueOf(DEFAULT_LIMIT)).intValue();

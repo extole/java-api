@@ -24,10 +24,8 @@ import com.extole.model.entity.campaign.CampaignControllerActionType;
 
 @Component
 public class CampaignControllerActionDataIntelligenceResponseMapper implements
-    CampaignControllerActionResponseMapper<
-        CampaignControllerActionDataIntelligence,
-        CampaignControllerActionDataIntelligenceResponse,
-        CampaignControllerActionDataIntelligenceConfiguration> {
+    CampaignControllerActionResponseMapper<CampaignControllerActionDataIntelligence,
+        CampaignControllerActionDataIntelligenceResponse, CampaignControllerActionDataIntelligenceConfiguration> {
 
     private final CampaignComponentRestMapper campaignComponentRestMapper;
 
@@ -47,11 +45,11 @@ public class CampaignControllerActionDataIntelligenceResponseMapper implements
             action.getEventName(),
             action.getProfileRiskUpdateInterval(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -70,7 +68,7 @@ public class CampaignControllerActionDataIntelligenceResponseMapper implements
             action.getEventName(),
             action.getProfileRiskUpdateInterval(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

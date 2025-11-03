@@ -34,30 +34,24 @@ public class PersonSharesListRequest {
 
     public PersonSharesListRequest(
         @Parameter(description = "Optional program filter. " +
-            "Will include shares that match at least one of the programs.")
-        @QueryParam(PARAMETER_PROGRAMS)
-        List<String> programs,
+            "Will include shares that match at least one of the programs.") @QueryParam(PARAMETER_PROGRAMS) List<
+                String> programs,
         @Parameter(description = "Optional campaign id filter. " +
-            "Will include shares that match at least one of the campaign ids.")
-        @QueryParam(PARAMETER_CAMPAIGN_IDS)
-        List<String> campaignIds,
+            "Will include shares that match at least one of the campaign ids.") @QueryParam(PARAMETER_CAMPAIGN_IDS) List<
+                String> campaignIds,
         @Parameter(description = "Optional program label filter. " +
-            "Will include shares that match at least one of the programs.")
-        @QueryParam(PARAMETER_PARTNER_IDS)
-        List<String> partnerIds,
+            "Will include shares that match at least one of the programs.") @QueryParam(PARAMETER_PARTNER_IDS) List<
+                String> partnerIds,
         @Parameter(description = "Optional data keys filter. " +
-            "Will include shares that match at least one of the data keys.")
-        @QueryParam(PARAMETER_DATA_KEYS) List<String> dataKeys,
+            "Will include shares that match at least one of the data keys.") @QueryParam(PARAMETER_DATA_KEYS) List<
+                String> dataKeys,
         @Parameter(description = "Optional filter for existence of specific data values. " +
             "Will include shares that have at least one of the specified data name-value pair. " +
-            "Valid format is name:value.")
-        @QueryParam(PARAMETER_DATA_VALUES) List<String> dataValues,
-        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".")
-        @DefaultValue("" + DEFAULT_OFFSET)
-        @QueryParam(PARAMETER_OFFSET) Optional<Integer> offset,
-        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".")
-        @DefaultValue("" + DEFAULT_LIMIT)
-        @QueryParam(PARAMETER_LIMIT) Optional<Integer> limit) {
+            "Valid format is name:value.") @QueryParam(PARAMETER_DATA_VALUES) List<String> dataValues,
+        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".") @DefaultValue(""
+            + DEFAULT_OFFSET) @QueryParam(PARAMETER_OFFSET) Optional<Integer> offset,
+        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".") @DefaultValue(""
+            + DEFAULT_LIMIT) @QueryParam(PARAMETER_LIMIT) Optional<Integer> limit) {
         this.programs = programs == null ? ImmutableList.of() : ImmutableList.copyOf(programs);
         this.campaignIds = campaignIds == null ? ImmutableList.of() : ImmutableList.copyOf(campaignIds);
         this.partnerIds = partnerIds == null ? ImmutableList.of() : ImmutableList.copyOf(partnerIds);

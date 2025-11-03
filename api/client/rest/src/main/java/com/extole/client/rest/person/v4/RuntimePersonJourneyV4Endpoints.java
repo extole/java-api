@@ -31,13 +31,12 @@ public interface RuntimePersonJourneyV4Endpoints {
     @Operation(summary = "Get a list with journeys", description = "Returns journeys for a person.")
     List<PersonJourneyV4Response> getJourneys(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @Parameter(description = "Optional container filter, defaults to production container. " +
-            "Pass \"*\" to include steps for all containers")
-        @Nullable @QueryParam("container") String container,
-        @Parameter(description = "Optional journey type filter, one of friend or advocate.")
-        @Nullable @QueryParam("type") String journeyName,
+            "Pass \"*\" to include steps for all containers") @Nullable @QueryParam("container") String container,
+        @Parameter(
+            description = "Optional journey type filter, one of friend or advocate.") @Nullable @QueryParam("type") String journeyName,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException;
 
@@ -46,10 +45,9 @@ public interface RuntimePersonJourneyV4Endpoints {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Get a journey", description = "Returns journey for a person and id.")
     PersonJourneyV4Response getJourney(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Journey id parameter.")
-        @PathParam("journey_id") String journeyId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(description = "Journey id parameter.") @PathParam("journey_id") String journeyId,
         @TimeZoneParam ZoneId timeZone)
         throws PersonRestException, UserAuthorizationRestException, PersonJourneyRestV4Exception;
 }

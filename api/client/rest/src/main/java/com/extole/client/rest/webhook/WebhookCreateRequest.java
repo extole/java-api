@@ -60,8 +60,8 @@ public class WebhookCreateRequest extends ComponentElementRequest {
         @JsonProperty(NAME) BuildtimeEvaluatable<WebhookBuildtimeContext, String> name,
         @JsonProperty(TYPE) Omissible<WebhookType> type,
         @JsonProperty(URL) BuildtimeEvaluatable<WebhookBuildtimeContext, UrlTemplate> url,
-        @JsonProperty(CLIENT_KEY_ID) Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
-            Optional<Id<?>>>> clientKeyId,
+        @JsonProperty(CLIENT_KEY_ID) Omissible<
+            BuildtimeEvaluatable<WebhookBuildtimeContext, Optional<Id<?>>>> clientKeyId,
         @JsonProperty(TAGS) Omissible<Set<String>> tags,
         @JsonProperty(REQUEST) Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
             RuntimeEvaluatable<WebhookRuntimeContext, WebhookRequest>>> request,
@@ -70,13 +70,13 @@ public class WebhookCreateRequest extends ComponentElementRequest {
         @JsonProperty(RESPONSE_BODY_HANDLER) Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
             RuntimeEvaluatable<WebhookResponseContext, Map<String, Object>>>> responseBodyHandler,
         @JsonProperty(ENABLED) Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext, Boolean>> enabled,
-        @JsonProperty(DESCRIPTION) Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
-            Optional<String>>> description,
+        @JsonProperty(DESCRIPTION) Omissible<
+            BuildtimeEvaluatable<WebhookBuildtimeContext, Optional<String>>> description,
         @JsonProperty(DEFAULT_METHOD) Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext, String>> defaultMethod,
         @JsonProperty(JSON_COMPONENT_IDS) Omissible<List<Id<ComponentResponse>>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) Omissible<List<ComponentReferenceRequest>> componentReferences,
-        @JsonProperty(RETRY_INTERVALS) Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
-            Optional<List<Duration>>>> retryIntervals) {
+        @JsonProperty(RETRY_INTERVALS) Omissible<
+            BuildtimeEvaluatable<WebhookBuildtimeContext, Optional<List<Duration>>>> retryIntervals) {
         super(componentReferences, componentIds);
         this.name = name;
         this.type = type;
@@ -113,21 +113,27 @@ public class WebhookCreateRequest extends ComponentElementRequest {
     }
 
     @JsonProperty(REQUEST)
-    public Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
-        RuntimeEvaluatable<WebhookRuntimeContext, WebhookRequest>>> getRequest() {
+    public
+        Omissible<
+            BuildtimeEvaluatable<WebhookBuildtimeContext, RuntimeEvaluatable<WebhookRuntimeContext, WebhookRequest>>>
+        getRequest() {
         return request;
     }
 
     @JsonProperty(RESPONSE_HANDLER)
     @Schema(description = "if no webhook response status is provided, we will retry non 2xx webhook requests")
-    public Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
-        RuntimeEvaluatable<WebhookResponseContext, Optional<String>>>> getResponseHandler() {
+    public
+        Omissible<
+            BuildtimeEvaluatable<WebhookBuildtimeContext, RuntimeEvaluatable<WebhookResponseContext, Optional<String>>>>
+        getResponseHandler() {
         return responseHandler;
     }
 
     @JsonProperty(RESPONSE_BODY_HANDLER)
-    public Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext, RuntimeEvaluatable<WebhookResponseContext,
-        Map<String, Object>>>> getResponseBodyHandler() {
+    public
+        Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
+            RuntimeEvaluatable<WebhookResponseContext, Map<String, Object>>>>
+        getResponseBodyHandler() {
         return responseBodyHandler;
     }
 
@@ -174,18 +180,21 @@ public class WebhookCreateRequest extends ComponentElementRequest {
             Omissible.omitted();
         private Omissible<Set<String>> tags = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
-            RuntimeEvaluatable<WebhookRuntimeContext, WebhookRequest>>> request = Omissible.omitted();
+            RuntimeEvaluatable<WebhookRuntimeContext, WebhookRequest>>> request =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
-            RuntimeEvaluatable<WebhookResponseContext, Optional<String>>>> responseHandler = Omissible.omitted();
+            RuntimeEvaluatable<WebhookResponseContext, Optional<String>>>> responseHandler =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
-            RuntimeEvaluatable<WebhookResponseContext, Map<String, Object>>>> responseBodyHandler = Omissible.omitted();
+            RuntimeEvaluatable<WebhookResponseContext, Map<String, Object>>>> responseBodyHandler =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext, Boolean>> enabled = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext, Optional<String>>> description =
             Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext, String>> defaultMethod =
             Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
-            Optional<List<Duration>>>> retryIntervals = Omissible.omitted();
+        private Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext, Optional<List<Duration>>>> retryIntervals =
+            Omissible.omitted();
 
         private Builder() {
         }
@@ -211,20 +220,23 @@ public class WebhookCreateRequest extends ComponentElementRequest {
             return this;
         }
 
-        public Builder withRequest(BuildtimeEvaluatable<WebhookBuildtimeContext,
-            RuntimeEvaluatable<WebhookRuntimeContext, WebhookRequest>> request) {
+        public Builder withRequest(
+            BuildtimeEvaluatable<WebhookBuildtimeContext,
+                RuntimeEvaluatable<WebhookRuntimeContext, WebhookRequest>> request) {
             this.request = Omissible.of(request);
             return this;
         }
 
-        public Builder withResponseHandler(BuildtimeEvaluatable<WebhookBuildtimeContext,
-            RuntimeEvaluatable<WebhookResponseContext, Optional<String>>> responseHandler) {
+        public Builder withResponseHandler(
+            BuildtimeEvaluatable<WebhookBuildtimeContext,
+                RuntimeEvaluatable<WebhookResponseContext, Optional<String>>> responseHandler) {
             this.responseHandler = Omissible.of(responseHandler);
             return this;
         }
 
-        public Builder withResponseBodyHandler(BuildtimeEvaluatable<WebhookBuildtimeContext,
-            RuntimeEvaluatable<WebhookResponseContext, Map<String, Object>>> responseBodyHandler) {
+        public Builder withResponseBodyHandler(
+            BuildtimeEvaluatable<WebhookBuildtimeContext,
+                RuntimeEvaluatable<WebhookResponseContext, Map<String, Object>>> responseBodyHandler) {
             this.responseBodyHandler = Omissible.of(responseBodyHandler);
             return this;
         }

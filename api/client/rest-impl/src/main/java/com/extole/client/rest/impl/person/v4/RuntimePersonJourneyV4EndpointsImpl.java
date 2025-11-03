@@ -20,13 +20,13 @@ import com.extole.client.rest.person.v4.PersonDataV4Response;
 import com.extole.client.rest.person.v4.PersonJourneyRestV4Exception;
 import com.extole.client.rest.person.v4.PersonJourneyV4Response;
 import com.extole.client.rest.person.v4.RuntimePersonJourneyV4Endpoints;
+import com.extole.common.journey.JourneyName;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.id.Id;
 import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.profile.PersonService;
-import com.extole.person.service.profile.journey.JourneyName;
 import com.extole.person.service.profile.journey.PersonJourney;
 import com.extole.person.service.profile.referral.PersonReferralReason;
 

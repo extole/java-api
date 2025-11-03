@@ -13,6 +13,7 @@ import javax.ws.rs.ext.Provider;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.extole.authorization.service.Authorization;
+import com.extole.client.rest.campaign.BuildCampaignControllerRestException;
 import com.extole.client.rest.campaign.BuildCampaignRestException;
 import com.extole.client.rest.campaign.CampaignRestException;
 import com.extole.client.rest.campaign.CampaignUpdateRestException;
@@ -24,6 +25,7 @@ import com.extole.client.rest.campaign.controller.trigger.has.identity.CampaignC
 import com.extole.client.rest.campaign.controller.trigger.has.identity.CampaignControllerTriggerHasIdentityEndpoints;
 import com.extole.client.rest.campaign.controller.trigger.has.identity.CampaignControllerTriggerHasIdentityResponse;
 import com.extole.client.rest.campaign.controller.trigger.has.identity.CampaignControllerTriggerHasIdentityUpdateRequest;
+import com.extole.client.rest.impl.campaign.BuildCampaignControllerRestExceptionMapper;
 import com.extole.client.rest.impl.campaign.BuildCampaignRestExceptionMapper;
 import com.extole.client.rest.impl.campaign.CampaignProvider;
 import com.extole.client.rest.impl.campaign.component.ComponentReferenceRequestMapper;
@@ -48,6 +50,7 @@ import com.extole.model.service.campaign.ComponentElementBuilder;
 import com.extole.model.service.campaign.ConcurrentCampaignUpdateException;
 import com.extole.model.service.campaign.StaleCampaignVersionException;
 import com.extole.model.service.campaign.component.RedundantComponentReferenceException;
+import com.extole.model.service.campaign.controller.exception.BuildCampaignControllerException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerBuildException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerDescriptionLengthException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerNameLengthException;
@@ -91,7 +94,7 @@ public class CampaignControllerTriggerHasIdentityEndpointsImpl
         CampaignControllerTriggerHasIdentityCreateRequest createRequest)
         throws CampaignRestException, UserAuthorizationRestException, CampaignControllerRestException,
         CampaignControllerTriggerValidationRestException, CampaignComponentValidationRestException,
-        BuildCampaignRestException, CampaignUpdateRestException {
+        BuildCampaignRestException, CampaignUpdateRestException, BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         Campaign campaign;
@@ -124,6 +127,8 @@ public class CampaignControllerTriggerHasIdentityEndpointsImpl
                     .addTrigger(HAS_IDENTITY);
 
             createRequest.getName().ifPresent(name -> triggerBuilder.withName(name));
+            createRequest.getParentTriggerGroupName()
+                .ifPresent(parentTriggerGroupName -> triggerBuilder.withParentTriggerGroupName(parentTriggerGroupName));
             createRequest.getDescription().ifPresent(description -> triggerBuilder.withDescription(description));
             createRequest.getEnabled().ifPresent(enabled -> triggerBuilder.withEnabled(enabled));
             createRequest.getNegated().ifPresent(negated -> triggerBuilder.withNegated(negated));
@@ -187,6 +192,8 @@ public class CampaignControllerTriggerHasIdentityEndpointsImpl
                 .build();
         } catch (TriggerTypeNotSupportedException e) {
             throw TriggerTypeNotSupportedRestExceptionMapper.getInstance().map(e);
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (CampaignControllerTriggerBuildException e) {
@@ -206,7 +213,7 @@ public class CampaignControllerTriggerHasIdentityEndpointsImpl
         CampaignControllerTriggerHasIdentityUpdateRequest updateRequest)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
         CampaignControllerTriggerValidationRestException, CampaignComponentValidationRestException,
-        BuildCampaignRestException, CampaignUpdateRestException {
+        BuildCampaignRestException, CampaignUpdateRestException, BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         Campaign campaign;
@@ -242,6 +249,8 @@ public class CampaignControllerTriggerHasIdentityEndpointsImpl
                 .updateTrigger(trigger);
 
             updateRequest.getName().ifPresent(name -> triggerBuilder.withName(name));
+            updateRequest.getParentTriggerGroupName()
+                .ifPresent(parentTriggerGroupName -> triggerBuilder.withParentTriggerGroupName(parentTriggerGroupName));
             updateRequest.getDescription().ifPresent(description -> triggerBuilder.withDescription(description));
             updateRequest.getEnabled().ifPresent(enabled -> triggerBuilder.withEnabled(enabled));
             updateRequest.getNegated().ifPresent(negated -> triggerBuilder.withNegated(negated));
@@ -304,6 +313,8 @@ public class CampaignControllerTriggerHasIdentityEndpointsImpl
                 .addParameter("max_length", Integer.valueOf(e.getDescriptionMaxLength()))
                 .withCause(e)
                 .build();
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (CampaignControllerTriggerBuildException e) {
@@ -321,7 +332,7 @@ public class CampaignControllerTriggerHasIdentityEndpointsImpl
         String controllerId,
         String triggerId)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
-        BuildCampaignRestException, CampaignUpdateRestException {
+        BuildCampaignRestException, CampaignUpdateRestException, BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         Campaign campaign;
@@ -365,6 +376,8 @@ public class CampaignControllerTriggerHasIdentityEndpointsImpl
                 .addParameter("campaign_id", e.getCampaignId())
                 .withCause(e)
                 .build();
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e, true);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (ConcurrentCampaignUpdateException e) {

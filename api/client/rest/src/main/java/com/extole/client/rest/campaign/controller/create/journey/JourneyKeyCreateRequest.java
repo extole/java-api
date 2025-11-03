@@ -15,13 +15,13 @@ public class JourneyKeyCreateRequest {
     private static final String JSON_VALUE = "value";
 
     private final BuildtimeEvaluatable<CampaignBuildtimeContext, String> name;
-    private final BuildtimeEvaluatable<
-        CampaignBuildtimeContext, RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value;
+    private final BuildtimeEvaluatable<CampaignBuildtimeContext,
+        RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value;
 
     public JourneyKeyCreateRequest(
         @JsonProperty(JSON_NAME) BuildtimeEvaluatable<CampaignBuildtimeContext, String> name,
-        @JsonProperty(JSON_VALUE) BuildtimeEvaluatable<
-            CampaignBuildtimeContext, RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value) {
+        @JsonProperty(JSON_VALUE) BuildtimeEvaluatable<CampaignBuildtimeContext,
+            RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value) {
         this.name = name;
         this.value = value;
     }
@@ -46,8 +46,8 @@ public class JourneyKeyCreateRequest {
         private final T caller;
 
         private BuildtimeEvaluatable<CampaignBuildtimeContext, String> name;
-        private BuildtimeEvaluatable<
-            CampaignBuildtimeContext, RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value;
+        private BuildtimeEvaluatable<CampaignBuildtimeContext,
+            RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value;
 
         private Builder(T caller) {
             this.caller = caller;
@@ -58,8 +58,9 @@ public class JourneyKeyCreateRequest {
             return this;
         }
 
-        public Builder<T> withValue(BuildtimeEvaluatable<
-                CampaignBuildtimeContext, RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value) {
+        public Builder<T> withValue(
+            BuildtimeEvaluatable<CampaignBuildtimeContext,
+                RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value) {
             this.value = value;
             return this;
         }

@@ -28,21 +28,22 @@ import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.id.Id;
+import com.extole.model.entity.report.runner.AggregationStatus;
+import com.extole.model.entity.report.runner.Direction;
+import com.extole.model.entity.report.runner.PauseStatus;
+import com.extole.model.entity.report.runner.ReportRunner;
+import com.extole.model.entity.report.runner.ReportRunnerOrder;
+import com.extole.model.entity.report.runner.ReportRunnerType;
 import com.extole.model.service.client.ClientNotFoundException;
-import com.extole.reporting.entity.report.runner.ReportRunner;
-import com.extole.reporting.entity.report.runner.ReportRunnerOrder;
-import com.extole.reporting.entity.report.runner.ReportRunnerType;
+import com.extole.model.service.report.runner.ReportRunnerNotFoundException;
+import com.extole.model.service.report.runner.ReportRunnerQueryBuilder;
+import com.extole.model.service.report.runner.ReportRunnerService;
 import com.extole.reporting.rest.impl.report.runner.mappers.ReportRunnerViewResponseMapper;
 import com.extole.reporting.rest.report.runner.ReportRunnerQueryRestException;
 import com.extole.reporting.rest.report.runner.ReportRunnerRestException;
 import com.extole.reporting.rest.report.runner.ReportRunnerViewEndpoints;
 import com.extole.reporting.rest.report.runner.ReportRunnerViewResponse;
 import com.extole.reporting.rest.report.runner.ReportRunnersListRequest;
-import com.extole.reporting.service.report.runner.AggregationStatus;
-import com.extole.reporting.service.report.runner.PauseStatus;
-import com.extole.reporting.service.report.runner.ReportRunnerNotFoundException;
-import com.extole.reporting.service.report.runner.ReportRunnerQueryBuilder;
-import com.extole.reporting.service.report.runner.ReportRunnerService;
 import com.extole.reporting.service.report.runner.ReportRunnerWrongTypeException;
 
 @Provider
@@ -69,7 +70,8 @@ public class ReportRunnerViewEndpointsImpl implements ReportRunnerViewEndpoints 
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         try {
-            ReportRunner reportRunner = reportRunnerService.getById(authorization, Id.valueOf(reportRunnerId));
+            ReportRunner reportRunner =
+                reportRunnerService.getById(authorization, Id.valueOf(reportRunnerId));
             return toReportRunnerResponse(authorization, reportRunner, timezone);
         } catch (AuthorizationException e) {
             throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
@@ -129,8 +131,8 @@ public class ReportRunnerViewEndpointsImpl implements ReportRunnerViewEndpoints 
                 .withOffset(
                     parseOffset(request.getOffset().orElse(BigDecimal.ZERO.toString()), BigDecimal.ZERO.intValue()))
                 .withLimit(parseLimit(request.getLimit().orElse(String.valueOf(DEFAULT_LIMIT)), DEFAULT_LIMIT))
-                .withOrder(request.getOrder().filter(StringUtils::isNotEmpty).map(ReportRunnerOrder.Direction::valueOf)
-                    .orElse(ReportRunnerOrder.Direction.DESCENDING))
+                .withOrder(request.getOrder().filter(StringUtils::isNotEmpty).map(Direction::valueOf)
+                    .orElse(Direction.DESCENDING))
                 .withOrderBy(request.getOrderBy().filter(StringUtils::isNotEmpty).map(ReportRunnerOrder.Field::valueOf)
                     .orElse(ReportRunnerOrder.Field.CREATED_DATE));
             return toReportRunnersResponse(authorization, queryBuilder.list(), request.getTimezone().orElse(null));

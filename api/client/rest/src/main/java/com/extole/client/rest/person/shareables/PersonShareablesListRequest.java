@@ -31,21 +31,18 @@ public class PersonShareablesListRequest {
 
     public PersonShareablesListRequest(
         @Parameter(description = "Optional label filter. " +
-            "Will include shareables that match at least one of the labels.")
-        @QueryParam(PARAMETER_LABELS) List<String> labels,
+            "Will include shareables that match at least one of the labels.") @QueryParam(PARAMETER_LABELS) List<
+                String> labels,
         @Parameter(description = "Optional data keys filter. " +
-            "Will include shareables that match at least one of the data keys.")
-        @QueryParam(PARAMETER_DATA_KEYS) List<String> dataKeys,
+            "Will include shareables that match at least one of the data keys.") @QueryParam(PARAMETER_DATA_KEYS) List<
+                String> dataKeys,
         @Parameter(description = "Optional filter for existence of specific data values. " +
             "Will include shareables that have at least one of the specified data name-value pair. " +
-            "Valid format is name:value.")
-        @QueryParam(PARAMETER_DATA_VALUES) List<String> dataValues,
-        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".")
-        @DefaultValue("" + DEFAULT_OFFSET)
-        @QueryParam(PARAMETER_OFFSET) Optional<Integer> offset,
-        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".")
-        @DefaultValue("" + DEFAULT_LIMIT)
-        @QueryParam(PARAMETER_LIMIT) Optional<Integer> limit) {
+            "Valid format is name:value.") @QueryParam(PARAMETER_DATA_VALUES) List<String> dataValues,
+        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".") @DefaultValue(""
+            + DEFAULT_OFFSET) @QueryParam(PARAMETER_OFFSET) Optional<Integer> offset,
+        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".") @DefaultValue(""
+            + DEFAULT_LIMIT) @QueryParam(PARAMETER_LIMIT) Optional<Integer> limit) {
         this.labels = labels == null ? ImmutableList.of() : ImmutableList.copyOf(labels);
         this.dataKeys = dataKeys == null ? ImmutableList.of() : ImmutableList.copyOf(dataKeys);
         this.dataValues = dataValues == null ? ImmutableList.of() : ImmutableList.copyOf(dataValues);

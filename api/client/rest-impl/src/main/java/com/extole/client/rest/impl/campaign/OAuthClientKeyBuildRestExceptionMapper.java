@@ -20,50 +20,45 @@ public final class OAuthClientKeyBuildRestExceptionMapper {
     private OAuthClientKeyBuildRestExceptionMapper() {
     }
 
-    public Optional<OAuthClientKeyBuildRestException> map(BuildClientKeyException e) {
-        return internalMap(e);
+    public Optional<OAuthClientKeyBuildRestException> map(BuildClientKeyException exception) {
+        return internalMap(exception);
     }
 
-    private Optional<OAuthClientKeyBuildRestException> internalMap(BuildClientKeyException e) {
+    private Optional<OAuthClientKeyBuildRestException> internalMap(BuildClientKeyException exception) {
         OAuthClientKeyBuildRestException result = null;
-        if (e instanceof InvalidAuthorizationUrlOAuthClientKeyException) {
-            InvalidAuthorizationUrlOAuthClientKeyException ex = (InvalidAuthorizationUrlOAuthClientKeyException) e;
+        if (exception instanceof InvalidAuthorizationUrlOAuthClientKeyException castedException) {
             result = RestExceptionBuilder.newBuilder(
                 OAuthClientKeyBuildRestException.class)
                 .withErrorCode(OAuthClientKeyBuildRestException.AUTHORIZATION_URL_INVALID)
-                .addParameter("authorization_url", ex.getAuthorizationUrl())
-                .withCause(e)
+                .addParameter("authorization_url", castedException.getAuthorizationUrl())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof InvalidUriAuthorizationUrlOAuthClientKeyException) {
-            InvalidUriAuthorizationUrlOAuthClientKeyException ex =
-                (InvalidUriAuthorizationUrlOAuthClientKeyException) e;
+        if (exception instanceof InvalidUriAuthorizationUrlOAuthClientKeyException castedException) {
             result = RestExceptionBuilder.newBuilder(
                 OAuthClientKeyBuildRestException.class)
                 .withErrorCode(
                     OAuthClientKeyBuildRestException.AUTHORIZATION_URL_INVALID_URI)
-                .addParameter("authorization_url", ex.getAuthorizationUrl())
-                .withCause(e)
+                .addParameter("authorization_url", castedException.getAuthorizationUrl())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof MissingAuthorizationUrlOAuthClientKeyException) {
-            MissingAuthorizationUrlOAuthClientKeyException ex = (MissingAuthorizationUrlOAuthClientKeyException) e;
+        if (exception instanceof MissingAuthorizationUrlOAuthClientKeyException castedException) {
             result = RestExceptionBuilder.newBuilder(
                 OAuthClientKeyBuildRestException.class)
                 .withErrorCode(
                     OAuthClientKeyBuildRestException.MISSING_AUTHORIZATION_URL)
-                .withCause(ex)
+                .withCause(castedException)
                 .build();
         }
-        if (e instanceof TooLongAuthorizationUrlOAuthClientKeyException) {
-            TooLongAuthorizationUrlOAuthClientKeyException ex = (TooLongAuthorizationUrlOAuthClientKeyException) e;
+        if (exception instanceof TooLongAuthorizationUrlOAuthClientKeyException castedException) {
             result = RestExceptionBuilder.newBuilder(
                 OAuthClientKeyBuildRestException.class)
                 .withErrorCode(
                     OAuthClientKeyBuildRestException.AUTHORIZATION_URL_TOO_LONG)
-                .addParameter("authorization_url", ex.getAuthorizationUrl())
-                .addParameter("max_length", Integer.valueOf(ex.getMaxLength()))
-                .withCause(e)
+                .addParameter("authorization_url", castedException.getAuthorizationUrl())
+                .addParameter("max_length", Integer.valueOf(castedException.getMaxLength()))
+                .withCause(exception)
                 .build();
         }
 

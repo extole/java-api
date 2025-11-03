@@ -40,6 +40,9 @@ public class CampaignRestException extends ExtoleRestException {
     public static final ErrorCode<CampaignRestException> INVALID_CAMPAIGN_STATE = new ErrorCode<>(
         "invalid_campaign_state", 400, "Invalid campaign state", "campaign_id", "expected_state", "current_state");
 
+    public static final ErrorCode<CampaignRestException> CAMPAIGN_NOT_FOUND =
+        new ErrorCode<>("campaign_not_found", 404, "Campaign not found", "campaign_id");
+
     public CampaignRestException(String uniqueId, ErrorCode<CampaignRestException> code, Map<String, Object> attributes,
         Throwable cause) {
         super(uniqueId, code, attributes, cause);

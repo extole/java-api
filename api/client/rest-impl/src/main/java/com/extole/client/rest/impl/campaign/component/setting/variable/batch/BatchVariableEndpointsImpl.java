@@ -88,6 +88,7 @@ import com.extole.model.service.campaign.component.CampaignComponentBuilder;
 import com.extole.model.service.campaign.component.CampaignComponentException;
 import com.extole.model.service.campaign.component.CampaignComponentNameDuplicateException;
 import com.extole.model.service.campaign.component.CampaignComponentTypeValidationException;
+import com.extole.model.service.campaign.component.facet.CampaignComponentFacetsNotFoundException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerBuildException;
 import com.extole.model.service.campaign.flow.step.CampaignFlowStepException;
 import com.extole.model.service.campaign.label.CampaignLabelDuplicateNameException;
@@ -329,7 +330,8 @@ public class BatchVariableEndpointsImpl implements BatchVariableEndpoints {
             | CampaignDateAfterStopDateException | CampaignHasScheduledSiblingException | CampaignGlobalDeleteException
             | CampaignGlobalArchiveException | CampaignGlobalStateChangeException
             | CampaignComponentTypeValidationException | AuthorizationException | ComponentTypeNotFoundException
-            | ReferencedExternalElementException | IncompatibleRewardRuleException | CampaignComponentException e) {
+            | ReferencedExternalElementException | IncompatibleRewardRuleException | CampaignComponentException
+            | CampaignComponentFacetsNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)

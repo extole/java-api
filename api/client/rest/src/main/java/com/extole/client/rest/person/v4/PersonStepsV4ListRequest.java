@@ -32,27 +32,24 @@ public class PersonStepsV4ListRequest {
     private final String eventId;
 
     public PersonStepsV4ListRequest(
-        @Parameter(description = "Optional step name filter.")
-        @Nullable @QueryParam(PARAMETER_NAME) String stepName,
+        @Parameter(description = "Optional step name filter.") @Nullable @QueryParam(PARAMETER_NAME) String stepName,
         @Parameter(description = "Optional container filter, defaults to production container. " +
-            "Pass \"*\" to include steps for all containers.")
-        @Nullable @QueryParam(PARAMETER_CONTAINER) String container,
-        @Parameter(description = "Optional campaign id filter.")
-        @Nullable @QueryParam(PARAMETER_CAMPAIGN_ID) String campaignId,
-        @Parameter(description = "Optional program label filter.")
-        @Nullable @QueryParam(PARAMETER_PROGRAM_LABEL) String programLabel,
-        @Parameter(description = "Optional partner id filter, using this format: <name>:<value>.")
-        @Nullable @QueryParam(PARAMETER_PARTNER_ID) String partnerEventId,
-        @Parameter(description = "Optional flow path filter.")
-        @Nullable @QueryParam(PARAMETER_FLOW_PATH) String flowPath,
-        @Parameter(description = "Optional visit type filter. One of: LAST_VISITED")
-        @Nullable @QueryParam(PARAMETER_VISIT_TYPE) String visitType,
-        @Parameter(description = "Optional offset filter, defaults to 0.")
-        @Nullable @QueryParam(PARAMETER_OFFSET) Integer offset,
-        @Parameter(description = "Optional limit filter, defaults to 100.")
-        @Nullable @QueryParam(PARAMETER_LIMIT) Integer limit,
-        @Parameter(description = "Optional event id filter")
-        @Nullable @QueryParam(PARAMETER_EVENT_ID) String eventId) {
+            "Pass \"*\" to include steps for all containers.") @Nullable @QueryParam(PARAMETER_CONTAINER) String container,
+        @Parameter(
+            description = "Optional campaign id filter.") @Nullable @QueryParam(PARAMETER_CAMPAIGN_ID) String campaignId,
+        @Parameter(
+            description = "Optional program label filter.") @Nullable @QueryParam(PARAMETER_PROGRAM_LABEL) String programLabel,
+        @Parameter(
+            description = "Optional partner id filter, using this format: <name>:<value>.") @Nullable @QueryParam(PARAMETER_PARTNER_ID) String partnerEventId,
+        @Parameter(
+            description = "Optional flow path filter.") @Nullable @QueryParam(PARAMETER_FLOW_PATH) String flowPath,
+        @Parameter(
+            description = "Optional visit type filter. One of: LAST_VISITED") @Nullable @QueryParam(PARAMETER_VISIT_TYPE) String visitType,
+        @Parameter(
+            description = "Optional offset filter, defaults to 0.") @Nullable @QueryParam(PARAMETER_OFFSET) Integer offset,
+        @Parameter(
+            description = "Optional limit filter, defaults to 100.") @Nullable @QueryParam(PARAMETER_LIMIT) Integer limit,
+        @Parameter(description = "Optional event id filter") @Nullable @QueryParam(PARAMETER_EVENT_ID) String eventId) {
         this.stepName = stepName;
         this.container = container;
         this.campaignId = campaignId;

@@ -31,16 +31,15 @@ public class CampaignComponentRewardSupplierIdListVariableUpdateRequest
     public CampaignComponentRewardSupplierIdListVariableUpdateRequest(
         @JsonProperty(JSON_COMPONENT_SETTING_NAME) Omissible<String> name,
         @JsonProperty(JSON_COMPONENT_SETTING_DISPLAY_NAME) Omissible<Optional<String>> displayName,
-        @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES)
-        Omissible<Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>>> values,
+        @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES) Omissible<Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>>> values,
         @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE) Omissible<VariableSource> source,
-        @JsonProperty(JSON_COMPONENT_VARIABLE_DESCRIPTION)
-        Omissible<BuildtimeEvaluatable<VariableDescriptionBuildtimeContext, Optional<String>>> description,
+        @JsonProperty(JSON_COMPONENT_VARIABLE_DESCRIPTION) Omissible<
+            BuildtimeEvaluatable<VariableDescriptionBuildtimeContext, Optional<String>>> description,
         @JsonProperty(JSON_COMPONENT_SETTING_TAGS) Omissible<Set<String>> tags,
         @JsonProperty(JSON_COMPONENT_SETTING_PRIORITY) Omissible<DeweyDecimal> priority,
-        @JsonProperty(JSON_ALLOWED_REWARD_SUPPLIER_IDS)
-        Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, List<Id<?>>>> allowedRewardSupplierIds) {
+        @JsonProperty(JSON_ALLOWED_REWARD_SUPPLIER_IDS) Omissible<
+            BuildtimeEvaluatable<CampaignBuildtimeContext, List<Id<?>>>> allowedRewardSupplierIds) {
         super(name, displayName, SettingType.REWARD_SUPPLIER_ID_LIST, values, source, description, tags, priority);
         this.allowedRewardSupplierIds = allowedRewardSupplierIds;
     }
@@ -64,8 +63,9 @@ public class CampaignComponentRewardSupplierIdListVariableUpdateRequest
     }
 
     public static final class Builder<CALLER, BUILDER_TYPE extends Builder<CALLER, BUILDER_TYPE>>
-        extends CampaignComponentVariableUpdateRequest.Builder<CALLER,
-        CampaignComponentRewardSupplierIdListVariableUpdateRequest, Builder<CALLER, BUILDER_TYPE>> {
+        extends
+        CampaignComponentVariableUpdateRequest.Builder<CALLER,
+            CampaignComponentRewardSupplierIdListVariableUpdateRequest, Builder<CALLER, BUILDER_TYPE>> {
 
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, List<Id<?>>>> allowedRewardSupplierIds =
             Omissible.omitted();

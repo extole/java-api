@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
-import com.extole.reporting.entity.report.ReportType;
+import com.extole.model.entity.report.type.ReportType;
+import com.extole.model.service.report.type.ReportTypeEmptyTagNameException;
+import com.extole.model.service.report.type.SparkReportTypeBuilder;
 import com.extole.reporting.rest.report.ReportTypeRestException;
 import com.extole.reporting.rest.report.type.ReportTypeValidationRestException;
 import com.extole.reporting.rest.report.type.SparkReportTypeUpdateRequest;
-import com.extole.reporting.service.report.type.ReportTypeEmptyTagNameException;
-import com.extole.reporting.service.report.type.SparkReportTypeBuilder;
 
 @Component
 public class SparkReportTypeUploader implements ReportTypeUpdateUploader<SparkReportTypeUpdateRequest> {

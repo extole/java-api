@@ -68,6 +68,7 @@ import com.extole.model.service.campaign.component.CampaignComponentException;
 import com.extole.model.service.campaign.component.CampaignComponentNameDuplicateException;
 import com.extole.model.service.campaign.component.CampaignComponentTypeValidationException;
 import com.extole.model.service.campaign.component.RedundantComponentReferenceException;
+import com.extole.model.service.campaign.component.facet.CampaignComponentFacetsNotFoundException;
 import com.extole.model.service.campaign.controller.exception.CampaignControllerAliasLengthException;
 import com.extole.model.service.campaign.controller.exception.CampaignControllerDuplicateException;
 import com.extole.model.service.campaign.controller.exception.CampaignControllerIllegalCharacterInNameException;
@@ -616,7 +617,8 @@ public class CampaignControllerEndpointsImpl implements CampaignControllerEndpoi
             | CampaignFlowStepException | StepDataBuildException | CampaignScheduleException
             | CampaignGlobalDeleteException | CampaignGlobalArchiveException | CampaignGlobalStateChangeException
             | CampaignComponentTypeValidationException | AuthorizationException | ComponentTypeNotFoundException
-            | ReferencedExternalElementException | IncompatibleRewardRuleException e) {
+            | ReferencedExternalElementException | IncompatibleRewardRuleException
+            | CampaignComponentFacetsNotFoundException e) {
             // TODO move the handling of these exceptions in the proper builder as part of ENG-19069
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)

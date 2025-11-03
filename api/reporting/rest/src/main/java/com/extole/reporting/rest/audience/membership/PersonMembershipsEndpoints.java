@@ -31,7 +31,7 @@ public interface PersonMembershipsEndpoints {
         @RequestBody(required = true) PersonMembershipCreateRequest createRequest,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonMembershipValidationRestException,
-            PersonMembershipRestException, PersonRestException;
+        PersonMembershipRestException, PersonRestException;
 
     @DELETE
     @Path("/{audience_id}")

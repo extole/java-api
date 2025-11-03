@@ -19,6 +19,7 @@ import com.extole.client.rest.campaign.controller.action.CampaignControllerActio
 import com.extole.common.rest.omissible.Omissible;
 import com.extole.evaluateable.BuildtimeEvaluatable;
 import com.extole.evaluateable.RuntimeEvaluatable;
+import com.extole.evaluateable.provided.Provided;
 import com.extole.id.Id;
 
 public class CampaignControllerActionScheduleUpdateRequest extends ComponentElementRequest {
@@ -33,7 +34,8 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
 
     private final Omissible<CampaignControllerActionQuality> quality;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled;
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> scheduleName;
+    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<ScheduleActionContext, String>>> scheduleName;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, List<Duration>>> delays;
     private final Omissible<List<ZonedDateTime>> dates;
     private final Omissible<Boolean> force;
@@ -46,8 +48,8 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
         @JsonProperty(JSON_ENABLED) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled,
         @JsonProperty(JSON_COMPONENT_IDS) Omissible<List<Id<ComponentResponse>>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) Omissible<List<ComponentReferenceRequest>> componentReferences,
-        @JsonProperty(JSON_SCHEDULE_NAME) Omissible<
-            BuildtimeEvaluatable<ControllerBuildtimeContext, String>> scheduleName,
+        @JsonProperty(JSON_SCHEDULE_NAME) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<ScheduleActionContext, String>>> scheduleName,
         @JsonProperty(JSON_DELAYS) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, List<Duration>>> delays,
         @JsonProperty(JSON_DATES) Omissible<List<ZonedDateTime>> dates,
         @JsonProperty(JSON_FORCE) Omissible<Boolean> force,
@@ -74,7 +76,9 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
     }
 
     @JsonProperty(JSON_SCHEDULE_NAME)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> getScheduleName() {
+    public
+        Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<ScheduleActionContext, String>>>
+        getScheduleName() {
         return scheduleName;
     }
 
@@ -89,8 +93,11 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
     }
 
     @JsonProperty(JSON_DATA)
-    public Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>>> getData() {
+    public
+        Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>>>
+        getData() {
         return data;
     }
 
@@ -106,13 +113,17 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
     public static final class Builder extends ComponentElementRequest.Builder<Builder> {
         private Omissible<CampaignControllerActionQuality> quality = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled = Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> scheduleName = Omissible.omitted();
+        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<ScheduleActionContext, String>>> scheduleName =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, List<Duration>>> delays =
             Omissible.omitted();
         private Omissible<List<ZonedDateTime>> dates = Omissible.omitted();
         private Omissible<Boolean> force = Omissible.omitted();
-        private Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>>> data = Omissible.omitted();
+        private Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>>> data =
+                    Omissible.omitted();
 
         private Builder() {
         }
@@ -127,7 +138,14 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
             return this;
         }
 
-        public Builder withScheduleName(BuildtimeEvaluatable<ControllerBuildtimeContext, String> scheduleName) {
+        public Builder withScheduleName(String scheduleName) {
+            this.scheduleName = Omissible.of(Provided.nestedOf(scheduleName));
+            return this;
+        }
+
+        public Builder withScheduleName(
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<ScheduleActionContext, String>> scheduleName) {
             this.scheduleName = Omissible.of(scheduleName);
             return this;
         }
@@ -147,12 +165,14 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
             return this;
         }
 
-        public Builder withData(Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>> data) {
+        public Builder withData(
+            Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>> data) {
             this.data = Omissible.of(data);
             return this;
         }
 
+        @Override
         public CampaignControllerActionScheduleUpdateRequest build() {
             Omissible<List<ComponentReferenceRequest>> componentReferences;
             if (componentReferenceBuilders.isEmpty()) {

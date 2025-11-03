@@ -17,8 +17,7 @@ import com.extole.model.entity.campaign.built.BuiltCampaignControllerActionSched
 
 @Component
 public class BuiltCampaignControllerActionScheduleResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionSchedule,
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionSchedule,
         BuiltCampaignControllerActionScheduleResponse> {
 
     @Override
@@ -28,15 +27,16 @@ public class BuiltCampaignControllerActionScheduleResponseMapper implements
             .map(date -> date.atZone(timeZone))
             .collect(Collectors.toList());
 
-        return new BuiltCampaignControllerActionScheduleResponse(action.getId().getValue(),
+        return new BuiltCampaignControllerActionScheduleResponse(
+            action.getId().getValue(),
             CampaignControllerActionQuality.valueOf(action.getQuality().name()), action.getScheduleName(),
             action.getScheduleDelays(), dates, action.isForce(), action.getData(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

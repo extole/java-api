@@ -26,18 +26,14 @@ public class FileAssetsQueryParams {
     private final Integer offset;
 
     public FileAssetsQueryParams(
-        @Parameter(description = "Optional name filter")
-        @QueryParam(NAME) String name,
-        @Parameter(description = "Optional userId filter")
-        @QueryParam(USER_ID) String userId,
-        @Parameter(description = "Optional statuses filter")
-        @QueryParam(STATUSES) Set<FileAssetStatus> statuses,
-        @Parameter(description = "Optional tags filter")
-        @QueryParam(TAGS) Set<String> tags,
-        @Parameter(description = "Optional limit filter, defaults to 100")
-        @QueryParam(LIMIT) @DefaultValue("100") Integer limit,
-        @Parameter(description = "Optional offset filter, defaults to 0")
-        @QueryParam(OFFSET) @DefaultValue("0") Integer offset) {
+        @Parameter(description = "Optional name filter") @QueryParam(NAME) String name,
+        @Parameter(description = "Optional userId filter") @QueryParam(USER_ID) String userId,
+        @Parameter(description = "Optional statuses filter") @QueryParam(STATUSES) Set<FileAssetStatus> statuses,
+        @Parameter(description = "Optional tags filter") @QueryParam(TAGS) Set<String> tags,
+        @Parameter(
+            description = "Optional limit filter, defaults to 100") @QueryParam(LIMIT) @DefaultValue("100") Integer limit,
+        @Parameter(
+            description = "Optional offset filter, defaults to 0") @QueryParam(OFFSET) @DefaultValue("0") Integer offset) {
         this.name = name;
         this.userId = userId;
         this.tags = tags;

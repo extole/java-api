@@ -19,13 +19,13 @@ import com.extole.common.rest.support.request.resolver.MissingIdRequestTypeResol
 import com.extole.common.rest.support.request.resolver.MissingSubTypesAnnotationException;
 import com.extole.common.rest.support.request.resolver.PolymorphicRequestTypeResolver;
 import com.extole.common.rest.support.request.resolver.PolymorphicRequestTypeResolverContext;
-import com.extole.reporting.entity.report.ReportType;
+import com.extole.model.entity.report.type.ReportType;
+import com.extole.model.service.report.type.ReportTypeNameMissingException;
+import com.extole.model.service.report.type.ReportTypeNotFoundException;
+import com.extole.model.service.report.type.ReportTypeService;
 import com.extole.reporting.rest.report.ReportTypeRestException;
 import com.extole.reporting.rest.report.type.ReportTypeEndpoints;
 import com.extole.reporting.rest.report.type.ReportTypeUpdateRequest;
-import com.extole.reporting.service.ReportTypeNotFoundException;
-import com.extole.reporting.service.report.ReportTypeService;
-import com.extole.reporting.service.report.type.ReportTypeNameMissingException;
 
 @Component
 public final class ReportTypeRequestResolver implements PolymorphicRequestTypeResolver {

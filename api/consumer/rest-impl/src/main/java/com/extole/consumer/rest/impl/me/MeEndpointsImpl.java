@@ -198,7 +198,7 @@ public class MeEndpointsImpl implements MeEndpoints {
             }
 
             consumerEventSenderService
-                .createInputEvent(authorization, requestContext.getProcessedRawEvent(), authorization.getIdentity())
+                .createInputEvent(authorization, requestContext.getProcessedRawEvent())
                 .withLockDescription(new LockDescription("me-endpoints-update-profile"))
                 .executeAndSend((personBuilder, person, inputEventBuilder) -> {
                     try {
@@ -263,7 +263,7 @@ public class MeEndpointsImpl implements MeEndpoints {
                 .withErrorCode(PersonRestException.INVALID_PERSON_EMAIL)
                 .addParameter("email", request.getEmail())
                 .withCause(e).build();
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e.getCause())

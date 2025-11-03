@@ -18,8 +18,8 @@ import com.extole.model.entity.campaign.built.BuiltCreativeArchiveId;
 
 @Component
 public class BuiltCampaignControllerActionCreativeResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionCreative, BuiltCampaignControllerActionCreativeResponse> {
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionCreative,
+        BuiltCampaignControllerActionCreativeResponse> {
 
     @Override
     public BuiltCampaignControllerActionCreativeResponse toResponse(BuiltCampaignControllerActionCreative action,
@@ -33,11 +33,11 @@ public class BuiltCampaignControllerActionCreativeResponseMapper implements
             action.getThemeVersion().orElse(StringUtils.EMPTY),
             action.getCreativeArchiveId().isPresent(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

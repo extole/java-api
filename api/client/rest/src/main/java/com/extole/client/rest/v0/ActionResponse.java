@@ -10,6 +10,7 @@ import static com.extole.client.rest.v0.ActionResponse.JSON_CHANNEL;
 import static com.extole.client.rest.v0.ActionResponse.JSON_CHANNEL_MESSAGE;
 import static com.extole.client.rest.v0.ActionResponse.JSON_CLIENT_ID;
 import static com.extole.client.rest.v0.ActionResponse.JSON_CLIENT_PARAMS;
+import static com.extole.client.rest.v0.ActionResponse.JSON_CONTAINER;
 import static com.extole.client.rest.v0.ActionResponse.JSON_CONVERSIONS_FLAG;
 import static com.extole.client.rest.v0.ActionResponse.JSON_EMAIL;
 import static com.extole.client.rest.v0.ActionResponse.JSON_FIRST_NAME;
@@ -49,7 +50,7 @@ import com.extole.common.lang.ToString;
     JSON_API_VERSION, JSON_SOURCE, JSON_EMAIL, JSON_FIRST_NAME, JSON_LAST_NAME, JSON_CHANNEL_MESSAGE, JSON_RECIPIENTS,
     JSON_SOURCE_URL, JSON_VIA_SHARE_ID, JSON_VIA_CLICK_ID, JSON_PERSON_ID, JSON_BROWSER_ID, JSON_SOURCE_IP,
     JSON_CLIENT_PARAMS, JSON_HTTP_HEADERS, JSON_PARTNER_USER_ID, JSON_PARTNER_CONVERSION_ID, JSON_QUALITY_SCORE,
-    JSON_REVIEW_STATUS, JSON_SHAREABLE_ID})
+    JSON_REVIEW_STATUS, JSON_SHAREABLE_ID, JSON_CONTAINER})
 public final class ActionResponse {
     static final String JSON_REWARDED = "rewarded";
     static final String JSON_CONVERSIONS_FLAG = "conversions_flag";
@@ -83,6 +84,7 @@ public final class ActionResponse {
     static final String JSON_REVIEW_STATUS = "review_status";
     static final String JSON_SHAREABLE_ID = "shareable_id";
     private static final String JSON_AUTH_STATUS = "auth_status";
+    static final String JSON_CONTAINER = "container";
 
     private final boolean rewarded;
     private final boolean conversionsFlag;
@@ -113,6 +115,7 @@ public final class ActionResponse {
     private final QualityScore qualityScore;
     private final ReviewStatus reviewStatus;
     private final Long shareableId;
+    private final String container;
 
     @JsonCreator
     public ActionResponse(
@@ -144,7 +147,8 @@ public final class ActionResponse {
         @JsonProperty(JSON_REVIEW_STATUS) ReviewStatus reviewStatus,
         @JsonProperty(JSON_SHAREABLE_ID) Long shareableId,
         @JsonProperty(JSON_CONVERSIONS_FLAG) boolean conversionsFlag,
-        @JsonProperty(JSON_REWARDED) boolean rewarded) {
+        @JsonProperty(JSON_REWARDED) boolean rewarded,
+        @JsonProperty(JSON_CONTAINER) String container) {
         this.actionId = actionId;
         this.clientId = clientId;
         this.campaignId = campaignId;
@@ -174,6 +178,7 @@ public final class ActionResponse {
         this.shareableId = shareableId;
         this.conversionsFlag = conversionsFlag;
         this.rewarded = rewarded;
+        this.container = container;
     }
 
     @JsonProperty(JSON_REWARDED)
@@ -324,6 +329,11 @@ public final class ActionResponse {
     @JsonProperty(JSON_SHAREABLE_ID)
     public Long getShareableId() {
         return shareableId;
+    }
+
+    @JsonProperty(JSON_CONTAINER)
+    public String getContainer() {
+        return container;
     }
 
     @Override

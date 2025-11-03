@@ -273,6 +273,8 @@ public class CustomRewardSupplierV2EndpointsImpl implements CustomRewardSupplier
 
         creationRequest.getName()
             .ifPresent(name -> rewardSupplierBuilder.withName(name));
+        creationRequest.getDisplayName()
+            .ifPresent(displayName -> rewardSupplierBuilder.withDisplayName(displayName));
         creationRequest.getFaceValue()
             .ifPresent(faceValue -> rewardSupplierBuilder.withFaceValue(faceValue));
         creationRequest.getFaceValueAlgorithmType()
@@ -544,8 +546,10 @@ public class CustomRewardSupplierV2EndpointsImpl implements CustomRewardSupplier
         }
     }
 
-    private static Map<com.extole.model.entity.reward.supplier.RewardState,
-        List<com.extole.model.entity.reward.supplier.RewardState>> mapStateTransitions(
+    private static
+        Map<com.extole.model.entity.reward.supplier.RewardState,
+            List<com.extole.model.entity.reward.supplier.RewardState>>
+        mapStateTransitions(
             Map<RewardState, List<RewardState>> stateTransitions) {
         return stateTransitions
             .entrySet()

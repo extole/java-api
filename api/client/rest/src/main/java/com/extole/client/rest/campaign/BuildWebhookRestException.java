@@ -22,6 +22,9 @@ public class BuildWebhookRestException extends ExtoleRestException {
     public static final ErrorCode<BuildWebhookRestException> WEBHOOK_INVALID_NAME = new ErrorCode<>(
         "webhook_invalid_name", 400, "Webhook allowed name length is 255 containing ASCII characters", "name");
 
+    public static final ErrorCode<BuildWebhookRestException> WEBHOOK_NAME_DUPLICATE = new ErrorCode<>(
+        "webhook_name_duplicate", 400, "Webhook name is already in use", "webhook_id", "name");
+
     public static final ErrorCode<BuildWebhookRestException> WEBHOOK_INVALID_DESCRIPTION = new ErrorCode<>(
         "webhook_invalid_description", 400, "Webhook allowed description length is 1024 containing ASCII characters",
         "description");

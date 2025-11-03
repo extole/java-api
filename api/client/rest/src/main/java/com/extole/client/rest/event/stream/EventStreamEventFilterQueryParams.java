@@ -24,14 +24,14 @@ public class EventStreamEventFilterQueryParams {
     private final String jsonPathFilters;
 
     public EventStreamEventFilterQueryParams(
-        @Parameter(description = "Optional limit filter")
-        @Nullable @QueryParam(LIMIT) @DefaultValue("50") Integer limit,
-        @Parameter(description = "Optional offset filter")
-        @Nullable @QueryParam(OFFSET) @DefaultValue("0") Integer offset,
+        @Parameter(
+            description = "Optional limit filter") @Nullable @QueryParam(LIMIT) @DefaultValue("50") Integer limit,
+        @Parameter(
+            description = "Optional offset filter") @Nullable @QueryParam(OFFSET) @DefaultValue("0") Integer offset,
         @Nullable @QueryParam(START_DATE) ZonedDateTime startDate,
         @Nullable @QueryParam(END_DATE) ZonedDateTime endDate,
-        @Parameter(description = "Optional json path filters, example: type = INPUT | data.key = value")
-        @Nullable @QueryParam(FILTERS) @DefaultValue("") String jsonPathFilters) {
+        @Parameter(
+            description = "Optional json path filters, example: type = INPUT | data.key = value") @Nullable @QueryParam(FILTERS) @DefaultValue("") String jsonPathFilters) {
         this.limit = limit;
         this.offset = offset;
         this.startDate = Optional.ofNullable(startDate);

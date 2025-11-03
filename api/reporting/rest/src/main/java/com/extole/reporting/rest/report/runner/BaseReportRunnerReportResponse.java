@@ -3,7 +3,6 @@ package com.extole.reporting.rest.report.runner;
 import java.util.Map;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -39,7 +38,6 @@ public abstract class BaseReportRunnerReportResponse {
     private final Map<String, ReportParameterResponse> parameters;
     private final Set<String> tags;
 
-    @JsonCreator
     public BaseReportRunnerReportResponse(
         @JsonProperty(JSON_TYPE) String type,
         @Deprecated // TODO should delete after switch ENG-20815

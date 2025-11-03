@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -15,6 +16,7 @@ public final class BatchVariableValuesResponse {
     private final String zone;
     private final Set<String> journeyNames;
     private final String name;
+    @JsonIgnore
     private final Map<String, String> values;
 
     private BatchVariableValuesResponse(

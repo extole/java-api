@@ -11,11 +11,24 @@ public interface Component {
 
     String getName();
 
+    String[] getTypes();
+
     String getDisplayName();
 
     @Nullable
     String getDescription();
 
+    Object getVariableValue(String name);
+
+    Object getVariableValue(String name, String... keys);
+
     ElementsQueryBuilder createElementsQuery();
+
+    @Nullable
+    Component getParent();
+
+    Component[] getChildren(String socketName);
+
+    Component[] getChildren();
 
 }

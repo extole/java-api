@@ -1,6 +1,7 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -26,13 +27,12 @@ public class ComponentEnumListVariableRestMapper
             enumListVariable.getTags(),
             enumListVariable.getPriority(),
             enumListVariable.getAllowedValues().stream()
-                .map(allowedValue -> allowedValue.getValue()).collect(
-                    Collectors.toUnmodifiableList()));
+                .map(allowedValue -> allowedValue.getValue()).toList());
 
     }
 
     @Override
-    public com.extole.model.entity.campaign.SettingType getSettingType() {
-        return com.extole.model.entity.campaign.SettingType.ENUM_LIST;
+    public List<com.extole.model.entity.campaign.SettingType> getSettingTypes() {
+        return Collections.singletonList(com.extole.model.entity.campaign.SettingType.ENUM_LIST);
     }
 }

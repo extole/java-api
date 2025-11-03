@@ -15,20 +15,24 @@ import com.extole.client.rest.campaign.built.component.BuiltCampaignComponentRes
 import com.extole.client.rest.campaign.built.component.BuiltComponentResponse;
 import com.extole.client.rest.campaign.built.component.setting.BuiltCampaignComponentSettingResponse;
 import com.extole.client.rest.campaign.component.CampaignComponentResponse;
+import com.extole.client.rest.campaign.component.ComponentOriginResponse;
 import com.extole.client.rest.campaign.component.ComponentOwner;
 import com.extole.client.rest.campaign.component.ComponentReferenceResponse;
 import com.extole.client.rest.campaign.component.ComponentResponse;
 import com.extole.client.rest.campaign.component.anchor.AnchorDetailsResponse;
 import com.extole.client.rest.campaign.component.anchor.SourceElementType;
 import com.extole.client.rest.campaign.component.asset.CampaignComponentAssetResponse;
+import com.extole.client.rest.campaign.component.facet.CampaignComponentFacetResponse;
 import com.extole.client.rest.campaign.configuration.CampaignComponentAssetConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentConfiguration;
+import com.extole.client.rest.campaign.configuration.CampaignComponentFacetConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentReferenceConfiguration;
 import com.extole.client.rest.impl.campaign.component.setting.CampaignComponentSettingRestMapper;
 import com.extole.common.rest.omissible.Omissible;
 import com.extole.id.Id;
 import com.extole.model.entity.campaign.CampaignComponent;
 import com.extole.model.entity.campaign.CampaignComponentAsset;
+import com.extole.model.entity.campaign.CampaignComponentFacet;
 import com.extole.model.entity.campaign.CampaignComponentReference;
 import com.extole.model.entity.campaign.Component;
 import com.extole.model.entity.campaign.built.BuiltCampaign;
@@ -49,10 +53,15 @@ public class CampaignComponentRestMapper {
 
     public CampaignComponentResponse toComponentResponse(CampaignComponent campaignComponent, ZoneId timeZone) {
         return new CampaignComponentResponse(campaignComponent.getId().getValue(),
-            campaignComponent.getComponentVersion(),
+            campaignComponent.getVersion(),
+            campaignComponent.getUploadVersion(),
+            campaignComponent.getOrigin().map(origin -> new ComponentOriginResponse(
+                origin.getClientId().getValue(),
+                origin.getComponentId().getValue(),
+                origin.getComponentVersion())),
             campaignComponent.getName(),
             campaignComponent.getDisplayName(),
-            campaignComponent.getType(),
+            campaignComponent.getTypes(),
             campaignComponent.getDescription().orElse(null),
             campaignComponent.getInstalledIntoSocket(),
             campaignComponent.getInstall(),
@@ -61,35 +70,44 @@ public class CampaignComponentRestMapper {
                 .map(setting -> componentSettingRestMapper.toSettingResponse(setting))
                 .collect(toList()),
             campaignComponent.getAssets().stream().map(asset -> toAssetResponse(asset)).collect(toList()),
-            campaignComponent.getCampaignComponentReferences()
+            campaignComponent.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            campaignComponent.getCampaignComponentReferences()
+            campaignComponent.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
                 .collect(Collectors.toList()),
+            campaignComponent.getFacets().stream().map(facet -> toComponentFacet(facet))
+                .collect(Collectors.toUnmodifiableList()),
             campaignComponent.getCreatedDate().atZone(timeZone),
             campaignComponent.getUpdatedDate().atZone(timeZone));
     }
 
     public CampaignComponentConfiguration toComponentConfiguration(CampaignComponent campaignComponent, ZoneId timeZone,
         Map<Id<CampaignComponent>, List<String>> absoluteNames) {
-        return new CampaignComponentConfiguration(Omissible.of(Id.valueOf(campaignComponent.getId().getValue())),
-            campaignComponent.getComponentVersion(),
-            absoluteNames.get(campaignComponent.getId()),
+        CampaignComponentRestMapperContext restMapperContext = new CampaignComponentRestMapperContext(absoluteNames);
+        List<CampaignComponentFacetConfiguration> facets = campaignComponent
+            .getFacets().stream().map(facet -> toComponentFacetConfiguration(facet))
+            .toList();
+
+        return new CampaignComponentConfiguration(
+            Omissible.of(Id.valueOf(campaignComponent.getId().getValue())),
+            campaignComponent.getUploadVersion(),
             campaignComponent.getName(),
             campaignComponent.getDisplayName(),
-            campaignComponent.getType(),
+            campaignComponent.getTypes().stream().findFirst(),
+            campaignComponent.getTypes(),
             campaignComponent.getDescription().orElse(null),
             campaignComponent.getInstalledIntoSocket(),
             campaignComponent.getInstall(),
             campaignComponent.getTags(),
             campaignComponent.getSettings().stream().map(setting -> componentSettingRestMapper
-                .toSettingConfiguration(setting)).collect(toList()),
+                .toSettingConfiguration(restMapperContext, setting)).collect(toList()),
             campaignComponent.getAssets().stream().map(asset -> toAssetConfiguration(asset)).collect(toList()),
-            campaignComponent.getCampaignComponentReferences().stream()
+            facets,
+            campaignComponent.getComponentReferences().stream()
                 .map(componentReference -> toComponentReferenceConfiguration(componentReference,
                     reference -> absoluteNames.get(reference.getComponentId()).get(0)))
                 .collect(Collectors.toList()),
@@ -100,11 +118,20 @@ public class CampaignComponentRestMapper {
     public BuiltCampaignComponentResponse toBuiltComponentResponse(BuiltCampaignComponent campaignComponent,
         ZoneId timeZone,
         BuiltCampaign campaign) {
+
+        List<CampaignComponentFacetResponse> facets = campaignComponent
+            .getFacets().stream().map(facet -> toComponentFacet(facet))
+            .toList();
         return new BuiltCampaignComponentResponse(campaignComponent.getId().getValue(),
-            campaignComponent.getComponentVersion(),
+            campaignComponent.getVersion(),
+            campaignComponent.getUploadVersion(),
+            campaignComponent.getOrigin().map(origin -> new ComponentOriginResponse(
+                origin.getClientId().getValue(),
+                origin.getComponentId().getValue(),
+                origin.getComponentVersion())),
             campaignComponent.getName(),
             campaignComponent.getDisplayName(),
-            campaignComponent.getType(),
+            campaignComponent.getTypes(),
             campaignComponent.getDescription().orElse(null),
             campaignComponent.getInstalledIntoSocket(),
             campaignComponent.getInstall(),
@@ -113,15 +140,16 @@ public class CampaignComponentRestMapper {
                 .toBuiltSettingResponse(campaign, campaignComponent.getId().getValue(), setting))
                 .collect(toList()),
             campaignComponent.getAssets().stream().map(asset -> toBuiltAssetResponse(asset)).collect(toList()),
-            campaignComponent.getCampaignComponentReferences()
+            campaignComponent.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            campaignComponent.getCampaignComponentReferences()
+            campaignComponent.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
                 .collect(Collectors.toList()),
+            facets,
             campaignComponent.getCreatedDate().atZone(timeZone),
             campaignComponent.getUpdatedDate().atZone(timeZone));
     }
@@ -129,20 +157,27 @@ public class CampaignComponentRestMapper {
     public ComponentResponse toComponentResponse(Component component, ZoneId timeZone) {
         CampaignComponent campaignComponent = component.getCampaignComponent();
         return new ComponentResponse(campaignComponent.getId().getValue(),
+            component.getCampaign().getClientId().getValue(),
             component.getCampaign().getId().getValue(),
             component.getCampaign().getState().name(),
             ComponentOwner.valueOf(component.getOwner().name()),
-            campaignComponent.getComponentVersion(),
+            campaignComponent.getVersion(),
+            campaignComponent.getUploadVersion(),
+            campaignComponent.getOrigin().map(origin -> new ComponentOriginResponse(
+                origin.getClientId().getValue(),
+                origin.getComponentId().getValue(),
+                origin.getComponentVersion())),
             campaignComponent.getName(),
             campaignComponent.getDisplayName(),
-            campaignComponent.getType(),
+            campaignComponent.getTypes(),
             campaignComponent.getDescription().orElse(null),
             campaignComponent.getInstalledIntoSocket(),
+            campaignComponent.getInstall(),
             campaignComponent.getTags(),
-            campaignComponent.getCampaignComponentReferences().stream()
+            campaignComponent.getComponentReferences().stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(toList()),
-            campaignComponent.getCampaignComponentReferences()
+            campaignComponent.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -150,40 +185,11 @@ public class CampaignComponentRestMapper {
             campaignComponent.getSettings().stream()
                 .map(setting -> componentSettingRestMapper.toSettingResponse(setting))
                 .collect(toList()),
-            campaignComponent.getCreatedDate().atZone(timeZone),
-            campaignComponent.getUpdatedDate().atZone(timeZone));
-    }
-
-    public BuiltComponentResponse toBuiltComponentResponse(Component component,
-        BuiltCampaignComponent builtCampaignComponent, ZoneId timeZone,
-        BuiltCampaign campaign) {
-        CampaignComponent campaignComponent = component.getCampaignComponent();
-        return new BuiltComponentResponse(campaignComponent.getId().getValue(),
-            component.getCampaign().getId().getValue(),
-            component.getCampaign().getState().name(),
-            ComponentOwner.valueOf(component.getOwner().name()),
-            campaignComponent.getComponentVersion(),
-            campaignComponent.getName(),
-            campaignComponent.getDisplayName(),
-            campaignComponent.getType(),
-            campaignComponent.getDescription().orElse(null),
-            campaignComponent.getInstalledIntoSocket(),
-            campaignComponent.getTags(),
-            builtCampaignComponent.getSettings().stream()
-                .map(setting -> componentSettingRestMapper.toBuiltSettingResponse(campaign,
-                    campaignComponent.getId().getValue(), setting))
+            campaignComponent.getFacets().stream().map(facet -> toComponentFacet(facet))
+                .toList(),
+            campaignComponent.getAssets().stream()
+                .map(setting -> toAssetResponse(setting))
                 .collect(toList()),
-            builtCampaignComponent
-                .getAssets().stream().map(asset -> toBuiltAssetResponse(asset)).collect(toList()),
-            campaignComponent.getCampaignComponentReferences()
-                .stream()
-                .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
-                .collect(Collectors.toList()),
-            campaignComponent.getCampaignComponentReferences()
-                .stream()
-                .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
-                    reference.getSocketNames()))
-                .collect(Collectors.toList()),
             campaignComponent.getCreatedDate().atZone(timeZone),
             campaignComponent.getUpdatedDate().atZone(timeZone));
     }
@@ -195,32 +201,43 @@ public class CampaignComponentRestMapper {
         List<BuiltCampaignComponentSettingResponse> settings = campaignComponent.getSettings().stream()
             .map(setting -> componentSettingRestMapper.toBuiltSettingResponse(campaign,
                 campaignComponent.getId().getValue(), setting))
-            .collect(Collectors.toUnmodifiableList());
+            .toList();
         List<BuiltCampaignComponentAssetResponse> assets = campaignComponent.getAssets().stream()
             .map(asset -> toBuiltAssetResponse(asset))
-            .collect(Collectors.toUnmodifiableList());
-        List<Id<ComponentResponse>> componentIds = campaignComponent.getCampaignComponentReferences().stream()
+            .toList();
+        List<Id<ComponentResponse>> componentIds = campaignComponent.getComponentReferences().stream()
             .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
-            .collect(Collectors.toUnmodifiableList());
+            .toList();
         List<ComponentReferenceResponse> componentReferences =
-            campaignComponent.getCampaignComponentReferences().stream()
+            campaignComponent.getComponentReferences().stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
+        List<CampaignComponentFacetResponse> facets = campaignComponent
+            .getFacets().stream().map(facet -> toComponentFacet(facet))
+            .toList();
 
         return new BuiltComponentResponse(campaignComponent.getId().getValue(),
+            builtComponent.getCampaign().getClientId().getValue(),
             campaign.getId().getValue(),
             campaign.getState().name(),
             ComponentOwner.valueOf(builtComponent.getOwner().name()),
-            campaignComponent.getComponentVersion(),
+            campaignComponent.getVersion(),
+            campaignComponent.getUploadVersion(),
+            campaignComponent.getOrigin().map(origin -> new ComponentOriginResponse(
+                origin.getClientId().getValue(),
+                origin.getComponentId().getValue(),
+                origin.getComponentVersion())),
             campaignComponent.getName(),
             campaignComponent.getDisplayName(),
-            campaignComponent.getType(),
+            campaignComponent.getTypes(),
             campaignComponent.getDescription().orElse(null),
             campaignComponent.getInstalledIntoSocket(),
+            campaignComponent.getInstall(),
             campaignComponent.getTags(),
             settings,
             assets,
+            facets,
             componentIds,
             componentReferences,
             campaignComponent.getCreatedDate().atZone(timeZone),
@@ -261,6 +278,14 @@ public class CampaignComponentRestMapper {
             asset.getFilename(),
             asset.getTags(),
             asset.getDescription());
+    }
+
+    public CampaignComponentFacetResponse toComponentFacet(CampaignComponentFacet componentFacet) {
+        return new CampaignComponentFacetResponse(componentFacet.getName(), componentFacet.getValue());
+    }
+
+    public CampaignComponentFacetConfiguration toComponentFacetConfiguration(CampaignComponentFacet componentFacet) {
+        return new CampaignComponentFacetConfiguration(componentFacet.getName(), componentFacet.getValue());
     }
 
 }

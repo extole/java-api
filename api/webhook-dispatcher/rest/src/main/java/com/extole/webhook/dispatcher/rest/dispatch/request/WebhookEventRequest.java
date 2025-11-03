@@ -70,9 +70,8 @@ public abstract class WebhookEventRequest {
         return ToString.create(this);
     }
 
-    public abstract static class Builder<
-        REQUEST extends WebhookEventRequest,
-        BUILDER extends Builder<REQUEST, BUILDER>> {
+    public abstract static class Builder<REQUEST extends WebhookEventRequest, BUILDER extends Builder<REQUEST,
+        BUILDER>> {
 
         protected Optional<String> eventId = Optional.empty();
         protected String clientId;

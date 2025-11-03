@@ -59,6 +59,7 @@ public class BuiltTangoRewardSupplierResponse extends BuiltRewardSupplierRespons
         @JsonProperty(LIMIT_PER_HOUR) Optional<Integer> limitPerHour,
         @JsonProperty(FACE_VALUE_TYPE) FaceValueType faceValueType,
         @JsonProperty(NAME) String name,
+        @JsonProperty(DISPLAY_NAME) Optional<String> displayName,
         @JsonProperty(BRAND_NAME) String brandName,
         @JsonProperty(BRAND_DESCRIPTION) String brandDescription,
         @JsonProperty(BRAND_DISCLAIMER) String brandDisclaimer,
@@ -73,6 +74,7 @@ public class BuiltTangoRewardSupplierResponse extends BuiltRewardSupplierRespons
         @JsonProperty(ENABLED) Boolean enabled,
         @JsonProperty(STATE_TRANSITIONS) Map<RewardState, List<RewardState>> stateTransitions) {
         super(RewardSupplierType.TANGO_V2, id, partnerRewardSupplierId, partnerRewardKeyType, displayType, name,
+            displayName,
             faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack, limitPerDay, limitPerHour,
             faceValueType, createdDate, updatedDate, componentIds, componentReferences, tags, data, enabled,
             stateTransitions);

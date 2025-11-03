@@ -21,10 +21,10 @@ public class CampaignStepDataValidationRestException extends ExtoleRestException
         new ErrorCode<>("campaign_step_data_value_expression_length_out_of_range", 400,
             "Data value expression length is out of range. Max 2000 characters", "expression", "name");
 
-    public static final ErrorCode<CampaignStepDataValidationRestException>
-        DATA_DEFAULT_VALUE_EXPRESSION_LENGTH_OUT_OF_RANGE =
-        new ErrorCode<>("campaign_step_data_default_value_expression_length_out_of_range", 400,
-            "Data default value expression length is out of range. Max 2000 characters", "expression", "name");
+    public static final ErrorCode<
+        CampaignStepDataValidationRestException> DATA_DEFAULT_VALUE_EXPRESSION_LENGTH_OUT_OF_RANGE =
+            new ErrorCode<>("campaign_step_data_default_value_expression_length_out_of_range", 400,
+                "Data default value expression length is out of range. Max 2000 characters", "expression", "name");
 
     public static final ErrorCode<CampaignStepDataValidationRestException> DUPLICATE_DATA_NAME =
         new ErrorCode<>("campaign_step_duplicate_data_name", 400, "Data name is duplicated", "name");

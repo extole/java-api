@@ -7,5 +7,4 @@ public interface Trigger {
     String getName();
 
     String getType();
-
 }

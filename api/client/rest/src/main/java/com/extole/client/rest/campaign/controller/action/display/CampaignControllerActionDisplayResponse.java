@@ -52,20 +52,22 @@ public final class CampaignControllerActionDisplayResponse extends CampaignContr
     }
 
     @JsonProperty(JSON_BODY)
-    public BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<DisplayActionContext, String>> getBody() {
+    public BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<DisplayActionContext, String>>
+        getBody() {
         return body;
     }
 
     @JsonProperty(JSON_HEADERS)
-    public BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<DisplayActionContext, Map<String, String>>> getHeaders() {
+    public
+        BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<DisplayActionContext, Map<String, String>>>
+        getHeaders() {
         return headers;
     }
 
     @JsonProperty(JSON_RESPONSE)
-    public BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<DisplayActionResponseContext, ApiResponse>> getResponse() {
+    public
+        BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<DisplayActionResponseContext, ApiResponse>>
+        getResponse() {
         return response;
     }
 

@@ -1,6 +1,5 @@
 package com.extole.client.rest.campaign.configuration;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -26,7 +25,6 @@ public abstract class FireAsPersonIdentification {
     private final FireAsPersonIdenticationType personIdentificationType;
     private final String value;
 
-    @JsonCreator
     protected FireAsPersonIdentification(
         @JsonProperty(JSON_PERSON_IDENTIFICATION_TYPE) FireAsPersonIdenticationType personIdentificationType,
         @JsonProperty(JSON_VALUE) String value) {

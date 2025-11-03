@@ -1,5 +1,7 @@
 package com.extole.api.client.security.key.response;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -29,5 +31,20 @@ public class OAuthResponseImpl implements OAuthResponse {
     @JsonProperty(JSON_EXPIRES_IN)
     public Long getExpiresIn() {
         return expiresIn;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        OAuthResponseImpl that = (OAuthResponseImpl) other;
+        return Objects.equals(getAccessToken(), that.getAccessToken())
+            && Objects.equals(getExpiresIn(), that.getExpiresIn());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAccessToken(), getExpiresIn());
     }
 }

@@ -1,5 +1,6 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,18 +23,13 @@ import com.extole.model.service.campaign.setting.VariableValueKeyLengthException
 @Component
 public class EnumListVariableUploader implements SettingUploader<CampaignComponentEnumListVariableConfiguration> {
 
-    private final DefaultSettingUploader defaultSettingUploader;
-
-    public EnumListVariableUploader(DefaultSettingUploader defaultSettingUploader) {
-        this.defaultSettingUploader = defaultSettingUploader;
-    }
-
     @Override
-    public void upload(CampaignUploadContext context, CampaignComponentConfiguration component,
+    public void upload(SettingUploaderRegistry uploaderRegistry,
+        CampaignUploadContext context, CampaignComponentConfiguration component,
         CampaignComponentEnumListVariableConfiguration variable)
         throws SettingNameLengthException, SettingInvalidNameException, SettingDisplayNameLengthException,
         SettingIllegalCharacterInDisplayNameException, VariableValueKeyLengthException, SettingTagLengthException {
-        defaultSettingUploader.upload(context, component, variable);
+        uploaderRegistry.getDefaultUploader().upload(uploaderRegistry, context, component, variable);
 
         EnumVariableBuilder variableBuilder = (EnumVariableBuilder) context.get(component, variable);
         List<EnumVariableMember> enumVariableMemberList = variable.getAllowedValues()
@@ -44,11 +40,12 @@ public class EnumListVariableUploader implements SettingUploader<CampaignCompone
     }
 
     @Override
-    public void upload(CampaignUploadContext context, CampaignComponentSocketConfiguration socket,
+    public void upload(SettingUploaderRegistry uploaderRegistry,
+        CampaignUploadContext context, CampaignComponentSocketConfiguration socket,
         CampaignComponentConfiguration component, CampaignComponentEnumListVariableConfiguration variable)
         throws SettingNameLengthException, SettingInvalidNameException, SettingDisplayNameLengthException,
         SettingIllegalCharacterInDisplayNameException, VariableValueKeyLengthException, SettingTagLengthException {
-        defaultSettingUploader.upload(context, socket, component, variable);
+        uploaderRegistry.getDefaultUploader().upload(uploaderRegistry, context, socket, component, variable);
 
         EnumVariableBuilder variableBuilder = (EnumVariableBuilder) context.get(component, socket, variable);
         List<EnumVariableMember> enumVariableMemberList = variable.getAllowedValues()
@@ -59,7 +56,7 @@ public class EnumListVariableUploader implements SettingUploader<CampaignCompone
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.ENUM_LIST;
+    public List<SettingType> getSettingTypes() {
+        return Collections.singletonList(SettingType.ENUM_LIST);
     }
 }

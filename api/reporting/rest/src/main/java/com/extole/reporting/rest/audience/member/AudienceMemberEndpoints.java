@@ -2,6 +2,7 @@ package com.extole.reporting.rest.audience.member;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.time.ZoneId;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.extole.api.person.Person;
 import com.extole.common.rest.authorization.Scope;
 import com.extole.common.rest.authorization.UserAccessTokenParam;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
+import com.extole.common.rest.time.TimeZoneParam;
 import com.extole.id.Id;
 
 @Path("/v1/audiences/{audience_id}/members")
@@ -40,10 +42,11 @@ public interface AudienceMemberEndpoints {
     @Path("/view/details")
     @Produces(APPLICATION_JSON)
     @Operation(summary = "List audience members")
-    List<AudienceMemberResponse> listPeople(
+    List<AudienceMemberWithDataResponse> listPeople(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
         @PathParam("audience_id") Id<Audience> audienceId,
-        @BeanParam AudienceMemberQueryParameters queryParameters)
+        @BeanParam AudienceMemberQueryParameters queryParameters,
+        @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, AudienceMemberRestException;
 
     @GET
@@ -52,7 +55,8 @@ public interface AudienceMemberEndpoints {
         @PathParam("audience_id") Id<Audience> audienceId,
         @Nullable @HeaderParam(HttpHeaders.CONTENT_TYPE) String contentType,
         @Nullable @PathParam("format") String format,
-        @BeanParam AudienceMemberDownloadParameters downloadParameters)
+        @BeanParam AudienceMemberDownloadParameters downloadParameters,
+        @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, AudienceMemberRestException, AudienceMemberDownloadRestException;
 
 }

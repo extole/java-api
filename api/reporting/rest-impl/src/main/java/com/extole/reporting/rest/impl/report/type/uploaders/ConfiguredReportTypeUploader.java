@@ -11,32 +11,32 @@ import org.springframework.stereotype.Component;
 import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
-import com.extole.reporting.entity.report.Report;
-import com.extole.reporting.entity.report.ReportType;
-import com.extole.reporting.entity.report.ReportTypeVisibility;
-import com.extole.reporting.entity.report.type.ConfiguredReportType;
+import com.extole.model.entity.report.type.ConfiguredReportType;
+import com.extole.model.entity.report.type.Format;
+import com.extole.model.entity.report.type.ReportType;
+import com.extole.model.entity.report.type.ReportTypeVisibility;
+import com.extole.model.service.report.type.ConfiguredReportTypeBuilder;
+import com.extole.model.service.report.type.ParentReportTypeIdMissingException;
+import com.extole.model.service.report.type.ReportTypeClientsException;
+import com.extole.model.service.report.type.ReportTypeDescriptionInvalidLinkException;
+import com.extole.model.service.report.type.ReportTypeDescriptionTooLongException;
+import com.extole.model.service.report.type.ReportTypeDisplayNameInvalidException;
+import com.extole.model.service.report.type.ReportTypeDisplayNameTooLongException;
+import com.extole.model.service.report.type.ReportTypeEmptyParameterNameException;
+import com.extole.model.service.report.type.ReportTypeEmptyTagNameException;
+import com.extole.model.service.report.type.ReportTypeInvalidAllowedScopesException;
+import com.extole.model.service.report.type.ReportTypeNotFoundException;
+import com.extole.model.service.report.type.ReportTypeParameterDescriptionTooLongException;
+import com.extole.model.service.report.type.ReportTypeStaticParameterChangeException;
+import com.extole.model.service.report.type.ReportTypeStaticParameterCreateException;
+import com.extole.model.service.report.type.ReportTypeStaticParameterDeleteException;
+import com.extole.model.service.report.type.ReportTypeUpdateManagedByGitException;
+import com.extole.model.service.report.type.ReportTypeVisibilityException;
 import com.extole.reporting.rest.report.ReportTypeRestException;
 import com.extole.reporting.rest.report.type.ConfiguredReportTypeCreateRequest;
 import com.extole.reporting.rest.report.type.ConfiguredReportTypeUpdateRequest;
 import com.extole.reporting.rest.report.type.ConfiguredReportTypeValidationRestException;
 import com.extole.reporting.rest.report.type.ReportTypeValidationRestException;
-import com.extole.reporting.service.ReportTypeNotFoundException;
-import com.extole.reporting.service.report.ReportDisplayNameInvalidException;
-import com.extole.reporting.service.report.type.ConfiguredReportTypeBuilder;
-import com.extole.reporting.service.report.type.ParentReportTypeIdMissingException;
-import com.extole.reporting.service.report.type.ReportTypeClientsException;
-import com.extole.reporting.service.report.type.ReportTypeDescriptionInvalidLinkException;
-import com.extole.reporting.service.report.type.ReportTypeDescriptionTooLongException;
-import com.extole.reporting.service.report.type.ReportTypeDisplayNameTooLongException;
-import com.extole.reporting.service.report.type.ReportTypeEmptyParameterNameException;
-import com.extole.reporting.service.report.type.ReportTypeEmptyTagNameException;
-import com.extole.reporting.service.report.type.ReportTypeInvalidAllowedScopesException;
-import com.extole.reporting.service.report.type.ReportTypeParameterDescriptionTooLongException;
-import com.extole.reporting.service.report.type.ReportTypeStaticParameterChangeException;
-import com.extole.reporting.service.report.type.ReportTypeStaticParameterCreateException;
-import com.extole.reporting.service.report.type.ReportTypeStaticParameterDeleteException;
-import com.extole.reporting.service.report.type.ReportTypeUpdateManagedByGitException;
-import com.extole.reporting.service.report.type.ReportTypeVisibilityException;
 
 @Component
 public class ConfiguredReportTypeUploader
@@ -77,9 +77,9 @@ public class ConfiguredReportTypeUploader
                 builder
                     .withVisibility(ReportTypeVisibility.valueOf(reportTypeRequest.getVisibility().get().name()));
             }
-            Optional<Set<Report.Format>> formats = reportTypeRequest.getFormats()
+            Optional<Set<Format>> formats = reportTypeRequest.getFormats()
                 .map(value -> value.stream()
-                    .map(reportFormat -> Report.Format.valueOf(reportFormat.name()))
+                    .map(reportFormat -> Format.valueOf(reportFormat.name()))
                     .collect(Collectors.toSet()));
             if (formats.isPresent()) {
                 builder.withFormats(formats.get());
@@ -135,7 +135,7 @@ public class ConfiguredReportTypeUploader
             throw RestExceptionBuilder.newBuilder(ConfiguredReportTypeValidationRestException.class)
                 .withErrorCode(ConfiguredReportTypeValidationRestException.MISSING_PARENT_REPORT_TYPE_ID)
                 .withCause(e).build();
-        } catch (ReportDisplayNameInvalidException e) {
+        } catch (ReportTypeDisplayNameInvalidException e) {
             throw RestExceptionBuilder.newBuilder(ReportTypeValidationRestException.class)
                 .withErrorCode(ReportTypeValidationRestException.DISPLAY_NAME_ILLEGAL_CHARACTER)
                 .addParameter("name", reportTypeRequest.getDisplayName())
@@ -177,9 +177,9 @@ public class ConfiguredReportTypeUploader
             if (reportTypeRequest.getVisibility().isPresent()) {
                 builder.withVisibility(ReportTypeVisibility.valueOf(reportTypeRequest.getVisibility().get().name()));
             }
-            Optional<Set<Report.Format>> formats = reportTypeRequest.getFormats()
+            Optional<Set<Format>> formats = reportTypeRequest.getFormats()
                 .map(value -> value.stream()
-                    .map(reportFormat -> Report.Format.valueOf(reportFormat.name()))
+                    .map(reportFormat -> Format.valueOf(reportFormat.name()))
                     .collect(Collectors.toSet()));
             if (formats.isPresent()) {
                 builder.withFormats(formats.get());
@@ -222,7 +222,7 @@ public class ConfiguredReportTypeUploader
                 .withErrorCode(ReportTypeValidationRestException.INVALID_DESCRIPTION_LINK)
                 .withCause(e)
                 .build();
-        } catch (ReportDisplayNameInvalidException e) {
+        } catch (ReportTypeDisplayNameInvalidException e) {
             throw RestExceptionBuilder.newBuilder(ReportTypeValidationRestException.class)
                 .withErrorCode(ReportTypeValidationRestException.DISPLAY_NAME_ILLEGAL_CHARACTER)
                 .addParameter("name", reportTypeRequest.getDisplayName())

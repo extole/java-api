@@ -24,7 +24,7 @@ public class CampaignControllerActionFulfillRewardConfiguration extends Campaign
     private final String rewardId;
     private final Optional<String> message;
     private final Optional<String> success;
-    private final Optional<String> partnerRewardId;
+    private final RuntimeEvaluatable<RewardActionContext, Optional<String>> partnerRewardId;
     private final RuntimeEvaluatable<RewardActionContext, Optional<Instant>> eventTime;
 
     public CampaignControllerActionFulfillRewardConfiguration(
@@ -35,7 +35,7 @@ public class CampaignControllerActionFulfillRewardConfiguration extends Campaign
         @JsonProperty(JSON_REWARD_ID) String rewardId,
         @JsonProperty(JSON_MESSAGE) Optional<String> message,
         @JsonProperty(JSON_SUCCESS) Optional<String> success,
-        @JsonProperty(JSON_PARTNER_REWARD_ID) Optional<String> partnerRewardId,
+        @JsonProperty(JSON_PARTNER_REWARD_ID) RuntimeEvaluatable<RewardActionContext, Optional<String>> partnerRewardId,
         @JsonProperty(JSON_EVENT_TIME) RuntimeEvaluatable<RewardActionContext, Optional<Instant>> eventTime) {
         super(actionId, CampaignControllerActionType.FULFILL_REWARD, quality, enabled, componentReferences);
         this.rewardId = rewardId;
@@ -61,7 +61,7 @@ public class CampaignControllerActionFulfillRewardConfiguration extends Campaign
     }
 
     @JsonProperty(JSON_PARTNER_REWARD_ID)
-    public Optional<String> getPartnerRewardId() {
+    public RuntimeEvaluatable<RewardActionContext, Optional<String>> getPartnerRewardId() {
         return partnerRewardId;
     }
 

@@ -39,8 +39,9 @@ import com.extole.model.service.reward.supplier.custom.reward.NegativeMissingFul
 import com.extole.model.service.reward.supplier.custom.reward.NegativeMissingFulfillmentAutoFailDelayException;
 
 @Component
-public class CustomRewardSupplierCreateRequestMapper extends BaseRewardSupplierCreateRequestMapper<
-    CustomRewardSupplierCreateRequest, CustomRewardSupplier, CustomRewardSupplierBuilder> {
+public class CustomRewardSupplierCreateRequestMapper extends
+    BaseRewardSupplierCreateRequestMapper<CustomRewardSupplierCreateRequest, CustomRewardSupplier,
+        CustomRewardSupplierBuilder> {
 
     private final RewardSupplierService rewardSupplierService;
     private final RewardSupplierRestMapper rewardSupplierRestMapper;

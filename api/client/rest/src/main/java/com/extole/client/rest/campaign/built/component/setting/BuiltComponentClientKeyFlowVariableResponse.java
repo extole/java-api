@@ -34,11 +34,12 @@ public class BuiltComponentClientKeyFlowVariableResponse
         @JsonProperty(JSON_COMPONENT_VARIABLE_DESCRIPTION) Optional<String> description,
         @JsonProperty(JSON_COMPONENT_SETTING_TAGS) Set<String> tags,
         @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE_COMPONENT_ID) Id<ComponentResponse> sourceComponentId,
+        @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE_VERSION) Optional<Integer> sourceVersion,
         @JsonProperty(JSON_COMPONENT_SETTING_PRIORITY) DeweyDecimal priority,
         @JsonProperty(JSON_COMPONENT_VARIABLE_REDIRECT_URI) String redirectUri,
         @JsonProperty(JSON_COMPONENT_VARIABLE_CLIENT_KEY_URL) String clientKeyUrl,
         @JsonProperty(JSON_COMPONENT_VARIABLE_CLIENT_KEY_OAUTH_FLOW) String clientKeyOAuthFlow) {
-        super(name, displayName, type, values, source, description, tags, sourceComponentId, priority);
+        super(name, displayName, type, values, source, description, tags, sourceComponentId, sourceVersion, priority);
         this.redirectUri = redirectUri;
         this.clientKeyUrl = clientKeyUrl;
         this.clientKeyOAuthFlow = clientKeyOAuthFlow;

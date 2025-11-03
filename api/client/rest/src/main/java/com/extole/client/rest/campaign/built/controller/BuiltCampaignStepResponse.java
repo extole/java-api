@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.extole.client.rest.campaign.built.controller.trigger.BuiltCampaignControllerTriggerResponse;
+import com.extole.client.rest.campaign.built.step.data.BuiltStepDataResponse;
 import com.extole.client.rest.campaign.component.ComponentElementResponse;
 import com.extole.client.rest.campaign.component.ComponentReferenceResponse;
 import com.extole.client.rest.campaign.component.ComponentResponse;
@@ -45,12 +46,14 @@ public abstract class BuiltCampaignStepResponse extends ComponentElementResponse
     static final String JSON_TRIGGERS = "triggers";
     static final String JSON_CREATED_DATE = "created_date";
     static final String JSON_UPDATED_DATE = "updated_date";
+    static final String JSON_DATA = "data";
 
     private final String id;
     private final boolean enabled;
     private final List<BuiltCampaignControllerTriggerResponse> triggers;
     private final ZonedDateTime createdDate;
     private final ZonedDateTime updatedDate;
+    private final List<BuiltStepDataResponse> data;
 
     public BuiltCampaignStepResponse(
         String id,
@@ -59,13 +62,15 @@ public abstract class BuiltCampaignStepResponse extends ComponentElementResponse
         List<Id<ComponentResponse>> componentIds,
         List<ComponentReferenceResponse> componentReferences,
         ZonedDateTime createdDate,
-        ZonedDateTime updatedDate) {
+        ZonedDateTime updatedDate,
+        List<BuiltStepDataResponse> data) {
         super(componentReferences, componentIds);
         this.id = id;
         this.enabled = enabled;
         this.triggers = triggers != null ? ImmutableList.copyOf(triggers) : ImmutableList.of();
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
+        this.data = data != null ? ImmutableList.copyOf(data) : ImmutableList.of();
     }
 
     public abstract StepType getType();
@@ -93,6 +98,11 @@ public abstract class BuiltCampaignStepResponse extends ComponentElementResponse
     @JsonProperty(JSON_UPDATED_DATE)
     public ZonedDateTime getUpdatedDate() {
         return updatedDate;
+    }
+
+    @JsonProperty(JSON_DATA)
+    public List<BuiltStepDataResponse> getData() {
+        return data;
     }
 
 }

@@ -1,5 +1,6 @@
 description = """Context API"""
 
+apply from: rootProject.file("maven_release.gradle")
 
 dependencies {
     api project(':common-lang')
@@ -7,8 +8,6 @@ dependencies {
     api project(':common-log')
     api project(':common-dewey-decimal')
 
-    libraries.with {
-        implementation jsr305
-        implementation swaggerjaxrs2
-    }
+    implementation libs.jsr305
+    implementation libs.swaggerjaxrs2
 }

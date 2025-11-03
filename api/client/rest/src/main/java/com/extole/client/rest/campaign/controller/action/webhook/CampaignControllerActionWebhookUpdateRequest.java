@@ -65,8 +65,11 @@ public class CampaignControllerActionWebhookUpdateRequest extends ComponentEleme
     }
 
     @JsonProperty(JSON_DATA)
-    public Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>>> getData() {
+    public
+        Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>>>
+        getData() {
         return data;
     }
 
@@ -80,9 +83,10 @@ public class CampaignControllerActionWebhookUpdateRequest extends ComponentEleme
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<Id<?>>>> webhookId =
             Omissible.omitted();
-        private Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>>> data =
-                Omissible.omitted();
+        private Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>>> data =
+                    Omissible.omitted();
 
         private Builder() {
         }

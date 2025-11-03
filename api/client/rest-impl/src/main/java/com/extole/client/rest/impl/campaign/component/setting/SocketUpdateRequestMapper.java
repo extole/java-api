@@ -1,7 +1,7 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -9,7 +9,13 @@ import org.springframework.stereotype.Component;
 
 import com.extole.client.rest.campaign.component.setting.CampaignComponentSocketUpdateRequest;
 import com.extole.client.rest.campaign.component.setting.CampaignComponentVariableRequest;
+import com.extole.client.rest.campaign.component.setting.ComponentFacetSocketFilterUpdateRequest;
+import com.extole.client.rest.campaign.component.setting.ComponentTypeSocketFilterUpdateRequest;
 import com.extole.client.rest.campaign.component.setting.SettingType;
+import com.extole.client.rest.campaign.component.setting.SocketFilterUpdateRequest;
+import com.extole.model.entity.campaign.SocketFilterType;
+import com.extole.model.service.campaign.setting.ComponentFacetSocketFilterBuilder;
+import com.extole.model.service.campaign.setting.ComponentTypeSocketFilterBuilder;
 import com.extole.model.service.campaign.setting.SettingDisplayNameLengthException;
 import com.extole.model.service.campaign.setting.SettingIllegalCharacterInDisplayNameException;
 import com.extole.model.service.campaign.setting.SettingInvalidNameException;
@@ -35,8 +41,14 @@ public class SocketUpdateRequestMapper
         throws SettingIllegalCharacterInDisplayNameException, SettingTagLengthException,
         SettingDisplayNameLengthException, VariableValueKeyLengthException, SettingNameLengthException,
         SettingInvalidNameException {
-        updateRequest.getFilter().ifPresent(filter -> filter.getComponentType()
-            .ifPresent(componentType -> builder.withFilter().withComponentType(componentType)));
+
+        if (updateRequest.getFilters().isPresent()) {
+            builder.clearFilters();
+            List<SocketFilterUpdateRequest> filters = updateRequest.getFilters().getValue();
+            for (SocketFilterUpdateRequest socketFilter : filters) {
+                populateSocketFilterBuilder(builder, socketFilter);
+            }
+        }
 
         updateRequest.getDescription().ifPresent(builder::withDescription);
 
@@ -45,15 +57,15 @@ public class SocketUpdateRequestMapper
             for (CampaignComponentVariableRequest parameter : updateRequest.getParameters()
                 .getValue()
                 .stream()
-                .filter(variableRequest -> Objects.nonNull(variableRequest)).collect(Collectors.toList())) {
+                .filter(variableRequest -> Objects.nonNull(variableRequest)).toList()) {
                 populateVariableBuilder(builder, parameter);
             }
         }
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.MULTI_SOCKET;
+    public List<SettingType> getSettingTypes() {
+        return List.of(SettingType.MULTI_SOCKET, SettingType.SOCKET);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -79,6 +91,33 @@ public class SocketUpdateRequestMapper
             variableBuilder.withTags(tags);
         });
         parameter.getPriority().ifPresent(value -> variableBuilder.withPriority(value));
+    }
+
+    private void populateSocketFilterBuilder(SocketBuilder socketBuilder, SocketFilterUpdateRequest request) {
+        if (com.extole.client.rest.campaign.component.setting.SocketFilterType.COMPONENT_TYPE == request.getType()) {
+            ComponentTypeSocketFilterUpdateRequest exactRequest =
+                (ComponentTypeSocketFilterUpdateRequest) request;
+            exactRequest.getComponentType().ifPresent(componentType -> {
+                ComponentTypeSocketFilterBuilder builder =
+                    socketBuilder.withFilter(SocketFilterType.valueOf(request.getType().name()));
+                builder.withComponentType(componentType);
+            });
+            return;
+        }
+        if (com.extole.client.rest.campaign.component.setting.SocketFilterType.FACET == request.getType()) {
+            ComponentFacetSocketFilterUpdateRequest exactRequest =
+                (ComponentFacetSocketFilterUpdateRequest) request;
+            ComponentFacetSocketFilterBuilder builder =
+                socketBuilder.withFilter(SocketFilterType.valueOf(request.getType().name()));
+            exactRequest.getName().ifPresent(name -> {
+                builder.withName(name);
+            });
+            exactRequest.getValue().ifPresent(value -> {
+                builder.withValue(value);
+            });
+            return;
+        }
+        throw new IllegalArgumentException("Can't map filter type: " + request.getType());
     }
 
 }

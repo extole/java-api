@@ -3,7 +3,6 @@ package com.extole.client.rest.person.iss;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -28,7 +27,6 @@ public abstract class IdentityLogResponse {
     private final Optional<String> oldIdentityKeyValue;
     private final Optional<ZonedDateTime> logDate;
 
-    @JsonCreator
     protected IdentityLogResponse(
         @JsonProperty(JSON_IDENTITY_LOG_TYPE) IdentityLogType identityLogType,
         @JsonProperty(JSON_OLD_IDENTITY_KEY_NAME) Optional<String> oldIdentityKeyName,
@@ -60,6 +58,7 @@ public abstract class IdentityLogResponse {
         return logDate;
     }
 
+    @Override
     public String toString() {
         return ToString.create(this);
     }

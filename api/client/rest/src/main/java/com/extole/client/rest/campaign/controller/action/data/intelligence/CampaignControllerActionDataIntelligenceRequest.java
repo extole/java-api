@@ -26,8 +26,8 @@ public class CampaignControllerActionDataIntelligenceRequest extends ComponentEl
 
     private final Omissible<CampaignControllerActionQuality> quality;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled;
-    private final Omissible<BuildtimeEvaluatable<
-        ControllerBuildtimeContext, DataIntelligenceProviderType>> intelligenceProviderType;
+    private final Omissible<
+        BuildtimeEvaluatable<ControllerBuildtimeContext, DataIntelligenceProviderType>> intelligenceProviderType;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> eventName;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Duration>> profileRiskUpdateInterval;
 
@@ -36,8 +36,8 @@ public class CampaignControllerActionDataIntelligenceRequest extends ComponentEl
         @JsonProperty(JSON_ENABLED) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled,
         @JsonProperty(JSON_COMPONENT_IDS) Omissible<List<Id<ComponentResponse>>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) Omissible<List<ComponentReferenceRequest>> componentReferences,
-        @JsonProperty(JSON_INTELLIGENCE_PROVIDER) Omissible<BuildtimeEvaluatable<
-            ControllerBuildtimeContext, DataIntelligenceProviderType>> intelligenceProviderType,
+        @JsonProperty(JSON_INTELLIGENCE_PROVIDER) Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, DataIntelligenceProviderType>> intelligenceProviderType,
         @JsonProperty(JSON_EVENT_NAME) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> eventName,
         @JsonProperty(JSON_PROFILE_RISK_UPDATE_INTERVAL) Omissible<
             BuildtimeEvaluatable<ControllerBuildtimeContext, Duration>> profileRiskUpdateInterval) {

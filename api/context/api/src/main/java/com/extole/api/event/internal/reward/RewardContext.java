@@ -36,4 +36,6 @@ public interface RewardContext {
 
     String getSupplierType();
 
+    String getRewardSupplierId();
+
 }

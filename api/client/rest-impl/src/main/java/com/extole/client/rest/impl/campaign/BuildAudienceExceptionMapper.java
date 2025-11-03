@@ -16,32 +16,30 @@ public final class BuildAudienceExceptionMapper {
     private BuildAudienceExceptionMapper() {
     }
 
-    public BuildAudienceRestException map(BuildAudienceException e) {
-        return internalMap(e);
+    public BuildAudienceRestException map(BuildAudienceException exception) {
+        return internalMap(exception);
     }
 
-    private BuildAudienceRestException internalMap(BuildAudienceException e) {
-        if (e instanceof MissingAudienceNameException) {
-            MissingAudienceNameException ex = (MissingAudienceNameException) e;
+    private BuildAudienceRestException internalMap(BuildAudienceException exception) {
+        if (exception instanceof MissingAudienceNameException castedException) {
             return RestExceptionBuilder.newBuilder(BuildAudienceRestException.class)
                 .withErrorCode(BuildAudienceRestException.MISSING_AUDIENCE_NAME)
-                .withCause(ex)
+                .withCause(castedException)
                 .build();
         }
-        if (e instanceof InvalidAudienceNameException) {
-            InvalidAudienceNameException ex = (InvalidAudienceNameException) e;
+        if (exception instanceof InvalidAudienceNameException castedException) {
             return RestExceptionBuilder.newBuilder(BuildAudienceRestException.class)
                 .withErrorCode(BuildAudienceRestException.INVALID_AUDIENCE_NAME)
-                .addParameter("name", ex.getName())
-                .withCause(e)
+                .addParameter("name", castedException.getName())
+                .withCause(exception)
                 .build();
         }
         return RestExceptionBuilder.newBuilder(BuildAudienceRestException.class)
             .withErrorCode(BuildAudienceRestException.AUDIENCE_BUILD_FAILED)
-            .addParameter("audience_id", e.getAudienceId())
-            .addParameter("evaluatable_name", e.getEvaluatableName())
-            .addParameter("evaluatable", e.getEvaluatable().toString())
-            .withCause(e)
+            .addParameter("audience_id", exception.getAudienceId())
+            .addParameter("evaluatable_name", exception.getEvaluatableName())
+            .addParameter("evaluatable", exception.getEvaluatable().toString())
+            .withCause(exception)
             .build();
     }
 }

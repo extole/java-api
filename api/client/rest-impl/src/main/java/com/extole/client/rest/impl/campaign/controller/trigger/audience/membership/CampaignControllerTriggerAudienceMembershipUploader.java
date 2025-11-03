@@ -30,6 +30,8 @@ public class CampaignControllerTriggerAudienceMembershipUploader
         CampaignControllerTriggerAudienceMembershipBuilder triggerBuilder = context.get(step, trigger);
 
         trigger.getName().ifDefined(name -> triggerBuilder.withName(name));
+        trigger.getParentTriggerGroupName()
+            .ifDefined((value) -> triggerBuilder.withParentTriggerGroupName(value));
         trigger.getEnabled().ifDefined(enabled -> triggerBuilder.withEnabled(enabled));
         trigger.getTriggerPhase().ifDefined(
             triggerPhase -> triggerBuilder

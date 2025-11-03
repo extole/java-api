@@ -36,8 +36,8 @@ public abstract class FileBasedClientKeyCreateRequest extends ClientKeyCreateReq
         super(type, algorithm, name, description, partnerKeyId, tags, componentIds, componentReferences);
     }
 
-    public abstract static class Builder<REQUEST extends FileBasedClientKeyCreateRequest,
-        BUILDER extends FileBasedClientKeyCreateRequest.Builder<REQUEST, BUILDER>>
+    public abstract static class Builder<REQUEST extends FileBasedClientKeyCreateRequest, BUILDER extends FileBasedClientKeyCreateRequest.Builder<
+        REQUEST, BUILDER>>
         extends ClientKeyCreateRequest.Builder<REQUEST, BUILDER> {
 
         protected Builder() {

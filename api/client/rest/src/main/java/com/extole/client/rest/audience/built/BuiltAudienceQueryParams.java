@@ -21,16 +21,13 @@ public class BuiltAudienceQueryParams {
     private final Integer offset;
 
     public BuiltAudienceQueryParams(
-        @Parameter(description = "Optional name filter")
-        @Nullable @QueryParam(NAME) String name,
-        @Parameter(description = "Optional includeArchived filter")
-        @QueryParam(INCLUDE_ARCHIVED) @DefaultValue("false") boolean includeArchived,
-        @Parameter(description = "Optional enabled filter")
-        @QueryParam(ENABLED) @DefaultValue("ANY") EnableFilter enabled,
-        @Parameter(description = "Optional limit filter")
-        @QueryParam(LIMIT) @DefaultValue("1000") Integer limit,
-        @Parameter(description = "Optional offset filter")
-        @QueryParam(OFFSET) @DefaultValue("0") Integer offset) {
+        @Parameter(description = "Optional name filter") @Nullable @QueryParam(NAME) String name,
+        @Parameter(
+            description = "Optional includeArchived filter") @QueryParam(INCLUDE_ARCHIVED) @DefaultValue("false") boolean includeArchived,
+        @Parameter(
+            description = "Optional enabled filter") @QueryParam(ENABLED) @DefaultValue("ANY") EnableFilter enabled,
+        @Parameter(description = "Optional limit filter") @QueryParam(LIMIT) @DefaultValue("1000") Integer limit,
+        @Parameter(description = "Optional offset filter") @QueryParam(OFFSET) @DefaultValue("0") Integer offset) {
         this.name = name;
         this.includeArchived = includeArchived;
         this.enabled = enabled;

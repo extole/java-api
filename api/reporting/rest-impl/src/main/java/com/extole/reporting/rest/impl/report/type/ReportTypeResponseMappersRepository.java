@@ -8,8 +8,8 @@ import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.extole.reporting.entity.report.ReportType;
-import com.extole.reporting.entity.report.ReportType.Type;
+import com.extole.model.entity.report.type.ReportType;
+import com.extole.model.entity.report.type.ReportType.Type;
 import com.extole.reporting.rest.impl.report.execution.ReportRuntimeException;
 import com.extole.reporting.rest.impl.report.type.mappers.ReportTypeResponseMapper;
 

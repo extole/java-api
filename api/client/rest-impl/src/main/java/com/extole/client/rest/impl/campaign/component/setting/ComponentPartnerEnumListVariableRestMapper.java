@@ -1,5 +1,7 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -28,14 +30,13 @@ public class ComponentPartnerEnumListVariableRestMapper
             partnerEnumListVariable.getWebhookId(),
             partnerEnumListVariable.getOptions()
                 .stream()
-                .map(option -> new PartnerEnumListVariableOptionResponse(option.getId(), option.getName(),
-                    option.getDefault()))
+                .map(option -> new PartnerEnumListVariableOptionResponse(option.getId(), option.getName()))
                 .collect(Collectors.toList()));
 
     }
 
     @Override
-    public com.extole.model.entity.campaign.SettingType getSettingType() {
-        return com.extole.model.entity.campaign.SettingType.PARTNER_ENUM_LIST;
+    public List<com.extole.model.entity.campaign.SettingType> getSettingTypes() {
+        return Collections.singletonList(com.extole.model.entity.campaign.SettingType.PARTNER_ENUM_LIST);
     }
 }

@@ -8,7 +8,8 @@ import com.extole.model.entity.subscription.ThirdPartyEmailUserSubscriptionChann
 
 @Component
 public class ThirdPartyEmailUserSubscriptionChannelResponseMapper
-    implements UserSubscriptionChannelResponseMapper<ThirdPartyEmailUserSubscriptionChannel,
+    implements
+    UserSubscriptionChannelResponseMapper<ThirdPartyEmailUserSubscriptionChannel,
         ThirdPartyEmailSubscriptionChannelResponse> {
     @Override
     public ThirdPartyEmailSubscriptionChannelResponse toResponse(ThirdPartyEmailUserSubscriptionChannel channel) {

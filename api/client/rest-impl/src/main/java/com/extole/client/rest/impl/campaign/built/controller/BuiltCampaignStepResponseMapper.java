@@ -6,9 +6,7 @@ import com.extole.client.rest.campaign.built.controller.BuiltCampaignStepRespons
 import com.extole.model.entity.campaign.StepType;
 import com.extole.model.entity.campaign.built.BuiltCampaignStep;
 
-public interface BuiltCampaignStepResponseMapper<
-    ENTITY extends BuiltCampaignStep,
-    RESPONSE extends BuiltCampaignStepResponse> {
+public interface BuiltCampaignStepResponseMapper<ENTITY extends BuiltCampaignStep, RESPONSE extends BuiltCampaignStepResponse> {
 
     StepType getStepType();
 

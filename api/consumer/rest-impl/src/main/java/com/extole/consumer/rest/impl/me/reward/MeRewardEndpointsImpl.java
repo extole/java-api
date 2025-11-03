@@ -65,6 +65,7 @@ import com.extole.id.Id;
 import com.extole.model.entity.reward.supplier.RewardSupplier;
 import com.extole.model.service.reward.supplier.RewardSupplierNotFoundException;
 import com.extole.model.shared.reward.supplier.ArchivedRewardSupplierCache;
+import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.profile.reward.PersonReward;
 import com.extole.signal.service.event.StepSignalPendingOperationReadService;
 
@@ -115,9 +116,9 @@ public class MeRewardEndpointsImpl implements MeRewardEndpoints {
         PersonAuthorization authorization = requestContext.getAuthorization();
         try {
             consumerEventSenderService
-                .createInputEvent(authorization, requestContext.getProcessedRawEvent(), authorization.getIdentity())
+                .createInputEvent(authorization, requestContext.getProcessedRawEvent())
                 .send();
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e.getCause())

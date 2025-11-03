@@ -15,7 +15,15 @@ public interface RewardSupplier {
 
     String getFaceValueType();
 
+    String getFaceValueAlgorithmType();
+
     String getFaceValue();
+
+    String getCashBackPercentage();
+
+    String getMaxCashBack();
+
+    String getMinCashBack();
 
     String getName();
 

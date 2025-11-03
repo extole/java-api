@@ -39,6 +39,7 @@ public class PayPalPayoutsRewardSupplierResponse extends RewardSupplierResponse 
         @JsonProperty(PARTNER_REWARD_KEY_TYPE) PartnerRewardKeyType partnerRewardKeyType,
         @JsonProperty(DISPLAY_TYPE) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> displayType,
         @JsonProperty(NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name,
+        @JsonProperty(DISPLAY_NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName,
         @JsonProperty(FACE_VALUE_ALGORITHM_TYPE) BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
             FaceValueAlgorithmType> faceValueAlgorithmType,
         @JsonProperty(FACE_VALUE) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal> faceValue,
@@ -62,7 +63,8 @@ public class PayPalPayoutsRewardSupplierResponse extends RewardSupplierResponse 
         @JsonProperty(ENABLED) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean> enabled,
         @JsonProperty(STATE_TRANSITIONS) Map<RewardState, List<RewardState>> stateTransitions) {
         super(RewardSupplierType.PAYPAL_PAYOUTS, id, partnerRewardSupplierId, partnerRewardKeyType, displayType,
-            name, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack, limitPerDay,
+            name, displayName, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack,
+            limitPerDay,
             limitPerHour, faceValueType, createdDate, updatedDate, componentIds, componentReferences, tags, data,
             enabled, stateTransitions);
         this.merchantToken = merchantToken;

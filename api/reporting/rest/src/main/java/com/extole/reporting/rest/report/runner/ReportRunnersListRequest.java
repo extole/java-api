@@ -54,47 +54,41 @@ public class ReportRunnersListRequest {
     private final Optional<ZoneId> timezone;
 
     public ReportRunnersListRequest(
-        @Parameter(description = "Optional filter for report runner type, one of: SCHEDULED, REFRESHING.")
-        @Nullable @QueryParam(PARAMETER_TYPE) String type,
-        @Parameter(description = "Optional filter for report type name.")
-        @Nullable @QueryParam(PARAMETER_REPORT_TYPE) String reportType,
-        @Parameter(description = "Optional filter for report type name.")
-        @Nullable @QueryParam(PARAMETER_REPORT_TYPE_NAME) String reportTypeName,
+        @Parameter(
+            description = "Optional filter for report runner type, one of: SCHEDULED, REFRESHING.") @Nullable @QueryParam(PARAMETER_TYPE) String type,
+        @Parameter(
+            description = "Optional filter for report type name.") @Nullable @QueryParam(PARAMETER_REPORT_TYPE) String reportType,
+        @Parameter(
+            description = "Optional filter for report type name.") @Nullable @QueryParam(PARAMETER_REPORT_TYPE_NAME) String reportTypeName,
         @Nullable @QueryParam(PARAMETER_DISPLAY_NAME) String displayName,
         @Deprecated // TBD - OPEN TICKET
         @Nullable @QueryParam(PARAMETER_USER_ID) String userId,
         @Nullable @QueryParam(PARAMETER_USER_IDS) Set<String> userIds,
         @Parameter(description = "Optional filter for report runner tags, " +
-            "asks for report runners that contain at least one of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_HAVING_ANY_TAGS) String havingAnyTags,
+            "asks for report runners that contain at least one of the specified tags.") @Nullable @QueryParam(PARAMETER_HAVING_ANY_TAGS) String havingAnyTags,
         @Parameter(description = "Optional filter for required report runner tags, " +
-            "asks for report runners that contain all of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_HAVING_ALL_TAGS) String havingAllTags,
+            "asks for report runners that contain all of the specified tags.") @Nullable @QueryParam(PARAMETER_HAVING_ALL_TAGS) String havingAllTags,
         @Parameter(description = "Optional filter for report runner exclude tags, " +
-            "asks for report runners that do not contain any of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ANY_TAGS) String excludeHavingAnyTags,
+            "asks for report runners that do not contain any of the specified tags.") @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ANY_TAGS) String excludeHavingAnyTags,
         @Parameter(description = "Optional filter for report runner exclude tags, " +
-            "asks for report runners that do not contain all of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ALL_TAGS) String excludeHavingAllTags,
+            "asks for report runners that do not contain all of the specified tags.") @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ALL_TAGS) String excludeHavingAllTags,
         @Parameter(deprecated = true, description = "Optional filter for report runner tags, " +
             "asks for report runners that contain at least one of the specified tags. Deprecated, "
-            + PARAMETER_HAVING_ANY_TAGS + " should be used instead.")
-        @Nullable @QueryParam(PARAMETER_TAGS) String tags,
+            + PARAMETER_HAVING_ANY_TAGS + " should be used instead.") @Nullable @QueryParam(PARAMETER_TAGS) String tags,
         @Parameter(deprecated = true, description = "Optional filter for required report runner tags, " +
             "asks for report runners that contain all of the specified tags. Deprecated, " + PARAMETER_HAVING_ALL_TAGS
-            + " should be used instead.")
-        @Nullable @QueryParam(PARAMETER_REQUIRED_TAGS) String requiredTags,
+            + " should be used instead.") @Nullable @QueryParam(PARAMETER_REQUIRED_TAGS) String requiredTags,
         @Parameter(deprecated = true, description = "Optional filter for report runner exclude tags, " +
             "asks for report runners that do not contain any of the specified tags. Deprecated, "
-            + PARAMETER_EXCLUDE_HAVING_ANY_TAGS + " should be used instead.")
-        @Nullable @QueryParam(PARAMETER_EXCLUDE_TAGS) String excludeTags,
+            + PARAMETER_EXCLUDE_HAVING_ANY_TAGS
+            + " should be used instead.") @Nullable @QueryParam(PARAMETER_EXCLUDE_TAGS) String excludeTags,
         @Nullable @QueryParam(PARAMETER_SEARCH_QUERY) String searchQuery,
         @Nullable @QueryParam(PARAMETER_PAUSE_STATUS) String pauseStatus,
         @Nullable @QueryParam(PARAMETER_AGGREGATION_STATUS) String aggregationStatus,
-        @Parameter(description = "Optional filter for offset, defaults to 0.")
-        @Nullable @QueryParam(PARAMETER_OFFSET) String offset,
-        @Parameter(description = "Optional filter for limit, defaults to all.")
-        @Nullable @QueryParam(PARAMETER_LIMIT) String limit,
+        @Parameter(
+            description = "Optional filter for offset, defaults to 0.") @Nullable @QueryParam(PARAMETER_OFFSET) String offset,
+        @Parameter(
+            description = "Optional filter for limit, defaults to all.") @Nullable @QueryParam(PARAMETER_LIMIT) String limit,
         @Nullable @QueryParam(PARAMETER_ORDER_BY) String orderBy,
         @Nullable @QueryParam(PARAMETER_ORDER) String order,
         @Nullable @TimeZoneParam ZoneId timezone) {
@@ -102,7 +96,7 @@ public class ReportRunnersListRequest {
         this.reportType = Optional.ofNullable(reportType != null ? reportType : reportTypeName);
         this.displayName = Optional.ofNullable(displayName);
         this.userIds = userIds != null ? ImmutableSet.copyOf(userIds)
-                : userId != null ? ImmutableSet.of(userId) : ImmutableSet.of();
+            : userId != null ? ImmutableSet.of(userId) : ImmutableSet.of();
         this.havingAnyTags = Optional.ofNullable(havingAnyTags).or(() -> Optional.ofNullable(tags));
         this.havingAllTags = Optional.ofNullable(havingAllTags).or(() -> Optional.ofNullable(requiredTags));
         this.excludeHavingAnyTags =

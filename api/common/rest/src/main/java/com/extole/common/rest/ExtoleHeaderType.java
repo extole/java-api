@@ -6,6 +6,7 @@ public enum ExtoleHeaderType {
     CLIENT_ID("X-Extole-Client-Id"),
     TOKEN("X-Extole-Token"),
     TIME_ZONE("Time-Zone"),
+    LOG("X-Extole-Log"),
     COOKIE_CONSENT("X-Extole-Cookie-Consent");
 
     private final String headerName;

@@ -2,6 +2,7 @@ package com.extole.api.client.security.key;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
@@ -46,5 +47,20 @@ public class OAuthRequestImpl implements OAuthRequest {
     @JsonProperty(JSON_BODY)
     public String getBody() {
         return body.orElse(null);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        OAuthRequestImpl that = (OAuthRequestImpl) other;
+        return Objects.equals(getUrl(), that.getUrl()) && Objects.equals(getHeaders(), that.getHeaders())
+            && Objects.equals(getBody(), that.getBody());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUrl(), getHeaders(), getBody());
     }
 }

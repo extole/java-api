@@ -47,8 +47,11 @@ public class CampaignControllerActionWebhookResponse extends CampaignControllerA
     }
 
     @JsonProperty(JSON_DATA)
-    public Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>> getData() {
+    public
+        Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<WebhookActionContext, Optional<Object>>>>
+        getData() {
         return data;
     }
 

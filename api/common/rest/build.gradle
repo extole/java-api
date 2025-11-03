@@ -1,19 +1,18 @@
 description = """Common REST components"""
 
+apply from: rootProject.file("maven_release.gradle")
 
 dependencies {
     implementation project(':common-evaluatable')
     api project(':common-lang')
-    libraries.with {
-        implementation jackson, jacksonCSV
-        implementation javaWs
-        implementation slf4j
-        implementation guava
-        implementation servlet
-        implementation owaspEncoder
-        implementation swaggercore
-        implementation jsr305
+    implementation libs.bundles.jackson, libs.jacksonCSV
+    implementation libs.javaWs
+    implementation libs.bundles.slf4j
+    implementation libs.guava
+    implementation libs.servlet
+    implementation libs.owaspEncoder
+    implementation libs.swaggercore
+    implementation libs.jsr305
 
-        testImplementation junit, assertj, junitJupiter
-    }
+    testImplementation libs.bundles.junit, libs.assertj
 }

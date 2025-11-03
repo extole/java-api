@@ -60,7 +60,8 @@ import com.extole.model.service.user.UserFirstNameInvalidLengthException;
 import com.extole.model.service.user.UserInvalidEmailException;
 import com.extole.model.service.user.UserLastNameInvalidLengthException;
 import com.extole.model.service.user.UserNotFoundException;
-import com.extole.model.service.user.UserScopeSelfRemoveException;
+import com.extole.model.service.user.UserScopeModificationException;
+import com.extole.model.service.user.UserScopesMissingException;
 import com.extole.model.service.user.UserService;
 import com.extole.model.service.user.UserUnauthorizedScopeException;
 
@@ -133,8 +134,10 @@ public class UserEndpointsImpl implements UserEndpoints {
             userBuilder.withUserEmail(request.getEmail());
             request.getFirstName().ifPresent(firstName -> userBuilder.withFirstName(firstName));
             request.getLastName().ifPresent(lastName -> userBuilder.withLastName(lastName));
-            request.getScopes().ifPresent(scopes -> userBuilder.withScopes(scopes.stream()
-                .map(scope -> User.Scope.valueOf(scope.name())).collect(Collectors.toUnmodifiableSet())));
+            if (request.getScopes().isPresent()) {
+                userBuilder.withScopes(request.getScopes().getValue().stream()
+                    .map(scope -> User.Scope.valueOf(scope.name())).collect(Collectors.toUnmodifiableSet()));
+            }
             User newUser = userBuilder.save();
             extoleAuthProviderTypeCredentialsService.sendInviteEmail(authorization, newUser.getNormalizedEmail());
 
@@ -215,12 +218,17 @@ public class UserEndpointsImpl implements UserEndpoints {
                 .addParameter("role", e.getScope())
                 .withCause(e)
                 .build();
+        } catch (UserScopesMissingException e) {
+            throw RestExceptionBuilder.newBuilder(UserValidationRestException.class)
+                .withErrorCode(UserValidationRestException.USER_SCOPES_MISSING)
+                .withCause(e)
+                .build();
         } catch (ExtoleAuthProviderTypeLockedCredentialsException e) {
             throw RestExceptionBuilder.newBuilder(UserCreateRestException.class)
                 .withErrorCode(UserCreateRestException.ACCOUNT_DISABLED)
                 .withCause(e)
                 .build();
-        } catch (UserScopeSelfRemoveException e) {
+        } catch (UserScopeModificationException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)
@@ -256,8 +264,10 @@ public class UserEndpointsImpl implements UserEndpoints {
             }
             request.getFirstName().ifPresent(firstName -> userBuilder.withFirstName(firstName.orElse(null)));
             request.getLastName().ifPresent(lastName -> userBuilder.withLastName(lastName.orElse(null)));
-            request.getScopes().ifPresent(scopes -> userBuilder.withScopes(scopes.stream()
-                .map(scope -> User.Scope.valueOf(scope.name())).collect(Collectors.toUnmodifiableSet())));
+            if (request.getScopes().isPresent()) {
+                userBuilder.withScopes(request.getScopes().getValue().stream()
+                    .map(scope -> User.Scope.valueOf(scope.name())).collect(Collectors.toUnmodifiableSet()));
+            }
             User user = userBuilder.save();
 
             if (request.getPassword().isPresent()) {
@@ -349,10 +359,14 @@ public class UserEndpointsImpl implements UserEndpoints {
                 .addParameter("role", e.getScope())
                 .withCause(e)
                 .build();
-        } catch (UserScopeSelfRemoveException e) {
+        } catch (UserScopeModificationException e) {
             throw RestExceptionBuilder.newBuilder(UserValidationRestException.class)
-                .withErrorCode(UserValidationRestException.USER_SCOPE_SELF_REMOVAL)
-                .addParameter("role", e.getScope())
+                .withErrorCode(UserValidationRestException.USER_SELF_SCOPES_UPDATE)
+                .withCause(e)
+                .build();
+        } catch (UserScopesMissingException e) {
+            throw RestExceptionBuilder.newBuilder(UserValidationRestException.class)
+                .withErrorCode(UserValidationRestException.USER_SCOPES_MISSING)
                 .withCause(e)
                 .build();
         } catch (ExtoleAuthProviderTypeLockedCredentialsException e) {

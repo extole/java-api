@@ -17,6 +17,11 @@ public class CampaignControllerTriggerZoneStateValidationRestException extends C
             new ErrorCode<>("campaign_controller_trigger_zone_state_step_name_expression_out_of_range", 400,
                 "Step name expression length is invalid", "expression", "max_length");
 
+    public static final ErrorCode<
+        CampaignControllerTriggerZoneStateValidationRestException> MISSING_ZONE_NAME_AND_STEP_NAME =
+            new ErrorCode<>("campaign_controller_trigger_zone_state_missing_zone_name_and_step_name", 400,
+                "Either zone name or step name must be present");
+
     public CampaignControllerTriggerZoneStateValidationRestException(String uniqueId,
         ErrorCode<?> code, Map<String, Object> attributes,
         Throwable cause) {

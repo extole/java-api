@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
+import com.extole.client.rest.client.domain.pattern.ClientDomainPatternType;
 import com.extole.client.rest.email.DomainValidationStatus;
 import com.extole.client.rest.program.GlobPatternResponse;
 import com.extole.client.rest.program.ProgramArchiveRestException;
@@ -25,7 +26,6 @@ import com.extole.client.rest.program.ProgramDomainValidationResponse;
 import com.extole.client.rest.program.ProgramEndpoints;
 import com.extole.client.rest.program.ProgramResponse;
 import com.extole.client.rest.program.ProgramRestException;
-import com.extole.client.rest.program.ProgramSitePatternType;
 import com.extole.client.rest.program.ProgramUpdateRequest;
 import com.extole.client.rest.program.ProgramValidationRestException;
 import com.extole.common.rest.exception.FatalRestRuntimeException;
@@ -43,8 +43,6 @@ import com.extole.model.service.program.ExpiredPublicSslCertificateException;
 import com.extole.model.service.program.InvalidFormatPrivateSslCertificateException;
 import com.extole.model.service.program.InvalidFormatSslCertificateException;
 import com.extole.model.service.program.InvalidPrivateSslCertificateException;
-import com.extole.model.service.program.InvalidSitePatternDomainException;
-import com.extole.model.service.program.InvalidSitePatternSyntaxException;
 import com.extole.model.service.program.InvalidSslCertificateException;
 import com.extole.model.service.program.InvalidSslCertificateSubjectException;
 import com.extole.model.service.program.NotSignedByChainCertificateException;
@@ -299,20 +297,6 @@ public class ProgramEndpointsImpl implements ProgramEndpoints {
                 .withErrorCode(ProgramValidationRestException.SSL_CERTIFICATE_INVALID_DOMAIN)
                 .addParameter("client_id", userAuthorization.getClientId().getValue())
                 .withCause(e).build();
-        } catch (InvalidSitePatternSyntaxException e) {
-            throw RestExceptionBuilder.newBuilder(ProgramValidationRestException.class)
-                .withErrorCode(ProgramValidationRestException.PROGRAM_DOMAIN_CONTAINS_INVALID_SITE_PATTERN)
-                .addParameter("site_pattern", e.getSitePattern())
-                .addParameter("type", e.getType())
-                .withCause(e)
-                .build();
-        } catch (InvalidSitePatternDomainException e) {
-            throw RestExceptionBuilder.newBuilder(ProgramValidationRestException.class)
-                .withErrorCode(ProgramValidationRestException.PROGRAM_DOMAIN_CONTAINS_INVALID_SITE_PATTERN)
-                .addParameter("site_pattern", e.getSitePattern())
-                .addParameter("type", e.getType())
-                .withCause(e)
-                .build();
         } catch (SslPrivateKeyEncryptionException | SslPrivateKeyDecryptException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
@@ -459,20 +443,6 @@ public class ProgramEndpointsImpl implements ProgramEndpoints {
         } catch (RedirectProgramNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(ProgramValidationRestException.class)
                 .withErrorCode(ProgramValidationRestException.NON_EXISTENT_REDIRECT_PROGRAM)
-                .withCause(e)
-                .build();
-        } catch (InvalidSitePatternSyntaxException e) {
-            throw RestExceptionBuilder.newBuilder(ProgramValidationRestException.class)
-                .withErrorCode(ProgramValidationRestException.PROGRAM_DOMAIN_CONTAINS_INVALID_SITE_PATTERN)
-                .addParameter("site_pattern", e.getSitePattern())
-                .addParameter("type", e.getType())
-                .withCause(e)
-                .build();
-        } catch (InvalidSitePatternDomainException e) {
-            throw RestExceptionBuilder.newBuilder(ProgramValidationRestException.class)
-                .withErrorCode(ProgramValidationRestException.PROGRAM_DOMAIN_CONTAINS_INVALID_SITE_PATTERN)
-                .addParameter("site_pattern", e.getSitePattern())
-                .addParameter("type", e.getType())
                 .withCause(e)
                 .build();
         } catch (ProgramDomainBuildException | SslPrivateKeyDecryptException e) {
@@ -624,6 +594,6 @@ public class ProgramEndpointsImpl implements ProgramEndpoints {
 
     private GlobPatternResponse buildSitePatternResponse(GlobPattern programSitePattern) {
         return new GlobPatternResponse(programSitePattern.getPattern(), programSitePattern.getRegex().pattern(),
-            ProgramSitePatternType.valueOf(programSitePattern.getType().name()));
+            ClientDomainPatternType.valueOf(programSitePattern.getType().name()));
     }
 }

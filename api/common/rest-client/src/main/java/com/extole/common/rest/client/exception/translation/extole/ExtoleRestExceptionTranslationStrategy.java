@@ -41,6 +41,7 @@ public final class ExtoleRestExceptionTranslationStrategy implements RestExcepti
             .build();
 
         RestExceptionResponse exceptionResponse;
+        int httpStatusCode = clientRestException.getResponse().getStatusInfo().getStatusCode();
         try (InputStream inputStream = clientRestException.getResponse().readEntity(InputStream.class)) {
             String exceptionAsString = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
 
@@ -48,11 +49,15 @@ public final class ExtoleRestExceptionTranslationStrategy implements RestExcepti
                 exceptionResponse = OBJECT_MAPPER.readValue(exceptionAsString, RestExceptionResponse.class);
             } catch (IOException e) {
                 throw new BusinessExceptionDeserializationRuntimeException(
-                    "Could not deserialize the rest exception=" + exceptionAsString, e);
+                    String.format("Could not deserialize the rest exception, httpStatusCode=%s, body=%s",
+                        Integer.valueOf(httpStatusCode), exceptionAsString),
+                    e);
             }
         } catch (IOException e) {
             throw new RuntimeException(
-                "Could not read body of rest exception=" + clientRestException.getResponse(), e);
+                String.format("Could not read body of rest exception, httpStatusCode=%s, response=%s",
+                    Integer.valueOf(httpStatusCode), clientRestException.getResponse()),
+                e);
         }
 
         Class<? extends Exception> businessExceptionClass =

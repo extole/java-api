@@ -21,13 +21,15 @@ public class CampaignControllerTriggerHasIdentityResponse extends CampaignContro
         @JsonProperty(TRIGGER_PHASE) BuildtimeEvaluatable<ControllerBuildtimeContext,
             CampaignControllerTriggerPhase> triggerPhase,
         @JsonProperty(TRIGGER_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            Optional<String>> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
         @JsonProperty(NEGATED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> negated,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.HAS_IDENTITY, triggerPhase, name,
+        super(triggerId, CampaignControllerTriggerType.HAS_IDENTITY, triggerPhase, name, parentTriggerGroupName,
             description, enabled, negated, componentIds, componentReferences);
     }
 

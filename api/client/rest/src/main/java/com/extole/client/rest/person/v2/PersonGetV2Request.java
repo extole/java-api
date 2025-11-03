@@ -21,16 +21,16 @@ public class PersonGetV2Request {
     private final List<String> partnerIds;
 
     public PersonGetV2Request(
-        @Parameter(description = "The email address of the person. Make sure to URL encode.")
-        @QueryParam("email") @Nullable String email,
-        @Parameter(description = "Search for a person based on the partner user id of the person")
-        @QueryParam("partner_user_id") @Nullable String partnerUserId,
-        @Parameter(description = "The last name of the user")
-        @QueryParam("last_name") @Nullable String lastName,
+        @Parameter(
+            description = "The email address of the person. Make sure to URL encode.") @QueryParam("email") @Nullable String email,
+        @Parameter(
+            description = "Search for a person based on the partner user id of the person") @QueryParam("partner_user_id") @Nullable String partnerUserId,
+        @Parameter(description = "The last name of the user") @QueryParam("last_name") @Nullable String lastName,
         @DefaultValue("100") @QueryParam("limit") Integer limit,
         @DefaultValue("0") @QueryParam("offset") Integer offset,
-        @Parameter(description = "The partner ids using this format: <name>:<value>")
-        @QueryParam("partner_id") @Nullable List<String> partnerIds) {
+        @Parameter(
+            description = "The partner ids using this format: <name>:<value>") @QueryParam("partner_id") @Nullable List<
+                String> partnerIds) {
         this.email = email;
         this.partnerUserId = partnerUserId;
         this.lastName = lastName;

@@ -76,6 +76,7 @@ import com.extole.api.campaign.CampaignBuildtimeContext;
 import com.extole.api.campaign.ControllerBuildtimeContext;
 import com.extole.api.campaign.VariableBuildtimeContext;
 import com.extole.api.campaign.VariableDescriptionBuildtimeContext;
+import com.extole.api.step.action.schedule.ScheduleActionContext;
 import com.extole.authorization.service.Authorization;
 import com.extole.client.rest.campaign.CampaignRestException;
 import com.extole.client.rest.campaign.component.setting.CampaignComponentVariableResponse;
@@ -86,6 +87,7 @@ import com.extole.client.rest.campaign.migration.MigratedCreativeResponse;
 import com.extole.client.rest.campaign.migration.MigrationRequest;
 import com.extole.client.rest.campaign.migration.MigrationResponse;
 import com.extole.client.rest.impl.campaign.component.setting.CampaignComponentSettingRestMapper;
+import com.extole.common.journey.JourneyName;
 import com.extole.common.lang.CaseInsensitiveSet;
 import com.extole.common.lang.KeyCaseInsensitiveMap;
 import com.extole.common.lang.LazyLoadingSupplier;
@@ -102,6 +104,7 @@ import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.dewey.decimal.DeweyDecimal;
 import com.extole.evaluateable.BuildtimeEvaluatable;
+import com.extole.evaluateable.Evaluatables;
 import com.extole.evaluateable.RuntimeEvaluatable;
 import com.extole.evaluateable.provided.Provided;
 import com.extole.evaluation.EvaluationException;
@@ -120,6 +123,7 @@ import com.extole.model.entity.campaign.CampaignControllerTriggerEvent;
 import com.extole.model.entity.campaign.CampaignControllerTriggerEventType;
 import com.extole.model.entity.campaign.CampaignControllerTriggerType;
 import com.extole.model.entity.campaign.ClientKeyFlowVariable;
+import com.extole.model.entity.campaign.ComponentElementPart;
 import com.extole.model.entity.campaign.CreativeArchive;
 import com.extole.model.entity.campaign.CreativeArchiveApiVersion;
 import com.extole.model.entity.campaign.CreativeArchiveId;
@@ -169,7 +173,6 @@ import com.extole.model.service.campaign.setting.VariableValueKeyLengthException
 import com.extole.model.service.creative.CreativeArchiveBuilder;
 import com.extole.model.service.creative.CreativeArchiveService;
 import com.extole.model.service.creative.CreativeVariableService;
-import com.extole.person.service.profile.journey.JourneyName;
 import com.extole.security.backend.BackendAuthorizationProvider;
 import com.extole.util.file.FileTypeDetector;
 import com.extole.util.file.MimeType;
@@ -723,17 +726,27 @@ public class CampaignMigrationEndpointsImpl implements CampaignMigrationEndpoint
                 })
                 .collect(Collectors.toUnmodifiableSet());
 
-            Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-                RuntimeEvaluatable<Object, Optional<Object>>>> mergedValues = Maps.newHashMap();
-            for (String locale : allLocales) {
+            Map<String,
                 BuildtimeEvaluatable<VariableBuildtimeContext,
-                    RuntimeEvaluatable<Object, Optional<Object>>> mostCommon =
-                        mostCommon(rootVariableEntry.getValue()
+                    RuntimeEvaluatable<Object, Optional<Object>>>> mergedValues =
+                        Maps.newHashMap();
+            for (String locale : allLocales) {
+                List<BuildtimeEvaluatable<VariableBuildtimeContext,
+                    RuntimeEvaluatable<Object, Optional<Object>>>> candidates =
+                        rootVariableEntry.getValue()
                             .values()
                             .stream()
                             .map(variable -> variable.getValues().get(locale))
-                            .collect(Collectors.toList()));
-                mergedValues.put(locale, mostCommon);
+                            .filter(value -> !Provided.nestedOptionalOf("").equals(value))
+                            .collect(Collectors.toList());
+                if (candidates.isEmpty()) {
+                    candidates = rootVariableEntry.getValue()
+                        .values()
+                        .stream()
+                        .map(variable -> variable.getValues().get(locale))
+                        .collect(Collectors.toList());
+                }
+                mergedValues.put(locale, mostCommon(candidates));
             }
             rootVariableBuilder.withValues(mergedValues);
             VariableSource rootVariableSource = computeSource(rootSourceOverride, globalRootVariables, variableName,
@@ -894,7 +907,7 @@ public class CampaignMigrationEndpointsImpl implements CampaignMigrationEndpoint
             String componentAbsoluteName;
             String componentName;
             CampaignComponentBuilder componentBuilder;
-            List<CampaignComponentReference> actionReferences = actionCreative.getCampaignComponentReferences();
+            List<CampaignComponentReference> actionReferences = actionCreative.getComponentReferences();
 
             FrontendControllerBuilder frontendControllerBuilder = campaignBuilder
                 .updateFrontendController(frontendController);
@@ -1061,9 +1074,10 @@ public class CampaignMigrationEndpointsImpl implements CampaignMigrationEndpoint
                 }
                 VariableSource variableSource = mapSource(oldVariable);
                 Set<String> variableTags = mapTags(oldVariable);
-                Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-                    RuntimeEvaluatable<Object, Optional<Object>>>> values =
-                        mapValues(variablePath, oldVariable, creativeVariables.values(), valueOverrides);
+                Map<String,
+                    BuildtimeEvaluatable<VariableBuildtimeContext,
+                        RuntimeEvaluatable<Object, Optional<Object>>>> values =
+                            mapValues(variablePath, oldVariable, creativeVariables.values(), valueOverrides);
 
                 localVariableBuilder.withName(variableName);
                 if (variableDisplayName.isPresent()) {
@@ -1086,33 +1100,36 @@ public class CampaignMigrationEndpointsImpl implements CampaignMigrationEndpoint
                             if (action.getType() == CampaignControllerActionType.SCHEDULE) {
                                 CampaignControllerActionSchedule scheduleAction =
                                     (CampaignControllerActionSchedule) action;
-                                if (scheduleAction.getScheduleName() instanceof Provided
-                                    && ((Provided<?, String>) scheduleAction.getScheduleName()).getValue()
-                                        .equals(scheduleName.get())) {
+                                BuildtimeEvaluatable<ControllerBuildtimeContext,
+                                    RuntimeEvaluatable<ScheduleActionContext, String>> scheduleActionScheduleName =
+                                        scheduleAction.getScheduleName();
 
+                                if (Evaluatables.isNestedProvided(scheduleActionScheduleName)
+                                    && (Evaluatables.nestedProvided(scheduleAction.getScheduleName())
+                                        .equals(scheduleName.get()))) {
                                     CampaignControllerBuilder controllerBuilder =
                                         campaignBuilder.updateController(controller);
                                     CampaignControllerActionScheduleBuilder actionBuilder =
                                         controllerBuilder.updateAction(scheduleAction);
-                                    if (controller.getCampaignComponentReferences().size() == 1 && controller
-                                        .getCampaignComponentReferences().get(0).getComponentId()
+                                    if (controller.getComponentReferences().size() == 1 && controller
+                                        .getComponentReferences().get(0).getComponentId()
                                         .equals(root.getId())) {
                                         controllerBuilder.clearComponentReferences();
                                     }
-                                    if (action.getCampaignComponentReferences().size() == 1 && action
-                                        .getCampaignComponentReferences().get(0).getComponentId()
+                                    if (action.getComponentReferences().size() == 1 && action
+                                        .getComponentReferences().get(0).getComponentId()
                                         .equals(root.getId())) {
                                         actionBuilder.clearComponentReferences();
                                     }
 
                                     Id<CampaignComponent> finalComponentId = reusedComponentId;
-                                    if (action.getCampaignComponentReferences()
+                                    if (action.getComponentReferences()
                                         .stream()
                                         .noneMatch(reference -> reference.getComponentId().equals(finalComponentId))) {
                                         actionBuilder.addComponentReferenceByAbsoluteName(componentAbsoluteName);
                                     }
 
-                                    if (controller.getCampaignComponentReferences()
+                                    if (controller.getComponentReferences()
                                         .stream()
                                         .noneMatch(reference -> reference.getComponentId().equals(finalComponentId))) {
                                         controllerBuilder.addComponentReferenceByAbsoluteName(componentAbsoluteName);
@@ -1173,9 +1190,10 @@ public class CampaignMigrationEndpointsImpl implements CampaignMigrationEndpoint
                 }
 
                 if (oldVariable.getType() == IMAGE && variableSource == VariableSource.LOCAL) {
-                    Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-                        RuntimeEvaluatable<Object, Optional<Object>>>> filteredValues =
-                            new HashMap<>(values);
+                    Map<String,
+                        BuildtimeEvaluatable<VariableBuildtimeContext,
+                            RuntimeEvaluatable<Object, Optional<Object>>>> filteredValues =
+                                new HashMap<>(values);
                     for (Map.Entry<String, String> entry : oldVariable.getValues().entrySet()) {
                         String value = entry.getValue();
                         String valueLocale = entry.getKey();
@@ -1834,6 +1852,11 @@ public class CampaignMigrationEndpointsImpl implements CampaignMigrationEndpoint
     private CampaignComponentAsset createDummyAsset(String filename, String name, String description) {
         return new CampaignComponentAsset() {
             @Override
+            public boolean coreEquals(ComponentElementPart other) {
+                return false;
+            }
+
+            @Override
             public Id<CampaignComponentAsset> getId() {
                 return null;
             }
@@ -1862,9 +1885,14 @@ public class CampaignMigrationEndpointsImpl implements CampaignMigrationEndpoint
 
     private Variable createDummyVariable(String variableName, Optional<String> variableDisplayName,
         VariableSource variableSource, Set<String> variableTags, SettingType settingType,
-        Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values) {
+        Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values) {
         return new Variable() {
+            @Override
+            public boolean coreEquals(ComponentElementPart other) {
+                return false;
+            }
+
             @Override
             public String getName() {
                 return variableName;
@@ -1881,8 +1909,10 @@ public class CampaignMigrationEndpointsImpl implements CampaignMigrationEndpoint
             }
 
             @Override
-            public Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-                RuntimeEvaluatable<Object, Optional<Object>>>> getValues() {
+            public
+                Map<String,
+                    BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>>
+                getValues() {
                 return values;
             }
 
@@ -1912,8 +1942,9 @@ public class CampaignMigrationEndpointsImpl implements CampaignMigrationEndpoint
         mapValues(String variablePath, CreativeVariable oldVariable, Collection<CreativeVariable> allOldVariables,
             Map<String, String> valueOverrides)
             throws JsonProcessingException, EvaluationException {
-        Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values = Maps.newHashMap();
+        Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values =
+                Maps.newHashMap();
         boolean isTranslateable = mapTags(oldVariable).contains(TRANSLATABLE_TAG);
         for (Map.Entry<String, String> entry : oldVariable.getValues().entrySet()) {
             if (StringUtils.isBlank(entry.getKey())) {
@@ -2308,6 +2339,11 @@ public class CampaignMigrationEndpointsImpl implements CampaignMigrationEndpoint
     private Variable dummyVariableForUpdate(String variableName) {
         return new Variable() {
             @Override
+            public boolean coreEquals(ComponentElementPart other) {
+                return false;
+            }
+
+            @Override
             public String getName() {
                 return variableName;
             }
@@ -2324,8 +2360,8 @@ public class CampaignMigrationEndpointsImpl implements CampaignMigrationEndpoint
 
             @Override
             public
-                Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-                    RuntimeEvaluatable<Object, Optional<Object>>>>
+                Map<String,
+                    BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>>
                 getValues() {
                 return null;
             }

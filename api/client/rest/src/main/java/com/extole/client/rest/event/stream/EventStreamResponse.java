@@ -35,8 +35,7 @@ public class EventStreamResponse {
 
     public EventStreamResponse(@JsonProperty(EVENT_STREAM_ID) Id<?> id,
         @JsonProperty(NAME) BuildtimeEvaluatable<EventStreamBuildtimeContext, String> name,
-        @JsonProperty(DESCRIPTION) BuildtimeEvaluatable<EventStreamBuildtimeContext,
-            Optional<String>> description,
+        @JsonProperty(DESCRIPTION) BuildtimeEvaluatable<EventStreamBuildtimeContext, Optional<String>> description,
         @JsonProperty(FILTERS) List<EventStreamFilterResponse> filters,
         @JsonProperty(TAGS) Set<String> tags,
         @JsonProperty(COMPONENTS_IDS) List<Id<?>> componentIds,

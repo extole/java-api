@@ -37,8 +37,8 @@ import com.extole.model.entity.campaign.StepType;
 
 @Component
 public class CampaignFrontendControllerResponseMapper implements
-    CampaignStepResponseMapper<FrontendController,
-        CampaignFrontendControllerResponse, CampaignFrontendControllerConfiguration> {
+    CampaignStepResponseMapper<FrontendController, CampaignFrontendControllerResponse,
+        CampaignFrontendControllerConfiguration> {
 
     private final CampaignControllerActionResponseMapperRepository actionMapperRepository;
     private final CampaignControllerTriggerResponseMapperRepository triggerMapperRepository;
@@ -69,11 +69,11 @@ public class CampaignFrontendControllerResponseMapper implements
                 .stream()
                 .map(trigger -> toTriggerResponse(trigger, timeZone))
                 .collect(Collectors.toUnmodifiableList()),
-            controller.getCampaignComponentReferences()
+            controller.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toUnmodifiableList()),
-            controller.getCampaignComponentReferences()
+            controller.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -105,7 +105,7 @@ public class CampaignFrontendControllerResponseMapper implements
                 .stream()
                 .map(trigger -> toTriggerConfiguration(trigger, timeZone, componentNames))
                 .collect(Collectors.toList()),
-            controller.getCampaignComponentReferences()
+            controller.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,
@@ -172,11 +172,11 @@ public class CampaignFrontendControllerResponseMapper implements
             stepDataValue.getDefaultValue(),
             Evaluatables.remapEnum(stepDataValue.getKeyType(), new TypeReference<>() {}),
             stepDataValue.getEnabled(),
-            stepDataValue.getCampaignComponentReferences()
+            stepDataValue.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            stepDataValue.getCampaignComponentReferences()
+            stepDataValue.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -187,7 +187,7 @@ public class CampaignFrontendControllerResponseMapper implements
         Map<Id<CampaignComponent>, String> componentNames) {
 
         List<CampaignComponentReferenceConfiguration> campaignComponentReferences =
-            stepDataValue.getCampaignComponentReferences()
+            stepDataValue.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference, (reference) -> componentNames.get(reference.getComponentId())))

@@ -29,15 +29,13 @@ public class PersonDataListRequest {
 
     public PersonDataListRequest(
         @Parameter(description = "Optional data name filter. Will include data values that match at least one of the " +
-            "names. Will include all data if not provided.")
-        @QueryParam("names") List<String> names,
+            "names. Will include all data if not provided.") @QueryParam("names") List<String> names,
         @Parameter(description = "Optional data scope filter. Will include data values that match at least one of the" +
-            " scopes. Will include all data if not provided.")
-        @QueryParam("scopes") List<PersonDataScope> scopes,
-        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".")
-        @DefaultValue("" + DEFAULT_OFFSET) @QueryParam("offset") Optional<Integer> offset,
-        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".")
-        @DefaultValue("" + DEFAULT_LIMIT) @QueryParam("limit") Optional<Integer> limit) {
+            " scopes. Will include all data if not provided.") @QueryParam("scopes") List<PersonDataScope> scopes,
+        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".") @DefaultValue(""
+            + DEFAULT_OFFSET) @QueryParam("offset") Optional<Integer> offset,
+        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".") @DefaultValue(""
+            + DEFAULT_LIMIT) @QueryParam("limit") Optional<Integer> limit) {
         this.names = names == null ? ImmutableList.of() : ImmutableList.copyOf(names);
         this.scopes = scopes == null ? ImmutableList.of() : ImmutableList.copyOf(scopes);
         this.offset = offset;

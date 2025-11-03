@@ -47,6 +47,7 @@ public class ManualCouponRewardSupplierResponseMapper
             rewardSupplier.getLimitPerDay(),
             rewardSupplier.getLimitPerHour(),
             rewardSupplier.getName(),
+            rewardSupplier.getDisplayName(),
             rewardSupplier.getCouponCountWarnLimit(),
             rewardSupplier.getCreatedAt().atZone(timeZone),
             rewardSupplier.getUpdatedAt().atZone(timeZone),

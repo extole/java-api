@@ -29,8 +29,8 @@ public class UserSubscriptionUpdateRequest {
     public UserSubscriptionUpdateRequest(
         @JsonProperty(JSON_HAVING_ALL_TAGS) Omissible<Set<String>> havingAllTags,
         @JsonProperty(JSON_FILTERING_LEVEL) Omissible<FilteringLevel> filteringLevel,
-        @JsonProperty(JSON_FILTER_EXPRESSION) Omissible<RuntimeEvaluatable<UserSubscriptionFilterContext,
-            Boolean>> filterExpression,
+        @JsonProperty(JSON_FILTER_EXPRESSION) Omissible<
+            RuntimeEvaluatable<UserSubscriptionFilterContext, Boolean>> filterExpression,
         @JsonProperty(JSON_DEDUPE_DURATION_MS) Omissible<Long> dedupeDurationMs,
         @JsonProperty(JSON_CHANNELS) Omissible<List<SubscriptionChannelRequest>> channels) {
         this.havingAllTags = havingAllTags;

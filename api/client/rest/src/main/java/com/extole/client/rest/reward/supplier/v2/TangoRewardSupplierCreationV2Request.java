@@ -41,8 +41,8 @@ public class TangoRewardSupplierCreationV2Request extends ComponentElementReques
 
     private final String utid;
     private final String accountId;
-    private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
-        FaceValueAlgorithmType>> faceValueAlgorithmType;
+    private final Omissible<
+        BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType;
     private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal> faceValue;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> cashBackPercentage;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> minCashBack;
@@ -195,8 +195,9 @@ public class TangoRewardSupplierCreationV2Request extends ComponentElementReques
     public static final class Builder extends ComponentElementRequest.Builder<Builder> {
         private String utid;
         private String accountId;
-        private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
-            FaceValueAlgorithmType>> faceValueAlgorithmType = Omissible.omitted();
+        private Omissible<
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType =
+                Omissible.omitted();
         private BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal> faceValue;
         private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> cashBackPercentage =
             Omissible.omitted();

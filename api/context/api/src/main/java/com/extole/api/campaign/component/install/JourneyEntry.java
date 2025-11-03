@@ -1,11 +1,7 @@
 package com.extole.api.campaign.component.install;
 
-public interface JourneyEntry {
-
-    String getId();
+public interface JourneyEntry extends Step {
 
     String getJourneyName();
-
-    void anchor(Trigger trigger);
 
 }

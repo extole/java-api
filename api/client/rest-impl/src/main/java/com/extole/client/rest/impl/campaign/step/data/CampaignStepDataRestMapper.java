@@ -38,11 +38,11 @@ public class CampaignStepDataRestMapper {
             stepDataValue.getDefaultValue(),
             Evaluatables.remapEnum(stepDataValue.getKeyType(), new TypeReference<>() {}),
             stepDataValue.getEnabled(),
-            stepDataValue.getCampaignComponentReferences()
+            stepDataValue.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            stepDataValue.getCampaignComponentReferences()
+            stepDataValue.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -56,6 +56,7 @@ public class CampaignStepDataRestMapper {
 
     public BuiltStepDataResponse toBuiltStepDataResponse(BuiltStepData dataValue) {
         return new BuiltStepDataResponse(
+            dataValue.getId().getValue(),
             dataValue.getName(),
             dataValue.getValue(),
             StepDataScope.valueOf(dataValue.getScope().name()),
@@ -66,11 +67,11 @@ public class CampaignStepDataRestMapper {
             dataValue.getDefaultValue(),
             StepDataKeyType.valueOf(dataValue.getKeyType().name()),
             dataValue.getEnabled(),
-            dataValue.getCampaignComponentReferences()
+            dataValue.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            dataValue.getCampaignComponentReferences()
+            dataValue.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

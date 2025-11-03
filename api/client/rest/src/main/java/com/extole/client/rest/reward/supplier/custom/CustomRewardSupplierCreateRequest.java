@@ -48,6 +48,8 @@ public class CustomRewardSupplierCreateRequest extends RewardSupplierCreateReque
 
     public CustomRewardSupplierCreateRequest(
         @JsonProperty(NAME) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> name,
+        @JsonProperty(DISPLAY_NAME) Omissible<
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>>> displayName,
         @JsonProperty(FACE_VALUE_ALGORITHM_TYPE) Omissible<
             BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType,
         @JsonProperty(FACE_VALUE) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> faceValue,
@@ -81,9 +83,10 @@ public class CustomRewardSupplierCreateRequest extends RewardSupplierCreateReque
         @JsonProperty(DATA) Omissible<Map<String, BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>>> data,
         @JsonProperty(ENABLED) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean>> enabled,
         @JsonProperty(STATE_TRANSITIONS) Omissible<Map<RewardState, List<RewardState>>> stateTransitions) {
-        super(RewardSupplierType.CUSTOM_REWARD, name, faceValueAlgorithmType, faceValue, cashBackPercentage,
-            minCashBack, maxCashBack, faceValueType, partnerRewardSupplierId, partnerRewardKeyType, displayType,
-            description, limitPerDay, limitPerHour, componentIds, componentReferences, tags, data, enabled);
+        super(RewardSupplierType.CUSTOM_REWARD, name, displayName, faceValueAlgorithmType, faceValue,
+            cashBackPercentage, minCashBack, maxCashBack, faceValueType, partnerRewardSupplierId,
+            partnerRewardKeyType, displayType, description, limitPerDay, limitPerHour, componentIds,
+            componentReferences, tags, data, enabled);
         this.type = type;
         this.autoSendRewardEmailEnabled = autoSendRewardEmailEnabled;
         this.autoFulfillmentEnabled = autoFulfillmentEnabled;
@@ -130,8 +133,9 @@ public class CustomRewardSupplierCreateRequest extends RewardSupplierCreateReque
     }
 
     @JsonProperty(STATE_TRANSITIONS)
-    public com.extole.common.rest.omissible.Omissible<java.util.Map<com.extole.client.rest.reward.supplier.RewardState,
-        java.util.List<com.extole.client.rest.reward.supplier.RewardState>>>
+    public
+        com.extole.common.rest.omissible.Omissible<java.util.Map<com.extole.client.rest.reward.supplier.RewardState,
+            java.util.List<com.extole.client.rest.reward.supplier.RewardState>>>
         getStateTransitions() {
         return stateTransitions;
     }
@@ -211,6 +215,7 @@ public class CustomRewardSupplierCreateRequest extends RewardSupplierCreateReque
 
             return new CustomRewardSupplierCreateRequest(
                 name,
+                displayName,
                 faceValueAlgorithmType,
                 faceValue,
                 cashBackPercentage,

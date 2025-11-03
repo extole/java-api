@@ -37,8 +37,9 @@ import com.extole.model.service.reward.supplier.custom.reward.NegativeMissingFul
 import com.extole.model.service.reward.supplier.custom.reward.NegativeMissingFulfillmentAutoFailDelayException;
 
 @Component
-public class CustomRewardSupplierUpdateRequestMapper extends BaseRewardSupplierUpdateRequestMapper<
-    CustomRewardSupplierUpdateRequest, CustomRewardSupplier, CustomRewardSupplierBuilder> {
+public class CustomRewardSupplierUpdateRequestMapper extends
+    BaseRewardSupplierUpdateRequestMapper<CustomRewardSupplierUpdateRequest, CustomRewardSupplier,
+        CustomRewardSupplierBuilder> {
 
     private final RewardSupplierService rewardSupplierService;
     private final RewardSupplierRestMapper rewardSupplierRestMapper;
@@ -118,10 +119,12 @@ public class CustomRewardSupplierUpdateRequestMapper extends BaseRewardSupplierU
         return super.complete(authorization, builder, updateRequest, componentReferenceContext);
     }
 
-    private static java.util.Map<com.extole.model.entity.reward.supplier.RewardState,
-        java.util.List<com.extole.model.entity.reward.supplier.RewardState>>
-        mapStateTransitions(java.util.Map<com.extole.client.rest.reward.supplier.RewardState,
-            java.util.List<com.extole.client.rest.reward.supplier.RewardState>> stateTransitions) {
+    private static
+        java.util.Map<com.extole.model.entity.reward.supplier.RewardState,
+            java.util.List<com.extole.model.entity.reward.supplier.RewardState>>
+        mapStateTransitions(
+            java.util.Map<com.extole.client.rest.reward.supplier.RewardState,
+                java.util.List<com.extole.client.rest.reward.supplier.RewardState>> stateTransitions) {
         return stateTransitions
             .entrySet()
             .stream()

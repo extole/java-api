@@ -295,6 +295,15 @@ public class ClientAccessTokenEndpointsImpl implements ClientAccessTokenEndpoint
         }
 
         try {
+            if (Client.EXTOLE_CLIENT_ID.equals(authorizablePrincipal.getClientId())) {
+                UserAuthorization authorization = userAuthorizationService.authorizeUserForClient(
+                    backendAuthorizationProvider.getSuperuserAuthorizationForBackend(),
+                    Client.EXTOLE_HOME_CLIENT_ID,
+                    authorizablePrincipal.getPrincipal(), authorizablePrincipal.getScopes()).save();
+                User user = userService.getById(authorization, authorization.getIdentityId());
+                userService.updateLastUserLoginTime(authorization, user);
+                return mapToAccessTokenResponse(authorization);
+            }
             UserAuthorization authorization = userAuthorizationService.authorizeUserForClient(
                 backendAuthorizationProvider.getSuperuserAuthorizationForBackend(), authorizablePrincipal.getClientId(),
                 authorizablePrincipal.getPrincipal(), authorizablePrincipal.getScopes()).save();
@@ -422,6 +431,11 @@ public class ClientAccessTokenEndpointsImpl implements ClientAccessTokenEndpoint
                     " passed when trying to create a client api access token. authorization client:"
                     + authorization.getClientId());
             }
+        }
+        if (Client.EXTOLE_CLIENT_ID.equals(authorization.getClientId())
+            && authorization.getIdentity().getType() == Identity.Type.USER
+            && authorization.getScopes().contains(CLIENT_SUPERUSER)) {
+            return Client.EXTOLE_HOME_CLIENT_ID;
         }
         return authorization.getClientId();
     }

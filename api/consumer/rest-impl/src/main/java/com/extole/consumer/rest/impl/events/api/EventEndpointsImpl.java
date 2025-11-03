@@ -34,6 +34,7 @@ import com.extole.event.consumer.raw.RequestLogLevel;
 import com.extole.event.consumer.step.StepConsumerEvent;
 import com.extole.model.service.client.ClientNotFoundException;
 import com.extole.model.shared.client.ClientCache;
+import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.zone.targeter.service.ZoneTargeterEventResult;
 import com.extole.zone.targeter.service.ZoneTargeterService;
 
@@ -111,7 +112,7 @@ public class EventEndpointsImpl implements EventEndpoints {
             zoneTargeterEventResult = zoneTargeterService.createBuilder(authorization, authorization.getIdentity(),
                 requestContext.getProcessedRawEvent(), logger)
                 .targetAndSendConsumerEvents();
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)

@@ -2,6 +2,8 @@ package com.extole.client.rest.impl.campaign.component.setting;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -9,7 +11,6 @@ import org.springframework.stereotype.Component;
 import com.extole.client.rest.campaign.component.setting.CampaignComponentSocketResponse;
 import com.extole.client.rest.campaign.component.setting.CampaignComponentVariableResponse;
 import com.extole.client.rest.campaign.component.setting.SettingType;
-import com.extole.client.rest.campaign.component.setting.SocketFilterResponse;
 import com.extole.model.entity.campaign.Setting;
 import com.extole.model.entity.campaign.Socket;
 
@@ -17,10 +18,13 @@ import com.extole.model.entity.campaign.Socket;
 public class ComponentSocketRestMapper implements ComponentSettingRestMapper<CampaignComponentSocketResponse> {
 
     private final CampaignComponentSettingRestMapper componentSettingRestMapper;
+    private final ComponentSocketFilterMapper componentSocketFilterMapper;
 
     @Autowired
-    public ComponentSocketRestMapper(@Lazy CampaignComponentSettingRestMapper componentSettingRestMapper) {
+    public ComponentSocketRestMapper(@Lazy CampaignComponentSettingRestMapper componentSettingRestMapper,
+        ComponentSocketFilterMapper componentSocketFilterMapper) {
         this.componentSettingRestMapper = componentSettingRestMapper;
+        this.componentSocketFilterMapper = componentSocketFilterMapper;
     }
 
     @Override
@@ -30,7 +34,7 @@ public class ComponentSocketRestMapper implements ComponentSettingRestMapper<Cam
             socket.getDisplayName(),
             SettingType.valueOf(socket.getType().name()),
             socket.getDescription(),
-            new SocketFilterResponse(socket.getFilter().getComponentType()),
+            socket.getFilters().stream().map(componentSocketFilterMapper::mapToSocketFilter).toList(),
             socket.getTags(),
             socket.getPriority(),
             socket.getParameters().stream()
@@ -41,8 +45,10 @@ public class ComponentSocketRestMapper implements ComponentSettingRestMapper<Cam
     }
 
     @Override
-    public com.extole.model.entity.campaign.SettingType getSettingType() {
-        return com.extole.model.entity.campaign.SettingType.MULTI_SOCKET;
+    public List<com.extole.model.entity.campaign.SettingType> getSettingTypes() {
+        return List.of(
+            com.extole.model.entity.campaign.SettingType.MULTI_SOCKET,
+            com.extole.model.entity.campaign.SettingType.SOCKET);
     }
 
 }

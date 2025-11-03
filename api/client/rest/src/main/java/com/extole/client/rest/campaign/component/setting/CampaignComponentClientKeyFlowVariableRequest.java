@@ -73,8 +73,9 @@ public final class CampaignComponentClientKeyFlowVariableRequest extends Campaig
     }
 
     public static final class Builder<CALLER, BUILDER_TYPE extends Builder<CALLER, BUILDER_TYPE>>
-        extends CampaignComponentVariableRequest.Builder<CALLER,
-            CampaignComponentClientKeyFlowVariableRequest, Builder<CALLER, BUILDER_TYPE>> {
+        extends
+        CampaignComponentVariableRequest.Builder<CALLER, CampaignComponentClientKeyFlowVariableRequest,
+            Builder<CALLER, BUILDER_TYPE>> {
 
         private Omissible<String> redirectUri = Omissible.omitted();
         private Omissible<String> clientKeyUrl = Omissible.omitted();

@@ -57,8 +57,7 @@ public class WebhookDispatchResultLocalEndpointsImpl implements WebhookDispatchR
                 .build();
         }
 
-        WebhookDispatchResultEventService.WebhookDispatchResultRecentEventQueryBuilder
-                webhookDispatchResultRecentEventQueryBuilder =
+        WebhookDispatchResultEventService.WebhookDispatchResultRecentEventQueryBuilder webhookDispatchResultRecentEventQueryBuilder =
             webhookDispatchResultEventService
                 .createRecentEventQuery(authorization.getClientId(), authorization.getIdentityId(),
                     Id.valueOf(webhookId));

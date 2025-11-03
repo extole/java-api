@@ -1,5 +1,7 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -32,7 +34,7 @@ public class ComponentEnumVariableRestMapper
     }
 
     @Override
-    public com.extole.model.entity.campaign.SettingType getSettingType() {
-        return com.extole.model.entity.campaign.SettingType.ENUM;
+    public List<com.extole.model.entity.campaign.SettingType> getSettingTypes() {
+        return Collections.singletonList(com.extole.model.entity.campaign.SettingType.ENUM);
     }
 }

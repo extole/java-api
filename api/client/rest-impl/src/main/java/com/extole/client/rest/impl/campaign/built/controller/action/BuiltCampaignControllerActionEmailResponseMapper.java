@@ -15,8 +15,7 @@ import com.extole.model.entity.campaign.built.BuiltCampaignControllerActionEmail
 
 @Component
 public class BuiltCampaignControllerActionEmailResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionEmail,
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionEmail,
         BuiltCampaignControllerActionEmailResponse> {
 
     @Override
@@ -26,11 +25,11 @@ public class BuiltCampaignControllerActionEmailResponseMapper implements
             CampaignControllerActionQuality.valueOf(action.getQuality().name()), action.getZoneName(),
             action.getData(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

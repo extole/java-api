@@ -161,7 +161,8 @@ public class CampaignSummaryEndpointsImpl implements CampaignSummaryEndpoints {
                         Collectors.toList()),
                 campaign.getVariants(),
                 CampaignType.valueOf(campaign.getCampaignType() != null ? campaign.getCampaignType().name()
-                    : CampaignType.MARKETING.name()));
+                    : CampaignType.MARKETING.name()),
+                campaign.getRootComponentType());
         };
     }
 

@@ -21,10 +21,10 @@ import com.extole.common.rest.exception.QueryLimitsRestException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
+import com.extole.model.service.report.runner.ReportRunnerService;
+import com.extole.model.service.report.runner.ReportRunnerTagQueryBuilder;
 import com.extole.reporting.rest.report.runner.ReportRunnerTagsEndpoints;
 import com.extole.reporting.rest.report.runner.ReportRunnersTagsListRequest;
-import com.extole.reporting.service.report.runner.ReportRunnerService;
-import com.extole.reporting.service.report.runner.ReportRunnerTagQueryBuilder;
 
 @Provider
 public class ReportRunnerTagsEndpointsImpl implements ReportRunnerTagsEndpoints {

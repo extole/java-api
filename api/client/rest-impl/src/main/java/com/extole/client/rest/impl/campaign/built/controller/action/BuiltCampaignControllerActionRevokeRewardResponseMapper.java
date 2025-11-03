@@ -15,8 +15,7 @@ import com.extole.model.entity.campaign.built.BuiltCampaignControllerActionRevok
 
 @Component
 public class BuiltCampaignControllerActionRevokeRewardResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionRevokeReward,
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionRevokeReward,
         BuiltCampaignControllerActionRevokeRewardResponse> {
 
     @Override
@@ -26,11 +25,11 @@ public class BuiltCampaignControllerActionRevokeRewardResponseMapper implements
             action.getId().getValue(),
             CampaignControllerActionQuality.valueOf(action.getQuality().name()),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

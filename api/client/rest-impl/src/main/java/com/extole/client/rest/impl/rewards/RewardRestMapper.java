@@ -46,7 +46,7 @@ public class RewardRestMapper {
         if (person != null) {
             personReward = person.getRewards()
                 .stream()
-                .filter(rewardCandidate -> rewardCandidate.getRewardId().equals(reward.getId()))
+                .filter(rewardCandidate -> reward.getId().equals(rewardCandidate.getRewardId()))
                 .findFirst();
 
             if (personReward.isPresent()) {

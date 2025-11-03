@@ -37,6 +37,7 @@ public class BuiltPayPalPayoutsRewardSupplierResponse extends BuiltRewardSupplie
         @JsonProperty(PARTNER_REWARD_KEY_TYPE) PartnerRewardKeyType partnerRewardKeyType,
         @JsonProperty(DISPLAY_TYPE) String displayType,
         @JsonProperty(NAME) String name,
+        @JsonProperty(DISPLAY_NAME) Optional<String> displayName,
         @JsonProperty(FACE_VALUE_ALGORITHM_TYPE) FaceValueAlgorithmType faceValueAlgorithmType,
         @JsonProperty(FACE_VALUE) BigDecimal faceValue,
         @JsonProperty(CASH_BACK_PERCENTAGE) BigDecimal cashBackPercentage,
@@ -55,7 +56,8 @@ public class BuiltPayPalPayoutsRewardSupplierResponse extends BuiltRewardSupplie
         @JsonProperty(ENABLED) Boolean enabled,
         @JsonProperty(STATE_TRANSITIONS) Map<RewardState, List<RewardState>> stateTransitions) {
         super(RewardSupplierType.PAYPAL_PAYOUTS, id, partnerRewardSupplierId, partnerRewardKeyType, displayType,
-            name, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack, limitPerDay,
+            name, displayName, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack,
+            limitPerDay,
             limitPerHour, faceValueType, createdDate, updatedDate, componentIds, componentReferences, tags, data,
             enabled, stateTransitions);
         this.merchantToken = merchantToken;

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
+import com.extole.authorization.service.ClientNotFoundAuthorizationException;
 import com.extole.authorization.service.Identity;
 import com.extole.authorization.service.client.ClientAuthorization;
 import com.extole.authorization.service.client.ClientAuthorizationService;
@@ -37,8 +38,8 @@ public class ClientAuthorizationProvider {
                 .build();
         }
 
-        Authorization authorization =
-            (Authorization) servletRequest.getAttribute(RequestContextAttributeName.AUTHORIZATION.getAttributeName());
+        Authorization authorization = (Authorization) servletRequest
+            .getAttribute(RequestContextAttributeName.AUTHORIZATION.getAttributeName());
         if (authorization != null && authorization.getAccessToken().equals(accessToken)) {
             return (ClientAuthorization) authorization;
         }
@@ -46,6 +47,12 @@ public class ClientAuthorizationProvider {
         try {
             return authorizationService.getClientAuthorization(accessToken);
         } catch (AuthorizationException e) {
+            if (e instanceof ClientNotFoundAuthorizationException) {
+                throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
+                    .withErrorCode(UserAuthorizationRestException.PAYMENT_REQUIRED)
+                    .withCause(e)
+                    .build();
+            }
             throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
                 .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED)
                 .withCause(e)

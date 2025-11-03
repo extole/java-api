@@ -56,11 +56,12 @@ public interface ProgramEndpoints {
     ProgramResponse getDecrypt(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
         @PathParam("programId") String programId) throws UserAuthorizationRestException, ProgramRestException;
 
+    // TODO remove this endpoint - ENG-24087
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{programId}")
-    ProgramResponse archive(@UserAccessTokenParam String accessToken, @PathParam("programId") String programId,
-        @DefaultValue("false") @QueryParam("force") boolean force)
+    ProgramResponse archive(@UserAccessTokenParam(requiredScope = Scope.CLIENT_SUPERUSER) String accessToken,
+        @PathParam("programId") String programId, @DefaultValue("false") @QueryParam("force") boolean force)
         throws UserAuthorizationRestException, ProgramRestException, ProgramArchiveRestException;
 
     @GET

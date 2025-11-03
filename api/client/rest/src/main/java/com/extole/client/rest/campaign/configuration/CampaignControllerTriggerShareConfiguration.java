@@ -27,6 +27,8 @@ public class CampaignControllerTriggerShareConfiguration extends CampaignControl
         @JsonProperty(TRIGGER_PHASE) BuildtimeEvaluatable<ControllerBuildtimeContext,
             CampaignControllerTriggerPhase> triggerPhase,
         @JsonProperty(TRIGGER_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            Optional<String>> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
@@ -35,7 +37,14 @@ public class CampaignControllerTriggerShareConfiguration extends CampaignControl
         @JsonProperty(JSON_CHANNELS) Set<CampaignControllerTriggerShareChannel> channels,
         @JsonProperty(JSON_QUALITY) ShareQuality shareQuality,
         @JsonProperty(COMPONENT_REFERENCES) List<CampaignComponentReferenceConfiguration> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.SHARE, triggerPhase, name, description, enabled, negated,
+        super(triggerId,
+            CampaignControllerTriggerType.SHARE,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
             componentReferences);
         if (channels == null) {
             channels = shareTypes;

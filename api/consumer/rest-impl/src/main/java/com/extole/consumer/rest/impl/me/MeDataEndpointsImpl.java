@@ -35,6 +35,7 @@ import com.extole.person.service.profile.PersonDataInvalidNameException;
 import com.extole.person.service.profile.PersonDataInvalidValueException;
 import com.extole.person.service.profile.PersonDataNameLengthException;
 import com.extole.person.service.profile.PersonDataValueLengthException;
+import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.profile.ReadOnlyPersonDataException;
 
 @Provider
@@ -86,8 +87,7 @@ public class MeDataEndpointsImpl implements MeDataEndpoints {
 
         try {
             consumerEventSenderService
-                .createInputEvent(requestContext.getAuthorization(), requestContext.getProcessedRawEvent(),
-                    requestContext.getAuthorization().getIdentity())
+                .createInputEvent(requestContext.getAuthorization(), requestContext.getProcessedRawEvent())
                 .withLockDescription(new LockDescription("me-data-endpoints-edit"))
                 .executeAndSend((personBuilder, person, inputEventBuilder) -> {
                     if (request.getData().isEmpty()) {
@@ -145,7 +145,7 @@ public class MeDataEndpointsImpl implements MeDataEndpoints {
             }
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR).withCause(e).build();
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e.getCause())
@@ -178,8 +178,7 @@ public class MeDataEndpointsImpl implements MeDataEndpoints {
 
         try {
             consumerEventSenderService
-                .createInputEvent(requestContext.getAuthorization(), requestContext.getProcessedRawEvent(),
-                    requestContext.getAuthorization().getIdentity())
+                .createInputEvent(requestContext.getAuthorization(), requestContext.getProcessedRawEvent())
                 .withLockDescription(new LockDescription("me-data-endpoints-put"))
                 .executeAndSend((personBuilder, person, inputEventBuilder) -> {
                     try {
@@ -228,7 +227,7 @@ public class MeDataEndpointsImpl implements MeDataEndpoints {
             }
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR).withCause(e).build();
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)

@@ -1,6 +1,5 @@
 package com.extole.reporting.rest.posthandler.action;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -22,7 +21,6 @@ public abstract class ReportPostHandlerActionResponse {
     private final String id;
     private final ActionType actionType;
 
-    @JsonCreator
     public ReportPostHandlerActionResponse(@JsonProperty(JSON_ID) String id,
         @JsonProperty(JSON_TYPE) ActionType actionType) {
         this.id = id;

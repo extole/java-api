@@ -6,4 +6,5 @@ public final class FilterPriority {
     }
 
     public static final int CORS = 500;
+    public static final int OPENAPI = 2100;
 }

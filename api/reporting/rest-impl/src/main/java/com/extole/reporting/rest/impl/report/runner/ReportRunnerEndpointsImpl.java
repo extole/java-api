@@ -39,18 +39,38 @@ import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.common.rest.support.request.resolver.ResolvesPolymorphicType;
 import com.extole.id.Id;
+import com.extole.model.entity.report.runner.AggregationStatus;
+import com.extole.model.entity.report.runner.Direction;
+import com.extole.model.entity.report.runner.PauseStatus;
+import com.extole.model.entity.report.runner.ReportRunner;
+import com.extole.model.entity.report.runner.ReportRunnerOrder;
+import com.extole.model.entity.report.runner.ReportRunnerType;
+import com.extole.model.entity.report.type.Format;
+import com.extole.model.entity.report.type.ReportInvalidParametersException;
+import com.extole.model.entity.report.type.ReportOrderBy;
+import com.extole.model.entity.report.type.ReportOrderDirection;
 import com.extole.model.service.client.ClientNotFoundException;
 import com.extole.model.service.client.ClientService;
 import com.extole.model.service.client.sftp.SftpDestinationNotFoundException;
+import com.extole.model.service.report.ReportMissingParametersException;
+import com.extole.model.service.report.runner.ReportRunnerFormatNotSupportedException;
+import com.extole.model.service.report.runner.ReportRunnerInvalidParametersException;
+import com.extole.model.service.report.runner.ReportRunnerInvalidScopesException;
+import com.extole.model.service.report.runner.ReportRunnerMergeEmptyFormatException;
+import com.extole.model.service.report.runner.ReportRunnerMissingNameException;
+import com.extole.model.service.report.runner.ReportRunnerMissingParametersException;
+import com.extole.model.service.report.runner.ReportRunnerNotFoundException;
+import com.extole.model.service.report.runner.ReportRunnerQueryBuilder;
+import com.extole.model.service.report.runner.ReportRunnerReportTypeMissingException;
+import com.extole.model.service.report.runner.ReportRunnerReportTypeNotFoundException;
+import com.extole.model.service.report.runner.ReportRunnerService;
+import com.extole.model.service.report.runner.ReportRunnerUpdateManagedByGitException;
+import com.extole.model.service.report.runner.ReportingServiceException;
 import com.extole.reporting.entity.report.Report;
-import com.extole.reporting.entity.report.ReportOrderBy;
-import com.extole.reporting.entity.report.ReportOrderDirection;
 import com.extole.reporting.entity.report.ReportResult;
 import com.extole.reporting.entity.report.ReportResult.Status;
-import com.extole.reporting.entity.report.runner.ReportRunner;
-import com.extole.reporting.entity.report.runner.ReportRunnerOrder;
-import com.extole.reporting.entity.report.runner.ReportRunnerType;
 import com.extole.reporting.entity.report.runner.ReportSlot;
+import com.extole.reporting.rest.impl.report.ReportInvalidParametersRestExceptionMapper;
 import com.extole.reporting.rest.impl.report.ReportResponseMapper;
 import com.extole.reporting.rest.impl.report.execution.ReportRuntimeException;
 import com.extole.reporting.rest.impl.report.runner.mappers.ReportRunnerResponseMapper;
@@ -72,10 +92,7 @@ import com.extole.reporting.rest.report.runner.ReportRunnerSlotsRequest;
 import com.extole.reporting.rest.report.runner.ReportRunnerUpdateRequest;
 import com.extole.reporting.rest.report.runner.ReportRunnerValidationRestException;
 import com.extole.reporting.rest.report.runner.ReportRunnersListRequest;
-import com.extole.reporting.service.ReportInvalidParametersException;
-import com.extole.reporting.service.ReportMissingParametersException;
 import com.extole.reporting.service.ReportNotFoundException;
-import com.extole.reporting.service.ReportingServiceException;
 import com.extole.reporting.service.report.ReportContentDownloadException;
 import com.extole.reporting.service.report.ReportContentFormatNotFoundException;
 import com.extole.reporting.service.report.ReportContentNotFoundException;
@@ -83,24 +100,11 @@ import com.extole.reporting.service.report.ReportFormatInfo;
 import com.extole.reporting.service.report.ReportFormatNotSupportedException;
 import com.extole.reporting.service.report.ReportService;
 import com.extole.reporting.service.report.ReportSftpNotSupportedException;
-import com.extole.reporting.service.report.runner.AggregationStatus;
 import com.extole.reporting.service.report.runner.NoExecutionTimeRangesException;
-import com.extole.reporting.service.report.runner.PauseStatus;
-import com.extole.reporting.service.report.runner.ReportRunnerFormatNotSupportedException;
-import com.extole.reporting.service.report.runner.ReportRunnerInvalidParametersException;
-import com.extole.reporting.service.report.runner.ReportRunnerInvalidScopesException;
-import com.extole.reporting.service.report.runner.ReportRunnerMergeEmptyFormatException;
-import com.extole.reporting.service.report.runner.ReportRunnerMissingNameException;
-import com.extole.reporting.service.report.runner.ReportRunnerMissingParametersException;
-import com.extole.reporting.service.report.runner.ReportRunnerNotFoundException;
+import com.extole.reporting.service.report.runner.ReportRunnerExecutionService;
 import com.extole.reporting.service.report.runner.ReportRunnerPausedException;
-import com.extole.reporting.service.report.runner.ReportRunnerQueryBuilder;
 import com.extole.reporting.service.report.runner.ReportRunnerReportType;
-import com.extole.reporting.service.report.runner.ReportRunnerReportTypeMissingException;
-import com.extole.reporting.service.report.runner.ReportRunnerReportTypeNotFoundException;
-import com.extole.reporting.service.report.runner.ReportRunnerService;
 import com.extole.reporting.service.report.runner.ReportRunnerSlotNotSupportedException;
-import com.extole.reporting.service.report.runner.ReportRunnerUpdateManagedByGitException;
 import com.extole.reporting.service.report.runner.ReportSlotsByReportRunnerListQueryBuilder;
 
 @Provider
@@ -113,6 +117,7 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
 
     private final ClientAuthorizationProvider authorizationProvider;
     private final ReportRunnerService reportRunnerService;
+    private final ReportRunnerExecutionService reportRunnerExecutionService;
     private final ReportService reportService;
 
     private final ClientService clientService;
@@ -126,6 +131,7 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
     @Autowired
     public ReportRunnerEndpointsImpl(ClientAuthorizationProvider authorizationProvider,
         ReportRunnerService reportRunnerService,
+        ReportRunnerExecutionService reportRunnerExecutionService,
         ReportService reportService,
         ClientService clientService,
         ReportRunnerUploadersRepository reportRunnerUploadersRepository,
@@ -135,6 +141,7 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
         @Context HttpHeaders requestHeaders) {
         this.authorizationProvider = authorizationProvider;
         this.reportRunnerService = reportRunnerService;
+        this.reportRunnerExecutionService = reportRunnerExecutionService;
         this.reportService = reportService;
         this.clientService = clientService;
         this.reportRunnerUploadersRepository = reportRunnerUploadersRepository;
@@ -188,7 +195,8 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         try {
-            ReportRunner reportRunner = reportRunnerService.getById(authorization, Id.valueOf(reportRunnerId));
+            ReportRunner reportRunner =
+                reportRunnerService.getById(authorization, Id.valueOf(reportRunnerId));
             return toReportRunnerResponse(authorization, reportRunner, timezone);
         } catch (AuthorizationException e) {
             throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
@@ -245,7 +253,8 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
             }
 
             ReportSlot reportSlot =
-                reportRunnerService.executeReport(authorization, Id.valueOf(reportRunnerId), slot.isEmpty(), slot);
+                reportRunnerExecutionService.executeReport(authorization, Id.valueOf(reportRunnerId), slot.isEmpty(),
+                    slot);
             return reportSlotResponseMapper.toResponse(authorization, reportSlot, requestHeaders, timeZone);
         } catch (AuthorizationException e) {
             throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
@@ -256,10 +265,7 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
                 .addParameter("parameters", e.getMissingParameters())
                 .withCause(e).build();
         } catch (ReportInvalidParametersException e) {
-            throw RestExceptionBuilder.newBuilder(ReportValidationRestException.class)
-                .withErrorCode(ReportValidationRestException.REPORT_INVALID_PARAMETER)
-                .addParameter("parameters", e.getParameterNames())
-                .withCause(e).build();
+            throw ReportInvalidParametersRestExceptionMapper.getInstance().map(e);
         } catch (ReportFormatNotSupportedException e) {
             throw RestExceptionBuilder.newBuilder(ReportValidationRestException.class)
                 .withErrorCode(ReportValidationRestException.REPORT_INVALID_FORMATS)
@@ -346,8 +352,8 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
                 .withOffset(
                     parseOffset(request.getOffset().orElse(BigDecimal.ZERO.toString()), BigDecimal.ZERO.intValue()))
                 .withLimit(parseLimit(request.getLimit().orElse(String.valueOf(DEFAULT_LIMIT)), DEFAULT_LIMIT))
-                .withOrder(request.getOrder().filter(StringUtils::isNotEmpty).map(ReportRunnerOrder.Direction::valueOf)
-                    .orElse(ReportRunnerOrder.Direction.DESCENDING))
+                .withOrder(request.getOrder().filter(StringUtils::isNotEmpty).map(Direction::valueOf)
+                    .orElse(Direction.DESCENDING))
                 .withOrderBy(request.getOrderBy().filter(StringUtils::isNotEmpty).map(ReportRunnerOrder.Field::valueOf)
                     .orElse(ReportRunnerOrder.Field.CREATED_DATE));
             return toReportRunnersResponse(authorization, queryBuilder.list(), request.getTimezone().orElse(null));
@@ -367,7 +373,7 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
         try {
             Set<ReportRunnerReportType> filterTypes = parseReportRunnerReportTypes(types);
             Set<ReportResult.Status> filterStatuses = parseSlotStatuses(statuses);
-            ReportSlotsByReportRunnerListQueryBuilder queryBuilder = reportRunnerService
+            ReportSlotsByReportRunnerListQueryBuilder queryBuilder = reportRunnerExecutionService
                 .listReportSlots(authorization, Id.valueOf(reportRunnerId))
                 .withOffset(parseOffset(offset, BigDecimal.ZERO.intValue()))
                 .withLimit(parseLimit(limit, DEFAULT_LIMIT));
@@ -427,19 +433,12 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
     }
 
     @Override
-    public List<ReportResponse> getRollingReports(String accessToken, String reportRunnerId, String statuses,
-        String offset, String limit, ZoneId timezone)
-        throws UserAuthorizationRestException, QueryLimitsRestException, ReportRunnerQueryRestException {
-        return getAccumulatingReports(accessToken, reportRunnerId, statuses, offset, limit, timezone);
-    }
-
-    @Override
     public List<ReportResponse> getAccumulatingReports(String accessToken, String reportRunnerId, String statuses,
         String offset, String limit, ZoneId timezone)
         throws UserAuthorizationRestException, QueryLimitsRestException, ReportRunnerQueryRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
-            return reportRunnerService
+            return reportRunnerExecutionService
                 .listAccumulatingReports(authorization, Id.valueOf(reportRunnerId))
                 .withOffset(parseOffset(offset, BigDecimal.ZERO.intValue()))
                 .withLimit(parseLimit(limit, DEFAULT_LIMIT))
@@ -461,7 +460,8 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
         throws UserAuthorizationRestException, ReportRunnerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
-            Optional<Report> report = reportRunnerService.getLatestReport(authorization, Id.valueOf(reportRunnerId));
+            Optional<Report> report =
+                reportRunnerExecutionService.getLatestReport(authorization, Id.valueOf(reportRunnerId));
             if (report.isPresent()) {
                 return reportResponseMapper.toReportResponse(authorization, report.get(), requestHeaders, timeZone);
             } else {
@@ -488,7 +488,7 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         Optional<Report> report = Optional.empty();
         try {
-            report = reportRunnerService.getLatestReport(authorization, Id.valueOf(reportRunnerId));
+            report = reportRunnerExecutionService.getLatestReport(authorization, Id.valueOf(reportRunnerId));
 
             if (report.isEmpty()) {
                 throw RestExceptionBuilder.newBuilder(ReportRunnerRestException.class)
@@ -693,7 +693,7 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
         Report report)
         throws ReportRestException, AuthorizationException, ReportNotFoundException, ReportContentNotFoundException,
         ReportContentFormatNotFoundException, QueryLimitsRestException, ReportDownloadRestException {
-        Report.Format reportFormat = getFormat(format, contentType, report);
+        Format reportFormat = getFormat(format, contentType, report);
         ReportFormatInfo downloadInfo = reportService.getReportInfo(authorization, report.getId(), reportFormat);
 
         boolean paginate = limit.isPresent() || offset.isPresent();
@@ -735,13 +735,13 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
         return responseBuilder.build();
     }
 
-    private Report.Format getFormat(Optional<String> format, Optional<String> contentType, Report report)
+    private Format getFormat(Optional<String> format, Optional<String> contentType, Report report)
         throws ReportRestException {
         if (format.isPresent() && !format.get().isEmpty()) {
             return getFormat(format.get().split("\\.")[1], report.getId());
         } else if (contentType.isPresent() && !contentType.get().isEmpty()) {
             try {
-                return Report.Format.valueOfMimeType(contentType.get());
+                return Format.valueOfMimeType(contentType.get());
             } catch (IllegalArgumentException e) {
                 throw RestExceptionBuilder.newBuilder(ReportRestException.class)
                     .withErrorCode(ReportRestException.REPORT_CONTENT_TYPE_NOT_SUPPORTED)
@@ -755,9 +755,9 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
         }
     }
 
-    private Report.Format getFormat(String format, Id<Report> reportId) throws ReportRestException {
+    private Format getFormat(String format, Id<Report> reportId) throws ReportRestException {
         try {
-            return Report.Format.valueOf(format.toUpperCase());
+            return Format.valueOf(format.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw RestExceptionBuilder.newBuilder(ReportRestException.class)
                 .withErrorCode(ReportRestException.REPORT_FORMAT_NOT_SUPPORTED)
@@ -872,7 +872,8 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
             ReportRunnerFormatNotSupportedException, ReportRunnerReportTypeNotFoundException,
             ReportRunnerInvalidScopesException, SftpDestinationNotFoundException, ReportRunnerValidationRestException,
             ReportRunnerNotFoundException, ReportRunnerMergeEmptyFormatException {
-            ReportRunnerType runnerType = reportRunnerService.getById(authorization, reportRunnerId).getType();
+            ReportRunnerType runnerType =
+                reportRunnerService.getById(authorization, reportRunnerId).getType();
             if (!runnerType.equals(ReportRunnerType.valueOf(request.getType().name()))) {
                 throw RestExceptionBuilder.newBuilder(ReportRunnerValidationRestException.class)
                     .withErrorCode(ReportRunnerValidationRestException.REPORT_RUNNER_WRONG_TYPE)
@@ -907,7 +908,8 @@ public class ReportRunnerEndpointsImpl implements ReportRunnerEndpoints {
             ReportRunnerInvalidScopesException, SftpDestinationNotFoundException, ReportRunnerValidationRestException,
             ReportRunnerNotFoundException, ReportRunnerMergeEmptyFormatException {
             ReportRunnerUploader reportRunnerUploader = reportRunnerUploadersRepository.getReportRunnerUploader(
-                reportRunnerService.getTemplateReportRunnerById(authorization, reportRunnerId).getType());
+                reportRunnerService.getDuplicatableReportRunnerById(authorization, reportRunnerId)
+                    .getType());
             return reportRunnerUploader.duplicate(authorization, reportRunnerId, allowDuplicate, request);
         }
     }

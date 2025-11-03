@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ImmutableList;
 
 import com.extole.api.campaign.CampaignBuildtimeContext;
 import com.extole.api.campaign.VariableBuildtimeContext;
@@ -25,7 +26,7 @@ public class CampaignComponentPartnerEnumListVariableConfiguration extends Campa
     private static final String JSON_WEBHOOK_ID = "webhook_id";
     private static final String JSON_OPTIONS = "options";
 
-    private final BuildtimeEvaluatable<CampaignBuildtimeContext, Id<?>> webhookId;
+    private final BuildtimeEvaluatable<CampaignBuildtimeContext, Optional<Id<?>>> webhookId;
     private final List<PartnerEnumListVariableOptionConfiguration> options;
 
     @JsonCreator
@@ -39,15 +40,15 @@ public class CampaignComponentPartnerEnumListVariableConfiguration extends Campa
             Optional<String>> description,
         @JsonProperty(JSON_COMPONENT_SETTING_TAGS) Set<String> tags,
         @JsonProperty(JSON_COMPONENT_SETTING_PRIORITY) DeweyDecimal priority,
-        @JsonProperty(JSON_WEBHOOK_ID) BuildtimeEvaluatable<CampaignBuildtimeContext, Id<?>> webhookId,
+        @JsonProperty(JSON_WEBHOOK_ID) BuildtimeEvaluatable<CampaignBuildtimeContext, Optional<Id<?>>> webhookId,
         @JsonProperty(JSON_OPTIONS) List<PartnerEnumListVariableOptionConfiguration> options) {
         super(name, displayName, type, values, source, description, tags, priority);
         this.webhookId = webhookId;
-        this.options = options;
+        this.options = options == null ? ImmutableList.of() : ImmutableList.copyOf(options);
     }
 
     @JsonProperty(JSON_WEBHOOK_ID)
-    public BuildtimeEvaluatable<CampaignBuildtimeContext, Id<?>> getWebhookId() {
+    public BuildtimeEvaluatable<CampaignBuildtimeContext, Optional<Id<?>>> getWebhookId() {
         return webhookId;
     }
 

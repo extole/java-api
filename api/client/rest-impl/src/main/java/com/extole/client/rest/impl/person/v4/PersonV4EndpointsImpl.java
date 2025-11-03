@@ -55,6 +55,7 @@ import com.extole.client.rest.person.v4.PersonStepsV4ListRequest;
 import com.extole.client.rest.person.v4.PersonV4Endpoints;
 import com.extole.client.rest.person.v4.PersonV4Response;
 import com.extole.client.rest.shareable.ShareableRestException;
+import com.extole.common.journey.JourneyName;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
@@ -80,8 +81,6 @@ import com.extole.person.service.profile.PersonShareQueryBuilder;
 import com.extole.person.service.profile.PersonShareableQueryBuilder;
 import com.extole.person.service.profile.StepQueryBuilder;
 import com.extole.person.service.profile.audience.membership.PersonAudienceMembership;
-import com.extole.person.service.profile.journey.Container;
-import com.extole.person.service.profile.journey.JourneyName;
 import com.extole.person.service.profile.journey.PersonJourney;
 import com.extole.person.service.profile.locale.PersonLocale;
 import com.extole.person.service.profile.referral.PersonReferral;
@@ -96,6 +95,7 @@ import com.extole.person.service.profile.step.PersonStepVisitType;
 import com.extole.person.service.share.PersonShare;
 import com.extole.person.service.shareable.Shareable;
 import com.extole.person.service.shareable.ShareableByCodeNotFoundException;
+import com.extole.sandbox.Container;
 
 @Provider
 public class PersonV4EndpointsImpl implements PersonV4Endpoints {

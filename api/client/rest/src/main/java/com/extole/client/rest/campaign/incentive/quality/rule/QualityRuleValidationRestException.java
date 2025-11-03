@@ -57,9 +57,10 @@ public class QualityRuleValidationRestException extends ExtoleRestException {
             "Quality rule property not supported for the quality rule type", "key");
 
     public static final ErrorCode<
-        QualityRuleValidationRestException> QUALITY_RULE_PROPERTY_VALUE_INVALID_TEMPORAL_UNIT = new ErrorCode<>(
-            "quality_rule_property_value_invalid_temporal_unit", 400,
-            "Quality rule property value must be SECONDS, MINUTES, HOURS or DAYS", "value");
+        QualityRuleValidationRestException> QUALITY_RULE_PROPERTY_VALUE_INVALID_TEMPORAL_UNIT =
+            new ErrorCode<>(
+                "quality_rule_property_value_invalid_temporal_unit", 400,
+                "Quality rule property value must be SECONDS, MINUTES, HOURS or DAYS", "value");
 
     public static final ErrorCode<QualityRuleValidationRestException> QUALITY_RULE_PROPERTY_INVALID_SUBNET =
         new ErrorCode<>("quality_rule_property_value_invalid_subnet", 400,

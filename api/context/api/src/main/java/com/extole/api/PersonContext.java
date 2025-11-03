@@ -3,12 +3,12 @@ package com.extole.api;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.extole.api.person.Person;
-import com.extole.api.service.PersonBuilder;
+import com.extole.api.service.person.PersonBuilder;
 
 @Schema
-public interface PersonContext {
+public interface PersonContext<T extends Person> {
 
-    Person getPerson();
+    T getPerson();
 
     PersonBuilder updatePerson();
 

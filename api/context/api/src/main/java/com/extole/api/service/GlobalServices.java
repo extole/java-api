@@ -3,6 +3,7 @@ package com.extole.api.service;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.extole.api.Language;
+import com.extole.api.service.person.PersonService;
 
 @Schema
 public interface GlobalServices {

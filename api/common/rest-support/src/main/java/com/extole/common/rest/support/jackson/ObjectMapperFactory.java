@@ -16,6 +16,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import com.extole.common.lang.date.ExtoleTimeModule;
 import com.extole.common.rest.model.RequestContextAttributeName;
+import com.extole.evaluateable.ValidEvaluatableModule;
 
 @Provider
 public class ObjectMapperFactory implements Factory<ObjectMapper> {
@@ -37,7 +38,8 @@ public class ObjectMapperFactory implements Factory<ObjectMapper> {
                         return Optional.empty();
                     }
                     return Optional.of((ZoneId) property);
-                }))
+                }),
+                new ValidEvaluatableModule())
             .featuresToDisable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID)
             .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             .featuresToDisable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)

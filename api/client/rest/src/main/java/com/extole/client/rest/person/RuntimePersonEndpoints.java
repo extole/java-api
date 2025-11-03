@@ -97,10 +97,10 @@ public interface RuntimePersonEndpoints {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Check if is the same person", description = "Verify if two IDs refer to the same person")
     IsSamePersonResponse isSamePerson(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("first_person_id") String firstPersonId,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @QueryParam("person_id") String secondPersonId)
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("first_person_id") String firstPersonId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @QueryParam("person_id") String secondPersonId)
         throws UserAuthorizationRestException;
 
     @GET
@@ -109,15 +109,15 @@ public interface RuntimePersonEndpoints {
     @Operation(summary = "Get a list with relationships", description = "Returns relationships for a person")
     List<PersonRelationshipV4Response> getRelationships(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Optional role of the other person in the relationship, friend or advocate.")
-        @Nullable @QueryParam("role") String role,
-        @Parameter(description = "Optional flag to exclude relationships with anonymous persons.")
-        @Nullable @QueryParam("exclude_anonymous") Boolean excludeAnonymous,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(
+            description = "Optional role of the other person in the relationship, friend or advocate.") @Nullable @QueryParam("role") String role,
+        @Parameter(
+            description = "Optional flag to exclude relationships with anonymous persons.") @Nullable @QueryParam("exclude_anonymous") Boolean excludeAnonymous,
         @Parameter(description = "Optional flag to return all relationships, not de-duplicate by identity. " +
-            "Default behavior (or when flag is set to false) returns last relationship per person.")
-        @DefaultValue("false") @QueryParam("include_duplicate_identities") boolean includeDuplicateIdentities,
+            "Default behavior (or when flag is set to false) returns last relationship per person.") @DefaultValue("false") @QueryParam("include_duplicate_identities") boolean includeDuplicateIdentities,
+        @DefaultValue("false") @QueryParam("include_self_referrals") boolean includeSelfReferrals,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException, PersonRelationshipV4RestException;
 
@@ -146,18 +146,16 @@ public interface RuntimePersonEndpoints {
     @Produces(MediaType.APPLICATION_JSON)
     List<PersonRewardV4Response> getRewards(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Optional program label filter.")
-        @Nullable @QueryParam("program_label") String programLabel,
-        @Parameter(description = "Optional campaign id filter.")
-        @Nullable @QueryParam("campaign_id") String campaignId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(
+            description = "Optional program label filter.") @Nullable @QueryParam("program_label") String programLabel,
+        @Parameter(description = "Optional campaign id filter.") @Nullable @QueryParam("campaign_id") String campaignId,
         @Parameter(description = "Optional reward states list filter separated by comma, one of earned, fulfilled, " +
-            "sent, redeemed, failed, canceled, revoked.")
-        @Nullable @QueryParam("reward_state") String rewardStates,
+            "sent, redeemed, failed, canceled, revoked.") @Nullable @QueryParam("reward_state") String rewardStates,
         @Parameter(description = "Optional reward types list filter separated by comma, one of manual_coupon, " +
-            "salesforce_coupon, tango_v2, custom_reward, paypal_payouts.")
-        @Nullable @QueryParam("reward_type") String rewardTypes, @TimeZoneParam ZoneId timeZone)
+            "salesforce_coupon, tango_v2, custom_reward, paypal_payouts.") @Nullable @QueryParam("reward_type") String rewardTypes,
+        @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException, PersonQueryRestException;
 
     @GET
@@ -199,8 +197,8 @@ public interface RuntimePersonEndpoints {
     @Operation(summary = "Get a list with request contexts", description = "Returns request contexts for a person")
     List<PersonRequestContextV4Response> getRequestContexts(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @TimeZoneParam ZoneId timeZone) throws UserAuthorizationRestException, PersonRestException;
 
 }

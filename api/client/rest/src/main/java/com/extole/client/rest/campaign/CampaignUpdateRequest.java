@@ -109,7 +109,8 @@ public class CampaignUpdateRequest {
         private String programType;
         private Set<String> tags;
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext,
-            RuntimeEvaluatable<VariantSelectionContext, String>>> variantSelector = Omissible.omitted();
+            RuntimeEvaluatable<VariantSelectionContext, String>>> variantSelector =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, List<String>>> variants = Omissible.omitted();
         private Omissible<CampaignType> campaignType = Omissible.omitted();
 

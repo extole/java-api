@@ -1,5 +1,8 @@
 package com.extole.client.rest.impl.campaign.built.component.setting;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.extole.client.rest.campaign.built.component.setting.BuiltCampaignComponentVariableResponse;
@@ -26,12 +29,13 @@ public class BuiltComponentSettingDefaultRestMapper
             variable.getDescription(),
             variable.getTags(),
             Id.valueOf(variable.getSourceComponentId().getValue()),
+            variable.getSourceVersion(),
             variable.getPriority());
 
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.STRING;
+    public List<SettingType> getSettingTypes() {
+        return Collections.singletonList(SettingType.STRING);
     }
 }

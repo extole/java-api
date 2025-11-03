@@ -11,12 +11,12 @@ public enum TriggerTypeNotSupportedRestExceptionMapper {
         return INSTANCE;
     }
 
-    public CampaignControllerTriggerValidationRestException map(TriggerTypeNotSupportedException e) {
+    public CampaignControllerTriggerValidationRestException map(TriggerTypeNotSupportedException exception) {
         return RestExceptionBuilder.newBuilder(CampaignControllerTriggerValidationRestException.class)
             .withErrorCode(CampaignControllerTriggerValidationRestException.TRIGGER_TYPE_NOT_SUPPORTED)
-            .addParameter("supported_trigger_types", e.getSupportedTriggerTypes())
-            .addParameter("step_type", e.getStepType())
-            .withCause(e)
+            .addParameter("supported_trigger_types", exception.getSupportedTriggerTypes())
+            .addParameter("step_type", exception.getStepType())
+            .withCause(exception)
             .build();
     }
 }

@@ -45,6 +45,7 @@ import com.extole.model.entity.campaign.CampaignControllerTriggerClientDomain;
 import com.extole.model.entity.campaign.CampaignControllerTriggerDataIntelligenceEvent;
 import com.extole.model.entity.campaign.CampaignControllerTriggerEvent;
 import com.extole.model.entity.campaign.CampaignControllerTriggerExpression;
+import com.extole.model.entity.campaign.CampaignControllerTriggerGroup;
 import com.extole.model.entity.campaign.CampaignControllerTriggerHasIdentity;
 import com.extole.model.entity.campaign.CampaignControllerTriggerHasPriorReward;
 import com.extole.model.entity.campaign.CampaignControllerTriggerHasPriorStep;
@@ -56,6 +57,8 @@ import com.extole.model.entity.campaign.CampaignControllerTriggerRewardEvent;
 import com.extole.model.entity.campaign.CampaignControllerTriggerScore;
 import com.extole.model.entity.campaign.CampaignControllerTriggerSendRewardEvent;
 import com.extole.model.entity.campaign.CampaignControllerTriggerShare;
+import com.extole.model.entity.campaign.CampaignControllerTriggerStepEvent;
+import com.extole.model.entity.campaign.CampaignControllerTriggerTargeting;
 import com.extole.model.entity.campaign.CampaignControllerTriggerZoneState;
 import com.extole.model.entity.campaign.CampaignStep;
 import com.extole.model.entity.campaign.FrontendController;
@@ -71,7 +74,10 @@ import com.extole.model.entity.campaign.built.BuiltCampaignControllerActionIncen
 import com.extole.model.entity.campaign.built.BuiltCampaignControllerTrigger;
 import com.extole.model.entity.campaign.built.BuiltCampaignControllerTriggerEvent;
 import com.extole.model.entity.campaign.built.BuiltCampaignControllerTriggerExpression;
+import com.extole.model.entity.campaign.built.BuiltCampaignControllerTriggerGroup;
 import com.extole.model.entity.campaign.built.BuiltCampaignControllerTriggerLegacyQuality;
+import com.extole.model.entity.campaign.built.BuiltCampaignControllerTriggerStepEvent;
+import com.extole.model.entity.campaign.built.BuiltCampaignControllerTriggerTargeting;
 import com.extole.model.entity.campaign.built.BuiltCampaignStep;
 import com.extole.model.entity.campaign.built.BuiltStepData;
 
@@ -168,6 +174,11 @@ public class CampaignStepProvider {
         return getTrigger(campaign, stepId, triggerId, CampaignControllerTrigger.class);
     }
 
+    public BuiltCampaignControllerTrigger getBuiltStepTrigger(BuiltCampaign campaign, String stepId, String triggerId)
+        throws CampaignControllerRestException {
+        return getBuiltTrigger(campaign, stepId, triggerId, BuiltCampaignControllerTrigger.class);
+    }
+
     public CampaignControllerTriggerAccess getAccessStepTrigger(Campaign campaign, String stepId, String triggerId)
         throws CampaignControllerRestException {
         return getTrigger(campaign, stepId, triggerId, CampaignControllerTriggerAccess.class);
@@ -248,6 +259,26 @@ public class CampaignStepProvider {
         return getTrigger(campaign, stepId, triggerId, CampaignControllerTriggerZoneState.class);
     }
 
+    public CampaignControllerTriggerStepEvent getStepEventStepTrigger(Campaign campaign, String stepId,
+        String triggerId) throws CampaignControllerRestException {
+        return getTrigger(campaign, stepId, triggerId, CampaignControllerTriggerStepEvent.class);
+    }
+
+    public BuiltCampaignControllerTriggerStepEvent getStepEventBuiltStepTrigger(BuiltCampaign campaign, String stepId,
+        String triggerId) throws CampaignControllerRestException {
+        return getBuiltTrigger(campaign, stepId, triggerId, BuiltCampaignControllerTriggerStepEvent.class);
+    }
+
+    public CampaignControllerTriggerTargeting getTargetingStepTrigger(Campaign campaign,
+        String stepId, String triggerId) throws CampaignControllerRestException {
+        return getTrigger(campaign, stepId, triggerId, CampaignControllerTriggerTargeting.class);
+    }
+
+    public BuiltCampaignControllerTriggerTargeting getTargetingBuiltStepTrigger(
+        BuiltCampaign campaign, String stepId, String triggerId) throws CampaignControllerRestException {
+        return getBuiltTrigger(campaign, stepId, triggerId, BuiltCampaignControllerTriggerTargeting.class);
+    }
+
     public BuiltCampaignControllerTriggerEvent getEventBuiltStepTrigger(BuiltCampaign campaign, String stepId,
         String triggerId) throws CampaignControllerRestException {
         return getBuiltTrigger(campaign, stepId, triggerId, BuiltCampaignControllerTriggerEvent.class);
@@ -263,6 +294,11 @@ public class CampaignStepProvider {
         return getBuiltTrigger(campaign, stepId, triggerId, BuiltCampaignControllerTriggerLegacyQuality.class);
     }
 
+    public BuiltCampaignControllerTriggerGroup getGroupBuiltStepTrigger(BuiltCampaign campaign, String stepId,
+        String triggerId) throws CampaignControllerRestException {
+        return getBuiltTrigger(campaign, stepId, triggerId, BuiltCampaignControllerTriggerGroup.class);
+    }
+
     public CampaignControllerTriggerHasIdentity getHasIdentityStepTrigger(Campaign campaign, String stepId,
         String triggerId) throws CampaignControllerRestException {
         return getTrigger(campaign, stepId, triggerId, CampaignControllerTriggerHasIdentity.class);
@@ -276,6 +312,11 @@ public class CampaignStepProvider {
     public CampaignControllerTriggerLegacyLabelTargeting getLegacyLabelTargetingStepTrigger(Campaign campaign,
         String stepId, String triggerId) throws CampaignControllerRestException {
         return getTrigger(campaign, stepId, triggerId, CampaignControllerTriggerLegacyLabelTargeting.class);
+    }
+
+    public CampaignControllerTriggerGroup getGroupStepTrigger(Campaign campaign, String stepId,
+        String triggerId) throws CampaignControllerRestException {
+        return getTrigger(campaign, stepId, triggerId, CampaignControllerTriggerGroup.class);
     }
 
     public CampaignControllerAction getControllerAction(Campaign campaign, String controllerId, String actionId)

@@ -37,8 +37,9 @@ public final class CampaignJourneyEntryCreateRequest extends CampaignStepCreateR
         @JsonProperty(JSON_COMPONENT_REFERENCES) Omissible<List<ComponentReferenceRequest>> componentReferences,
         @JsonProperty(JSON_JOURNEY_NAME) Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, String>> journeyName,
         @Parameter(
-            description = "Journey priority. Default value=" + DEFAULT_PRIORITY) @JsonProperty(JSON_PRIORITY) Omissible<
-                BuildtimeEvaluatable<CampaignBuildtimeContext, DeweyDecimal>> priority,
+            description = "Journey priority. Default value="
+                + DEFAULT_PRIORITY) @JsonProperty(JSON_PRIORITY) Omissible<
+                    BuildtimeEvaluatable<CampaignBuildtimeContext, DeweyDecimal>> priority,
         @JsonProperty(JSON_KEY) Omissible<JourneyKeyCreateRequest> key) {
         super(enabled, componentIds, componentReferences);
         this.journeyName = journeyName;

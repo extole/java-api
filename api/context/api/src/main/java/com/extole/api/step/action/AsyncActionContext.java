@@ -8,9 +8,10 @@ import com.extole.api.GlobalContext;
 import com.extole.api.LoggerContext;
 import com.extole.api.PersonContext;
 import com.extole.api.event.Sandbox;
+import com.extole.api.person.full.FullPerson;
 
 @Schema
-public interface AsyncActionContext extends GlobalContext, PersonContext, LoggerContext {
+public interface AsyncActionContext extends GlobalContext, PersonContext<FullPerson>, LoggerContext {
 
     Map<String, Object> getData();
 

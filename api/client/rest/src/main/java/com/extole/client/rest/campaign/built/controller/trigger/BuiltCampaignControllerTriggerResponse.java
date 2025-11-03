@@ -38,7 +38,10 @@ import com.extole.id.Id;
     @Type(value = BuiltCampaignControllerTriggerHasPriorRewardResponse.class, name = "HAS_PRIOR_REWARD"),
     @Type(value = BuiltCampaignControllerTriggerHasIdentityResponse.class, name = "HAS_IDENTITY"),
     @Type(value = BuiltCampaignControllerTriggerClientDomainResponse.class, name = "CLIENT_DOMAIN"),
-    @Type(value = BuiltCampaignControllerTriggerLegacyLabelTargetingResponse.class, name = "LEGACY_LABEL_TARGETING")
+    @Type(value = BuiltCampaignControllerTriggerLegacyLabelTargetingResponse.class, name = "LEGACY_LABEL_TARGETING"),
+    @Type(value = BuiltCampaignControllerTriggerStepEventResponse.class, name = "STEP_EVENT"),
+    @Type(value = BuiltCampaignControllerTriggerTargetingResponse.class, name = "TARGETING"),
+    @Type(value = BuiltCampaignControllerTriggerGroupResponse.class, name = "GROUP")
 })
 public abstract class BuiltCampaignControllerTriggerResponse extends ComponentElementResponse {
 
@@ -46,6 +49,7 @@ public abstract class BuiltCampaignControllerTriggerResponse extends ComponentEl
     protected static final String TRIGGER_TYPE = "trigger_type";
     protected static final String TRIGGER_PHASE = "trigger_phase";
     protected static final String TRIGGER_NAME = "trigger_name";
+    protected static final String PARENT_TRIGGER_GROUP_NAME = "parent_trigger_group_name";
     protected static final String TRIGGER_DESCRIPTION = "trigger_description";
     protected static final String ENABLED = "enabled";
     protected static final String NEGATED = "negated";
@@ -54,6 +58,7 @@ public abstract class BuiltCampaignControllerTriggerResponse extends ComponentEl
     private final CampaignControllerTriggerType triggerType;
     private final CampaignControllerTriggerPhase triggerPhase;
     private final String name;
+    private final Optional<String> parentTriggerGroupName;
     private final Optional<String> description;
     private final Boolean enabled;
     private final Boolean negated;
@@ -63,6 +68,7 @@ public abstract class BuiltCampaignControllerTriggerResponse extends ComponentEl
         @JsonProperty(TRIGGER_TYPE) CampaignControllerTriggerType triggerType,
         @JsonProperty(TRIGGER_PHASE) CampaignControllerTriggerPhase triggerPhase,
         @JsonProperty(TRIGGER_NAME) String name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) Optional<String> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) Optional<String> description,
         @JsonProperty(ENABLED) Boolean enabled,
         @JsonProperty(NEGATED) Boolean negated,
@@ -73,6 +79,7 @@ public abstract class BuiltCampaignControllerTriggerResponse extends ComponentEl
         this.triggerType = triggerType;
         this.triggerPhase = triggerPhase;
         this.name = name;
+        this.parentTriggerGroupName = parentTriggerGroupName;
         this.description = description;
         this.enabled = enabled;
         this.negated = negated;
@@ -96,6 +103,11 @@ public abstract class BuiltCampaignControllerTriggerResponse extends ComponentEl
     @JsonProperty(TRIGGER_NAME)
     public String getName() {
         return name;
+    }
+
+    @JsonProperty(PARENT_TRIGGER_GROUP_NAME)
+    public Optional<String> getParentTriggerGroupName() {
+        return parentTriggerGroupName;
     }
 
     @JsonProperty(TRIGGER_DESCRIPTION)

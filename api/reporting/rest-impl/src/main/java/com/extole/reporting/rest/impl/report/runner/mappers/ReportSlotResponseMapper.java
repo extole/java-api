@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.extole.authorization.service.Authorization;
-import com.extole.reporting.entity.report.ReportParameter;
+import com.extole.model.entity.report.type.ReportParameter;
 import com.extole.reporting.entity.report.runner.ReportSlot;
 import com.extole.reporting.rest.impl.report.ReportResponseMapper;
 import com.extole.reporting.rest.report.ParameterValueType;

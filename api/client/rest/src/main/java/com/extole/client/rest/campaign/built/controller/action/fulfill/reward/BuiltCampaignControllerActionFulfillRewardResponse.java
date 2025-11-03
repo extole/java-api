@@ -7,10 +7,12 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.extole.api.step.action.reward.RewardActionContext;
 import com.extole.client.rest.campaign.built.controller.action.BuiltCampaignControllerActionResponse;
 import com.extole.client.rest.campaign.component.ComponentReferenceResponse;
 import com.extole.client.rest.campaign.component.ComponentResponse;
 import com.extole.client.rest.campaign.controller.action.CampaignControllerActionQuality;
+import com.extole.evaluateable.RuntimeEvaluatable;
 import com.extole.id.Id;
 
 public class BuiltCampaignControllerActionFulfillRewardResponse extends BuiltCampaignControllerActionResponse {
@@ -23,7 +25,7 @@ public class BuiltCampaignControllerActionFulfillRewardResponse extends BuiltCam
     private final String rewardId;
     private final Optional<String> message;
     private final Optional<String> success;
-    private final Optional<String> partnerRewardId;
+    private final RuntimeEvaluatable<RewardActionContext, Optional<String>> partnerRewardId;
 
     public BuiltCampaignControllerActionFulfillRewardResponse(
         @JsonProperty(JSON_ACTION_ID) String actionId,
@@ -34,7 +36,8 @@ public class BuiltCampaignControllerActionFulfillRewardResponse extends BuiltCam
         @JsonProperty(JSON_REWARD_ID) String rewardId,
         @JsonProperty(JSON_MESSAGE) Optional<String> message,
         @JsonProperty(JSON_SUCCESS) Optional<String> success,
-        @JsonProperty(JSON_PARTNER_REWARD_ID) Optional<String> partnerRewardId) {
+        @JsonProperty(JSON_PARTNER_REWARD_ID) RuntimeEvaluatable<RewardActionContext,
+            Optional<String>> partnerRewardId) {
         super(actionId, FULFILL_REWARD, quality, enabled, componentIds, componentReferences);
         this.rewardId = rewardId;
         this.message = message;
@@ -58,7 +61,7 @@ public class BuiltCampaignControllerActionFulfillRewardResponse extends BuiltCam
     }
 
     @JsonProperty(JSON_PARTNER_REWARD_ID)
-    public Optional<String> getPartnerRewardId() {
+    public RuntimeEvaluatable<RewardActionContext, Optional<String>> getPartnerRewardId() {
         return partnerRewardId;
     }
 

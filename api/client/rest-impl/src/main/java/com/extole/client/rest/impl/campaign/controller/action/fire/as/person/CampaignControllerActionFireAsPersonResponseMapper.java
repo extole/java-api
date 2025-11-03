@@ -26,10 +26,8 @@ import com.extole.model.entity.campaign.CampaignControllerActionType;
 
 @Component
 public class CampaignControllerActionFireAsPersonResponseMapper implements
-    CampaignControllerActionResponseMapper<
-        CampaignControllerActionFireAsPerson,
-        CampaignControllerActionFireAsPersonResponse,
-        CampaignControllerActionFireAsPersonConfiguration> {
+    CampaignControllerActionResponseMapper<CampaignControllerActionFireAsPerson,
+        CampaignControllerActionFireAsPersonResponse, CampaignControllerActionFireAsPersonConfiguration> {
 
     private final CampaignComponentRestMapper campaignComponentRestMapper;
     private final FireAsPersonIdentificationResponseMapperRepository fireAsPersonIdentificationResponseMapperRepository;
@@ -48,42 +46,47 @@ public class CampaignControllerActionFireAsPersonResponseMapper implements
             action.getId().getValue(),
             CampaignControllerActionQuality.valueOf(action.getQuality().name()),
             action.getEventName(),
-            toAsPersonIdentification(action.getAsPersonIdentification()),
+            action.getAsPersonIdentification().map(value -> toAsPersonIdentification(value)),
             action.getAsPersonJourney().map(asPersonJourney -> toAsPersonJourney(asPersonJourney)),
             action.getData(),
             action.getLabels(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()),
+            action.getPersonId(),
+            action.getExtraData());
     }
 
     @Override
     public CampaignControllerActionFireAsPersonConfiguration toConfiguration(
         CampaignControllerActionFireAsPerson action,
-        ZoneId timeZone, Map<Id<CampaignComponent>, String> componentNames) {
+        ZoneId timeZone,
+        Map<Id<CampaignComponent>, String> componentNames) {
         return new CampaignControllerActionFireAsPersonConfiguration(
             Omissible.of(Id.valueOf(action.getId().getValue())),
             com.extole.client.rest.campaign.configuration.CampaignControllerActionQuality
                 .valueOf(action.getQuality().name()),
             action.getEventName(),
-            toConfigurationAsPersonIdentification(action.getAsPersonIdentification()),
+            action.getAsPersonIdentification().map(value -> toConfigurationAsPersonIdentification(value)),
             action.getAsPersonJourney().map(asPersonJourney -> toConfigurationAsPersonJourney(asPersonJourney)),
             action.getData(),
             action.getLabels(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,
                     (reference) -> componentNames.get(reference.getComponentId())))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()),
+            action.getPersonId(),
+            action.getExtraData());
     }
 
     @Override

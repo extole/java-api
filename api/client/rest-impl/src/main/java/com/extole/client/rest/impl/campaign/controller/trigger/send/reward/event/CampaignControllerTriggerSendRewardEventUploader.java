@@ -30,6 +30,8 @@ public class CampaignControllerTriggerSendRewardEventUploader
         CampaignControllerTriggerSendRewardEventBuilder triggerBuilder = context.get(step, trigger);
 
         trigger.getName().ifDefined((value) -> triggerBuilder.withName(value));
+        trigger.getParentTriggerGroupName()
+            .ifDefined((value) -> triggerBuilder.withParentTriggerGroupName(value));
         trigger.getEnabled().ifDefined((value) -> triggerBuilder.withEnabled(value));
         trigger.getTriggerPhase()
             .ifDefined(

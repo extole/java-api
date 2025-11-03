@@ -17,41 +17,38 @@ public final class BuildClientKeyExceptionMapper {
     private BuildClientKeyExceptionMapper() {
     }
 
-    public BuildClientKeyRestException map(BuildClientKeyException e) {
-        return internalMap(e);
+    public BuildClientKeyRestException map(BuildClientKeyException exception) {
+        return internalMap(exception);
     }
 
-    private BuildClientKeyRestException internalMap(BuildClientKeyException e) {
-        if (e instanceof InvalidClientKeyDescriptionException) {
-            InvalidClientKeyDescriptionException ex = (InvalidClientKeyDescriptionException) e;
+    private BuildClientKeyRestException internalMap(BuildClientKeyException exception) {
+        if (exception instanceof InvalidClientKeyDescriptionException castedException) {
             return RestExceptionBuilder.newBuilder(BuildClientKeyRestException.class)
                 .withErrorCode(BuildClientKeyRestException.CLIENT_KEY_INVALID_DESCRIPTION)
-                .addParameter("description", ex.getDescription())
-                .withCause(e)
+                .addParameter("description", castedException.getDescription())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof InvalidClientKeyNameException) {
-            InvalidClientKeyNameException ex = (InvalidClientKeyNameException) e;
+        if (exception instanceof InvalidClientKeyNameException castedException) {
             return RestExceptionBuilder.newBuilder(BuildClientKeyRestException.class)
                 .withErrorCode(BuildClientKeyRestException.CLIENT_KEY_INVALID_NAME)
-                .addParameter("name", ex.getName())
-                .withCause(e)
+                .addParameter("name", castedException.getName())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof MissingClientKeyNameException) {
-            MissingClientKeyNameException ex = (MissingClientKeyNameException) e;
+        if (exception instanceof MissingClientKeyNameException castedException) {
             return RestExceptionBuilder.newBuilder(BuildClientKeyRestException.class)
                 .withErrorCode(BuildClientKeyRestException.CLIENT_KEY_MISSING_NAME)
-                .withCause(ex)
+                .withCause(castedException)
                 .build();
         }
 
         return RestExceptionBuilder.newBuilder(BuildClientKeyRestException.class)
             .withErrorCode(BuildClientKeyRestException.CLIENT_KEY_BUILD_FAILED)
-            .addParameter("client_key_id", e.getClientKeyId())
-            .addParameter("evaluatable_name", e.getEvaluatableName())
-            .addParameter("evaluatable", e.getEvaluatable().toString())
-            .withCause(e)
+            .addParameter("client_key_id", exception.getClientKeyId())
+            .addParameter("evaluatable_name", exception.getEvaluatableName())
+            .addParameter("evaluatable", exception.getEvaluatable().toString())
+            .withCause(exception)
             .build();
     }
 }

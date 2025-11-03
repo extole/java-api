@@ -3,14 +3,12 @@ package com.extole.client.rest.campaign.configuration;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.extole.client.rest.person.PersonReferralReason;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public final class FireAsPersonJourney {
 
     private static final String JSON_JOURNEY_TYPE = "journey_type";
@@ -69,22 +67,6 @@ public final class FireAsPersonJourney {
         this.zone = zone;
         this.promotableCode = promotableCode;
         this.advocatePartnerUserId = advocatePartnerUserId;
-    }
-
-    private FireAsPersonJourney(Builder builder) {
-        this.journeyName = builder.journeyName;
-        this.referralReason = builder.referralReason;
-        this.couponCode = builder.couponCode;
-        this.advocateCode = builder.advocateCode;
-        this.shareId = builder.shareId;
-        this.shareableId = builder.shareableId;
-        this.campaignId = builder.campaignId;
-        this.container = builder.container;
-        this.label = builder.label;
-        this.reason = builder.reason;
-        this.zone = builder.zone;
-        this.promotableCode = builder.promotableCode;
-        this.advocatePartnerUserId = builder.advocatePartnerUserId;
     }
 
     @JsonProperty(JSON_JOURNEY_TYPE)
@@ -258,7 +240,20 @@ public final class FireAsPersonJourney {
         }
 
         public FireAsPersonJourney build() {
-            return new FireAsPersonJourney(this);
+            return new FireAsPersonJourney(
+                journeyName,
+                referralReason,
+                couponCode,
+                advocateCode,
+                shareId,
+                shareableId,
+                campaignId,
+                container,
+                label,
+                reason,
+                zone,
+                promotableCode,
+                advocatePartnerUserId);
         }
 
     }

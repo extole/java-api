@@ -1,5 +1,8 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.extole.client.rest.campaign.component.setting.CampaignComponentRewardSupplierIdListVariableRequest;
@@ -10,7 +13,8 @@ import com.extole.model.service.campaign.setting.VariableValueKeyLengthException
 
 @Component
 public class RewardSupplierIdListCreateRequestMapper
-    implements SettingCreateRequestMapper<CampaignComponentRewardSupplierIdListVariableRequest,
+    implements
+    SettingCreateRequestMapper<CampaignComponentRewardSupplierIdListVariableRequest,
         RewardSupplierIdListVariableBuilder> {
 
     @Override
@@ -24,8 +28,8 @@ public class RewardSupplierIdListCreateRequestMapper
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.REWARD_SUPPLIER_ID_LIST;
+    public List<SettingType> getSettingTypes() {
+        return Collections.singletonList(SettingType.REWARD_SUPPLIER_ID_LIST);
     }
 
 }

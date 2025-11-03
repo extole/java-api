@@ -36,7 +36,7 @@ public class CampaignControllerActionFulfillRewardCreateRequest extends Componen
     private final Omissible<String> rewardId;
     private final Omissible<Optional<String>> message;
     private final Omissible<Optional<String>> success;
-    private final Omissible<Optional<String>> partnerRewardId;
+    private final Omissible<RuntimeEvaluatable<RewardActionContext, Optional<String>>> partnerRewardId;
     private final Omissible<RuntimeEvaluatable<RewardActionContext, Optional<Instant>>> eventTime;
     private final Omissible<RuntimeEvaluatable<RewardActionContext, Optional<BigDecimal>>> amount;
 
@@ -48,7 +48,8 @@ public class CampaignControllerActionFulfillRewardCreateRequest extends Componen
         @JsonProperty(JSON_REWARD_ID) Omissible<String> rewardId,
         @JsonProperty(JSON_MESSAGE) Omissible<Optional<String>> message,
         @JsonProperty(JSON_SUCCESS) Omissible<Optional<String>> success,
-        @JsonProperty(JSON_PARTNER_REWARD_ID) Omissible<Optional<String>> partnerRewardId,
+        @JsonProperty(JSON_PARTNER_REWARD_ID) Omissible<
+            RuntimeEvaluatable<RewardActionContext, Optional<String>>> partnerRewardId,
         @JsonProperty(JSON_AMOUNT) Omissible<RuntimeEvaluatable<RewardActionContext, Optional<BigDecimal>>> amount,
         @JsonProperty(JSON_EVENT_TIME) Omissible<
             RuntimeEvaluatable<RewardActionContext, Optional<Instant>>> eventTime) {
@@ -89,7 +90,7 @@ public class CampaignControllerActionFulfillRewardCreateRequest extends Componen
     }
 
     @JsonProperty(JSON_PARTNER_REWARD_ID)
-    public Omissible<Optional<String>> getPartnerRewardId() {
+    public Omissible<RuntimeEvaluatable<RewardActionContext, Optional<String>>> getPartnerRewardId() {
         return partnerRewardId;
     }
 
@@ -119,7 +120,8 @@ public class CampaignControllerActionFulfillRewardCreateRequest extends Componen
         private Omissible<String> rewardId = Omissible.omitted();
         private Omissible<Optional<String>> message = Omissible.omitted();
         private Omissible<Optional<String>> success = Omissible.omitted();
-        private Omissible<Optional<String>> partnerRewardId = Omissible.omitted();
+        private Omissible<RuntimeEvaluatable<RewardActionContext, Optional<String>>> partnerRewardId =
+            Omissible.omitted();
         private Omissible<RuntimeEvaluatable<RewardActionContext, Optional<Instant>>> eventTime = Omissible.omitted();
         private Omissible<RuntimeEvaluatable<RewardActionContext, Optional<BigDecimal>>> amount = Omissible.omitted();
 
@@ -151,8 +153,8 @@ public class CampaignControllerActionFulfillRewardCreateRequest extends Componen
             return this;
         }
 
-        public Builder withPartnerRewardId(String partnerRewardId) {
-            this.partnerRewardId = Omissible.of(Optional.ofNullable(partnerRewardId));
+        public Builder withPartnerRewardId(RuntimeEvaluatable<RewardActionContext, Optional<String>> partnerRewardId) {
+            this.partnerRewardId = Omissible.of(partnerRewardId);
             return this;
         }
 

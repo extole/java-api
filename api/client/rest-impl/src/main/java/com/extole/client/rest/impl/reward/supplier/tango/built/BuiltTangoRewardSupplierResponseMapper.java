@@ -56,6 +56,7 @@ public class BuiltTangoRewardSupplierResponseMapper
             com.extole.client.rest.reward.supplier.FaceValueType
                 .valueOf(rewardSupplier.getFaceValueType().name()),
             rewardSupplier.getName(),
+            rewardSupplier.getDisplayName(),
             metaData.getBrandName(),
             metaData.getBrandDescription(),
             metaData.getBrandDisclaimer(),

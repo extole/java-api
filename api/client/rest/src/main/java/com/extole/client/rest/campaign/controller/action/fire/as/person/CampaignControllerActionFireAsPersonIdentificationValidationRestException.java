@@ -9,14 +9,12 @@ public class CampaignControllerActionFireAsPersonIdentificationValidationRestExc
     extends CampaignControllerActionRestException {
 
     public static final ErrorCode<
-        CampaignControllerActionFireAsPersonIdentificationValidationRestException>
-            AS_PERSON_IDENTIFICATION_VALUE_OUT_OF_RANGE =
+        CampaignControllerActionFireAsPersonIdentificationValidationRestException> AS_PERSON_IDENTIFICATION_VALUE_OUT_OF_RANGE =
             new ErrorCode<>("campaign_controller_action_fire_as_person_identification_value_length_out_of_range",
                 400, "Person identification value is out of range. Maximum length is 2000 characters.");
 
     public static final ErrorCode<
-        CampaignControllerActionFireAsPersonIdentificationValidationRestException>
-            AS_PERSON_IDENTIFICATION_VALUE_MISSING =
+        CampaignControllerActionFireAsPersonIdentificationValidationRestException> AS_PERSON_IDENTIFICATION_VALUE_MISSING =
             new ErrorCode<>("campaign_controller_action_fire_as_person_identification_value_missing",
                 400, "Person identification value is required.");
 

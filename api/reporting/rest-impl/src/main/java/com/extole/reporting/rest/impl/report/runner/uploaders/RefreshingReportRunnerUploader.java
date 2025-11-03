@@ -11,28 +11,29 @@ import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.id.Id;
+import com.extole.model.entity.report.runner.RefreshingReportRunner;
+import com.extole.model.entity.report.runner.ReportRunner;
+import com.extole.model.entity.report.runner.ReportRunnerType;
 import com.extole.model.service.client.sftp.SftpDestinationNotFoundException;
-import com.extole.reporting.entity.report.runner.RefreshingReportRunner;
-import com.extole.reporting.entity.report.runner.ReportRunner;
-import com.extole.reporting.entity.report.runner.ReportRunnerType;
+import com.extole.model.service.report.runner.RefreshingReportRunnerBuilder;
+import com.extole.model.service.report.runner.RefreshingReportRunnerInvalidExpirationException;
+import com.extole.model.service.report.runner.ReportRunnerDuplicateException;
+import com.extole.model.service.report.runner.ReportRunnerFormatNotSupportedException;
+import com.extole.model.service.report.runner.ReportRunnerInvalidParametersException;
+import com.extole.model.service.report.runner.ReportRunnerInvalidScopesException;
+import com.extole.model.service.report.runner.ReportRunnerInvalidSortByException;
+import com.extole.model.service.report.runner.ReportRunnerMergeEmptyFormatException;
+import com.extole.model.service.report.runner.ReportRunnerMissingNameException;
+import com.extole.model.service.report.runner.ReportRunnerMissingParametersException;
+import com.extole.model.service.report.runner.ReportRunnerNameInvalidException;
+import com.extole.model.service.report.runner.ReportRunnerNotFoundException;
+import com.extole.model.service.report.runner.ReportRunnerReportTypeMissingException;
+import com.extole.model.service.report.runner.ReportRunnerReportTypeNotFoundException;
+import com.extole.model.service.report.runner.ReportRunnerUpdateManagedByGitException;
 import com.extole.reporting.rest.report.runner.RefreshingReportRunnerCreateRequest;
 import com.extole.reporting.rest.report.runner.RefreshingReportRunnerUpdateRequest;
 import com.extole.reporting.rest.report.runner.RefreshingReportRunnerValidationRestException;
 import com.extole.reporting.rest.report.runner.ReportRunnerValidationRestException;
-import com.extole.reporting.service.report.runner.RefreshingReportRunnerBuilder;
-import com.extole.reporting.service.report.runner.RefreshingReportRunnerInvalidExpirationException;
-import com.extole.reporting.service.report.runner.ReportRunnerDuplicateException;
-import com.extole.reporting.service.report.runner.ReportRunnerFormatNotSupportedException;
-import com.extole.reporting.service.report.runner.ReportRunnerInvalidParametersException;
-import com.extole.reporting.service.report.runner.ReportRunnerInvalidScopesException;
-import com.extole.reporting.service.report.runner.ReportRunnerMergeEmptyFormatException;
-import com.extole.reporting.service.report.runner.ReportRunnerMissingNameException;
-import com.extole.reporting.service.report.runner.ReportRunnerMissingParametersException;
-import com.extole.reporting.service.report.runner.ReportRunnerNameInvalidException;
-import com.extole.reporting.service.report.runner.ReportRunnerNotFoundException;
-import com.extole.reporting.service.report.runner.ReportRunnerReportTypeMissingException;
-import com.extole.reporting.service.report.runner.ReportRunnerReportTypeNotFoundException;
-import com.extole.reporting.service.report.runner.ReportRunnerUpdateManagedByGitException;
 
 @Component
 public class RefreshingReportRunnerUploader
@@ -131,6 +132,12 @@ public class RefreshingReportRunnerUploader
                 .addParameter("name", reportRunnerRequest.getName())
                 .withCause(e)
                 .build();
+        } catch (ReportRunnerInvalidSortByException e) {
+            throw RestExceptionBuilder.newBuilder(ReportRunnerValidationRestException.class)
+                .withErrorCode(ReportRunnerValidationRestException.REPORT_RUNNER_INVALID_SORT_BY)
+                .addParameter("sort_by", e.getSortBy())
+                .withCause(e)
+                .build();
         }
     }
 
@@ -170,6 +177,12 @@ public class RefreshingReportRunnerUploader
             throw RestExceptionBuilder.newBuilder(ReportRunnerValidationRestException.class)
                 .withErrorCode(ReportRunnerValidationRestException.REPORT_RUNNER_NAME_ILLEGAL_CHARACTER)
                 .addParameter("name", reportRunnerRequest.getName())
+                .withCause(e)
+                .build();
+        } catch (ReportRunnerInvalidSortByException e) {
+            throw RestExceptionBuilder.newBuilder(ReportRunnerValidationRestException.class)
+                .withErrorCode(ReportRunnerValidationRestException.REPORT_RUNNER_INVALID_SORT_BY)
+                .addParameter("sort_by", e.getSortBy())
                 .withCause(e)
                 .build();
         }

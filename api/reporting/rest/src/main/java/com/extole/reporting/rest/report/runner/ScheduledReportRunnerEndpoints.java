@@ -28,12 +28,11 @@ public interface ScheduledReportRunnerEndpoints {
     @Path("/generate-missing-reports")
     @Produces(MediaType.APPLICATION_JSON)
     List<ReportResponse> scheduleMissingReports(@UserAccessTokenParam String accessToken,
-        @Parameter(description = "The Extole unique report runner identifier.")
-        @PathParam("reportRunnerId") String reportRunnerId,
+        @Parameter(
+            description = "The Extole unique report runner identifier.") @PathParam("reportRunnerId") String reportRunnerId,
         @QueryParam("slot") Optional<ZonedDateTime> slotRequest,
         @QueryParam("limit") Optional<Integer> missingReportsToGenerate,
-        @Parameter(description = "Time zone to be used when representing dates.")
-        @TimeZoneParam ZoneId timezone)
+        @Parameter(description = "Time zone to be used when representing dates.") @TimeZoneParam ZoneId timezone)
         throws UserAuthorizationRestException, ReportRunnerRestException, ReportRunnerValidationRestException,
         ScheduledReportRunnerRestException, ReportRunnerQueryRestException;
 
@@ -43,10 +42,9 @@ public interface ScheduledReportRunnerEndpoints {
     @Operation(summary = "Delete reports belonging to the specified report runner id")
     List<ReportResponse> deleteReports(
         @UserAccessTokenParam String accessToken,
-        @Parameter(description = "The Extole unique report runner identifier.")
-        @PathParam("reportRunnerId") String reportRunnerId,
+        @Parameter(
+            description = "The Extole unique report runner identifier.") @PathParam("reportRunnerId") String reportRunnerId,
         @QueryParam("slot") Optional<ZonedDateTime> slotRequest,
-        @Parameter(description = "Time zone to be used when representing dates.")
-        @TimeZoneParam ZoneId timezone)
+        @Parameter(description = "Time zone to be used when representing dates.") @TimeZoneParam ZoneId timezone)
         throws UserAuthorizationRestException, ReportRunnerRestException, ReportRunnerValidationRestException;
 }

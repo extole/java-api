@@ -21,8 +21,8 @@ public class CampaignComponentVariableUpdateRequest extends CampaignComponentSet
     protected static final String JSON_COMPONENT_VARIABLE_SOURCE = "source";
     protected static final String JSON_COMPONENT_VARIABLE_DESCRIPTION = "description";
 
-    private final Omissible<Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-        RuntimeEvaluatable<Object, Optional<Object>>>>> values;
+    private final Omissible<Map<String,
+        BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>>> values;
     private final Omissible<VariableSource> source;
     private final Omissible<BuildtimeEvaluatable<VariableDescriptionBuildtimeContext, Optional<String>>> description;
 
@@ -31,8 +31,7 @@ public class CampaignComponentVariableUpdateRequest extends CampaignComponentSet
         @JsonProperty(JSON_COMPONENT_SETTING_DISPLAY_NAME) Omissible<Optional<String>> displayName,
         @JsonProperty(JSON_COMPONENT_SETTING_TYPE) SettingType type,
         @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES) Omissible<Map<String,
-            BuildtimeEvaluatable<VariableBuildtimeContext,
-                RuntimeEvaluatable<Object, Optional<Object>>>>> values,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>>> values,
         @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE) Omissible<VariableSource> source,
         @JsonProperty(JSON_COMPONENT_VARIABLE_DESCRIPTION) Omissible<
             BuildtimeEvaluatable<VariableDescriptionBuildtimeContext, Optional<String>>> description,
@@ -45,8 +44,10 @@ public class CampaignComponentVariableUpdateRequest extends CampaignComponentSet
     }
 
     @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES)
-    public Omissible<Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-        RuntimeEvaluatable<Object, Optional<Object>>>>> getValues() {
+    public
+        Omissible<
+            Map<String, BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>>>
+        getValues() {
         return values;
     }
 
@@ -73,12 +74,13 @@ public class CampaignComponentVariableUpdateRequest extends CampaignComponentSet
         return new Builder<>(caller);
     }
 
-    public static class Builder<CALLER, RESULT extends CampaignComponentVariableUpdateRequest,
-        BUILDER_TYPE extends CampaignComponentVariableUpdateRequest.Builder<CALLER, RESULT, BUILDER_TYPE>>
+    public static class Builder<CALLER, RESULT extends CampaignComponentVariableUpdateRequest, BUILDER_TYPE extends CampaignComponentVariableUpdateRequest.Builder<
+        CALLER, RESULT, BUILDER_TYPE>>
         extends CampaignComponentSettingUpdateRequest.Builder<CALLER, RESULT, BUILDER_TYPE> {
 
-        protected Omissible<Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>>> values = Omissible.omitted();
+        protected Omissible<Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>>> values =
+                Omissible.omitted();
         protected Omissible<VariableSource> source = Omissible.omitted();
         protected Omissible<BuildtimeEvaluatable<VariableDescriptionBuildtimeContext, Optional<String>>> description =
             Omissible.omitted();
@@ -91,8 +93,9 @@ public class CampaignComponentVariableUpdateRequest extends CampaignComponentSet
             super(caller);
         }
 
-        public BUILDER_TYPE withValues(Map<String,
-            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values) {
+        public BUILDER_TYPE withValues(
+            Map<String,
+                BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values) {
             this.values = Omissible.of(values);
             return (BUILDER_TYPE) this;
         }

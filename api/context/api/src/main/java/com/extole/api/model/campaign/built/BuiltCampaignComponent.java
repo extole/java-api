@@ -1,15 +1,19 @@
 package com.extole.api.model.campaign.built;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
+
+import com.extole.api.model.campaign.ComponentOrigin;
 
 public interface BuiltCampaignComponent {
 
     String getId();
 
-    @Nullable
-    String getType();
+    List<String> getTypes();
 
-    String getComponentVersion();
+    @Nullable
+    ComponentOrigin getOrigin();
 
     String getName();
 

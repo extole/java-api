@@ -42,6 +42,8 @@ public class CampaignControllerTriggerZoneStateUploader
                     (value) -> triggerBuilder
                         .withTriggerPhase(Evaluatables.remapEnum(value, new TypeReference<>() {})));
             trigger.getName().ifDefined((value) -> triggerBuilder.withName(value));
+            trigger.getParentTriggerGroupName()
+                .ifDefined((value) -> triggerBuilder.withParentTriggerGroupName(value));
             trigger.getEnabled().ifDefined((value) -> triggerBuilder.withEnabled(value));
             trigger.getNegated().ifDefined((negated) -> triggerBuilder.withNegated(negated));
 

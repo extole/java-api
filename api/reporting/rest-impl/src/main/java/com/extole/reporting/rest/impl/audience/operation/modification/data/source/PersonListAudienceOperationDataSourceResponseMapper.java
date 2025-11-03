@@ -11,8 +11,9 @@ import com.extole.reporting.rest.audience.operation.modification.data.source.Per
 import com.extole.reporting.rest.impl.audience.operation.AudienceOperationDataSourceResponseMapper;
 
 @Component
-public class PersonListAudienceOperationDataSourceResponseMapper implements AudienceOperationDataSourceResponseMapper<
-    PersonListAudienceOperationDataSource, PersonListAudienceOperationDataSourceResponse> {
+public class PersonListAudienceOperationDataSourceResponseMapper implements
+    AudienceOperationDataSourceResponseMapper<PersonListAudienceOperationDataSource,
+        PersonListAudienceOperationDataSourceResponse> {
 
     @Override
     public PersonListAudienceOperationDataSourceResponse toResponse(PersonListAudienceOperationDataSource dataSource) {

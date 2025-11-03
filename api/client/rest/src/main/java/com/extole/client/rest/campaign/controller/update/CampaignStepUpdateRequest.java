@@ -59,9 +59,9 @@ public abstract class CampaignStepUpdateRequest extends ComponentElementRequest 
         return enabled;
     }
 
-    public abstract static class Builder<
-        BUILDER extends Builder<BUILDER, REQUEST>,
-        REQUEST extends CampaignStepUpdateRequest> extends ComponentElementRequest.Builder<BUILDER> {
+    public abstract static class Builder<BUILDER extends Builder<BUILDER,
+        REQUEST>, REQUEST extends CampaignStepUpdateRequest>
+        extends ComponentElementRequest.Builder<BUILDER> {
 
         protected Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Boolean>> enabled = Omissible.omitted();
 

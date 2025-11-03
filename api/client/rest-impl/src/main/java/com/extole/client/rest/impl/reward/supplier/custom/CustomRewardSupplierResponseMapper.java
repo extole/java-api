@@ -37,6 +37,7 @@ public class CustomRewardSupplierResponseMapper
         CustomRewardSupplier rewardSupplier, ZoneId timeZone) {
         return new CustomRewardSupplierResponse(rewardSupplier.getId().getValue(),
             rewardSupplier.getName(),
+            rewardSupplier.getDisplayName(),
             rewardSupplierRestMapper.toFaceValueAlgorithmTypeResponse(rewardSupplier.getFaceValueAlgorithmType()),
             rewardSupplier.getFaceValue(),
             rewardSupplier.getCashBackPercentage(),

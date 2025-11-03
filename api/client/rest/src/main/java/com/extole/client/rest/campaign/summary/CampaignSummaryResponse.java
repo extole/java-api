@@ -38,6 +38,7 @@ public class CampaignSummaryResponse {
     private static final String CAMPAIGN_LOCKS = "campaign_locks";
     private static final String VARIANTS = "variants";
     private static final String CAMPAIGN_TYPE = "campaign_type";
+    private static final String ROOT_COMPONENT_TYPE = "root_component_type";
 
     private final String id;
     private final String name;
@@ -58,6 +59,7 @@ public class CampaignSummaryResponse {
     private final List<CampaignLockType> campaignLocks;
     private final List<String> variants;
     private final CampaignType campaignType;
+    private final Optional<String> rootComponentType;
 
     @JsonCreator
     public CampaignSummaryResponse(@JsonProperty(CAMPAIGN_ID) String id,
@@ -78,7 +80,8 @@ public class CampaignSummaryResponse {
         @JsonProperty(TAGS) Set<String> tags,
         @JsonProperty(CAMPAIGN_LOCKS) List<CampaignLockType> campaignLocks,
         @JsonProperty(VARIANTS) List<String> variants,
-        @JsonProperty(CAMPAIGN_TYPE) CampaignType campaignType) {
+        @JsonProperty(CAMPAIGN_TYPE) CampaignType campaignType,
+        @JsonProperty(ROOT_COMPONENT_TYPE) Optional<String> rootComponentType) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -98,6 +101,7 @@ public class CampaignSummaryResponse {
         this.campaignLocks = campaignLocks;
         this.variants = variants != null ? ImmutableList.copyOf(variants) : Collections.emptyList();
         this.campaignType = campaignType;
+        this.rootComponentType = rootComponentType;
     }
 
     @JsonProperty(CAMPAIGN_ID)
@@ -193,6 +197,11 @@ public class CampaignSummaryResponse {
     @JsonProperty(CAMPAIGN_TYPE)
     public CampaignType getCampaignType() {
         return campaignType;
+    }
+
+    @JsonProperty(ROOT_COMPONENT_TYPE)
+    public Optional<String> getRootComponentType() {
+        return rootComponentType;
     }
 
     @Override

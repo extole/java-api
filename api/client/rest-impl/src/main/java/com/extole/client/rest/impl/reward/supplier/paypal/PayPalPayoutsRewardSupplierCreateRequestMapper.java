@@ -40,8 +40,9 @@ import com.extole.model.service.reward.supplier.built.paypal.payouts.Unsupported
 import com.extole.model.service.reward.supplier.paypal.payouts.PayPalPayoutsRewardSupplierBuilder;
 
 @Component
-public class PayPalPayoutsRewardSupplierCreateRequestMapper extends BaseRewardSupplierCreateRequestMapper<
-    PayPalPayoutsRewardSupplierCreateRequest, PayPalPayoutsRewardSupplier, PayPalPayoutsRewardSupplierBuilder> {
+public class PayPalPayoutsRewardSupplierCreateRequestMapper extends
+    BaseRewardSupplierCreateRequestMapper<PayPalPayoutsRewardSupplierCreateRequest, PayPalPayoutsRewardSupplier,
+        PayPalPayoutsRewardSupplierBuilder> {
 
     private final RewardSupplierService rewardSupplierService;
     private final RewardSupplierRestMapper rewardSupplierRestMapper;

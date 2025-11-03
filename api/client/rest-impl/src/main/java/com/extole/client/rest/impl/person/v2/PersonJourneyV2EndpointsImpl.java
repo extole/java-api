@@ -32,6 +32,7 @@ import com.extole.client.rest.person.v2.PersonJourneyV2Response;
 import com.extole.client.rest.person.v2.PersonJourneyV2UpdateRequest;
 import com.extole.client.rest.person.v2.PersonJourneyV2ValidationRestException;
 import com.extole.client.rest.person.v4.PersonDataV4Response;
+import com.extole.common.journey.JourneyName;
 import com.extole.common.lock.LockClosureException;
 import com.extole.common.lock.LockDescription;
 import com.extole.common.rest.exception.RestExceptionBuilder;
@@ -53,12 +54,11 @@ import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.profile.PersonParameterInvalidLengthException;
 import com.extole.person.service.profile.PersonParameterMissingException;
 import com.extole.person.service.profile.PersonService;
-import com.extole.person.service.profile.journey.Container;
 import com.extole.person.service.profile.journey.JourneyKey;
-import com.extole.person.service.profile.journey.JourneyName;
 import com.extole.person.service.profile.journey.PersonJourney;
 import com.extole.person.service.profile.journey.PersonJourneyBuilder;
 import com.extole.person.service.profile.referral.PersonReferralReason;
+import com.extole.sandbox.Container;
 
 @Provider
 public class PersonJourneyV2EndpointsImpl implements PersonJourneyV2Endpoints {
@@ -165,15 +165,12 @@ public class PersonJourneyV2EndpointsImpl implements PersonJourneyV2Endpoints {
                 .build();
         }
         try {
-            Person person = personService.getPerson(authorization, Id.valueOf(personId));
-
             ProcessedRawEvent processedRawEvent =
                 clientRequestContextService.createBuilder(authorization, servletRequest)
                     .withEventName(EVENT_NAME_FOR_JOURNEY_CREATE)
                     .build().getProcessedRawEvent();
-
             PersonJourney createdJourney =
-                consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person)
+                consumerEventSenderService.createInputEvent(authorization, processedRawEvent, Id.valueOf(personId))
                     .withLockDescription(LOCK_DESCRIPTION)
                     .executeAndSend((personBuilder, originalPerson, inputEventBuilder) -> {
                         try {
@@ -254,11 +251,6 @@ public class PersonJourneyV2EndpointsImpl implements PersonJourneyV2Endpoints {
                         }
                     }).getPreEventSendingResult();
             return toPersonJourneyResponse(createdJourney, timeZone);
-        } catch (PersonNotFoundException e) {
-            throw RestExceptionBuilder.newBuilder(PersonRestException.class)
-                .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
-                .addParameter("person_id", personId)
-                .withCause(e).build();
         } catch (AuthorizationException e) {
             throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
                 .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED)
@@ -270,6 +262,12 @@ public class PersonJourneyV2EndpointsImpl implements PersonJourneyV2Endpoints {
                 .withErrorCode(PersonJourneyV2ValidationRestException.UNABLE_TO_CREATE_JOURNEY)
                 .addParameter("person_id", personId)
                 .withCause(e).build();
+        } catch (PersonNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(PersonRestException.class)
+                .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
+                .addParameter("person_id", personId)
+                .withCause(e)
+                .build();
         }
     }
 
@@ -306,7 +304,7 @@ public class PersonJourneyV2EndpointsImpl implements PersonJourneyV2Endpoints {
                     }).build().getProcessedRawEvent();
 
             PersonJourney changedJourney =
-                consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person)
+                consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person.getId())
                     .withLockDescription(LOCK_DESCRIPTION)
                     .executeAndSend((personBuilder, originalPerson, inputEventBuilder) -> {
                         try {

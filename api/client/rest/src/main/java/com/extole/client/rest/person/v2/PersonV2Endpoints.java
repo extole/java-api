@@ -93,10 +93,11 @@ public interface PersonV2Endpoints {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Check if is the same person", description = "Verify if two IDs refer to the same person")
     IsSamePersonV2Response isSamePerson(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("first_person_id") String firstPersonId,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @QueryParam("person_id") String secondPersonId) throws UserAuthorizationRestException;
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("first_person_id") String firstPersonId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @QueryParam("person_id") String secondPersonId)
+        throws UserAuthorizationRestException;
 
     @GET
     @Path("/{person_id}/advocates")
@@ -104,8 +105,8 @@ public interface PersonV2Endpoints {
     @Operation(summary = "Get a list with advocates", description = "Returns advocates for a person")
     List<RelationshipV2Response> getAssociatedAdvocates(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @TimeZoneParam ZoneId timeZone) throws UserAuthorizationRestException, PersonRestException;
 
     @GET
@@ -114,8 +115,8 @@ public interface PersonV2Endpoints {
     @Operation(summary = "Get a list with friends", description = "Returns friends of a person")
     List<RelationshipV2Response> getAssociatedFriends(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @TimeZoneParam ZoneId timeZone) throws UserAuthorizationRestException, PersonRestException;
 
     @GET
@@ -150,8 +151,8 @@ public interface PersonV2Endpoints {
     List<ShareV2Response> getShares(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
         @PathParam("person_id") String personId,
         @Nullable @QueryParam("partner_share_id") String partnerShareId,
-        @Parameter(description = "A partner id using this format: <name>:<value>")
-        @Nullable @QueryParam("partner_id") String partnerId,
+        @Parameter(
+            description = "A partner id using this format: <name>:<value>") @Nullable @QueryParam("partner_id") String partnerId,
         @TimeZoneParam ZoneId timeZone) throws UserAuthorizationRestException, PersonRestException;
 
     @GET

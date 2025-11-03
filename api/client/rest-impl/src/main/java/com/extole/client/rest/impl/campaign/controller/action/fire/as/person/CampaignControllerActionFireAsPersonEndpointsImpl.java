@@ -30,6 +30,7 @@ import com.extole.client.rest.impl.campaign.built.controller.action.fire.as.pers
 import com.extole.client.rest.impl.campaign.component.ComponentReferenceRequestMapper;
 import com.extole.client.rest.impl.campaign.controller.CampaignStepProvider;
 import com.extole.client.rest.impl.campaign.controller.action.fire.as.person.request.FireAsPersonIdentificationRequestMapperRepository;
+import com.extole.common.journey.JourneyName;
 import com.extole.common.rest.exception.FatalRestRuntimeException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
@@ -54,16 +55,16 @@ import com.extole.model.service.campaign.ConcurrentCampaignUpdateException;
 import com.extole.model.service.campaign.StaleCampaignVersionException;
 import com.extole.model.service.campaign.component.RedundantComponentReferenceException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonBuilder;
-import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonDataNameInvalidException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonDataNameLengthException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonDataValueInvalidException;
-import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonDataValueLengthException;
+import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonDuplicateDataEntryNameException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonEventNameInvalidException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonEventNameLengthException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonEventNameMissingException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonIllegalCharacterInEventNameException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonLabelInvalidCharactersException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonLabelLengthException;
+import com.extole.model.service.campaign.controller.action.fire.as.person.identification.DoublePersonIdentificationFireAsPersonActionException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.identification.FireAsPersonIdentificationBuilder;
 import com.extole.model.service.campaign.controller.action.fire.as.person.identification.FireAsPersonIdentificationMissingException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.identification.FireAsPersonIdentificationValueLengthException;
@@ -74,7 +75,6 @@ import com.extole.model.service.campaign.controller.action.fire.as.person.journe
 import com.extole.model.service.campaign.controller.action.fire.as.person.journey.FireAsPersonJourneyMissingJourneyNameException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerBuildException;
 import com.extole.model.service.campaign.step.data.StepDataBuildException;
-import com.extole.person.service.profile.journey.JourneyName;
 import com.extole.person.service.profile.referral.PersonReferralReason;
 
 @Provider
@@ -112,7 +112,8 @@ public class CampaignControllerActionFireAsPersonEndpointsImpl
 
     @SuppressWarnings("unchecked")
     @Override
-    public CampaignControllerActionFireAsPersonResponse create(String accessToken,
+    public CampaignControllerActionFireAsPersonResponse create(
+        String accessToken,
         String campaignId,
         String expectedCurrentVersion,
         String controllerId,
@@ -159,6 +160,8 @@ public class CampaignControllerActionFireAsPersonEndpointsImpl
             request.getEventName()
                 .ifPresent(eventName -> eventName.ifDefined((value) -> actionBuilder.withEventName(value)));
             request.getLabels().ifPresent(labels -> actionBuilder.withLabels(labels));
+            request.getPersonId().ifPresent(personId -> actionBuilder.withPersonId(personId));
+            request.getExtraData().ifPresent(extraData -> actionBuilder.withExtraData(extraData));
 
             return responseMapper.toResponse(actionBuilder.save(), ZoneOffset.UTC);
         } catch (StaleCampaignVersionException e) {
@@ -224,13 +227,6 @@ public class CampaignControllerActionFireAsPersonEndpointsImpl
                 .addParameter("data_name", e.getDataName())
                 .withCause(e)
                 .build();
-        } catch (CampaignControllerActionFireAsPersonDataValueLengthException e) {
-            throw RestExceptionBuilder
-                .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
-                .withErrorCode(CampaignControllerActionFireAsPersonValidationRestException.DATA_VALUE_OUT_OF_RANGE)
-                .addParameter("data_name", e.getDataName())
-                .withCause(e)
-                .build();
         } catch (CampaignControllerActionFireAsPersonDataNameLengthException e) {
             throw RestExceptionBuilder
                 .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
@@ -238,10 +234,13 @@ public class CampaignControllerActionFireAsPersonEndpointsImpl
                 .addParameter("data_name", e.getDataName())
                 .withCause(e)
                 .build();
-        } catch (CampaignControllerActionFireAsPersonDataNameInvalidException e) {
+        } catch (CampaignControllerActionFireAsPersonDuplicateDataEntryNameException e) {
             throw RestExceptionBuilder
                 .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
-                .withErrorCode(CampaignControllerActionFireAsPersonValidationRestException.DATA_NAME_INVALID)
+                .withErrorCode(CampaignControllerActionFireAsPersonValidationRestException.DUPLICATE_DATA_ENTRY_NAME)
+                .addParameter("evaluated_data_entry_name", e.getDataName())
+                .addParameter("first_data_entry_name_evaluatable", e.getFirstDataEntryNameEvaluatable())
+                .addParameter("second_data_entry_name_evaluatable", e.getSecondDataEntryNameEvaluatable())
                 .withCause(e)
                 .build();
         } catch (CampaignControllerActionFireAsPersonEventNameMissingException
@@ -296,13 +295,20 @@ public class CampaignControllerActionFireAsPersonEndpointsImpl
                 .addParameter("identifier_type", e.getIdentifierType())
                 .withCause(e)
                 .build();
+        } catch (DoublePersonIdentificationFireAsPersonActionException e) {
+            throw RestExceptionBuilder
+                .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
+                .withErrorCode(CampaignControllerActionFireAsPersonValidationRestException.DOUBLE_PERSON_IDENTIFICATION)
+                .withCause(e)
+                .build();
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         }
     }
 
     @Override
-    public CampaignControllerActionFireAsPersonResponse update(String accessToken,
+    public CampaignControllerActionFireAsPersonResponse update(
+        String accessToken,
         String campaignId,
         String expectedCurrentVersion,
         String controllerId,
@@ -335,12 +341,16 @@ public class CampaignControllerActionFireAsPersonEndpointsImpl
                 componentReferenceRequestMapper.handleComponentReferences(actionBuilder, componentReferences);
             });
             request.getAsPersonIdentification().ifPresent(asPersonIdentification -> {
-                FireAsPersonIdentificationBuilder asPersonIdentificationBuilder =
-                    actionBuilder.withAsPersonIdentification(FireAsPersonIdenticationType
-                        .valueOf(asPersonIdentification.getPersonIdentificationType().name()));
-                fireAsPersonIdentificationRequestMapperRepository
-                    .getMapper(asPersonIdentification.getPersonIdentificationType())
-                    .upload(asPersonIdentification, asPersonIdentificationBuilder);
+                if (asPersonIdentification.isPresent()) {
+                    FireAsPersonIdentificationBuilder asPersonIdentificationBuilder =
+                        actionBuilder.withAsPersonIdentification(FireAsPersonIdenticationType
+                            .valueOf(asPersonIdentification.get().getPersonIdentificationType().name()));
+                    fireAsPersonIdentificationRequestMapperRepository
+                        .getMapper(asPersonIdentification.get().getPersonIdentificationType())
+                        .upload(asPersonIdentification.get(), asPersonIdentificationBuilder);
+                } else {
+                    actionBuilder.clearAsPersonIdentification();
+                }
             });
             request.getAsPersonJourney().ifPresent(asPersonJourney -> {
                 if (asPersonJourney.isPresent()) {
@@ -353,6 +363,8 @@ public class CampaignControllerActionFireAsPersonEndpointsImpl
             request.getEventName()
                 .ifPresent(eventName -> eventName.ifDefined((value) -> actionBuilder.withEventName(value)));
             request.getLabels().ifPresent(labels -> actionBuilder.withLabels(labels));
+            request.getPersonId().ifPresent(personId -> actionBuilder.withPersonId(personId));
+            request.getExtraData().ifPresent(extraData -> actionBuilder.withExtraData(extraData));
 
             return responseMapper.toResponse(actionBuilder.save(), ZoneOffset.UTC);
         } catch (StaleCampaignVersionException e) {
@@ -405,13 +417,6 @@ public class CampaignControllerActionFireAsPersonEndpointsImpl
                 .addParameter("data_name", e.getDataName())
                 .withCause(e)
                 .build();
-        } catch (CampaignControllerActionFireAsPersonDataValueLengthException e) {
-            throw RestExceptionBuilder
-                .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
-                .withErrorCode(CampaignControllerActionFireAsPersonValidationRestException.DATA_VALUE_OUT_OF_RANGE)
-                .addParameter("data_name", e.getDataName())
-                .withCause(e)
-                .build();
         } catch (CampaignControllerActionFireAsPersonDataNameLengthException e) {
             throw RestExceptionBuilder
                 .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
@@ -419,10 +424,13 @@ public class CampaignControllerActionFireAsPersonEndpointsImpl
                 .addParameter("data_name", e.getDataName())
                 .withCause(e)
                 .build();
-        } catch (CampaignControllerActionFireAsPersonDataNameInvalidException e) {
+        } catch (CampaignControllerActionFireAsPersonDuplicateDataEntryNameException e) {
             throw RestExceptionBuilder
                 .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
-                .withErrorCode(CampaignControllerActionFireAsPersonValidationRestException.DATA_NAME_INVALID)
+                .withErrorCode(CampaignControllerActionFireAsPersonValidationRestException.DUPLICATE_DATA_ENTRY_NAME)
+                .addParameter("evaluated_data_entry_name", e.getDataName())
+                .addParameter("first_data_entry_name_evaluatable", e.getFirstDataEntryNameEvaluatable())
+                .addParameter("second_data_entry_name_evaluatable", e.getSecondDataEntryNameEvaluatable())
                 .withCause(e)
                 .build();
         } catch (CampaignControllerActionFireAsPersonEventNameLengthException e) {
@@ -468,6 +476,19 @@ public class CampaignControllerActionFireAsPersonEndpointsImpl
                 .withErrorCode(CampaignComponentValidationRestException.INVALID_COMPONENT_REFERENCE)
                 .addParameter("identifier", e.getIdentifier())
                 .addParameter("identifier_type", e.getIdentifierType())
+                .withCause(e)
+                .build();
+        } catch (DoublePersonIdentificationFireAsPersonActionException e) {
+            throw RestExceptionBuilder
+                .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
+                .withErrorCode(CampaignControllerActionFireAsPersonValidationRestException.DOUBLE_PERSON_IDENTIFICATION)
+                .withCause(e)
+                .build();
+        } catch (FireAsPersonIdentificationMissingException e) {
+            throw RestExceptionBuilder
+                .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
+                .withErrorCode(
+                    CampaignControllerActionFireAsPersonValidationRestException.AS_PERSON_IDENTIFICATION_MISSING)
                 .withCause(e)
                 .build();
         } catch (BuildCampaignException e) {

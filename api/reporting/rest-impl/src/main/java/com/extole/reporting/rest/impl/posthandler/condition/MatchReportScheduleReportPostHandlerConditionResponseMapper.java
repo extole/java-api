@@ -9,7 +9,8 @@ import com.extole.reporting.rest.posthandler.condition.ReportPostHandlerConditio
 
 @Component
 public class MatchReportScheduleReportPostHandlerConditionResponseMapper
-    implements ReportPostHandlerConditionResponseMapper<MatchReportScheduleReportPostHandlerCondition,
+    implements
+    ReportPostHandlerConditionResponseMapper<MatchReportScheduleReportPostHandlerCondition,
         ReportPostHandlerConditionResponse> {
 
     @Override

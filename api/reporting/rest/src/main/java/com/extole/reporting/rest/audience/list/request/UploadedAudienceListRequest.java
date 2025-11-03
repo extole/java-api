@@ -19,20 +19,22 @@ public class UploadedAudienceListRequest extends AudienceListRequest {
     private final Omissible<String> audienceId;
 
     public UploadedAudienceListRequest(
-        @Parameter(description = "AudienceList name, max length 255")
-        @JsonProperty(NAME) Omissible<String> name,
-        @Parameter(description = "AudienceList description, max length 1024")
-        @JsonProperty(DESCRIPTION) Omissible<String> description,
-        @Parameter(description = "A list of columns that will be used when dispatching AudienceList")
-        @JsonProperty(EVENT_COLUMNS) Omissible<Set<String>> eventColumns,
-        @Parameter(description = "Data for the AudienceList")
-        @JsonProperty(EVENT_DATA) Omissible<Map<String, String>> eventData,
-        @Parameter(description = "A set of tags for the AudienceList")
-        @JsonProperty(TAGS) Omissible<Set<String>> tags,
-        @Parameter(description = "An existing FileAsset id for the AudienceList")
-        @JsonProperty(FILE_ASSET_ID) String fileAssetId,
-        @Parameter(description = "An existing Audience id for the AudienceList")
-        @JsonProperty(AUDIENCE_ID) Omissible<String> audienceId) {
+        @Parameter(description = "AudienceList name, max length 255") @JsonProperty(NAME) Omissible<String> name,
+        @Parameter(
+            description = "AudienceList description, max length 1024") @JsonProperty(DESCRIPTION) Omissible<
+                String> description,
+        @Parameter(
+            description = "A list of columns that will be used when dispatching AudienceList") @JsonProperty(EVENT_COLUMNS) Omissible<
+                Set<String>> eventColumns,
+        @Parameter(
+            description = "Data for the AudienceList") @JsonProperty(EVENT_DATA) Omissible<
+                Map<String, String>> eventData,
+        @Parameter(description = "A set of tags for the AudienceList") @JsonProperty(TAGS) Omissible<Set<String>> tags,
+        @Parameter(
+            description = "An existing FileAsset id for the AudienceList") @JsonProperty(FILE_ASSET_ID) String fileAssetId,
+        @Parameter(
+            description = "An existing Audience id for the AudienceList") @JsonProperty(AUDIENCE_ID) Omissible<
+                String> audienceId) {
         super(AudienceListType.UPLOADED, name, description, eventColumns, eventData, tags);
         this.fileAssetId = fileAssetId;
         this.audienceId = audienceId;

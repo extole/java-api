@@ -23,8 +23,7 @@ import com.extole.model.entity.campaign.built.BuiltFireAsPersonJourney;
 
 @Component
 public class BuiltCampaignControllerActionFireAsPersonResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionFireAsPerson,
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionFireAsPerson,
         BuiltCampaignControllerActionFireAsPersonResponse> {
 
     private final BuiltFireAsPersonIdentificationResponseMapperRepository fireAsPersonIdentificationMapperRepository;
@@ -43,20 +42,22 @@ public class BuiltCampaignControllerActionFireAsPersonResponseMapper implements
             action.getId().getValue(),
             CampaignControllerActionQuality.valueOf(action.getQuality().name()),
             action.getEventName(),
-            toAsPersonIdentification(action.getAsPersonIdentification()),
+            action.getAsPersonIdentification().map(value -> toAsPersonIdentification(value)),
             action.getAsPersonJourney().map(asPersonJourney -> toAsPersonJourney(asPersonJourney)),
             action.getData(),
             action.getLabels(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()),
+            action.getPersonId(),
+            action.getExtraData());
     }
 
     @Override

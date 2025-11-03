@@ -5,7 +5,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -25,10 +27,32 @@ public class CachedBodyHttpServletRequestWrapper extends HttpServletRequestWrapp
     @Override
     public ServletInputStream getInputStream() {
         final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(httpRequestBody);
+        final AtomicBoolean finished = new AtomicBoolean(false);
+
         return new ServletInputStream() {
             @Override
+            public boolean isFinished() {
+                return finished.get();
+            }
+
+            @Override
+            public boolean isReady() {
+                return true;
+            }
+
+            @Override
+            public void setReadListener(ReadListener readListener) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
             public int read() {
-                return byteArrayInputStream.read();
+                int data = byteArrayInputStream.read();
+                if (data == -1) {
+                    finished.set(true);
+                }
+
+                return data;
             }
         };
     }

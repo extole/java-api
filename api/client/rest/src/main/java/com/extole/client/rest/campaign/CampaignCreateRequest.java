@@ -76,8 +76,9 @@ public class CampaignCreateRequest {
     }
 
     @JsonProperty(VARIANT_SELECTOR)
-    public Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext,
-        RuntimeEvaluatable<VariantSelectionContext, String>>> getVariantSelector() {
+    public
+        Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, RuntimeEvaluatable<VariantSelectionContext, String>>>
+        getVariantSelector() {
         return variantSelector;
     }
 
@@ -107,7 +108,8 @@ public class CampaignCreateRequest {
         private String programType;
         private Set<String> tags = Collections.emptySet();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext,
-            RuntimeEvaluatable<VariantSelectionContext, String>>> variantSelector = Omissible.omitted();
+            RuntimeEvaluatable<VariantSelectionContext, String>>> variantSelector =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, List<String>>> variants = Omissible.omitted();
         private Omissible<CampaignType> campaignType = Omissible.omitted();
 

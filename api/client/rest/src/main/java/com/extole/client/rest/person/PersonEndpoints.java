@@ -65,4 +65,14 @@ public interface PersonEndpoints {
         @Parameter(description = "Id for person to be updated") @PathParam("person_id") String personId,
         @RequestBody(description = "PersonRequest object", required = true) PersonRequest person)
         throws UserAuthorizationRestException, PersonRestException, PersonValidationRestException;
+
+    @POST
+    @Path("/{person_id}/forward")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    PersonResponse forward(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
+        @PathParam("person_id") String personId,
+        @RequestBody PersonForwardRequest personForwardRequest)
+        throws UserAuthorizationRestException, PersonRestException, PersonValidationRestException;
+
 }

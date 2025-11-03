@@ -48,12 +48,14 @@ public class ExtoleSiteCorsFilter implements ContainerResponseFilter {
         Pattern extoleGithubIo = Pattern.compile("extole\\.github\\.io", Pattern.CASE_INSENSITIVE);
         Pattern extoleIo = Pattern.compile(".*\\.extole\\.io", Pattern.CASE_INSENSITIVE);
         Pattern localhost = Pattern.compile(".*localhost", Pattern.CASE_INSENSITIVE);
+        Pattern chatExtole = Pattern.compile("chat\\.extole\\.com", Pattern.CASE_INSENSITIVE);
         extoleSitePatterns = new ArrayList<>();
         extoleSitePatterns.add(myExtole);
         extoleSitePatterns.add(extoleGithubIo);
         // ENG-15766 fix cross client security risk
         extoleSitePatterns.add(extoleIo);
         extoleSitePatterns.add(localhost);
+        extoleSitePatterns.add(chatExtole);
         LOG.debug(MessageFormat.format("Added {0} to allowed client sites.", defaultExtoleSite));
         LOG.debug("Set the default extole site to {}", defaultExtoleSite);
     }

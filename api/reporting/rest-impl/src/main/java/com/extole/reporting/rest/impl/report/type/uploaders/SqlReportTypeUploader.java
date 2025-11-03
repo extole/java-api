@@ -11,27 +11,27 @@ import org.springframework.stereotype.Component;
 import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
-import com.extole.reporting.entity.report.Report;
-import com.extole.reporting.entity.report.ReportType;
-import com.extole.reporting.entity.report.ReportTypeVisibility;
-import com.extole.reporting.entity.report.type.SqlReportType;
+import com.extole.model.entity.report.type.Format;
+import com.extole.model.entity.report.type.ReportType;
+import com.extole.model.entity.report.type.ReportTypeVisibility;
+import com.extole.model.entity.report.type.SqlReportType;
+import com.extole.model.service.report.sql.SqlReportTypeMissingDatabaseException;
+import com.extole.model.service.report.sql.SqlReportTypeMissingQueryException;
+import com.extole.model.service.report.sql.SqlReportTypeQueryTooLongException;
+import com.extole.model.service.report.type.ReportTypeDescriptionInvalidLinkException;
+import com.extole.model.service.report.type.ReportTypeDescriptionTooLongException;
+import com.extole.model.service.report.type.ReportTypeDisplayNameInvalidException;
+import com.extole.model.service.report.type.ReportTypeDisplayNameTooLongException;
+import com.extole.model.service.report.type.ReportTypeEmptyTagNameException;
+import com.extole.model.service.report.type.ReportTypeInvalidAllowedScopesException;
+import com.extole.model.service.report.type.ReportTypeUpdateManagedByGitException;
+import com.extole.model.service.report.type.ReportTypeVisibilityException;
+import com.extole.model.service.report.type.SqlReportTypeBuilder;
 import com.extole.reporting.rest.report.ReportTypeRestException;
 import com.extole.reporting.rest.report.sql.SqlReportTypeValidationRestException;
 import com.extole.reporting.rest.report.type.ReportTypeValidationRestException;
 import com.extole.reporting.rest.report.type.SqlReportTypeCreateRequest;
 import com.extole.reporting.rest.report.type.SqlReportTypeUpdateRequest;
-import com.extole.reporting.service.report.ReportDisplayNameInvalidException;
-import com.extole.reporting.service.report.sql.SqlReportTypeMissingDatabaseException;
-import com.extole.reporting.service.report.sql.SqlReportTypeMissingQueryException;
-import com.extole.reporting.service.report.sql.SqlReportTypeQueryTooLongException;
-import com.extole.reporting.service.report.type.ReportTypeDescriptionInvalidLinkException;
-import com.extole.reporting.service.report.type.ReportTypeDescriptionTooLongException;
-import com.extole.reporting.service.report.type.ReportTypeDisplayNameTooLongException;
-import com.extole.reporting.service.report.type.ReportTypeEmptyTagNameException;
-import com.extole.reporting.service.report.type.ReportTypeInvalidAllowedScopesException;
-import com.extole.reporting.service.report.type.ReportTypeUpdateManagedByGitException;
-import com.extole.reporting.service.report.type.ReportTypeVisibilityException;
-import com.extole.reporting.service.report.type.SqlReportTypeBuilder;
 
 @Component
 public class SqlReportTypeUploader
@@ -72,9 +72,9 @@ public class SqlReportTypeUploader
                 builder
                     .withVisibility(ReportTypeVisibility.valueOf(reportTypeRequest.getVisibility().get().name()));
             }
-            Optional<Set<Report.Format>> formats = reportTypeRequest.getFormats()
+            Optional<Set<Format>> formats = reportTypeRequest.getFormats()
                 .map(value -> value.stream()
-                    .map(reportFormat -> Report.Format.valueOf(reportFormat.name()))
+                    .map(reportFormat -> Format.valueOf(reportFormat.name()))
                     .collect(Collectors.toSet()));
             if (formats.isPresent()) {
                 builder.withFormats(formats.get());
@@ -124,7 +124,7 @@ public class SqlReportTypeUploader
                 .withErrorCode(SqlReportTypeValidationRestException.QUERY_TOO_LONG)
                 .withCause(e)
                 .build();
-        } catch (ReportDisplayNameInvalidException e) {
+        } catch (ReportTypeDisplayNameInvalidException e) {
             throw RestExceptionBuilder.newBuilder(SqlReportTypeValidationRestException.class)
                 .withErrorCode(SqlReportTypeValidationRestException.DISPLAY_NAME_ILLEGAL_CHARACTER)
                 .withCause(e)
@@ -164,9 +164,9 @@ public class SqlReportTypeUploader
             if (reportTypeRequest.getVisibility().isPresent()) {
                 builder.withVisibility(ReportTypeVisibility.valueOf(reportTypeRequest.getVisibility().get().name()));
             }
-            Optional<Set<Report.Format>> formats = reportTypeRequest.getFormats()
+            Optional<Set<Format>> formats = reportTypeRequest.getFormats()
                 .map(value -> value.stream()
-                    .map(reportFormat -> Report.Format.valueOf(reportFormat.name()))
+                    .map(reportFormat -> Format.valueOf(reportFormat.name()))
                     .collect(Collectors.toSet()));
             if (formats.isPresent()) {
                 builder.withFormats(formats.get());
@@ -215,7 +215,7 @@ public class SqlReportTypeUploader
                 .withErrorCode(SqlReportTypeValidationRestException.QUERY_TOO_LONG)
                 .withCause(e)
                 .build();
-        } catch (ReportDisplayNameInvalidException e) {
+        } catch (ReportTypeDisplayNameInvalidException e) {
             throw RestExceptionBuilder.newBuilder(SqlReportTypeValidationRestException.class)
                 .withErrorCode(SqlReportTypeValidationRestException.DISPLAY_NAME_ILLEGAL_CHARACTER)
                 .withCause(e)

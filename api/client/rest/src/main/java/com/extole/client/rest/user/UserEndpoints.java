@@ -33,8 +33,8 @@ public interface UserEndpoints {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     List<UserResponse> getAll(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "accepts values: 'account'|'all'")
-        @Nullable @QueryParam("scope") @DefaultValue("account") String userAccountScope)
+        @Parameter(
+            description = "accepts values: 'account'|'all'") @Nullable @QueryParam("scope") @DefaultValue("account") String userAccountScope)
         throws UserAuthorizationRestException;
 
     @POST

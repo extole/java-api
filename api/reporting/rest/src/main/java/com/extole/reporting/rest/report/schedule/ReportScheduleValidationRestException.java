@@ -51,11 +51,15 @@ public class ReportScheduleValidationRestException extends ExtoleRestException {
     public static final ErrorCode<ReportScheduleValidationRestException> REPORT_SCHEDULE_LOCKED = new ErrorCode<>(
         "report_schedule_locked", 400, "Report Schedule is locked and cannot be edited via rest api");
 
-    public static final ErrorCode<ReportScheduleValidationRestException> REPORT_RUNNER_NAME_ILLEGAL_CHARACTER =
+    public static final ErrorCode<ReportScheduleValidationRestException> REPORT_SCHEDULE_NAME_ILLEGAL_CHARACTER =
         new ErrorCode<>("report_schedule_name_illegal_character", 403,
             "Report Schedule name can only contain alphanumeric, space, dash, parenthesis, slash, " +
                 "colon, comma, period, underscore, dollar and percentage",
             "name");
+
+    public static final ErrorCode<ReportScheduleValidationRestException> REPORT_SCHEDULE_INVALID_SORT_BY =
+        new ErrorCode<>("report_schedule_invalid_sort_by", 400,
+            "Invalid sort by value defined by report merging configuration", "sort_by");
 
     public ReportScheduleValidationRestException(String uniqueId, ErrorCode<?> errorCode,
         Map<String, Object> parameters, Throwable cause) {

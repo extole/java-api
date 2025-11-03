@@ -29,8 +29,8 @@ public interface PersonMembershipsEndpoints {
         description = "Returns memberships for a person, sorted by created date in descending order.")
     List<PersonMembershipResponse> list(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @BeanParam PersonMembershipsListRequest membershipListRequest,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException, PersonMembershipRestException;

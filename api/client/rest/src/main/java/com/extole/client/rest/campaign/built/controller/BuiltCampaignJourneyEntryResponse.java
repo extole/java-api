@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.extole.client.rest.campaign.built.controller.trigger.BuiltCampaignControllerTriggerResponse;
+import com.extole.client.rest.campaign.built.step.data.BuiltStepDataResponse;
 import com.extole.client.rest.campaign.component.ComponentReferenceResponse;
 import com.extole.client.rest.campaign.component.ComponentResponse;
 import com.extole.client.rest.campaign.controller.StepType;
@@ -37,8 +38,9 @@ public class BuiltCampaignJourneyEntryResponse extends BuiltCampaignStepResponse
         @JsonProperty(JSON_UPDATED_DATE) ZonedDateTime updatedDate,
         @JsonProperty(JSON_JOURNEY_NAME) String journeyName,
         @JsonProperty(JSON_PRIORITY) DeweyDecimal priority,
-        @JsonProperty(JSON_KEY) Optional<BuiltJourneyKeyResponse> key) {
-        super(id, enabled, triggers, componentIds, componentReferences, createdDate, updatedDate);
+        @JsonProperty(JSON_KEY) Optional<BuiltJourneyKeyResponse> key,
+        @JsonProperty(JSON_DATA) List<BuiltStepDataResponse> data) {
+        super(id, enabled, triggers, componentIds, componentReferences, createdDate, updatedDate, data);
         this.journeyName = journeyName;
         this.priority = priority;
         this.key = key;

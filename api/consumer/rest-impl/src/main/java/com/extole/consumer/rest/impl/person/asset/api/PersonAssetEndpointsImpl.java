@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +81,7 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
             throw RestExceptionBuilder.newBuilder(PersonRestException.class)
                 .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
                 .addParameter("person_id", personId).withCause(e)
+                .addParameter("client_id", authorization.getClientId())
                 .build();
         }
     }
@@ -106,6 +108,7 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
             throw RestExceptionBuilder.newBuilder(PersonRestException.class)
                 .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
                 .addParameter("person_id", personId)
+                .addParameter("client_id", authorization.getClientId())
                 .withCause(e)
                 .build();
         } catch (AssetNotFoundException e) {
@@ -141,6 +144,7 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
             throw RestExceptionBuilder.newBuilder(PersonRestException.class)
                 .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
                 .addParameter("person_id", personId)
+                .addParameter("client_id", authorization.getClientId())
                 .withCause(e)
                 .build();
         } catch (AssetNotFoundException e) {
@@ -159,6 +163,9 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
         throws AuthorizationRestException, PersonRestException, PersonAssetRestException {
         Authorization authorization = getAuthorizationFromRequest(accessToken);
         try {
+            if (StringUtils.isBlank(name)) {
+                throw new AssetNotFoundException("Asset not found for name: " + name);
+            }
             PersonAsset asset;
             if (isAuthorized(authorization, personId)) {
                 asset = personAssetService.getAssetByName(authorization, Id.valueOf(personId), name);
@@ -174,6 +181,7 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
             throw RestExceptionBuilder.newBuilder(PersonRestException.class)
                 .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
                 .addParameter("person_id", personId)
+                .addParameter("client_id", authorization.getClientId())
                 .withCause(e)
                 .build();
         } catch (AssetNotFoundException e) {
@@ -214,6 +222,7 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
                     convertException(RestExceptionBuilder.newBuilder(PersonRestException.class)
                         .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
                         .addParameter("person_id", personId)
+                        .addParameter("client_id", authorization.getClientId())
                         .withCause(e)
                         .build());
                 } catch (AssetNotFoundException e) {

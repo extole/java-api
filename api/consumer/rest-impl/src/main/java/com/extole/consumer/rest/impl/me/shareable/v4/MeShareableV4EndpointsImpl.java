@@ -134,8 +134,7 @@ public class MeShareableV4EndpointsImpl implements MeShareableV4Endpoints {
                 String sourceParameter = String.format("extole.shareable.%s.source", shareableId);
                 try {
                     consumerEventSenderService
-                        .createInputEvent(authorization, requestContext.getProcessedRawEvent(),
-                            authorization.getIdentity())
+                        .createInputEvent(authorization, requestContext.getProcessedRawEvent())
                         .withLockDescription(new LockDescription("me-shareable-v4-endpoints-get-shareable"))
                         .executeAndSend((personBuilder, person, inputEventBuilder) -> {
                             try {
@@ -149,7 +148,7 @@ public class MeShareableV4EndpointsImpl implements MeShareableV4Endpoints {
                             Person updatedPerson = personBuilder.save();
                             return new InputEventLockClosureResult<>(updatedPerson);
                         });
-                } catch (LockClosureException | AuthorizationException e) {
+                } catch (LockClosureException | AuthorizationException | PersonNotFoundException e) {
                     throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                         .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR).withCause(e.getCause()).build();
                 }
@@ -204,7 +203,7 @@ public class MeShareableV4EndpointsImpl implements MeShareableV4Endpoints {
         try {
             DeprecatedConsumerShareable deprecatedConsumerShareable =
                 consumerEventSenderService
-                    .createInputEvent(authorization, processedRawEvent, authorization.getIdentity())
+                    .createInputEvent(authorization, processedRawEvent)
                     .withLockDescription(new LockDescription("me-shareable-v4-endoint-create"))
                     .executeAndSend((personBuilder, person, inputEventBuilder) -> {
                         try {
@@ -316,7 +315,7 @@ public class MeShareableV4EndpointsImpl implements MeShareableV4Endpoints {
                 throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                     .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR).withCause(cause).build();
             }
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)
@@ -355,7 +354,7 @@ public class MeShareableV4EndpointsImpl implements MeShareableV4Endpoints {
             }
 
             InputConsumerEvent inputEvent = consumerEventSenderService
-                .createInputEvent(authorization, requestContext.getProcessedRawEvent(), authorization.getIdentity())
+                .createInputEvent(authorization, requestContext.getProcessedRawEvent())
                 .send();
 
             Authorization backendAuthorization =
@@ -365,7 +364,7 @@ public class MeShareableV4EndpointsImpl implements MeShareableV4Endpoints {
             DeprecatedConsumerShareable shareable =
                 personService.updatePerson(backendAuthorization, existingShareable.getPersonId(),
                     new LockDescription("me-shareable-v4-endpoint-update"),
-                    (personBuilder, originalPersonProfile) -> {
+                    (personBuilder, initialPerson) -> {
                         try {
                             ConsumerShareableV4Builder builder =
                                 consumerShareableService.editV4(existingShareable, personBuilder);

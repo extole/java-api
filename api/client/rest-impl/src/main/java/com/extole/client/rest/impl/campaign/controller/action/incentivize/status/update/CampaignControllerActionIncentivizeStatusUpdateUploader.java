@@ -99,8 +99,8 @@ public class CampaignControllerActionIncentivizeStatusUpdateUploader
             } catch (DataValueLengthInvalidIncentivizeStatusUpdateActionException e) {
                 throw RestExceptionBuilder
                     .newBuilder(CampaignControllerActionIncentivizeStatusUpdateValidationRestException.class)
-                    .withErrorCode(CampaignControllerActionIncentivizeStatusUpdateValidationRestException
-                            .DATA_VALUE_LENGTH_INVALID)
+                    .withErrorCode(
+                        CampaignControllerActionIncentivizeStatusUpdateValidationRestException.DATA_VALUE_LENGTH_INVALID)
                     .addParameter("name", e.getDataName())
                     .addParameter("max_length", Integer.valueOf(e.getMaxLength()))
                     .withCause(e)

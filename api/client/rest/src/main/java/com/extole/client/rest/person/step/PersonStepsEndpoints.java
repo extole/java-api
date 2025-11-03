@@ -30,8 +30,8 @@ public interface PersonStepsEndpoints {
     @Operation(summary = "Get a list with steps",
         description = "Returns steps for a person, sorted by event date in descending order.")
     List<PersonStepResponse> getSteps(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @BeanParam PersonStepsListRequest personStepsListRequest,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonStepsListRestException, PersonRestException;

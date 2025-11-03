@@ -34,8 +34,8 @@ public class CampaignComponentRewardSupplierIdListVariableConfiguration extends 
         @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES) Map<String,
             BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values,
         @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE) VariableSource source,
-        @JsonProperty(JSON_COMPONENT_VARIABLE_DESCRIPTION)
-        BuildtimeEvaluatable<VariableDescriptionBuildtimeContext, Optional<String>> description,
+        @JsonProperty(JSON_COMPONENT_VARIABLE_DESCRIPTION) BuildtimeEvaluatable<VariableDescriptionBuildtimeContext,
+            Optional<String>> description,
         @JsonProperty(JSON_COMPONENT_SETTING_TAGS) Set<String> tags,
         @JsonProperty(JSON_COMPONENT_SETTING_PRIORITY) DeweyDecimal priority,
         @JsonProperty(JSON_ALLOWED_VALUES) BuildtimeEvaluatable<CampaignBuildtimeContext,

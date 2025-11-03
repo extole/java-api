@@ -17,7 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
+import com.extole.authorization.service.ClientNotFoundAuthorizationException;
 import com.extole.authorization.service.client.ClientAuthorizationService;
+import com.extole.common.rest.exception.ExtoleAuthorizationRestException;
+import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.support.authorization.BaseAuthorizationFilter;
 import com.extole.model.shared.client.ClientCache;
 
@@ -39,6 +42,13 @@ public class ClientAuthorizationFilter implements ContainerRequestFilter {
             try {
                 return Optional.of(authorizationService.getClientAuthorization(accessToken));
             } catch (AuthorizationException e) {
+                if (e instanceof ClientNotFoundAuthorizationException) {
+                    throw RestExceptionBuilder
+                        .newBuilder(ExtoleAuthorizationRestException.class)
+                        .withErrorCode(ExtoleAuthorizationRestException.PAYMENT_REQUIRED)
+                        .withCause(e)
+                        .build();
+                }
                 // Not all endpoints require an authorization
                 LOG.trace("Received access token {} that didn't map to an authorization", accessToken);
                 return Optional.empty();

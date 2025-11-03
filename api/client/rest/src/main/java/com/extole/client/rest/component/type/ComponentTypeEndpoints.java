@@ -20,7 +20,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import com.extole.client.rest.campaign.component.CampaignComponentValidationRestException;
 import com.extole.common.rest.authorization.Scope;
 import com.extole.common.rest.authorization.UserAccessTokenParam;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
@@ -54,8 +53,7 @@ public interface ComponentTypeEndpoints {
         @UserAccessTokenParam String accessToken,
         @RequestBody(required = true) ComponentTypeCreateRequest createRequest,
         @TimeZoneParam ZoneId timeZone)
-        throws UserAuthorizationRestException, ComponentTypeValidationRestException,
-        CampaignComponentValidationRestException;
+        throws UserAuthorizationRestException, ComponentTypeValidationRestException;
 
     @PUT
     @Path("/{name}")
@@ -67,8 +65,7 @@ public interface ComponentTypeEndpoints {
         @Parameter(required = true) @PathParam("name") String name,
         @RequestBody(required = true) ComponentTypeUpdateRequest updateRequest,
         @TimeZoneParam ZoneId timeZone)
-        throws UserAuthorizationRestException, ComponentTypeRestException, ComponentTypeValidationRestException,
-        CampaignComponentValidationRestException;
+        throws UserAuthorizationRestException, ComponentTypeRestException, ComponentTypeValidationRestException;
 
     @DELETE
     @Path("/{name}")

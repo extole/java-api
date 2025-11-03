@@ -22,4 +22,6 @@ public interface StepDataContext extends StepContext, VariableContext, RuntimeVa
     @Nullable
     String getQuality();
 
+    StepTriggerResult[] getTriggerResults();
+
 }

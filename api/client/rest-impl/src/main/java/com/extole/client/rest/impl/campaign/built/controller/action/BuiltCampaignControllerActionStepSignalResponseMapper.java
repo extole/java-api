@@ -15,8 +15,7 @@ import com.extole.model.entity.campaign.built.BuiltCampaignControllerActionStepS
 
 @Component
 public class BuiltCampaignControllerActionStepSignalResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionStepSignal,
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionStepSignal,
         BuiltCampaignControllerActionStepSignalResponse> {
 
     @Override
@@ -26,11 +25,11 @@ public class BuiltCampaignControllerActionStepSignalResponseMapper implements
             CampaignControllerActionQuality.valueOf(action.getQuality().name()), action.getPollingId(),
             action.getName(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

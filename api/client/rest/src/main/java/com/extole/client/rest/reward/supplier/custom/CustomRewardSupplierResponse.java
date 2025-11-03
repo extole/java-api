@@ -46,6 +46,7 @@ public class CustomRewardSupplierResponse extends RewardSupplierResponse {
     public CustomRewardSupplierResponse(
         @JsonProperty(REWARD_SUPPLIER_ID) String id,
         @JsonProperty(NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name,
+        @JsonProperty(DISPLAY_NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName,
         @JsonProperty(FACE_VALUE_ALGORITHM_TYPE) BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
             FaceValueAlgorithmType> faceValueAlgorithmType,
         @JsonProperty(FACE_VALUE) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal> faceValue,
@@ -78,9 +79,9 @@ public class CustomRewardSupplierResponse extends RewardSupplierResponse {
         @JsonProperty(ENABLED) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean> enabled,
         @JsonProperty(STATE_TRANSITIONS) Map<RewardState, List<RewardState>> stateTransitions) {
         super(RewardSupplierType.CUSTOM_REWARD, id, partnerRewardSupplierId, partnerRewardKeyType, displayType,
-            name, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack, limitPerDay,
-            limitPerHour, faceValueType, createdDate, updatedDate, componentIds, componentReferences, tags, data,
-            enabled, stateTransitions);
+            name, displayName, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack,
+            limitPerDay, limitPerHour, faceValueType, createdDate, updatedDate, componentIds, componentReferences,
+            tags, data, enabled, stateTransitions);
         this.type = type;
         this.autoSendRewardEmailEnabled = autoSendRewardEmailEnabled;
         this.autoFulfillmentEnabled = autoFulfillmentEnabled;

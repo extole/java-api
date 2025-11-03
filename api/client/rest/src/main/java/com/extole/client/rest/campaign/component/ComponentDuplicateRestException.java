@@ -7,9 +7,6 @@ import com.extole.common.rest.exception.ExtoleRestException;
 
 public class ComponentDuplicateRestException extends ExtoleRestException {
 
-    public static final ErrorCode<ComponentDuplicateRestException> CAMPAIGN_NOT_FOUND = new ErrorCode<>(
-        "campaign_not_found", 400, "Target campaign not found", "campaign_id");
-
     public static final ErrorCode<ComponentDuplicateRestException> COMPONENT_COLLISION = new ErrorCode<>(
         "component_collision", 400, "Could not avoid collision by suffix the name of component",
         "component_name");
@@ -56,6 +53,11 @@ public class ComponentDuplicateRestException extends ExtoleRestException {
     public static final ErrorCode<ComponentDuplicateRestException> SOCKET_FILTER_TYPE_MISMATCH = new ErrorCode<>(
         "socket_filter_type_mismatch", 400, "Socket filter type mismatch", "source_component_types",
         "filter_component_type");
+
+    public static final ErrorCode<ComponentDuplicateRestException> SOCKET_FILTER_COMPONENT_FACET_MISMATCH =
+        new ErrorCode<>(
+            "socket_filter_component_facet_mismatch", 400, "Socket filter component facet mismatch",
+            "source_component_facets", "filter_component_facet_name", "filter_component_facet_value");
 
     public static final ErrorCode<ComponentDuplicateRestException> MISSING_SOURCE_COMPONENT_TYPE = new ErrorCode<>(
         "missing_source_component_type", 400, "Source component type is missing", "component_id", "socket_name",

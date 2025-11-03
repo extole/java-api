@@ -1,29 +1,39 @@
 package com.extole.client.rest.campaign.component.setting;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import com.extole.common.lang.ToString;
 
-public class SocketFilterCreateRequest {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
+    property = SocketFilterCreateRequest.TYPE,
+    include = JsonTypeInfo.As.EXISTING_PROPERTY,
+    defaultImpl = ComponentTypeSocketFilterCreateRequest.class,
+    visible = true)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = ComponentTypeSocketFilterCreateRequest.class,
+        name = ComponentTypeSocketFilterCreateRequest.TYPE),
+    @JsonSubTypes.Type(value = ComponentFacetSocketFilterCreateRequest.class,
+        name = ComponentFacetSocketFilterCreateRequest.TYPE),
+})
+public abstract class SocketFilterCreateRequest {
 
-    private static final String COMPONENT_TYPE = "component_type";
+    static final String TYPE = "type";
 
-    private final String componentType;
+    private final SocketFilterType type;
 
-    @JsonCreator
-    public SocketFilterCreateRequest(@JsonProperty(COMPONENT_TYPE) String componentType) {
-        this.componentType = componentType;
+    protected SocketFilterCreateRequest(@JsonProperty(TYPE) SocketFilterType type) {
+        this.type = type;
     }
 
-    @JsonProperty(COMPONENT_TYPE)
-    public String getComponentType() {
-        return componentType;
+    @JsonProperty(TYPE)
+    public SocketFilterType getType() {
+        return type;
     }
 
     @Override
     public String toString() {
         return ToString.create(this);
     }
-
 }

@@ -8,14 +8,12 @@ import org.springframework.stereotype.Component;
 
 import com.extole.authorization.service.Authorization;
 import com.extole.client.rest.campaign.component.CampaignComponentValidationRestException;
-import com.extole.client.rest.campaign.component.ComponentReferenceRequest;
 import com.extole.client.rest.campaign.component.ComponentResponse;
 import com.extole.client.rest.campaign.controller.StepType;
 import com.extole.client.rest.campaign.controller.create.CampaignControllerCreateRequest;
 import com.extole.client.rest.campaign.step.data.StepDataCreateRequest;
 import com.extole.client.rest.impl.campaign.component.ComponentReferenceRequestMapper;
 import com.extole.common.rest.exception.RestExceptionBuilder;
-import com.extole.common.rest.omissible.Omissible;
 import com.extole.evaluateable.Evaluatables;
 import com.extole.id.Id;
 import com.extole.model.entity.campaign.CampaignController;
@@ -81,8 +79,7 @@ public class CampaignControllerCreateRequestMapper
 
         createRequest.getData().ifPresent(data -> {
             if (!data.isEmpty()) {
-                addData(controllerBuilder, data, createRequest.getComponentIds(),
-                    createRequest.getComponentReferences());
+                addData(controllerBuilder, data);
             }
         });
 
@@ -92,9 +89,7 @@ public class CampaignControllerCreateRequestMapper
         return controllerBuilder.save();
     }
 
-    private void addData(CampaignControllerBuilder controllerBuilder, List<StepDataCreateRequest> data,
-        Omissible<List<Id<ComponentResponse>>> componentIds,
-        Omissible<List<ComponentReferenceRequest>> componentReferences)
+    private void addData(CampaignControllerBuilder controllerBuilder, List<StepDataCreateRequest> data)
         throws CampaignComponentValidationRestException {
         for (StepDataCreateRequest dataValue : data) {
             StepDataBuilder stepDataBuilder = controllerBuilder.addData();
@@ -111,10 +106,10 @@ public class CampaignControllerCreateRequestMapper
             dataValue.getKeyType().ifPresent(
                 keyType -> stepDataBuilder.withKeyType(Evaluatables.remapEnum(keyType, new TypeReference<>() {})));
             dataValue.getEnabled().ifPresent(enabled -> stepDataBuilder.withEnabled(enabled));
-            componentIds.ifPresent(candidates -> {
+            dataValue.getComponentIds().ifPresent(candidates -> {
                 handleComponentIds(stepDataBuilder, candidates);
             });
-            componentReferences.ifPresent(references -> {
+            dataValue.getComponentReferences().ifPresent(references -> {
                 componentReferenceRequestMapper.handleComponentReferences(stepDataBuilder, references);
             });
         }

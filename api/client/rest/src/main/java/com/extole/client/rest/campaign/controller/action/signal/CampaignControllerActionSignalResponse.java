@@ -34,8 +34,9 @@ public class CampaignControllerActionSignalResponse extends CampaignControllerAc
         @JsonProperty(JSON_QUALITY) CampaignControllerActionQuality quality,
         @JsonProperty(JSON_SIGNAL_POLLING_ID) RuntimeEvaluatable<SignalActionContext, String> signalPollingId,
         @JsonProperty(JSON_NAME) RuntimeEvaluatable<SignalActionContext, String> name,
-        @JsonProperty(JSON_DATA) Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<SignalActionContext, Optional<Object>>>> data,
+        @JsonProperty(JSON_DATA) Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<SignalActionContext, Optional<Object>>>> data,
         @JsonProperty(JSON_ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
@@ -56,8 +57,10 @@ public class CampaignControllerActionSignalResponse extends CampaignControllerAc
     }
 
     @JsonProperty(JSON_DATA)
-    public Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<SignalActionContext, Optional<Object>>>> getData() {
+    public
+        Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<SignalActionContext, Optional<Object>>>>
+        getData() {
         return data;
     }
 

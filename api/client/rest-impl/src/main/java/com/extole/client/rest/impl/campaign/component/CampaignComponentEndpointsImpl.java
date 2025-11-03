@@ -3,9 +3,12 @@ package com.extole.client.rest.impl.campaign.component;
 import static com.extole.model.entity.campaign.CampaignComponent.ROOT;
 
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -36,6 +39,7 @@ import com.extole.client.rest.campaign.component.ComponentResponse;
 import com.extole.client.rest.campaign.component.anchor.AnchorDetailsResponse;
 import com.extole.client.rest.campaign.component.anchor.AnchorRequest;
 import com.extole.client.rest.campaign.component.setting.CampaignComponentSettingRequest;
+import com.extole.client.rest.campaign.component.setting.CampaignComponentVariableRequest;
 import com.extole.client.rest.campaign.component.setting.SettingRestException;
 import com.extole.client.rest.campaign.component.setting.SettingValidationRestException;
 import com.extole.client.rest.component.type.ComponentTypeRestException;
@@ -52,11 +56,13 @@ import com.extole.client.rest.impl.campaign.CampaignProvider;
 import com.extole.client.rest.impl.campaign.OAuthClientKeyBuildRestExceptionMapper;
 import com.extole.client.rest.impl.campaign.TranslatableVariableExceptionMapper;
 import com.extole.client.rest.impl.campaign.component.setting.CampaignComponentSettingRestMapper;
+import com.extole.client.rest.impl.campaign.component.setting.SettingAssetsPullBuilder;
 import com.extole.client.rest.impl.campaign.component.setting.SettingRequestMapperRepository;
 import com.extole.client.rest.prehandler.BuildPrehandlerRestException;
 import com.extole.client.rest.reward.supplier.BuildRewardSupplierRestException;
 import com.extole.client.rest.security.key.BuildClientKeyRestException;
 import com.extole.client.rest.security.key.oauth.OAuthClientKeyBuildRestException;
+import com.extole.common.lang.KeyCaseInsensitiveMap;
 import com.extole.common.rest.exception.FatalRestRuntimeException;
 import com.extole.common.rest.exception.RestException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
@@ -71,7 +77,10 @@ import com.extole.model.entity.campaign.Component;
 import com.extole.model.entity.campaign.InvalidComponentReferenceException;
 import com.extole.model.entity.campaign.InvalidComponentReferenceSocketNameException;
 import com.extole.model.entity.campaign.InvalidExternalComponentReferenceException;
+import com.extole.model.entity.campaign.Setting;
 import com.extole.model.entity.campaign.SettingType;
+import com.extole.model.entity.campaign.Variable;
+import com.extole.model.entity.campaign.VariableSource;
 import com.extole.model.entity.campaign.built.BuiltCampaign;
 import com.extole.model.entity.campaign.built.BuiltCampaignComponent;
 import com.extole.model.service.ReferencedExternalElementException;
@@ -94,6 +103,7 @@ import com.extole.model.service.campaign.CampaignVersionNotFoundException;
 import com.extole.model.service.campaign.ComponentElementBuilder;
 import com.extole.model.service.campaign.ConcurrentCampaignUpdateException;
 import com.extole.model.service.campaign.StaleCampaignVersionException;
+import com.extole.model.service.campaign.component.BuiltComponentService;
 import com.extole.model.service.campaign.component.CampaignComponentBuilder;
 import com.extole.model.service.campaign.component.CampaignComponentDescriptionLengthException;
 import com.extole.model.service.campaign.component.CampaignComponentDisplayNameLengthException;
@@ -110,6 +120,7 @@ import com.extole.model.service.campaign.component.ComponentDuplicateBuilder;
 import com.extole.model.service.campaign.component.ComponentDuplicateBuilder.SettingUpdateClosure;
 import com.extole.model.service.campaign.component.ComponentDuplicateBuilder.UnknownComponentSettingException;
 import com.extole.model.service.campaign.component.ComponentDuplicationException;
+import com.extole.model.service.campaign.component.ComponentFacetFilterMismatchException;
 import com.extole.model.service.campaign.component.ComponentInstallFailedException;
 import com.extole.model.service.campaign.component.ComponentNotFoundException;
 import com.extole.model.service.campaign.component.ComponentService;
@@ -120,6 +131,7 @@ import com.extole.model.service.campaign.component.ExcessiveExternalComponentRef
 import com.extole.model.service.campaign.component.InvalidCampaignComponentInstalledIntoSocketException;
 import com.extole.model.service.campaign.component.MissingSourceComponentTypeException;
 import com.extole.model.service.campaign.component.MissingTargetComponentByAbsoluteNameException;
+import com.extole.model.service.campaign.component.MultipleComponentsInstalledIntoSingleSocketException;
 import com.extole.model.service.campaign.component.RedundantComponentReferenceException;
 import com.extole.model.service.campaign.component.RootComponentDuplicationException;
 import com.extole.model.service.campaign.component.SelfComponentReferenceException;
@@ -130,6 +142,7 @@ import com.extole.model.service.campaign.component.anchor.InvalidComponentAnchor
 import com.extole.model.service.campaign.component.anchor.MissingComponentAnchorException;
 import com.extole.model.service.campaign.component.anchor.MissingFallbackComponentAnchorException;
 import com.extole.model.service.campaign.component.anchor.UnrecognizedComponentAnchorsException;
+import com.extole.model.service.campaign.component.facet.CampaignComponentFacetsNotFoundException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerBuildException;
 import com.extole.model.service.campaign.flow.step.CampaignFlowStepException;
 import com.extole.model.service.campaign.label.CampaignLabelDuplicateNameException;
@@ -146,8 +159,13 @@ import com.extole.model.service.campaign.setting.SettingNameLengthException;
 import com.extole.model.service.campaign.setting.SettingNameMissingException;
 import com.extole.model.service.campaign.setting.SettingTagLengthException;
 import com.extole.model.service.campaign.setting.SettingValidationException;
+import com.extole.model.service.campaign.setting.SocketFilterInvalidComponentFacetException;
 import com.extole.model.service.campaign.setting.SocketFilterInvalidComponentTypeException;
+import com.extole.model.service.campaign.setting.SocketFilterMissingComponentFacetNameException;
+import com.extole.model.service.campaign.setting.SocketFilterMissingComponentFacetValueException;
 import com.extole.model.service.campaign.setting.SocketFilterMissingComponentTypeException;
+import com.extole.model.service.campaign.setting.UnavailableReferencedComponentSettingValidationException;
+import com.extole.model.service.campaign.setting.VariableBuilder;
 import com.extole.model.service.campaign.setting.VariableValueKeyLengthException;
 import com.extole.model.service.campaign.setting.VariableValueMissingException;
 import com.extole.model.service.campaign.step.data.StepDataBuildException;
@@ -162,12 +180,14 @@ import com.extole.model.service.event.stream.built.BuildEventStreamException;
 import com.extole.model.service.prehandler.built.BuildPrehandlerException;
 import com.extole.model.service.reward.supplier.built.BuildRewardSupplierException;
 import com.extole.model.service.webhook.built.BuildWebhookException;
+import com.extole.spring.ServiceLocator;
 
 @Provider
 public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoints {
 
     private final CampaignService campaignService;
     private final ComponentService componentService;
+    private final BuiltComponentService builtComponentService;
     private final ClientAuthorizationProvider authorizationProvider;
     private final CampaignProvider campaignProvider;
     private final CampaignComponentRestMapper campaignComponentRestMapper;
@@ -175,19 +195,23 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
     private final CampaignComponentProvider campaignComponentProvider;
     private final SettingRequestMapperRepository settingRequestMapperRepository;
     private final ComponentReferenceRequestMapper componentReferenceRequestMapper;
+    private final ServiceLocator serviceLocator;
 
     @Inject
     public CampaignComponentEndpointsImpl(CampaignService campaignService,
         ComponentService componentService,
+        BuiltComponentService builtComponentService,
         ClientAuthorizationProvider authorizationProvider,
         CampaignProvider campaignProvider,
         CampaignComponentRestMapper campaignComponentRestMapper,
         CampaignComponentSettingRestMapper settingRestMapper,
         CampaignComponentProvider campaignComponentProvider,
         SettingRequestMapperRepository settingRequestMapperRepository,
-        ComponentReferenceRequestMapper componentReferenceRequestMapper) {
+        ComponentReferenceRequestMapper componentReferenceRequestMapper,
+        ServiceLocator serviceLocator) {
         this.campaignService = campaignService;
         this.componentService = componentService;
+        this.builtComponentService = builtComponentService;
         this.authorizationProvider = authorizationProvider;
         this.campaignProvider = campaignProvider;
         this.campaignComponentRestMapper = campaignComponentRestMapper;
@@ -195,6 +219,7 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
         this.campaignComponentProvider = campaignComponentProvider;
         this.settingRequestMapperRepository = settingRequestMapperRepository;
         this.componentReferenceRequestMapper = componentReferenceRequestMapper;
+        this.serviceLocator = serviceLocator;
     }
 
     @Override
@@ -225,12 +250,12 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
     public List<AnchorDetailsResponse> getAnchors(String accessToken, String campaignId, String version,
         String componentId, @Nullable ZoneId timeZone)
         throws UserAuthorizationRestException, CampaignRestException, CampaignComponentRestException {
-        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         Campaign campaign = campaignProvider.getCampaign(authorization, Id.valueOf(campaignId), version);
 
         try {
-            return componentService.getAnchors(authorization, campaign.getId(),
+            return builtComponentService.getAnchors(authorization, campaign.getId(),
                 new CampaignVersion(campaign.getVersion()), Id.valueOf(componentId)).stream()
                 .map(anchorDetails -> campaignComponentRestMapper.toAnchorDetails(anchorDetails))
                 .collect(Collectors.toList());
@@ -281,6 +306,12 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
             applyRequestToBuilder(request, campaignComponentBuilder);
             Component created = campaignComponentBuilder.save();
             return campaignComponentRestMapper.toComponentResponse(created.getCampaignComponent(), timeZone);
+        } catch (CampaignComponentFacetsNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(CampaignComponentValidationRestException.class)
+                .withErrorCode(CampaignComponentValidationRestException.COMPONENT_FACETS_NOT_FOUND)
+                .addParameter("facets", e.getFacets())
+                .withCause(e)
+                .build();
         } catch (StaleCampaignVersionException e) {
             throw RestExceptionBuilder.newBuilder(CampaignUpdateRestException.class)
                 .withErrorCode(CampaignUpdateRestException.STALE_VERSION)
@@ -351,6 +382,13 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
                 .withErrorCode(SettingValidationRestException.NAME_MISSING)
                 .withCause(e)
                 .build();
+        } catch (UnavailableReferencedComponentSettingValidationException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.NOT_ACCESSIBLE_COMPONENT_ID)
+                .addParameter("name", e.getPropertyName())
+                .addParameter("details", e.getDetails())
+                .withCause(e)
+                .build();
         } catch (SettingValidationException e) {
             throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
                 .withErrorCode(SettingValidationRestException.SETTING_VALIDATION)
@@ -377,6 +415,23 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
             throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
                 .withErrorCode(SettingValidationRestException.SOCKET_FILTER_INVALID_COMPONENT_TYPE)
                 .addParameter("component_type", e.getComponentType())
+                .withCause(e)
+                .build();
+        } catch (SocketFilterInvalidComponentFacetException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_INVALID_COMPONENT_FACET)
+                .addParameter("facet_name", e.getComponentFacetName())
+                .addParameter("facet_value", e.getComponentFacetValue())
+                .withCause(e)
+                .build();
+        } catch (SocketFilterMissingComponentFacetNameException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_COMPONENT_FACET_NAME_MISSING)
+                .withCause(e)
+                .build();
+        } catch (SocketFilterMissingComponentFacetValueException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_COMPONENT_FACET_VALUE_MISSING)
                 .withCause(e)
                 .build();
         } catch (VariableValueKeyLengthException e) {
@@ -476,6 +531,8 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
                 .withErrorCode(CampaignComponentValidationRestException.TYPE_VALIDATION_FAILED)
                 .addParameter("validation_result", e.getValidationResult())
                 .addParameter("name", e.getName())
+                .addParameter("component_name", e.getComponentName())
+                .addParameter("component_id", e.getComponentId().toString())
                 .withCause(e)
                 .build();
         } catch (ComponentTypeNotFoundException e) {
@@ -557,6 +614,12 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
             Component duplicatedComponent = duplicateBuilder.duplicate();
             return campaignComponentRestMapper.toComponentResponse(duplicatedComponent.getCampaignComponent(),
                 timeZone);
+        } catch (CampaignComponentFacetsNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(CampaignComponentValidationRestException.class)
+                .withErrorCode(CampaignComponentValidationRestException.COMPONENT_FACETS_NOT_FOUND)
+                .addParameter("facets", e.getFacets())
+                .withCause(e)
+                .build();
         } catch (ConcurrentCampaignUpdateException e) {
             throw RestExceptionBuilder.newBuilder(CampaignUpdateRestException.class)
                 .withErrorCode(CampaignUpdateRestException.CONCURRENT_UPDATE)
@@ -564,8 +627,8 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
                 .addParameter("version", e.getVersion())
                 .withCause(e).build();
         } catch (CampaignNotFoundException e) {
-            throw RestExceptionBuilder.newBuilder(ComponentDuplicateRestException.class)
-                .withErrorCode(ComponentDuplicateRestException.CAMPAIGN_NOT_FOUND)
+            throw RestExceptionBuilder.newBuilder(CampaignRestException.class)
+                .withErrorCode(CampaignRestException.CAMPAIGN_NOT_FOUND)
                 .addParameter("campaign_id", componentDuplicateRequest.getTargetCampaignId())
                 .build();
         } catch (CampaignLockedException e) {
@@ -657,11 +720,39 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
                 .addParameter("component_type", e.getComponentType())
                 .withCause(e)
                 .build();
+        } catch (SocketFilterInvalidComponentFacetException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_INVALID_COMPONENT_FACET)
+                .addParameter("facet_name", e.getComponentFacetName())
+                .addParameter("facet_value", e.getComponentFacetValue())
+                .withCause(e)
+                .build();
+        } catch (SocketFilterMissingComponentFacetNameException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_COMPONENT_FACET_NAME_MISSING)
+                .withCause(e)
+                .build();
+        } catch (SocketFilterMissingComponentFacetValueException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_COMPONENT_FACET_VALUE_MISSING)
+                .withCause(e)
+                .build();
         } catch (ComponentSocketFilterTypeMismatchException e) {
             throw RestExceptionBuilder.newBuilder(ComponentDuplicateRestException.class)
                 .withErrorCode(ComponentDuplicateRestException.SOCKET_FILTER_TYPE_MISMATCH)
                 .addParameter("source_component_types", e.getSourceComponentTypes())
                 .addParameter("filter_component_type", e.getFilterComponentType())
+                .withCause(e)
+                .build();
+        } catch (ComponentFacetFilterMismatchException e) {
+            List<Map<String, String>> sourceFacets = e.getSourceFacets().stream()
+                .map(value -> Map.of("name", value.getName(), "value", value.getValue()))
+                .toList();
+            throw RestExceptionBuilder.newBuilder(ComponentDuplicateRestException.class)
+                .withErrorCode(ComponentDuplicateRestException.SOCKET_FILTER_COMPONENT_FACET_MISMATCH)
+                .addParameter("source_component_facets", sourceFacets)
+                .addParameter("filter_component_facet_name", e.getFilterFacetName())
+                .addParameter("filter_component_facet_value", e.getFilterFacetValue())
                 .withCause(e)
                 .build();
         } catch (ComponentSocketMissingRequiredParameterException e) {
@@ -670,6 +761,14 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
                 .addParameter("socket_parameter_name", e.getSocketParameterName())
                 .addParameter("socket_parameter_type", e.getSocketParameterType())
                 .addParameter("socket_name", e.getSocketName())
+                .withCause(e)
+                .build();
+        } catch (MultipleComponentsInstalledIntoSingleSocketException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.MULTIPLE_COMPONENTS_INSTALLED_INTO_SINGLE_SOCKET)
+                .addParameter("socket_name", e.getSocketName())
+                .addParameter("target_component_id", e.getTargetComponentId())
+                .addParameter("installed_component_ids", e.getInstalledComponentIds())
                 .withCause(e)
                 .build();
         } catch (MissingSourceComponentTypeException e) {
@@ -805,6 +904,8 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
                 .withErrorCode(CampaignComponentValidationRestException.TYPE_VALIDATION_FAILED)
                 .addParameter("validation_result", e.getValidationResult())
                 .addParameter("name", e.getName())
+                .addParameter("component_name", e.getComponentName())
+                .addParameter("component_id", e.getComponentId().toString())
                 .withCause(e)
                 .build();
         } catch (ComponentTypeNotFoundException e) {
@@ -898,7 +999,7 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
         BuildCampaignRestException, CampaignUpdateRestException, ComponentTypeRestException, BuildWebhookRestException,
         BuildPrehandlerRestException, BuildRewardSupplierRestException, BuildClientKeyRestException,
         BuildAudienceRestException, EventStreamValidationRestException, OAuthClientKeyBuildRestException {
-        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         try {
             CampaignBuilder campaignBuilder = getCampaignBuilder(campaignId, authorization, expectedCurrentVersion);
@@ -906,9 +1007,15 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
             CampaignComponent campaignComponent = campaignComponentProvider.getCampaignComponent(componentId, campaign);
             CampaignComponentBuilder campaignComponentBuilder =
                 campaignBuilder.updateComponent(campaignComponent);
-            applyRequestToBuilder(request, campaignComponentBuilder);
+            applyRequestToBuilder(authorization, campaign, campaignComponent, request, campaignComponentBuilder);
             Component updated = campaignComponentBuilder.save();
             return campaignComponentRestMapper.toComponentResponse(updated.getCampaignComponent(), timeZone);
+        } catch (CampaignComponentFacetsNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(CampaignComponentValidationRestException.class)
+                .withErrorCode(CampaignComponentValidationRestException.COMPONENT_FACETS_NOT_FOUND)
+                .addParameter("facets", e.getFacets())
+                .withCause(e)
+                .build();
         } catch (StaleCampaignVersionException e) {
             throw RestExceptionBuilder.newBuilder(CampaignUpdateRestException.class)
                 .withErrorCode(CampaignUpdateRestException.STALE_VERSION)
@@ -1041,6 +1148,23 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
                 .addParameter("component_type", e.getComponentType())
                 .withCause(e)
                 .build();
+        } catch (SocketFilterInvalidComponentFacetException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_INVALID_COMPONENT_FACET)
+                .addParameter("facet_name", e.getComponentFacetName())
+                .addParameter("facet_value", e.getComponentFacetValue())
+                .withCause(e)
+                .build();
+        } catch (SocketFilterMissingComponentFacetNameException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_COMPONENT_FACET_NAME_MISSING)
+                .withCause(e)
+                .build();
+        } catch (SocketFilterMissingComponentFacetValueException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_COMPONENT_FACET_VALUE_MISSING)
+                .withCause(e)
+                .build();
         } catch (ExcessiveExternalComponentReferenceException e) {
             throw RestExceptionBuilder.newBuilder(CampaignComponentValidationRestException.class)
                 .withErrorCode(CampaignComponentValidationRestException.EXCESSIVE_ROOT_COMPONENT_REFERENCE)
@@ -1096,6 +1220,8 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
                 .withErrorCode(CampaignComponentValidationRestException.TYPE_VALIDATION_FAILED)
                 .addParameter("validation_result", e.getValidationResult())
                 .addParameter("name", e.getName())
+                .addParameter("component_name", e.getComponentName())
+                .addParameter("component_id", e.getComponentId().toString())
                 .withCause(e)
                 .build();
         } catch (ComponentTypeNotFoundException e) {
@@ -1163,6 +1289,12 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
                 campaignBuilder.save();
             }
             return campaignComponentRestMapper.toComponentResponse(campaignComponent, timeZone);
+        } catch (CampaignComponentFacetsNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(CampaignComponentValidationRestException.class)
+                .withErrorCode(CampaignComponentValidationRestException.COMPONENT_FACETS_NOT_FOUND)
+                .addParameter("facets", e.getFacets())
+                .withCause(e)
+                .build();
         } catch (StaleCampaignVersionException e) {
             throw RestExceptionBuilder.newBuilder(CampaignUpdateRestException.class)
                 .withErrorCode(CampaignUpdateRestException.STALE_VERSION)
@@ -1255,7 +1387,7 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
             campaign);
     }
 
-    private Component getSourceComponent(Authorization authorization, String campaignId, String version,
+    private Component getSourceComponent(ClientAuthorization authorization, String campaignId, String version,
         String componentId)
         throws CampaignComponentRestException, UserAuthorizationRestException, CampaignRestException,
         ComponentDuplicateRestException {
@@ -1282,8 +1414,8 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
                 .withCause(e)
                 .build();
         } catch (CampaignNotFoundException e) {
-            throw RestExceptionBuilder.newBuilder(ComponentDuplicateRestException.class)
-                .withErrorCode(ComponentDuplicateRestException.CAMPAIGN_NOT_FOUND)
+            throw RestExceptionBuilder.newBuilder(CampaignRestException.class)
+                .withErrorCode(CampaignRestException.CAMPAIGN_NOT_FOUND)
                 .addParameter("campaign_id", Id.valueOf(campaignId))
                 .build();
         }
@@ -1353,7 +1485,10 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
             campaignComponentBuilder.withName(request.getName());
         }
         if (request.getType() != null) {
-            campaignComponentBuilder.withType(request.getType());
+            campaignComponentBuilder.withTypes(List.of(request.getType()));
+        }
+        if (request.getTypes() != null) {
+            campaignComponentBuilder.withTypes(request.getTypes());
         }
         if (request.getTags() != null) {
             campaignComponentBuilder.withTags(request.getTags());
@@ -1361,12 +1496,13 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
         if (request.getSettings() != null) {
             for (CampaignComponentSettingRequest setting : request.getSettings().stream()
                 .filter(settingRequest -> Objects.nonNull(settingRequest)).collect(Collectors.toList())) {
-                populateSettingBuilder(campaignComponentBuilder, setting);
+                populateSettingBuilderOnCreate(campaignComponentBuilder, setting);
 
             }
         }
-        if (request.getComponentVersion() != null) {
-            campaignComponentBuilder.withComponentVersion(request.getComponentVersion());
+
+        if (request.getUploadVersion() != null) {
+            campaignComponentBuilder.withUploadVersion(request.getUploadVersion());
         }
         if (request.getDescription() != null) {
             campaignComponentBuilder.withDescription(request.getDescription());
@@ -1376,6 +1512,11 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
         }
         if (request.getInstall() != null) {
             campaignComponentBuilder.withInstall(request.getInstall());
+        }
+        if (request.getFacets() != null) {
+            request.getFacets().forEach(facet -> campaignComponentBuilder.addFacet()
+                .withName(facet.getName())
+                .withValue(facet.getValue()));
         }
         request.getComponentIds().ifPresent(componentIds -> {
             handleComponentIds(campaignComponentBuilder, componentIds);
@@ -1426,11 +1567,15 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
             }
         }
 
+        componentDuplicateRequest.getTypes().ifPresent(types -> {
+            componentBuilder.withTypes(types);
+        });
+
         componentDuplicateRequest.getType().ifPresent(type -> {
             if (type.isPresent()) {
-                componentBuilder.withType(type.get());
+                componentBuilder.withTypes(List.of(type.get()));
             } else {
-                componentBuilder.clearType();
+                componentBuilder.withTypes(List.of());
             }
         });
     }
@@ -1450,10 +1595,14 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
 
         componentDuplicateRequest.getType().ifPresent(type -> {
             if (type.isPresent()) {
-                duplicateBuilder.withType(type.get());
+                duplicateBuilder.withTypes(List.of(type.get()));
             } else {
                 duplicateBuilder.clearType();
             }
+        });
+
+        componentDuplicateRequest.getTypes().ifPresent(types -> {
+            duplicateBuilder.withTypes(List.copyOf(types));
         });
 
         componentDuplicateRequest.getComponentDisplayName().ifPresent(value -> duplicateBuilder.withDisplayName(value));
@@ -1521,7 +1670,11 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
         });
     }
 
-    private void applyRequestToBuilder(CampaignComponentUpdateRequest request,
+    private void applyRequestToBuilder(
+        ClientAuthorization authorization,
+        Campaign campaign,
+        CampaignComponent campaignComponent,
+        CampaignComponentUpdateRequest request,
         CampaignComponentBuilder campaignComponentBuilder)
         throws CampaignComponentException, CampaignComponentValidationRestException {
         request.getDisplayName().ifPresent(displayName -> {
@@ -1534,15 +1687,27 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
         request.getName().ifPresent(name -> {
             campaignComponentBuilder.withName(name);
         });
+        request.getTypes().ifPresent(types -> {
+            campaignComponentBuilder.withTypes(types);
+        });
+        request.getTypes().ifPresent(types -> {
+            campaignComponentBuilder.withTypes(types);
+        });
         request.getType().ifPresent(type -> {
             if (type.isPresent()) {
-                campaignComponentBuilder.withType(type.get());
+                campaignComponentBuilder.withTypes(List.of(type.get()));
             } else {
-                campaignComponentBuilder.clearType();
+                campaignComponentBuilder.withTypes(List.of());
             }
         });
         request.getTags().ifPresent(tags -> {
             campaignComponentBuilder.withTags(tags);
+        });
+        request.getFacets().ifPresent(facets -> {
+            campaignComponentBuilder.clearFacets();
+            facets.forEach(facet -> campaignComponentBuilder.addFacet()
+                .withName(facet.getName())
+                .withValue(facet.getValue()));
         });
         request.getComponentIds().ifPresent(componentIds -> {
             handleComponentIds(campaignComponentBuilder, componentIds);
@@ -1550,15 +1715,28 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
         request.getComponentReferences().ifPresent(componentReferences -> {
             componentReferenceRequestMapper.handleComponentReferences(campaignComponentBuilder, componentReferences);
         });
+        SettingAssetsPullBuilder settingAssetsPullBuilder = serviceLocator.create(SettingAssetsPullBuilder.class)
+            .initialize(authorization, campaign, campaignComponent, campaignComponentBuilder);
+
+        Map<String, Setting> settingByName = groupSettingsByName(campaignComponent);
+        Function<String, Optional<Setting>> variableProviderByName =
+            name -> Optional.ofNullable(settingByName.get(name));
+
         if (request.getSettings().isPresent()) {
             campaignComponentBuilder.clearSettings();
             for (CampaignComponentSettingRequest setting : request.getSettings().getValue().stream()
-                .filter(settingRequest -> Objects.nonNull(settingRequest)).collect(Collectors.toList())) {
-                populateSettingBuilder(campaignComponentBuilder, setting);
+                .filter(settingRequest -> Objects.nonNull(settingRequest)).toList()) {
+                populateSettingBuilderOnUpdate(campaignComponentBuilder, setting, variableProviderByName,
+                    settingAssetsPullBuilder);
             }
         }
-        request.getComponentVersion().ifPresent(componentVersion -> {
-            campaignComponentBuilder.withComponentVersion(componentVersion);
+
+        request.getUploadVersion().ifPresent(uploadVersion -> {
+            if (uploadVersion.isPresent()) {
+                campaignComponentBuilder.withUploadVersion(uploadVersion.get());
+            } else {
+                campaignComponentBuilder.clearUploadVersion();
+            }
         });
         request.getDescription().ifPresent(description -> {
             if (description.isPresent()) {
@@ -1583,8 +1761,14 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
         });
     }
 
+    private Map<String, Setting> groupSettingsByName(CampaignComponent campaignComponent) {
+        KeyCaseInsensitiveMap<Setting> map = KeyCaseInsensitiveMap.create();
+        campaignComponent.getSettings().forEach(setting -> map.put(setting.getName(), setting));
+        return Collections.unmodifiableMap(map);
+    }
+
     @SuppressWarnings({"unchecked"})
-    private void populateSettingBuilder(CampaignComponentBuilder campaignComponentBuilder,
+    private void populateSettingBuilderOnCreate(CampaignComponentBuilder campaignComponentBuilder,
         CampaignComponentSettingRequest setting)
         throws SettingNameLengthException, SettingInvalidNameException, SettingDisplayNameLengthException,
         SettingIllegalCharacterInDisplayNameException, VariableValueKeyLengthException, SettingTagLengthException {
@@ -1607,6 +1791,55 @@ public class CampaignComponentEndpointsImpl implements CampaignComponentEndpoint
             settingBuilder.withTags(tags);
         });
         setting.getPriority().ifPresent(value -> settingBuilder.withPriority(value));
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private void populateSettingBuilderOnUpdate(CampaignComponentBuilder campaignComponentBuilder,
+        CampaignComponentSettingRequest settingRequest,
+        Function<String, Optional<Setting>> settingByNameProvider,
+        SettingAssetsPullBuilder settingAssetsPullBuilder)
+        throws SettingNameLengthException, SettingInvalidNameException, SettingDisplayNameLengthException,
+        SettingIllegalCharacterInDisplayNameException, VariableValueKeyLengthException, SettingTagLengthException {
+        SettingBuilder settingBuilder;
+        if (settingRequest.getType() != null) {
+            settingBuilder = campaignComponentBuilder
+                .addSetting(SettingType.valueOf(settingRequest.getType().name()));
+            settingRequestMapperRepository.getCreateRequestMapper(settingRequest.getType())
+                .complete(settingRequest, settingBuilder);
+        } else {
+            settingBuilder = campaignComponentBuilder.addSetting();
+        }
+        if (settingRequest.getName() != null) {
+            settingBuilder.withName(settingRequest.getName());
+        }
+        if (settingRequest.getDisplayName().isPresent()) {
+            settingBuilder.withDisplayName(settingRequest.getDisplayName().getValue());
+        }
+        settingRequest.getTags().ifPresent(tags -> {
+            settingBuilder.withTags(tags);
+        });
+        settingRequest.getPriority().ifPresent(value -> settingBuilder.withPriority(value));
+
+        Optional<Setting> existingSetting = settingByNameProvider.apply(settingRequest.getName());
+        boolean isInheritedToLocalTransitionOfImageSetting = existingSetting.isPresent()
+            && existingSetting.get() instanceof Variable variable
+            && variable.getSource() == VariableSource.INHERITED
+            && settingRequest instanceof CampaignComponentVariableRequest variableRequest
+            && variableRequest.getSource().isPresent()
+            && variableRequest.getSource()
+                .getValue() == com.extole.client.rest.campaign.component.setting.VariableSource.LOCAL
+            && variableRequest.getType() == com.extole.client.rest.campaign.component.setting.SettingType.IMAGE
+            && variable.getType() == SettingType.IMAGE;
+
+        if (isInheritedToLocalTransitionOfImageSetting) {
+            Variable variable = (Variable) existingSetting.get();
+            settingAssetsPullBuilder.buildForVariable(
+                variable,
+                (VariableBuilder) settingBuilder,
+                ((CampaignComponentVariableRequest) settingRequest).getValues().orElse(Map.of()))
+                .performOperation();
+        }
+
     }
 
     private boolean isRootComponent(CampaignComponent component) {

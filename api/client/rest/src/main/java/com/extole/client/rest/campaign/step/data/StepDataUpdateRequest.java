@@ -28,8 +28,8 @@ public class StepDataUpdateRequest extends ComponentElementRequest {
     private static final String JSON_ENABLED = "enabled";
 
     private final Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, String>> name;
-    private final Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext,
-        RuntimeEvaluatable<StepDataContext, Optional<Object>>>> value;
+    private final Omissible<
+        BuildtimeEvaluatable<CampaignBuildtimeContext, RuntimeEvaluatable<StepDataContext, Optional<Object>>>> value;
     private final Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, StepDataScope>> scope;
     private final Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Boolean>> dimension;
     private final Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, List<StepDataPersistType>>> persistTypes;
@@ -44,8 +44,8 @@ public class StepDataUpdateRequest extends ComponentElementRequest {
             RuntimeEvaluatable<StepDataContext, Optional<Object>>>> value,
         @JsonProperty(JSON_SCOPE) Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, StepDataScope>> scope,
         @JsonProperty(JSON_DIMENSION) Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Boolean>> dimension,
-        @JsonProperty(JSON_PERSIST_TYPES) Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext,
-            List<StepDataPersistType>>> persistTypes,
+        @JsonProperty(JSON_PERSIST_TYPES) Omissible<
+            BuildtimeEvaluatable<CampaignBuildtimeContext, List<StepDataPersistType>>> persistTypes,
         @JsonProperty(JSON_DEFAULT_VALUE) Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext,
             RuntimeEvaluatable<StepDataContext, Optional<Object>>>> defaultValue,
         @JsonProperty(JSON_KEY_TYPE) Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, StepDataKeyType>> keyType,
@@ -116,13 +116,15 @@ public class StepDataUpdateRequest extends ComponentElementRequest {
 
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, String>> name = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext,
-            RuntimeEvaluatable<StepDataContext, Optional<Object>>>> value = Omissible.omitted();
+            RuntimeEvaluatable<StepDataContext, Optional<Object>>>> value =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, StepDataScope>> scope = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Boolean>> dimension = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, List<StepDataPersistType>>> persistTypes =
             Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext,
-            RuntimeEvaluatable<StepDataContext, Optional<Object>>>> defaultValue = Omissible.omitted();
+            RuntimeEvaluatable<StepDataContext, Optional<Object>>>> defaultValue =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, StepDataKeyType>> keyType =
             Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Boolean>> enabled =
@@ -137,8 +139,9 @@ public class StepDataUpdateRequest extends ComponentElementRequest {
             return this;
         }
 
-        public Builder<T> withValue(BuildtimeEvaluatable<CampaignBuildtimeContext,
-            RuntimeEvaluatable<StepDataContext, Optional<Object>>> value) {
+        public Builder<T> withValue(
+            BuildtimeEvaluatable<CampaignBuildtimeContext,
+                RuntimeEvaluatable<StepDataContext, Optional<Object>>> value) {
             this.value = Omissible.of(value);
             return this;
         }
@@ -159,8 +162,9 @@ public class StepDataUpdateRequest extends ComponentElementRequest {
             return this;
         }
 
-        public Builder<T> withDefaultValue(BuildtimeEvaluatable<CampaignBuildtimeContext,
-            RuntimeEvaluatable<StepDataContext, Optional<Object>>> defaultValue) {
+        public Builder<T> withDefaultValue(
+            BuildtimeEvaluatable<CampaignBuildtimeContext,
+                RuntimeEvaluatable<StepDataContext, Optional<Object>>> defaultValue) {
             this.defaultValue = Omissible.of(defaultValue);
             return this;
         }

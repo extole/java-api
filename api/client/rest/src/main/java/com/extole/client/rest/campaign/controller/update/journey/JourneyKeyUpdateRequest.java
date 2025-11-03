@@ -16,13 +16,13 @@ public class JourneyKeyUpdateRequest {
     private static final String JSON_VALUE = "value";
 
     private final Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, String>> name;
-    private final Omissible<BuildtimeEvaluatable<
-        CampaignBuildtimeContext, RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>>> value;
+    private final Omissible<
+        BuildtimeEvaluatable<CampaignBuildtimeContext, RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>>> value;
 
     public JourneyKeyUpdateRequest(
         @JsonProperty(JSON_NAME) Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, String>> name,
-        @JsonProperty(JSON_VALUE) Omissible<BuildtimeEvaluatable<
-            CampaignBuildtimeContext, RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>>> value) {
+        @JsonProperty(JSON_VALUE) Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext,
+            RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>>> value) {
         this.name = name;
         this.value = value;
     }
@@ -33,8 +33,10 @@ public class JourneyKeyUpdateRequest {
     }
 
     @JsonProperty(JSON_VALUE)
-    public Omissible<BuildtimeEvaluatable<
-        CampaignBuildtimeContext, RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>>> getValue() {
+    public
+        Omissible<
+            BuildtimeEvaluatable<CampaignBuildtimeContext, RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>>>
+        getValue() {
         return value;
     }
 
@@ -48,7 +50,8 @@ public class JourneyKeyUpdateRequest {
 
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, String>> name = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext,
-            RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>>> value = Omissible.omitted();
+            RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>>> value =
+                Omissible.omitted();
 
         private Builder(T caller) {
             this.caller = caller;
@@ -59,8 +62,9 @@ public class JourneyKeyUpdateRequest {
             return this;
         }
 
-        public Builder<T> withValue(BuildtimeEvaluatable<CampaignBuildtimeContext,
-            RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value) {
+        public Builder<T> withValue(
+            BuildtimeEvaluatable<CampaignBuildtimeContext,
+                RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value) {
             this.value = Omissible.of(value);
             return this;
         }

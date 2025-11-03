@@ -23,14 +23,23 @@ public class BuiltCampaignControllerTriggerClientDomainResponse extends BuiltCam
         @JsonProperty(TRIGGER_ID) String triggerId,
         @JsonProperty(TRIGGER_PHASE) CampaignControllerTriggerPhase triggerPhase,
         @JsonProperty(TRIGGER_NAME) String name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) Optional<String> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) Optional<String> description,
         @JsonProperty(ENABLED) Boolean enabled,
         @JsonProperty(NEGATED) Boolean negated,
         @JsonProperty(CLIENT_DOMAIN_IDS) Set<Id<?>> clientDomainIds,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.CLIENT_DOMAIN, triggerPhase, name, description, enabled, negated,
-            componentIds, componentReferences);
+        super(triggerId,
+            CampaignControllerTriggerType.CLIENT_DOMAIN,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
+            componentIds,
+            componentReferences);
         this.clientDomainIds = ImmutableSet.copyOf(clientDomainIds);
     }
 

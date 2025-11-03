@@ -21,20 +21,22 @@ public class BuiltCampaignControllerTriggerEventResponseMapper implements
     @Override
     public BuiltCampaignControllerTriggerEventResponse toResponse(BuiltCampaignControllerTriggerEvent trigger,
         ZoneId timeZone) {
-        return new BuiltCampaignControllerTriggerEventResponse(trigger.getId().getValue(),
+        return new BuiltCampaignControllerTriggerEventResponse(
+            trigger.getId().getValue(),
             CampaignControllerTriggerPhase.valueOf(trigger.getPhase().name()),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
             trigger.getEventNames(),
             com.extole.client.rest.campaign.controller.trigger.event.CampaignControllerTriggerEventType
                 .valueOf(trigger.getEventType().name()),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

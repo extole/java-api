@@ -1,5 +1,7 @@
 package com.extole.client.rest.impl.person;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,7 @@ import com.extole.authorization.service.AuthorizationException;
 import com.extole.authorization.service.client.ClientAuthorization;
 import com.extole.client.consumer.event.service.event.context.ClientRequestContextService;
 import com.extole.client.rest.person.PersonEndpoints;
+import com.extole.client.rest.person.PersonForwardRequest;
 import com.extole.client.rest.person.PersonLocaleResponse;
 import com.extole.client.rest.person.PersonRequest;
 import com.extole.client.rest.person.PersonResponse;
@@ -46,6 +49,8 @@ import com.extole.model.entity.client.PublicClient;
 import com.extole.model.service.client.ClientNotFoundException;
 import com.extole.model.shared.client.ClientCache;
 import com.extole.person.service.identity.InvalidIdentityKeyValueException;
+import com.extole.person.service.profile.ForwardToDeviceProfileException;
+import com.extole.person.service.profile.ForwardingDeviceProfileException;
 import com.extole.person.service.profile.IdentityKeyValueAlreadyTakenException;
 import com.extole.person.service.profile.IdentityKeyValueUnauthorizedUpdateException;
 import com.extole.person.service.profile.Person;
@@ -178,7 +183,7 @@ public class PersonEndpointsImpl implements PersonEndpoints {
             throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
                 .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED)
                 .withCause(e).build();
-        } catch (EventProcessorException e) {
+        } catch (EventProcessorException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e).build();
@@ -195,11 +200,12 @@ public class PersonEndpointsImpl implements PersonEndpoints {
                 consumerEventSenderService.createConsumerEventSender()
                     .log("Person updated via client person endpoints." + " Person id: " + personId);
             Person updatedPerson = personService.updatePerson(authorization, Id.valueOf(personId),
-                new LockDescription("person-endpoints-update"), (personBuilder, originalPersonProfile) -> {
+                new LockDescription("person-endpoints-update"),
+                (personBuilder, initialPerson) -> {
                     try {
                         if (identityKeyValue.isPresent() && !Strings.isNullOrEmpty(identityKeyValue.getValue())) {
                             personBuilder.withIdentityKeyValue(identityKeyValue.getValue());
-                            personOperations.log("Person key " + originalPersonProfile.getIdentityKey() + " updated: "
+                            personOperations.log("Person key " + initialPerson.getIdentityKey() + " updated: "
                                 + identityKeyValue);
                         }
                         return personBuilder.save();
@@ -217,6 +223,56 @@ public class PersonEndpointsImpl implements PersonEndpoints {
             throw RestExceptionBuilder.newBuilder(PersonRestException.class)
                 .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
                 .addParameter("person_id", personId)
+                .withCause(e).build();
+        } catch (AuthorizationException e) {
+            throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
+                .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED)
+                .withCause(e).build();
+        } catch (EventProcessorException e) {
+            throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
+                .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
+                .withCause(e).build();
+        }
+    }
+
+    @Override
+    public PersonResponse forward(String accessToken, String personId, PersonForwardRequest personForwardRequest)
+        throws UserAuthorizationRestException, PersonRestException, PersonValidationRestException {
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        Id<?> forwardToProfileId = Id.valueOf(defaultIfBlank(personForwardRequest.getForwardToProfileId(), ""));
+
+        try {
+            PersonOperations personOperations =
+                consumerEventSenderService.createConsumerEventSender()
+                    .log("Person forward via client person endpoints. Person id: " + personId
+                        + " forward to person id: " + forwardToProfileId);
+
+            Person person = personService.getPerson(authorization, Id.valueOf(forwardToProfileId.getValue()));
+            Person updatedPerson = personService.updatePerson(authorization, Id.valueOf(personId),
+                new LockDescription("person-endpoints-forward"),
+                (personBuilder, initialPerson) -> {
+                    if (person.getIdentityKeyValue().isPresent()) {
+                        try {
+                            personBuilder.withForwardToProfileId(forwardToProfileId);
+                            personBuilder.withIdentityKeyValue(person.getIdentityKeyValue().get());
+                        } catch (InvalidIdentityKeyValueException | IdentityKeyValueUnauthorizedUpdateException
+                            | IdentityKeyValueAlreadyTakenException | ForwardingDeviceProfileException
+                            | PersonNotFoundException | ForwardToDeviceProfileException e) {
+                            throw new LockClosureException(e);
+                        }
+                    }
+                    return personBuilder.save();
+                }, personOperations);
+
+            // ENG-19642 sending the input event separately just to have the same syntax as in the update method
+            sendEvents(authorization, updatedPerson);
+            return personToResponse(updatedPerson);
+        } catch (LockClosureException e) {
+            return handlePersonForwardLockClosureException(e);
+        } catch (PersonNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(PersonRestException.class)
+                .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
+                .addParameter("person_id", e.getPersonId())
                 .withCause(e).build();
         } catch (AuthorizationException e) {
             throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
@@ -248,6 +304,33 @@ public class PersonEndpointsImpl implements PersonEndpoints {
             .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR).withCause(cause).build();
     }
 
+    private PersonResponse handlePersonForwardLockClosureException(LockClosureException e)
+        throws PersonValidationRestException, PersonRestException {
+        Throwable cause = e.getCause();
+        if (cause instanceof PersonNotFoundException) {
+            throw RestExceptionBuilder.newBuilder(PersonRestException.class)
+                .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
+                .addParameter("person_id", ((PersonNotFoundException) cause).getPersonId())
+                .withCause(e).build();
+        }
+        if (cause instanceof ForwardingDeviceProfileException) {
+            throw RestExceptionBuilder.newBuilder(PersonValidationRestException.class)
+                .withErrorCode(PersonValidationRestException.FORWARDING_PROFILE_IS_DEVICE)
+                .addParameter("profile_id", ((ForwardingDeviceProfileException) cause).getProfileId())
+                .withCause(e).build();
+        }
+        if (cause instanceof ForwardToDeviceProfileException) {
+            throw RestExceptionBuilder.newBuilder(PersonValidationRestException.class)
+                .withErrorCode(PersonValidationRestException.FORWARD_TO_PROFILE_IS_DEVICE)
+                .addParameter("profile_id", ((ForwardToDeviceProfileException) cause).getProfileId())
+                .withCause(e).build();
+        }
+        throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
+            .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
+            .withCause(cause)
+            .build();
+    }
+
     private List<PersonKey> getPersonKeys(Authorization authorization, List<String> personKeys) {
         Set<String> recognizedKeyTypes = Sets.newHashSet();
         recognizedKeyTypes.addAll(getRecognizedDynamicKeyTypes(authorization));
@@ -270,12 +353,12 @@ public class PersonEndpointsImpl implements PersonEndpoints {
     }
 
     private void sendEvents(ClientAuthorization authorization, Person person)
-        throws EventProcessorException, AuthorizationException {
+        throws EventProcessorException, AuthorizationException, PersonNotFoundException {
         ProcessedRawEvent processedRawEvent = clientRequestContextService.createBuilder(authorization, servletRequest)
             .withEventName(ConsumerEventName.EXTOLE_PROFILE.getEventName())
             .withHttpRequestBodyCapturing(ClientRequestContextService.HttpRequestBodyCapturingType.LIMITED)
             .build().getProcessedRawEvent();
-        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person).send();
+        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person.getId()).send();
     }
 
     private PersonResponse personToResponse(Person person) {

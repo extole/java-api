@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.extole.authorization.service.AuthorizationException;
 import com.extole.authorization.service.person.PersonAuthorization;
+import com.extole.common.lock.LockClosureException;
+import com.extole.common.lock.LockDescription;
 import com.extole.common.rest.exception.FatalRestRuntimeException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.model.RestExceptionResponse;
@@ -42,6 +44,8 @@ import com.extole.consumer.service.event.share.InvalidRecipientException;
 import com.extole.consumer.service.event.share.ShareInputConsumerEventSendBuilder;
 import com.extole.event.consumer.ConsumerEventName;
 import com.extole.id.Id;
+import com.extole.person.service.profile.PersonNotFoundException;
+import com.extole.person.service.profile.PersonService;
 import com.extole.person.service.share.Channel;
 import com.extole.person.service.shareable.Shareable;
 import com.extole.person.service.shareable.ShareableNotFoundException;
@@ -55,6 +59,7 @@ public class EventShareEndpointsImpl implements EventShareEndpoints {
     private final CustomShareService eventShareService;
     private final ShareableService shareableService;
     private final HttpServletRequest servletRequest;
+    private final PersonService personService;
 
     private static final int MAX_SHARE_RECIPIENT_SIZE = 25;
 
@@ -62,11 +67,13 @@ public class EventShareEndpointsImpl implements EventShareEndpoints {
     public EventShareEndpointsImpl(ConsumerRequestContextService consumerRequestContextService,
         CustomShareService eventShareService,
         ShareableService shareableService,
-        @Context HttpServletRequest servletRequest) {
+        @Context HttpServletRequest servletRequest,
+        PersonService personService) {
         this.consumerRequestContextService = consumerRequestContextService;
         this.eventShareService = eventShareService;
         this.shareableService = shareableService;
         this.servletRequest = servletRequest;
+        this.personService = personService;
     }
 
     @Override
@@ -97,14 +104,13 @@ public class EventShareEndpointsImpl implements EventShareEndpoints {
         }
 
         try {
-
             ConsumerEventRequest consumerEvent = shareRequest.getConsumerEvent();
 
             List<String> recipients = new ArrayList<>();
             if (shareRequest.getRecipientEmail() != null) {
                 recipients.add(shareRequest.getRecipientEmail());
             } else {
-                if (consumerEvent.getRecipientEmails() == null) {
+                if (consumerEvent.getRecipientEmails() == null || consumerEvent.getRecipientEmails().isEmpty()) {
                     recipients.add(null); // send empty recipient
                 } else {
                     recipients.addAll(consumerEvent.getRecipientEmails());
@@ -120,6 +126,7 @@ public class EventShareEndpointsImpl implements EventShareEndpoints {
             if (campaignId == null) {
                 campaignId = shareRequest.getConsumerEvent().getCampaignId();
             }
+            PersonAuthorization authorization = null;
 
             List<ShareInputConsumerEventSendBuilder> shareBuilders = new ArrayList<>();
             for (String recipient : recipients) {
@@ -132,10 +139,10 @@ public class EventShareEndpointsImpl implements EventShareEndpoints {
                         });
                     })
                     .build();
-                PersonAuthorization authorization = context.getAuthorization();
-
+                authorization = context.getAuthorization();
                 Shareable shareable =
                     shareableService.get(authorization.getClientId(), Id.valueOf(shareRequest.getShareableId()));
+
                 ShareInputConsumerEventSendBuilder shareBuilder = eventShareService
                     .createCustomShare(authorization, context.getProcessedRawEvent(), channel)
                     .withRecipient(recipient)
@@ -147,22 +154,29 @@ public class EventShareEndpointsImpl implements EventShareEndpoints {
                 } catch (AuthorizationException e) {
                     throw new ShareableNotFoundException(e.getMessage());
                 }
+
                 shareBuilders.add(shareBuilder);
             }
 
-            List<Id<?>> shareOperationIds = new ArrayList<>();
-            for (ShareInputConsumerEventSendBuilder shareBuilder : shareBuilders) {
-                shareOperationIds.add(shareBuilder.send().getId());
-            }
+            return personService.execute(authorization, new LockDescription("consumer-api-v4-events-share"),
+                (person) -> {
+                    List<Id<?>> shareOperationIds = new ArrayList<>();
 
-            return new EventShareResponse(shareOperationIds.get(0).getValue(), shareOperationIds.get(0).getValue());
+                    for (ShareInputConsumerEventSendBuilder shareBuilder : shareBuilders) {
+                        try {
+                            shareOperationIds.add(shareBuilder.send().getId());
+                        } catch (PersonNotFoundException | EventShareMissingMessageException
+                            | EventShareMissingRecipientException e) {
+                            throw new LockClosureException(e);
+                        }
+                    }
+
+                    Id<?> firstShareOperation = shareOperationIds.get(0);
+                    return new EventShareResponse(firstShareOperation.getValue(), firstShareOperation.getValue());
+                });
         } catch (EventShareMissingChannelException e) {
             throw RestExceptionBuilder.newBuilder(EventRestException.class)
                 .withErrorCode(EventRestException.CHANNEL_MISSING)
-                .withCause(e).build();
-        } catch (EventShareMissingRecipientException e) {
-            throw RestExceptionBuilder.newBuilder(EventRestException.class)
-                .withErrorCode(EventRestException.RECIPIENTS_MISSING)
                 .withCause(e).build();
         } catch (InvalidRecipientException e) {
             throw RestExceptionBuilder.newBuilder(EventRestException.class)
@@ -170,10 +184,6 @@ public class EventShareEndpointsImpl implements EventShareEndpoints {
                 .withErrorCode(EventRestException.INVALID_RECIPIENTS)
                 .addParameter("recipient", e.getInvalidRecipient())
                 .build();
-        } catch (EventShareMissingMessageException e) {
-            throw RestExceptionBuilder.newBuilder(EventRestException.class)
-                .withErrorCode(EventRestException.MESSAGE_MISSING)
-                .withCause(e).build();
         } catch (EventShareInvalidMessageLengthException e) {
             throw RestExceptionBuilder.newBuilder(EventRestException.class)
                 .withErrorCode(EventRestException.INVALID_MESSAGE_LENGTH)
@@ -199,7 +209,25 @@ public class EventShareEndpointsImpl implements EventShareEndpoints {
         } catch (AuthorizationException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
-                .withCause(e.getCause())
+                .withCause(e)
+                .build();
+        } catch (LockClosureException e) {
+            if (e.getCause() instanceof EventShareMissingRecipientException) {
+                throw RestExceptionBuilder.newBuilder(EventRestException.class)
+                    .withErrorCode(EventRestException.RECIPIENTS_MISSING)
+                    .withCause(e)
+                    .build();
+            }
+            if (e.getCause() instanceof EventShareMissingMessageException) {
+                throw RestExceptionBuilder.newBuilder(EventRestException.class)
+                    .withErrorCode(EventRestException.MESSAGE_MISSING)
+                    .withCause(e)
+                    .build();
+            }
+
+            throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
+                .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
+                .withCause(e)
                 .build();
         }
     }

@@ -1,6 +1,7 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -25,12 +26,12 @@ final class EnumListVariableCreateRequestMapper
             allowedValues -> builder.withAllowedValues(
                 allowedValues.stream()
                     .map(value -> EnumVariableMember.create(value).build())
-                    .collect(Collectors.toUnmodifiableList())));
+                    .toList()));
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.ENUM_LIST;
+    public List<SettingType> getSettingTypes() {
+        return Collections.singletonList(SettingType.ENUM_LIST);
     }
 
 }

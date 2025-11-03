@@ -22,8 +22,7 @@ import com.extole.model.entity.campaign.built.BuiltCampaignControllerActionEarnR
 
 @Component
 public class BuiltCampaignControllerActionEarnRewardResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionEarnReward,
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionEarnReward,
         BuiltCampaignControllerActionEarnRewardResponse> {
 
     private static final RuntimeEvaluatable<RewardActionContext,
@@ -51,16 +50,17 @@ public class BuiltCampaignControllerActionEarnRewardResponseMapper implements
             action.getData().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)),
             action.getData().getOrDefault("earned_event_value", DEFAULT_VALUE_OF_VALUE_OF_EVENT_BEING_REWARDED),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
                 .collect(Collectors.toList()),
-            action.getRewardActionId());
+            action.getRewardActionId(),
+            action.getExtraData());
     }
 
     @Override

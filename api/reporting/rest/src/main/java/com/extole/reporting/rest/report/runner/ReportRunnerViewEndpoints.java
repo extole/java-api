@@ -41,9 +41,8 @@ public interface ReportRunnerViewEndpoints {
     @Operation(summary = "Get report runner view for the specified id.")
     ReportRunnerViewResponse getReportRunner(
         @UserAccessTokenParam String accessToken,
-        @Parameter(description = "The Extole unique report runner identifier.")
-        @PathParam(REPORT_RUNNER_ID_PATH_PARAM_NAME) String reportRunnerId,
-        @Parameter(description = "Time zone to be used when representing dates.")
-        @TimeZoneParam ZoneId timezone)
+        @Parameter(
+            description = "The Extole unique report runner identifier.") @PathParam(REPORT_RUNNER_ID_PATH_PARAM_NAME) String reportRunnerId,
+        @Parameter(description = "Time zone to be used when representing dates.") @TimeZoneParam ZoneId timezone)
         throws UserAuthorizationRestException, ReportRunnerRestException;
 }

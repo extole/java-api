@@ -28,18 +28,18 @@ public interface ClientShareEndpoints {
     PersonShareV4Response getShare(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
         @PathParam("share_id") String shareId,
-        @Parameter(description = "Time zone to be used when representing dates.")
-        @Nullable @TimeZoneParam ZoneId timeZone)
+        @Parameter(
+            description = "Time zone to be used when representing dates.") @Nullable @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, ClientShareRestException;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     List<PersonShareV4Response> getShares(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
         @Nullable @QueryParam("partner_share_id") String partnerShareId,
-        @Parameter(description = "A partner id using this format: <name>:<value>")
-        @Nullable @QueryParam("partner_id") String partnerId,
-        @Parameter(description = "Time zone to be used when representing dates.")
-        @Nullable @TimeZoneParam ZoneId timeZone)
+        @Parameter(
+            description = "A partner id using this format: <name>:<value>") @Nullable @QueryParam("partner_id") String partnerId,
+        @Parameter(
+            description = "Time zone to be used when representing dates.") @Nullable @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, ClientShareUnconstrainedRestException;
 
 }

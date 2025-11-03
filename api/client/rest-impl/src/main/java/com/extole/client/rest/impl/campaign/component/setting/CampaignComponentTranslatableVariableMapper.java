@@ -25,6 +25,7 @@ import com.extole.common.lang.ObjectMapperProvider;
 import com.extole.evaluateable.BuildtimeEvaluatable;
 import com.extole.evaluateable.Evaluatable;
 import com.extole.evaluateable.RuntimeEvaluatable;
+import com.extole.evaluateable.ValidEvaluatableModule;
 import com.extole.evaluateable.handlebars.HandlebarsEvaluatable;
 import com.extole.evaluateable.handlebars.HandlebarsRuntimeEvaluatable;
 import com.extole.evaluateable.provided.Provided;
@@ -34,12 +35,15 @@ import com.extole.model.entity.campaign.Variable;
 public final class CampaignComponentTranslatableVariableMapper {
     private static final String HANDLEBARS_BUILDTIME = "handlebars@buildtime:";
     private static final String HANDLEBARS_RUNTIME = "handlebars@runtime:";
+    public static final ObjectMapper OBJECT_MAPPER = ObjectMapperProvider.getConfiguredInstance()
+        .copy()
+        .registerModule(new ValidEvaluatableModule());
 
     public BatchComponentVariableValues mapToTranslatableVariableValue(
         BatchComponentVariableValues batchComponentVariableValues) {
 
-        Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values =
+        Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values =
                 batchComponentVariableValues.getValues().entrySet().stream()
                     .map(entry -> {
                         String serialized = serialize(entry.getValue());
@@ -61,14 +65,14 @@ public final class CampaignComponentTranslatableVariableMapper {
 
     public Map<String, BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>>
         convertToHandlebarsIfNeeded(
-            Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-                RuntimeEvaluatable<Object, Optional<Object>>>> values,
+            Map<String,
+                BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values,
             Variable currentVariable) {
 
         Map<String,
             BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> result =
                 new LinkedHashMap<>();
-        ObjectNode valuesAsObjectNode = ObjectMapperProvider.getConfiguredInstance().convertValue(values,
+        ObjectNode valuesAsObjectNode = OBJECT_MAPPER.convertValue(values,
             ObjectNode.class);
 
         Iterator<Map.Entry<String, JsonNode>> fieldsIterator = valuesAsObjectNode.fields();
@@ -76,8 +80,8 @@ public final class CampaignComponentTranslatableVariableMapper {
             Map.Entry<String, JsonNode> entry = fieldsIterator.next();
             String fieldName = entry.getKey();
             JsonNode fieldValue = resolveValue(entry.getValue(), currentVariable.getValues().get(fieldName));
-            BuildtimeEvaluatable<VariableBuildtimeContext,
-                RuntimeEvaluatable<Object, Optional<Object>>> newValue = ObjectMapperProvider.getConfiguredInstance()
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>> newValue =
+                OBJECT_MAPPER
                     .convertValue(fieldValue, new TypeReference<>() {});
             result.put(fieldName, newValue);
         }
@@ -143,7 +147,7 @@ public final class CampaignComponentTranslatableVariableMapper {
 
     private String serialize(Evaluatable<?, ?> evaluatable) {
         try {
-            ObjectMapper objectMapper = ObjectMapperProvider.getConfiguredInstance();
+            ObjectMapper objectMapper = OBJECT_MAPPER;
             return objectMapper.readValue(objectMapper.writeValueAsString(evaluatable), String.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

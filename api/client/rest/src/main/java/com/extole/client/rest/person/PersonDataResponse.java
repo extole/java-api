@@ -9,12 +9,14 @@ import com.extole.common.lang.ToString;
 
 public class PersonDataResponse {
 
+    private static final String JSON_ID = "id";
     private static final String JSON_NAME = "name";
     private static final String JSON_SCOPE = "scope";
     private static final String JSON_VALUE = "value";
     private static final String JSON_CREATED_DATE = "created_date";
     private static final String JSON_UPDATED_DATE = "updated_date";
 
+    private final String id;
     private final String name;
     private final PersonDataScope scope;
     private final Object value;
@@ -22,16 +24,24 @@ public class PersonDataResponse {
     private final ZonedDateTime updatedDate;
 
     @JsonCreator
-    public PersonDataResponse(@JsonProperty(JSON_NAME) String name,
+    public PersonDataResponse(
+        @JsonProperty(JSON_ID) String id,
+        @JsonProperty(JSON_NAME) String name,
         @JsonProperty(JSON_SCOPE) PersonDataScope scope,
         @JsonProperty(JSON_VALUE) Object value,
         @JsonProperty(JSON_CREATED_DATE) ZonedDateTime createdDate,
         @JsonProperty(JSON_UPDATED_DATE) ZonedDateTime updatedDate) {
+        this.id = id;
         this.name = name;
         this.scope = scope;
         this.value = value;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
+    }
+
+    @JsonProperty(JSON_ID)
+    public String getId() {
+        return id;
     }
 
     @JsonProperty(JSON_NAME)

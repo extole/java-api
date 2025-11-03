@@ -181,7 +181,7 @@ public class MeAssetEndpointsImpl implements MeAssetEndpoints {
                 .addParameter("value", assetId)
                 .withCause(e)
                 .build();
-        } catch (AssetServiceRuntimeException | AuthorizationException e) {
+        } catch (AssetServiceRuntimeException | AuthorizationException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e.getCause())
@@ -227,9 +227,9 @@ public class MeAssetEndpointsImpl implements MeAssetEndpoints {
 
     // ENG-19642 person assets cannot be created from inside person lock because the asset upload can take time
     private InputConsumerEvent sendInputEvent(PersonAuthorization authorization,
-        ConsumerRequestContext requestContext) throws AuthorizationException {
+        ConsumerRequestContext requestContext) throws AuthorizationException, PersonNotFoundException {
         return consumerEventSenderService
-            .createInputEvent(authorization, requestContext.getProcessedRawEvent(), authorization.getIdentity())
+            .createInputEvent(authorization, requestContext.getProcessedRawEvent())
             .send();
     }
 

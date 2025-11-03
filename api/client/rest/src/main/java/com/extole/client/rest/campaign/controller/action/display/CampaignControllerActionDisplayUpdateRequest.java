@@ -31,8 +31,8 @@ public final class CampaignControllerActionDisplayUpdateRequest extends Componen
 
     private final Omissible<CampaignControllerActionQuality> quality;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled;
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<DisplayActionContext, String>>> body;
+    private final Omissible<
+        BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<DisplayActionContext, String>>> body;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
         RuntimeEvaluatable<DisplayActionContext, Map<String, String>>>> headers;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
@@ -44,8 +44,8 @@ public final class CampaignControllerActionDisplayUpdateRequest extends Componen
         @JsonProperty(JSON_ENABLED) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled,
         @JsonProperty(JSON_COMPONENT_IDS) Omissible<List<Id<ComponentResponse>>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) Omissible<List<ComponentReferenceRequest>> componentReferences,
-        @JsonProperty(JSON_BODY) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<DisplayActionContext, String>>> body,
+        @JsonProperty(JSON_BODY) Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<DisplayActionContext, String>>> body,
         @JsonProperty(JSON_HEADERS) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
             RuntimeEvaluatable<DisplayActionContext, Map<String, String>>>> headers,
         @JsonProperty(JSON_RESPONSE) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
@@ -69,20 +69,24 @@ public final class CampaignControllerActionDisplayUpdateRequest extends Componen
     }
 
     @JsonProperty(JSON_BODY)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<DisplayActionContext, String>>> getBody() {
+    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<DisplayActionContext, String>>>
+        getBody() {
         return body;
     }
 
     @JsonProperty(JSON_HEADERS)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<DisplayActionContext, Map<String, String>>>> getHeaders() {
+    public
+        Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<DisplayActionContext, Map<String, String>>>>
+        getHeaders() {
         return headers;
     }
 
     @JsonProperty(JSON_RESPONSE)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<DisplayActionResponseContext, ApiResponse>>> getResponse() {
+    public
+        Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<DisplayActionResponseContext, ApiResponse>>>
+        getResponse() {
         return response;
     }
 
@@ -100,12 +104,15 @@ public final class CampaignControllerActionDisplayUpdateRequest extends Componen
         private Omissible<CampaignControllerActionQuality> quality = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled = Omissible.omitted();
 
+        private Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<DisplayActionContext, String>>> body =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<DisplayActionContext, String>>> body = Omissible.omitted();
+            RuntimeEvaluatable<DisplayActionContext, Map<String, String>>>> headers =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<DisplayActionContext, Map<String, String>>>> headers = Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<DisplayActionResponseContext, ApiResponse>>> response = Omissible.omitted();
+            RuntimeEvaluatable<DisplayActionResponseContext, ApiResponse>>> response =
+                Omissible.omitted();
 
         private Builder() {
         }
@@ -120,20 +127,22 @@ public final class CampaignControllerActionDisplayUpdateRequest extends Componen
             return this;
         }
 
-        public Builder withBody(BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<DisplayActionContext, String>> body) {
+        public Builder withBody(
+            BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<DisplayActionContext, String>> body) {
             this.body = Omissible.of(body);
             return this;
         }
 
-        public Builder withHeaders(BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<DisplayActionContext, Map<String, String>>> headers) {
+        public Builder withHeaders(
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<DisplayActionContext, Map<String, String>>> headers) {
             this.headers = Omissible.of(headers);
             return this;
         }
 
-        public Builder withResponse(BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<DisplayActionResponseContext, ApiResponse>> response) {
+        public Builder withResponse(
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<DisplayActionResponseContext, ApiResponse>> response) {
             this.response = Omissible.of(response);
             return this;
         }

@@ -32,15 +32,39 @@ import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.id.Id;
+import com.extole.model.entity.report.runner.schedule.ReportSchedule;
+import com.extole.model.entity.report.runner.schedule.ReportScheduleOrder;
+import com.extole.model.entity.report.runner.schedule.ScheduleFrequency;
+import com.extole.model.entity.report.type.Format;
+import com.extole.model.entity.report.type.ReportInvalidParametersException;
+import com.extole.model.entity.report.type.ReportParameter;
+import com.extole.model.entity.report.type.ReportType;
 import com.extole.model.service.client.ClientNotFoundException;
 import com.extole.model.service.client.sftp.SftpDestinationNotFoundException;
+import com.extole.model.service.report.ReportMissingParametersException;
+import com.extole.model.service.report.runner.ReportRunnerDuplicateException;
+import com.extole.model.service.report.runner.ReportRunnerInvalidSortByException;
+import com.extole.model.service.report.runner.ReportRunnerNameInvalidException;
+import com.extole.model.service.report.runner.ReportScheduleListQueryBuilder;
+import com.extole.model.service.report.runner.ReportingServiceException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleBuilder;
+import com.extole.model.service.report.runner.schedule.ReportScheduleFormatNotSupportedException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleFrequencyNotSupportedForLegacySftpException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleInvalidParametersException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleInvalidScopesException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleMergeEmptyFormatSupportedException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleMissingFrequencyException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleMissingNameException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleMissingParametersException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleMissingScheduleStartDateException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleNotFoundException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleReportTypeMissingException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleReportTypeNotFoundException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleService;
+import com.extole.model.service.report.runner.schedule.ReportScheduleSftpNotSupportedException;
+import com.extole.model.service.report.runner.schedule.ReportScheduleUpdateManagedByGitException;
 import com.extole.reporting.entity.report.Report;
-import com.extole.reporting.entity.report.Report.Format;
-import com.extole.reporting.entity.report.ReportParameter;
-import com.extole.reporting.entity.report.ReportType;
-import com.extole.reporting.entity.report.schedule.ReportSchedule;
-import com.extole.reporting.entity.report.schedule.ReportScheduleOrder;
-import com.extole.reporting.entity.report.schedule.ScheduleFrequency;
+import com.extole.reporting.rest.impl.report.ReportInvalidParametersRestExceptionMapper;
 import com.extole.reporting.rest.impl.report.ReportResponseMapper;
 import com.extole.reporting.rest.report.ParameterValueType;
 import com.extole.reporting.rest.report.ReportParameterDetailsResponse;
@@ -58,33 +82,12 @@ import com.extole.reporting.rest.report.schedule.ReportScheduleResponse;
 import com.extole.reporting.rest.report.schedule.ReportScheduleRestException;
 import com.extole.reporting.rest.report.schedule.ReportScheduleValidationRestException;
 import com.extole.reporting.rest.report.schedule.UpdateReportScheduleRequest;
-import com.extole.reporting.service.ReportInvalidParametersException;
-import com.extole.reporting.service.ReportMissingParametersException;
-import com.extole.reporting.service.ReportingServiceException;
 import com.extole.reporting.service.report.ReportFormatNotSupportedException;
 import com.extole.reporting.service.report.ReportSftpNotSupportedException;
 import com.extole.reporting.service.report.runner.NoExecutionTimeRangesException;
-import com.extole.reporting.service.report.runner.ReportRunnerDuplicateException;
-import com.extole.reporting.service.report.runner.ReportRunnerNameInvalidException;
 import com.extole.reporting.service.report.runner.ReportRunnerPausedException;
 import com.extole.reporting.service.report.runner.ReportRunnerSlotNotSupportedException;
-import com.extole.reporting.service.report.schedule.ReportScheduleBuilder;
-import com.extole.reporting.service.report.schedule.ReportScheduleFormatNotSupportedException;
-import com.extole.reporting.service.report.schedule.ReportScheduleFrequencyNotSupportedForLegacySftpException;
-import com.extole.reporting.service.report.schedule.ReportScheduleInvalidParametersException;
-import com.extole.reporting.service.report.schedule.ReportScheduleInvalidScopesException;
-import com.extole.reporting.service.report.schedule.ReportScheduleListQueryBuilder;
-import com.extole.reporting.service.report.schedule.ReportScheduleMergeEmptyFormatSupportedException;
-import com.extole.reporting.service.report.schedule.ReportScheduleMissingFrequencyException;
-import com.extole.reporting.service.report.schedule.ReportScheduleMissingNameException;
-import com.extole.reporting.service.report.schedule.ReportScheduleMissingParametersException;
-import com.extole.reporting.service.report.schedule.ReportScheduleMissingScheduleStartDateException;
-import com.extole.reporting.service.report.schedule.ReportScheduleNotFoundException;
-import com.extole.reporting.service.report.schedule.ReportScheduleReportTypeMissingException;
-import com.extole.reporting.service.report.schedule.ReportScheduleReportTypeNotFoundException;
-import com.extole.reporting.service.report.schedule.ReportScheduleService;
-import com.extole.reporting.service.report.schedule.ReportScheduleSftpNotSupportedException;
-import com.extole.reporting.service.report.schedule.ReportScheduleUpdateManagedByGitException;
+import com.extole.reporting.service.report.schedule.ReportScheduleExecutionService;
 
 @Provider
 public class ReportScheduleEndpointsImpl implements ReportScheduleEndpoints {
@@ -95,6 +98,7 @@ public class ReportScheduleEndpointsImpl implements ReportScheduleEndpoints {
 
     private final ClientAuthorizationProvider authorizationProvider;
     private final ReportScheduleService reportScheduleService;
+    private final ReportScheduleExecutionService reportScheduleExecutionService;
     private final ReportResponseMapper reportResponseMapper;
     private final HttpHeaders requestHeaders;
 
@@ -102,10 +106,12 @@ public class ReportScheduleEndpointsImpl implements ReportScheduleEndpoints {
     public ReportScheduleEndpointsImpl(
         ClientAuthorizationProvider authorizationProvider,
         ReportScheduleService reportScheduleService,
+        ReportScheduleExecutionService reportScheduleExecutionService,
         ReportResponseMapper reportResponseMapper,
         @Context HttpHeaders requestHeaders) {
         this.authorizationProvider = authorizationProvider;
         this.reportScheduleService = reportScheduleService;
+        this.reportScheduleExecutionService = reportScheduleExecutionService;
         this.reportResponseMapper = reportResponseMapper;
         this.requestHeaders = requestHeaders;
     }
@@ -275,7 +281,7 @@ public class ReportScheduleEndpointsImpl implements ReportScheduleEndpoints {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
             List<Report> reports =
-                reportScheduleService.scheduleMissingReports(authorization, Id.valueOf(reportScheduleId),
+                reportScheduleExecutionService.scheduleMissingReports(authorization, Id.valueOf(reportScheduleId),
                     missingReportsToGenerate != null ? missingReportsToGenerate.intValue() : 1);
             return reports.stream()
                 .map(report -> reportResponseMapper.toReportResponse(authorization, report, requestHeaders, timeZone))
@@ -305,8 +311,9 @@ public class ReportScheduleEndpointsImpl implements ReportScheduleEndpoints {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
             return reportResponseMapper.toReportResponse(authorization,
-                reportScheduleService.executeReport(authorization, Id.valueOf(reportScheduleId), true), requestHeaders,
-                timeZone);
+                reportScheduleExecutionService.executeReport(authorization,
+                    Id.valueOf(reportScheduleId), true),
+                requestHeaders, timeZone);
         } catch (AuthorizationException e) {
             throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
                 .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED).withCause(e).build();
@@ -316,10 +323,7 @@ public class ReportScheduleEndpointsImpl implements ReportScheduleEndpoints {
                 .addParameter("parameters", e.getMissingParameters())
                 .withCause(e).build();
         } catch (ReportInvalidParametersException e) {
-            throw RestExceptionBuilder.newBuilder(ReportValidationRestException.class)
-                .withErrorCode(ReportValidationRestException.REPORT_INVALID_PARAMETER)
-                .addParameter("parameters", e.getParameterNames())
-                .withCause(e).build();
+            throw ReportInvalidParametersRestExceptionMapper.getInstance().map(e);
         } catch (ReportFormatNotSupportedException e) {
             throw RestExceptionBuilder.newBuilder(ReportValidationRestException.class)
                 .withErrorCode(ReportValidationRestException.REPORT_INVALID_FORMATS)
@@ -468,7 +472,7 @@ public class ReportScheduleEndpointsImpl implements ReportScheduleEndpoints {
             ReportScheduleFrequencyNotSupportedForLegacySftpException, ReportScheduleInvalidScopesException,
             ReportScheduleSftpNotSupportedException, SftpDestinationNotFoundException,
             ReportScheduleUpdateManagedByGitException, ReportRunnerDuplicateException, ReportRunnerNameInvalidException,
-            ReportScheduleMergeEmptyFormatSupportedException;
+            ReportScheduleMergeEmptyFormatSupportedException, ReportRunnerInvalidSortByException;
     }
 
     private ReportSchedule handleExceptions(Supplier supplier)
@@ -541,7 +545,13 @@ public class ReportScheduleEndpointsImpl implements ReportScheduleEndpoints {
                 .build();
         } catch (ReportRunnerNameInvalidException e) {
             throw RestExceptionBuilder.newBuilder(ReportScheduleValidationRestException.class)
-                .withErrorCode(ReportScheduleValidationRestException.REPORT_RUNNER_NAME_ILLEGAL_CHARACTER)
+                .withErrorCode(ReportScheduleValidationRestException.REPORT_SCHEDULE_NAME_ILLEGAL_CHARACTER)
+                .withCause(e)
+                .build();
+        } catch (ReportRunnerInvalidSortByException e) {
+            throw RestExceptionBuilder.newBuilder(ReportScheduleValidationRestException.class)
+                .withErrorCode(ReportScheduleValidationRestException.REPORT_SCHEDULE_INVALID_SORT_BY)
+                .addParameter("sort_by", e.getSortBy())
                 .withCause(e)
                 .build();
         } catch (ReportRunnerDuplicateException e) {

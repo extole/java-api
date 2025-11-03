@@ -5,8 +5,8 @@ import java.time.ZoneId;
 import org.springframework.stereotype.Component;
 
 import com.extole.authorization.service.Authorization;
-import com.extole.reporting.entity.report.runner.ReportRunnerType;
-import com.extole.reporting.entity.report.runner.ScheduledReportRunner;
+import com.extole.model.entity.report.runner.ReportRunnerType;
+import com.extole.model.entity.report.runner.ScheduledReportRunner;
 import com.extole.reporting.rest.report.runner.ScheduledReportRunnerResponse;
 import com.extole.reporting.rest.report.schedule.ScheduleFrequency;
 

@@ -10,6 +10,8 @@ public interface ComponentInstalltimeContext {
 
     VariableContext getVariableContext();
 
+    ComponentInstalltimeService getComponentService();
+
     VariableContext getVariableContext(String defaultKey);
 
     VariableContext getVariableContext(String... defaultKeys);

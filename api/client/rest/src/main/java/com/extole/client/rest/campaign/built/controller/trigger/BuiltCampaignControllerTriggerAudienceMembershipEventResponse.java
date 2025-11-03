@@ -27,6 +27,7 @@ public class BuiltCampaignControllerTriggerAudienceMembershipEventResponse
         @JsonProperty(TRIGGER_ID) String triggerId,
         @JsonProperty(TRIGGER_PHASE) CampaignControllerTriggerPhase triggerPhase,
         @JsonProperty(TRIGGER_NAME) String name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) Optional<String> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) Optional<String> description,
         @JsonProperty(ENABLED) Boolean enabled,
         @JsonProperty(NEGATED) Boolean negated,
@@ -34,8 +35,16 @@ public class BuiltCampaignControllerTriggerAudienceMembershipEventResponse
         @JsonProperty(AUDIENCE_IDS) Set<Id<?>> audienceIds,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.AUDIENCE_MEMBERSHIP_EVENT, triggerPhase, name,
-            description, enabled, negated, componentIds, componentReferences);
+        super(triggerId,
+            CampaignControllerTriggerType.AUDIENCE_MEMBERSHIP_EVENT,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
+            componentIds,
+            componentReferences);
         this.eventTypes = ImmutableSet.copyOf(eventTypes);
         this.audienceIds = ImmutableSet.copyOf(audienceIds);
     }

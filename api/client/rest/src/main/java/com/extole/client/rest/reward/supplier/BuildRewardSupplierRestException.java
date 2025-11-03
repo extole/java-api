@@ -28,6 +28,10 @@ public class BuildRewardSupplierRestException extends ExtoleRestException {
         new ErrorCode<>("name_too_long", 400, "Name should not exceed the specified length limit", "name",
             "max_name_length");
 
+    public static final ErrorCode<BuildRewardSupplierRestException> DISPLAY_NAME_TOO_LONG =
+        new ErrorCode<>("display_name_too_long", 400, "Display name should not exceed the specified length limit",
+            "display_name", "max_length");
+
     public static final ErrorCode<BuildRewardSupplierRestException> DESCRIPTION_TOO_LONG =
         new ErrorCode<>("description_too_long", 400, "Description should not exceed the specified length limit",
             "description", "max_description_length");

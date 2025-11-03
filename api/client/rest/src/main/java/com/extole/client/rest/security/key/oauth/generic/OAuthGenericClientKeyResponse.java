@@ -62,14 +62,17 @@ public class OAuthGenericClientKeyResponse extends OAuthClientKeyResponse {
     }
 
     @JsonProperty(REQUEST)
-    public BuildtimeEvaluatable<ClientKeyBuildtimeContext,
-        RuntimeEvaluatable<OAuthClientKeyRuntimeContext, OAuthRequest>> getRequest() {
+    public
+        BuildtimeEvaluatable<ClientKeyBuildtimeContext, RuntimeEvaluatable<OAuthClientKeyRuntimeContext, OAuthRequest>>
+        getRequest() {
         return request;
     }
 
     @JsonProperty(RESPONSE_HANDLER)
-    public BuildtimeEvaluatable<ClientKeyBuildtimeContext,
-        RuntimeEvaluatable<OAuthClientKeyResponseContext, OAuthResponse>> getResponseHandler() {
+    public
+        BuildtimeEvaluatable<ClientKeyBuildtimeContext,
+            RuntimeEvaluatable<OAuthClientKeyResponseContext, OAuthResponse>>
+        getResponseHandler() {
         return responseHandler;
     }
 

@@ -51,8 +51,8 @@ public interface PersonV4Endpoints {
         description = "Deprecated - use /v5/{person_id}/steps instead. " +
             "Returns steps for a person, sorted by event date in descending order.")
     List<PersonStepV4Response> getSteps(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @Nullable @BeanParam PersonStepsV4ListRequest personStepsListRequest,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonStepsListRestException, PersonRestException;
@@ -63,18 +63,17 @@ public interface PersonV4Endpoints {
     @Operation(summary = "Get a list with shares",
         description = "Returns shares for a person, sorted by share date in descending order.")
     List<PersonShareV4Response> getShares(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Optional campaign id filter.")
-        @Nullable @QueryParam("campaign_id") String campaignId,
-        @Parameter(description = "Optional partner share id filter.")
-        @Nullable @QueryParam("partner_share_id") String partnerShareId,
-        @Parameter(description = "Optional partner id filter, using this format: <name>:<value>")
-        @Nullable @QueryParam("partner_id") String partnerId,
-        @Parameter(description = "Optional offset filter, defaults to 0.")
-        @Nullable @QueryParam("offset") Integer offset,
-        @Parameter(description = "Optional limit filter, defaults to 100.")
-        @Nullable @QueryParam("limit") Integer limit,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(description = "Optional campaign id filter.") @Nullable @QueryParam("campaign_id") String campaignId,
+        @Parameter(
+            description = "Optional partner share id filter.") @Nullable @QueryParam("partner_share_id") String partnerShareId,
+        @Parameter(
+            description = "Optional partner id filter, using this format: <name>:<value>") @Nullable @QueryParam("partner_id") String partnerId,
+        @Parameter(
+            description = "Optional offset filter, defaults to 0.") @Nullable @QueryParam("offset") Integer offset,
+        @Parameter(
+            description = "Optional limit filter, defaults to 100.") @Nullable @QueryParam("limit") Integer limit,
         @Nullable @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException;
 
@@ -85,14 +84,13 @@ public interface PersonV4Endpoints {
         description = "Returns audience memberships for a person, sorted by updated date in descending order.")
     List<PersonAudienceMembershipV4Response> getAudienceMemberships(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Optional name filter.")
-        @QueryParam("name") Optional<String> name,
-        @Parameter(description = "Optional offset filter, defaults to 0.")
-        @QueryParam("offset") Optional<Integer> offset,
-        @Parameter(description = "Optional limit filter, defaults to 100.")
-        @QueryParam("limit") Optional<Integer> limit,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(description = "Optional name filter.") @QueryParam("name") Optional<String> name,
+        @Parameter(
+            description = "Optional offset filter, defaults to 0.") @QueryParam("offset") Optional<Integer> offset,
+        @Parameter(
+            description = "Optional limit filter, defaults to 100.") @QueryParam("limit") Optional<Integer> limit,
         @Nullable @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException;
 
@@ -103,12 +101,12 @@ public interface PersonV4Endpoints {
         description = "Returns shareables for a person, sorted by updated date in descending order.")
     List<PersonShareableV4Response> getShareables(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Optional offset filter, defaults to 0.")
-        @Nullable @QueryParam("offset") Integer offset,
-        @Parameter(description = "Optional limit filter, defaults to 100.")
-        @Nullable @QueryParam("limit") Integer limit)
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(
+            description = "Optional offset filter, defaults to 0.") @Nullable @QueryParam("offset") Integer offset,
+        @Parameter(
+            description = "Optional limit filter, defaults to 100.") @Nullable @QueryParam("limit") Integer limit)
         throws UserAuthorizationRestException, PersonRestException;
 
     @GET
@@ -118,10 +116,9 @@ public interface PersonV4Endpoints {
         description = "Returns a shareable by a given code")
     PersonShareableV4Response getShareableByCode(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Shareable code")
-        @PathParam("code") String code)
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(description = "Shareable code") @PathParam("code") String code)
         throws UserAuthorizationRestException, PersonRestException, ShareableRestException;
 
     // TODO Rename type to journey_name - ENG-18547
@@ -132,21 +129,19 @@ public interface PersonV4Endpoints {
         description = "Returns journeys for a person, sorted by updated date in descending order.")
     List<PersonJourneyV4Response> getJourneys(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Optional campaign id filter.")
-        @Nullable @QueryParam("campaign_id") String campaignId,
-        @Parameter(description = "Optional program label filter.")
-        @Nullable @QueryParam("program_label") String programLabel,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(description = "Optional campaign id filter.") @Nullable @QueryParam("campaign_id") String campaignId,
+        @Parameter(
+            description = "Optional program label filter.") @Nullable @QueryParam("program_label") String programLabel,
         @Parameter(description = "Optional container filter, defaults to production container. " +
-            "Pass \"*\" to include steps for all containers")
-            @Nullable @QueryParam("container") String container,
-        @Parameter(description = "Optional journey type filter, one of friend or advocate.")
-        @Nullable @QueryParam("type") String journeyName,
-        @Parameter(description = "Optional offset filter, defaults to 0.")
-        @Nullable @QueryParam("offset") Integer offset,
-        @Parameter(description = "Optional limit filter, defaults to 100.")
-        @Nullable @QueryParam("limit") Integer limit,
+            "Pass \"*\" to include steps for all containers") @Nullable @QueryParam("container") String container,
+        @Parameter(
+            description = "Optional journey type filter, one of friend or advocate.") @Nullable @QueryParam("type") String journeyName,
+        @Parameter(
+            description = "Optional offset filter, defaults to 0.") @Nullable @QueryParam("offset") Integer offset,
+        @Parameter(
+            description = "Optional limit filter, defaults to 100.") @Nullable @QueryParam("limit") Integer limit,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException;
 
@@ -157,22 +152,19 @@ public interface PersonV4Endpoints {
         description = "Returns rewards for a person, sorted by created date in descending order.")
     List<PersonRewardV4Response> getRewards(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Optional program label filter.")
-        @Nullable @QueryParam("program_label") String programLabel,
-        @Parameter(description = "Optional campaign id filter.")
-        @Nullable @QueryParam("campaign_id") String campaignId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(
+            description = "Optional program label filter.") @Nullable @QueryParam("program_label") String programLabel,
+        @Parameter(description = "Optional campaign id filter.") @Nullable @QueryParam("campaign_id") String campaignId,
         @Parameter(description = "Optional reward states list filter separated by comma, one of earned, fulfilled, " +
-            "sent, redeemed, failed, canceled, revoked.")
-        @Nullable @QueryParam("reward_state") String rewardStates,
+            "sent, redeemed, failed, canceled, revoked.") @Nullable @QueryParam("reward_state") String rewardStates,
         @Parameter(description = "Optional reward types list filter separated by comma, one of manual_coupon, " +
-            "salesforce_coupon, tango_v2, custom_reward, paypal_payouts.")
-        @Nullable @QueryParam("reward_type") String rewardTypes,
-        @Parameter(description = "Optional offset filter, defaults to 0.")
-        @Nullable @QueryParam("offset") Integer offset,
-        @Parameter(description = "Optional limit filter, defaults to 100.")
-        @Nullable @QueryParam("limit") Integer limit,
+            "salesforce_coupon, tango_v2, custom_reward, paypal_payouts.") @Nullable @QueryParam("reward_type") String rewardTypes,
+        @Parameter(
+            description = "Optional offset filter, defaults to 0.") @Nullable @QueryParam("offset") Integer offset,
+        @Parameter(
+            description = "Optional limit filter, defaults to 100.") @Nullable @QueryParam("limit") Integer limit,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException, PersonQueryRestException;
 
@@ -183,8 +175,8 @@ public interface PersonV4Endpoints {
         description = "Returns relationships for a person, sorted by updated date in descending order.")
     List<PersonRelationshipV4Response> getRelationships(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @Nullable @BeanParam PersonRelationshipsV4ListRequest relationshipsListRequest,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException, PersonRelationshipV4RestException;
@@ -195,16 +187,15 @@ public interface PersonV4Endpoints {
     @Operation(summary = "Get a list with profile data",
         description = "Returns data for a person, sorted by updated date in descending order.")
     List<PersonDataV4Response> getData(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Optional filter for data name")
-        @Nullable @QueryParam("name") String name,
-        @Parameter(description = "Optional filter for data scope, one of PUBLIC, PRIVATE")
-        @Nullable @QueryParam("scope") PersonDataScope scope,
-        @Parameter(description = "Optional offset filter, defaults to 0.")
-        @Nullable @QueryParam("offset") Integer offset,
-        @Parameter(description = "Optional limit filter, defaults to 100.")
-        @Nullable @QueryParam("limit") Integer limit)
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(description = "Optional filter for data name") @Nullable @QueryParam("name") String name,
+        @Parameter(
+            description = "Optional filter for data scope, one of PUBLIC, PRIVATE") @Nullable @QueryParam("scope") PersonDataScope scope,
+        @Parameter(
+            description = "Optional offset filter, defaults to 0.") @Nullable @QueryParam("offset") Integer offset,
+        @Parameter(
+            description = "Optional limit filter, defaults to 100.") @Nullable @QueryParam("limit") Integer limit)
         throws UserAuthorizationRestException, PersonRestException;
 
     @GET
@@ -213,11 +204,11 @@ public interface PersonV4Endpoints {
     @Operation(summary = "Get a list with request contexts", description = "Returns request contexts for a person")
     List<PersonRequestContextV4Response> getRequestContexts(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @Nullable @QueryParam("offset") Integer offset,
-        @Parameter(description = "Optional limit filter, defaults to 100.")
-        @Nullable @QueryParam("limit") Integer limit,
+        @Parameter(
+            description = "Optional limit filter, defaults to 100.") @Nullable @QueryParam("limit") Integer limit,
         @TimeZoneParam ZoneId timeZone) throws UserAuthorizationRestException, PersonRestException;
 
 }

@@ -11,7 +11,6 @@ import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.id.Id;
-import com.extole.person.service.profile.journey.Container;
 import com.extole.reporting.rest.fixup.FixupRestException;
 import com.extole.reporting.rest.fixup.transformation.ContainerFixupTransformationEndpoints;
 import com.extole.reporting.rest.fixup.transformation.ContainerFixupTransformationRequest;
@@ -27,6 +26,7 @@ import com.extole.reporting.service.fixup.transformation.FixupTransformationAlre
 import com.extole.reporting.service.fixup.transformation.FixupTransformationNotEditableException;
 import com.extole.reporting.service.fixup.transformation.FixupTransformationNotFoundException;
 import com.extole.reporting.service.fixup.transformation.FixupTransformationValidationException;
+import com.extole.sandbox.Container;
 
 @Provider
 public class ContainerFixupTransformationEndpointsImpl implements ContainerFixupTransformationEndpoints {

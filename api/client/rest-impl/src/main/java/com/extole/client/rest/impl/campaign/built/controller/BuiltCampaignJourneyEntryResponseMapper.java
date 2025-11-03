@@ -13,6 +13,7 @@ import com.extole.client.rest.campaign.component.ComponentReferenceResponse;
 import com.extole.client.rest.campaign.component.ComponentResponse;
 import com.extole.client.rest.impl.campaign.built.controller.trigger.BuiltCampaignControllerTriggerResponseMapper;
 import com.extole.client.rest.impl.campaign.built.controller.trigger.BuiltCampaignControllerTriggerResponseMapperRepository;
+import com.extole.client.rest.impl.campaign.step.data.CampaignStepDataRestMapper;
 import com.extole.id.Id;
 import com.extole.model.entity.campaign.StepType;
 import com.extole.model.entity.campaign.built.BuiltCampaignControllerTrigger;
@@ -23,11 +24,14 @@ public class BuiltCampaignJourneyEntryResponseMapper
     implements BuiltCampaignStepResponseMapper<BuiltCampaignJourneyEntry, BuiltCampaignJourneyEntryResponse> {
 
     private final BuiltCampaignControllerTriggerResponseMapperRepository triggerMapperRepository;
+    private final CampaignStepDataRestMapper campaignStepDataRestMapper;
 
     @Autowired
     public BuiltCampaignJourneyEntryResponseMapper(
-        BuiltCampaignControllerTriggerResponseMapperRepository triggerMapperRepository) {
+        BuiltCampaignControllerTriggerResponseMapperRepository triggerMapperRepository,
+        CampaignStepDataRestMapper campaignStepDataRestMapper) {
         this.triggerMapperRepository = triggerMapperRepository;
+        this.campaignStepDataRestMapper = campaignStepDataRestMapper;
     }
 
     @Override
@@ -45,11 +49,11 @@ public class BuiltCampaignJourneyEntryResponseMapper
                 .stream()
                 .map(trigger -> toTriggerResponse(trigger, timeZone))
                 .collect(Collectors.toList()),
-            journeyEntry.getCampaignComponentReferences()
+            journeyEntry.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            journeyEntry.getCampaignComponentReferences()
+            journeyEntry.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -58,7 +62,8 @@ public class BuiltCampaignJourneyEntryResponseMapper
             journeyEntry.getUpdatedDate().atZone(timeZone),
             journeyEntry.getJourneyName().getValue(),
             journeyEntry.getPriority(),
-            journeyEntry.getKey().map(value -> new BuiltJourneyKeyResponse(value.getName(), value.getValue())));
+            journeyEntry.getKey().map(value -> new BuiltJourneyKeyResponse(value.getName(), value.getValue())),
+            campaignStepDataRestMapper.toBuiltStepDataResponses(journeyEntry.getData()));
     }
 
     private BuiltCampaignControllerTriggerResponse toTriggerResponse(BuiltCampaignControllerTrigger trigger,

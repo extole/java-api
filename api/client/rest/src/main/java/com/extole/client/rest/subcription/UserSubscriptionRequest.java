@@ -32,8 +32,8 @@ public class UserSubscriptionRequest {
     public UserSubscriptionRequest(
         @JsonProperty(JSON_HAVING_ALL_TAGS) Set<String> havingAllTags,
         @JsonProperty(JSON_FILTERING_LEVEL) Optional<FilteringLevel> filteringLevel,
-        @JsonProperty(JSON_FILTER_EXPRESSION) Omissible<RuntimeEvaluatable<UserSubscriptionFilterContext,
-            Boolean>> filterExpression,
+        @JsonProperty(JSON_FILTER_EXPRESSION) Omissible<
+            RuntimeEvaluatable<UserSubscriptionFilterContext, Boolean>> filterExpression,
         @JsonProperty(JSON_DEDUPE_DURATION_MS) Omissible<Long> dedupeDurationMs,
         @JsonProperty(JSON_CHANNELS) Omissible<List<SubscriptionChannelRequest>> channels) {
         this.havingAllTags = ImmutableSet.copyOf(havingAllTags);
@@ -118,8 +118,9 @@ public class UserSubscriptionRequest {
         }
 
         public UserSubscriptionRequest build() {
-            return new UserSubscriptionRequest(tags, level, filterExpression, dedupeDurationMs,
-                channels);
+            return new UserSubscriptionRequest(tags, level, filterExpression, dedupeDurationMs, channels);
         }
+
     }
+
 }

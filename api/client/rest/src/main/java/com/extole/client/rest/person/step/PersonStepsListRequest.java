@@ -48,45 +48,46 @@ public class PersonStepsListRequest {
     private final List<String> journeyKeyValues;
 
     public PersonStepsListRequest(
-        @Parameter(description = "Optional step name filter. Will include steps that match at least one of the names.")
-        @QueryParam(PARAMETER_NAMES) List<String> names,
+        @Parameter(
+            description = "Optional step name filter. Will include steps that match at least one of the names.") @QueryParam(PARAMETER_NAMES) List<
+                String> names,
         @Parameter(description = "Optional container filter, defaults to all containers. " +
-            "Will include steps that match at least one of the containers.")
-        @QueryParam(PARAMETER_CONTAINERS) List<String> containers,
+            "Will include steps that match at least one of the containers.") @QueryParam(PARAMETER_CONTAINERS) List<
+                String> containers,
         @Parameter(description = "Optional campaign id filter. " +
-            "Will include steps that match at least one of the campaign ids.")
-        @QueryParam(PARAMETER_CAMPAIGN_IDS) List<String> campaignIds,
+            "Will include steps that match at least one of the campaign ids.") @QueryParam(PARAMETER_CAMPAIGN_IDS) List<
+                String> campaignIds,
         @Parameter(description = "Optional program label filter. " +
-            "Will include steps that match at least one of the programs.")
-        @QueryParam(PARAMETER_PROGRAMS) List<String> programs,
+            "Will include steps that match at least one of the programs.") @QueryParam(PARAMETER_PROGRAMS) List<
+                String> programs,
         @Parameter(description = "Optional journey names filter. " +
-            "Will include steps that match at least one of the journey names.")
-        @QueryParam(PARAMETER_JOURNEY_NAMES) List<String> journeyNames,
-        @Parameter(description = "Optional filter for primary steps. Defaults to all steps.")
-        @QueryParam(PARAMETER_IS_PRIMARY) Optional<Boolean> isPrimary,
+            "Will include steps that match at least one of the journey names.") @QueryParam(PARAMETER_JOURNEY_NAMES) List<
+                String> journeyNames,
+        @Parameter(
+            description = "Optional filter for primary steps. Defaults to all steps.") @QueryParam(PARAMETER_IS_PRIMARY) Optional<
+                Boolean> isPrimary,
         @Parameter(description = "Optional filter for existence of a specific data keys with non-empty values. " +
-            "Will include steps that have at least one of the data keys.")
-        @QueryParam(PARAMETER_DATA_KEYS) List<String> dataKeys,
+            "Will include steps that have at least one of the data keys.") @QueryParam(PARAMETER_DATA_KEYS) List<
+                String> dataKeys,
         @Parameter(description = "Optional event IDs filter. " +
-            "Will include steps that match at least one of the event IDs.")
-        @QueryParam(PARAMETER_EVENT_IDS) List<String> eventIds,
+            "Will include steps that match at least one of the event IDs.") @QueryParam(PARAMETER_EVENT_IDS) List<
+                String> eventIds,
         @Parameter(description = "Optional cause event IDs filter. " +
-            "Will include steps that match at least one of the cause event IDs.")
-        @QueryParam(PARAMETER_CAUSE_EVENT_IDS) List<String> causeEventIds,
+            "Will include steps that match at least one of the cause event IDs.") @QueryParam(PARAMETER_CAUSE_EVENT_IDS) List<
+                String> causeEventIds,
         @Parameter(description = "Optional root event IDs filter. " +
-            "Will include steps that match at least one of the root event IDs.")
-        @QueryParam(PARAMETER_ROOT_EVENT_IDS) List<String> rootEventIds,
-        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".")
-        @DefaultValue("" + DEFAULT_OFFSET) @QueryParam(PARAMETER_OFFSET) Optional<Integer> offset,
-        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".")
-        @DefaultValue("" + DEFAULT_LIMIT) @QueryParam(PARAMETER_LIMIT) Optional<Integer> limit,
+            "Will include steps that match at least one of the root event IDs.") @QueryParam(PARAMETER_ROOT_EVENT_IDS) List<
+                String> rootEventIds,
+        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".") @DefaultValue(""
+            + DEFAULT_OFFSET) @QueryParam(PARAMETER_OFFSET) Optional<Integer> offset,
+        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".") @DefaultValue(""
+            + DEFAULT_LIMIT) @QueryParam(PARAMETER_LIMIT) Optional<Integer> limit,
         @Parameter(description = "Optional journey key names filter. " +
-            "Will include steps, whose journey key matches one of the journey key names.")
-        @QueryParam(PARAMETER_JOURNEY_KEY_NAMES) List<String> journeyKeyNames,
+            "Will include steps, whose journey key matches one of the journey key names.") @QueryParam(PARAMETER_JOURNEY_KEY_NAMES) List<
+                String> journeyKeyNames,
         @Parameter(description = "Optional journey key values filter. " +
             "Will include steps that have one of the specified journey keys. " +
-            "Valid format is name:value.")
-        @QueryParam(PARAMETER_JOURNEY_KEY_VALUES) List<String> journeyKeyValues) {
+            "Valid format is name:value.") @QueryParam(PARAMETER_JOURNEY_KEY_VALUES) List<String> journeyKeyValues) {
         this.names = names == null ? ImmutableList.of() : ImmutableList.copyOf(names);
         this.containers = containers == null ? ImmutableList.of() : ImmutableList.copyOf(containers);
         this.campaignIds = campaignIds == null ? ImmutableList.of() : ImmutableList.copyOf(campaignIds);

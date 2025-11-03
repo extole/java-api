@@ -1,5 +1,7 @@
 package com.extole.client.rest.impl.campaign.built.component.setting;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -28,6 +30,7 @@ public class BuiltComponentRewardSupplierIdListVariableRestMapper
             variable.getDescription(),
             variable.getTags(),
             Id.valueOf(variable.getSourceComponentId().getValue()),
+            variable.getSourceVersion(),
             variable.getPriority(),
             variable.getAllowedRewardSupplierIds().stream()
                 .map(rewardSupplierId -> Id.valueOf(rewardSupplierId.getValue()))
@@ -36,7 +39,7 @@ public class BuiltComponentRewardSupplierIdListVariableRestMapper
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.REWARD_SUPPLIER_ID_LIST;
+    public List<SettingType> getSettingTypes() {
+        return Collections.singletonList(SettingType.REWARD_SUPPLIER_ID_LIST);
     }
 }

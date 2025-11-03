@@ -1,7 +1,7 @@
 package com.extole.reporting.rest.impl.report.type.uploaders;
 
-import com.extole.reporting.entity.report.ReportTypeTag;
-import com.extole.reporting.entity.report.ReportTypeTagType;
+import com.extole.model.entity.report.type.ReportTypeTag;
+import com.extole.model.entity.report.type.ReportTypeTagType;
 
 public class ReportTypeTagImpl implements ReportTypeTag {
     private final String name;

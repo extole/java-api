@@ -27,6 +27,7 @@ public class BuiltCampaignControllerTriggerMaxMindResponse extends BuiltCampaign
     public BuiltCampaignControllerTriggerMaxMindResponse(@JsonProperty(TRIGGER_ID) String triggerId,
         @JsonProperty(TRIGGER_PHASE) CampaignControllerTriggerPhase triggerPhase,
         @JsonProperty(TRIGGER_NAME) String name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) Optional<String> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) Optional<String> description,
         @JsonProperty(ENABLED) Boolean enabled,
         @JsonProperty(NEGATED) Boolean negated,
@@ -36,8 +37,16 @@ public class BuiltCampaignControllerTriggerMaxMindResponse extends BuiltCampaign
         @JsonProperty(ALLOW_HIGH_RISK_EMAIL) Boolean allowHighRiskEmail,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.MAXMIND, triggerPhase, name, description, enabled,
-            negated, componentIds, componentReferences);
+        super(triggerId,
+            CampaignControllerTriggerType.MAXMIND,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
+            componentIds,
+            componentReferences);
         this.defaultQualityScore = eventName;
         this.riskThreshold = riskThreshold;
         this.ipThreshold = ipThreshold;

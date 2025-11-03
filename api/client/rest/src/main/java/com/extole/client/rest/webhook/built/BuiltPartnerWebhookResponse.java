@@ -44,8 +44,8 @@ public class BuiltPartnerWebhookResponse extends BuiltWebhookResponse {
         @JsonProperty(RETRY_INTERVALS) List<Duration> retryIntervals,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences,
-        @JsonProperty(RESPONSE_BODY_HANDLER)
-        RuntimeEvaluatable<WebhookResponseContext, Map<String, Object>> responseBodyHandler) {
+        @JsonProperty(RESPONSE_BODY_HANDLER) RuntimeEvaluatable<WebhookResponseContext,
+            Map<String, Object>> responseBodyHandler) {
         super(id, name, WebhookType.PARTNER, url, clientKeyId, tags, request, responseHandler, enabled, description,
             createdAt, updatedAt, defaultMethod, retryIntervals, componentIds, componentReferences);
 

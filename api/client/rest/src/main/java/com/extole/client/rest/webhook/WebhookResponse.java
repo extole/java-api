@@ -146,15 +146,15 @@ public abstract class WebhookResponse extends ComponentElementResponse {
     }
 
     @JsonProperty(REQUEST)
-    public BuildtimeEvaluatable<WebhookBuildtimeContext,
-        RuntimeEvaluatable<WebhookRuntimeContext, WebhookRequest>> getRequest() {
+    public BuildtimeEvaluatable<WebhookBuildtimeContext, RuntimeEvaluatable<WebhookRuntimeContext, WebhookRequest>>
+        getRequest() {
         return request;
     }
 
     @JsonProperty(RESPONSE_HANDLER)
     @Schema(description = "if no webhook response status is provided, we will retry non 2xx webhook requests")
-    public BuildtimeEvaluatable<WebhookBuildtimeContext,
-        RuntimeEvaluatable<WebhookResponseContext, Optional<String>>> getResponseHandler() {
+    public BuildtimeEvaluatable<WebhookBuildtimeContext, RuntimeEvaluatable<WebhookResponseContext, Optional<String>>>
+        getResponseHandler() {
         return responseHandler;
     }
 

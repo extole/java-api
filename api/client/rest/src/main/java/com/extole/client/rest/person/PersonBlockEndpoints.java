@@ -40,8 +40,8 @@ public interface PersonBlockEndpoints {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update block details of a Person")
     PersonBlockResponse update(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.", required = true)
-        @PathParam("person_id") String personId,
+        @Parameter(description = "The Extole unique profile identifier of this user at Extole.",
+            required = true) @PathParam("person_id") String personId,
         @RequestBody(description = "PersonBlockRequest object", required = true) PersonBlockRequest personBlockRequest,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException, PersonValidationRestException;

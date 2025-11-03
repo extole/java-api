@@ -43,38 +43,35 @@ public class PersonJourneysListRequest {
 
     public PersonJourneysListRequest(
         @Parameter(description = "Optional journey ids filter. " +
-            "Will include journeys that match at least one of the ids.")
-        @QueryParam(PARAMETER_IDS) List<String> ids,
+            "Will include journeys that match at least one of the ids.") @QueryParam(PARAMETER_IDS) List<String> ids,
         @Parameter(description = "Optional journey names filter. " +
-            "Will include journeys that match at least one of the names.")
-        @QueryParam(PARAMETER_NAMES) List<String> names,
+            "Will include journeys that match at least one of the names.") @QueryParam(PARAMETER_NAMES) List<
+                String> names,
         @Parameter(description = "Optional program label filter. " +
-            "Will include journeys that match at least one of the programs.")
-        @QueryParam(PARAMETER_PROGRAMS) List<String> programs,
+            "Will include journeys that match at least one of the programs.") @QueryParam(PARAMETER_PROGRAMS) List<
+                String> programs,
         @Parameter(description = "Optional campaign id filter. " +
-            "Will include journeys that match at least one of the campaign ids.")
-        @QueryParam(PARAMETER_CAMPAIGN_IDS) List<String> campaignIds,
+            "Will include journeys that match at least one of the campaign ids.") @QueryParam(PARAMETER_CAMPAIGN_IDS) List<
+                String> campaignIds,
         @Parameter(description = "Optional container filter, defaults to all containers. " +
-            "Will include journeys that match at least one of the containers.")
-        @QueryParam(PARAMETER_CONTAINERS) List<String> containers,
+            "Will include journeys that match at least one of the containers.") @QueryParam(PARAMETER_CONTAINERS) List<
+                String> containers,
         @Parameter(description = "Optional filter for existence of specific data keys with non-empty values. " +
-            "Will include journeys that have at least one of the data keys.")
-        @QueryParam(PARAMETER_DATA_KEYS) List<String> dataKeys,
+            "Will include journeys that have at least one of the data keys.") @QueryParam(PARAMETER_DATA_KEYS) List<
+                String> dataKeys,
         @Parameter(description = "Optional filter for existence of specific data values. " +
             "Will include journeys that have at least one of the specified data name-value pair. " +
-            "Valid format is name:value.")
-        @QueryParam(PARAMETER_DATA_VALUES) List<String> dataValues,
-        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".")
-        @DefaultValue("" + DEFAULT_OFFSET) @QueryParam(PARAMETER_OFFSET) Integer offset,
-        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".")
-        @DefaultValue("" + DEFAULT_LIMIT) @QueryParam(PARAMETER_LIMIT) Integer limit,
+            "Valid format is name:value.") @QueryParam(PARAMETER_DATA_VALUES) List<String> dataValues,
+        @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".") @DefaultValue(""
+            + DEFAULT_OFFSET) @QueryParam(PARAMETER_OFFSET) Integer offset,
+        @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".") @DefaultValue(""
+            + DEFAULT_LIMIT) @QueryParam(PARAMETER_LIMIT) Integer limit,
         @Parameter(description = "Optional key names filter. " +
-            "Will include journeys, whose key matches at least one of the key names.")
-        @QueryParam(PARAMETER_KEY_NAMES) List<String> keyNames,
+            "Will include journeys, whose key matches at least one of the key names.") @QueryParam(PARAMETER_KEY_NAMES) List<
+                String> keyNames,
         @Parameter(description = "Optional key values filter. " +
             "Will include journeys that have one of the specified keys. " +
-            "Valid format is name:value.")
-        @QueryParam(PARAMETER_KEY_VALUES) List<String> keyValues) {
+            "Valid format is name:value.") @QueryParam(PARAMETER_KEY_VALUES) List<String> keyValues) {
         this.ids = ids == null ? ImmutableList.of() : ImmutableList.copyOf(ids);
         this.names = names == null ? ImmutableList.of() : ImmutableList.copyOf(names);
         this.programs = programs == null ? ImmutableList.of() : ImmutableList.copyOf(programs);

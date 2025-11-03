@@ -22,9 +22,7 @@ import com.extole.model.entity.campaign.CampaignControllerActionType;
 
 @Component
 public class CampaignControllerActionDeclineResponseMapper implements
-    CampaignControllerActionResponseMapper<
-        CampaignControllerActionDecline,
-        CampaignControllerActionDeclineResponse,
+    CampaignControllerActionResponseMapper<CampaignControllerActionDecline, CampaignControllerActionDeclineResponse,
         CampaignControllerActionDeclineConfiguration> {
 
     private final CampaignComponentRestMapper campaignComponentRestMapper;
@@ -47,11 +45,11 @@ public class CampaignControllerActionDeclineResponseMapper implements
             action.getPollingId(),
             action.getPollingName(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -74,7 +72,7 @@ public class CampaignControllerActionDeclineResponseMapper implements
             action.getPollingId(),
             action.getPollingName(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

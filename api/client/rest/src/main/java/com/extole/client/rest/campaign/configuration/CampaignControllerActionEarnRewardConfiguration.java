@@ -1,6 +1,7 @@
 package com.extole.client.rest.campaign.configuration;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import com.extole.api.step.action.reward.RewardActionContext;
 import com.extole.common.rest.omissible.Omissible;
 import com.extole.evaluateable.BuildtimeEvaluatable;
 import com.extole.evaluateable.RuntimeEvaluatable;
+import com.extole.evaluateable.provided.Provided;
 import com.extole.id.Id;
 
 public class CampaignControllerActionEarnRewardConfiguration extends CampaignControllerActionConfiguration {
@@ -25,19 +27,22 @@ public class CampaignControllerActionEarnRewardConfiguration extends CampaignCon
     private static final String EVENT_TIME = "event_time";
     private static final String VALUE_OF_EVENT_BEING_REWARDED = "value_of_event_being_rewarded";
     private static final String REWARD_ACTION_ID = "reward_action_id";
+    private static final String EXTRA_DATA = "extra_data";
 
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, String> rewardName;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<Id<?>>> rewardSupplierId;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext,
         RuntimeEvaluatable<RewardActionContext, Set<String>>> tags;
-    private final Map<String,
+    private final Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
         BuildtimeEvaluatable<ControllerBuildtimeContext,
             RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> data;
-    private final BuildtimeEvaluatable<
-        ControllerBuildtimeContext,
+    private final BuildtimeEvaluatable<ControllerBuildtimeContext,
         RuntimeEvaluatable<RewardActionContext, Optional<Object>>> valueOfEventBeingRewarded;
     private final RuntimeEvaluatable<RewardActionContext, Optional<Instant>> eventTime;
     private final RuntimeEvaluatable<RewardActionContext, Id<?>> rewardActionId;
+    private final BuildtimeEvaluatable<
+        ControllerBuildtimeContext,
+        RuntimeEvaluatable<RewardActionContext, Map<String, Optional<Object>>>> extraData;
 
     public CampaignControllerActionEarnRewardConfiguration(
         @JsonProperty(JSON_ACTION_ID) Omissible<Id<CampaignControllerActionConfiguration>> actionId,
@@ -47,7 +52,7 @@ public class CampaignControllerActionEarnRewardConfiguration extends CampaignCon
             Optional<Id<?>>> rewardSupplierId,
         @JsonProperty(TAGS) BuildtimeEvaluatable<ControllerBuildtimeContext,
             RuntimeEvaluatable<RewardActionContext, Set<String>>> tags,
-        @JsonProperty(DATA) Map<String,
+        @JsonProperty(DATA) Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
             BuildtimeEvaluatable<ControllerBuildtimeContext,
                 RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> data,
         @JsonProperty(VALUE_OF_EVENT_BEING_REWARDED) BuildtimeEvaluatable<ControllerBuildtimeContext,
@@ -55,23 +60,28 @@ public class CampaignControllerActionEarnRewardConfiguration extends CampaignCon
         @JsonProperty(JSON_ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<CampaignComponentReferenceConfiguration> componentReferences,
         @JsonProperty(EVENT_TIME) RuntimeEvaluatable<RewardActionContext, Optional<Instant>> eventTime,
-        @JsonProperty(REWARD_ACTION_ID) RuntimeEvaluatable<RewardActionContext, Id<?>> rewardActionId) {
+        @JsonProperty(REWARD_ACTION_ID) RuntimeEvaluatable<RewardActionContext, Id<?>> rewardActionId,
+        @JsonProperty(EXTRA_DATA) BuildtimeEvaluatable<
+            ControllerBuildtimeContext,
+            RuntimeEvaluatable<RewardActionContext, Map<String, Optional<Object>>>> extraData) {
         super(actionId, CampaignControllerActionType.EARN_REWARD, quality, enabled, componentReferences);
         this.rewardName = rewardName;
         this.rewardSupplierId = rewardSupplierId;
         this.tags = tags;
-        Map<String, BuildtimeEvaluatable<
-            ControllerBuildtimeContext,
-            RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> calculatedData = new HashMap<>(data);
-        if (!data.containsKey("earned_event_value")) {
+        Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> calculatedData =
+                    data != null ? new HashMap<>(data) : new HashMap<>();
+        if (!calculatedData.containsKey(Provided.of("earned_event_value"))) {
             if (valueOfEventBeingRewarded != null) {
-                calculatedData.put("earned_event_value", valueOfEventBeingRewarded);
+                calculatedData.put(Provided.of("earned_event_value"), valueOfEventBeingRewarded);
             }
         }
-        this.data = calculatedData;
+        this.data = Collections.unmodifiableMap(calculatedData);
         this.valueOfEventBeingRewarded = valueOfEventBeingRewarded;
         this.eventTime = eventTime;
         this.rewardActionId = rewardActionId;
+        this.extraData = extraData;
     }
 
     @JsonProperty(REWARD_NAME)
@@ -91,9 +101,8 @@ public class CampaignControllerActionEarnRewardConfiguration extends CampaignCon
     }
 
     @JsonProperty(DATA)
-    public Map<String,
-        BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<RewardActionContext, Optional<Object>>>>
+    public Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+        BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<RewardActionContext, Optional<Object>>>>
         getData() {
         return data;
     }
@@ -113,6 +122,13 @@ public class CampaignControllerActionEarnRewardConfiguration extends CampaignCon
     @JsonProperty(REWARD_ACTION_ID)
     public RuntimeEvaluatable<RewardActionContext, Id<?>> getRewardActionId() {
         return rewardActionId;
+    }
+
+    @JsonProperty(EXTRA_DATA)
+    public BuildtimeEvaluatable<
+        ControllerBuildtimeContext,
+        RuntimeEvaluatable<RewardActionContext, Map<String, Optional<Object>>>> getExtraData() {
+        return extraData;
     }
 
 }

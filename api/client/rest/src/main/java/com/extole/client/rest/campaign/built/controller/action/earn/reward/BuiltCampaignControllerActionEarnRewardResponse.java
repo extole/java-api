@@ -26,6 +26,7 @@ public class BuiltCampaignControllerActionEarnRewardResponse extends BuiltCampai
     private static final String DATA = "data";
     private static final String VALUE_OF_EVENT_BEING_REWARDED = "value_of_event_being_rewarded";
     private static final String REWARD_ACTION_ID = "reward_action_id";
+    private static final String EXTRA_DATA = "extra_data";
 
     private final String rewardName;
     private final Optional<String> rewardSupplierId;
@@ -33,6 +34,7 @@ public class BuiltCampaignControllerActionEarnRewardResponse extends BuiltCampai
     private final Map<String, RuntimeEvaluatable<RewardActionContext, Optional<Object>>> data;
     private final RuntimeEvaluatable<RewardActionContext, Optional<Object>> valueOfEventBeingRewarded;
     private final RuntimeEvaluatable<RewardActionContext, Id<?>> rewardActionId;
+    private final RuntimeEvaluatable<RewardActionContext, Map<String, Optional<Object>>> extraData;
 
     public BuiltCampaignControllerActionEarnRewardResponse(
         @JsonProperty(JSON_ACTION_ID) String actionId,
@@ -46,7 +48,8 @@ public class BuiltCampaignControllerActionEarnRewardResponse extends BuiltCampai
         @JsonProperty(JSON_ENABLED) Boolean enabled,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences,
-        @JsonProperty(REWARD_ACTION_ID) RuntimeEvaluatable<RewardActionContext, Id<?>> rewardActionId) {
+        @JsonProperty(REWARD_ACTION_ID) RuntimeEvaluatable<RewardActionContext, Id<?>> rewardActionId,
+        @JsonProperty(EXTRA_DATA) RuntimeEvaluatable<RewardActionContext, Map<String, Optional<Object>>> extraData) {
         super(actionId, EARN_REWARD, quality, enabled, componentIds, componentReferences);
         this.rewardName = rewardName;
         this.rewardSupplierId = rewardSupplierId;
@@ -54,6 +57,7 @@ public class BuiltCampaignControllerActionEarnRewardResponse extends BuiltCampai
         this.data = data;
         this.valueOfEventBeingRewarded = valueOfEventBeingRewarded;
         this.rewardActionId = rewardActionId;
+        this.extraData = extraData;
     }
 
     @JsonProperty(REWARD_NAME)
@@ -90,6 +94,11 @@ public class BuiltCampaignControllerActionEarnRewardResponse extends BuiltCampai
     @JsonProperty(REWARD_ACTION_ID)
     public RuntimeEvaluatable<RewardActionContext, Id<?>> getRewardActionId() {
         return rewardActionId;
+    }
+
+    @JsonProperty(EXTRA_DATA)
+    public RuntimeEvaluatable<RewardActionContext, Map<String, Optional<Object>>> getExtraData() {
+        return extraData;
     }
 
 }

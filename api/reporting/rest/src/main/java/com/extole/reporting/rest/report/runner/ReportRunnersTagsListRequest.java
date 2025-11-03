@@ -24,25 +24,22 @@ public class ReportRunnersTagsListRequest {
     private final Optional<String> limit;
 
     public ReportRunnersTagsListRequest(
-        @Nullable @QueryParam(PARAMETER_HAVING_ANY_TAGS)
-        @Parameter(description = "Optional filter for tags, " +
+        @Nullable @QueryParam(PARAMETER_HAVING_ANY_TAGS) @Parameter(description = "Optional filter for tags, " +
             "asks for tags that match any of specified patterns.") String havingAnyTags,
-        @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ANY_TAGS)
-        @Parameter(description = "Optional filter for exclude tags, " +
-            "asks for tags that are do not match any of the specified patterns.") String excludeHavingAnyTags,
-        @Nullable @QueryParam(PARAMETER_TAGS)
-        @Parameter(deprecated = true, description = "Optional filter for tags, " +
+        @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ANY_TAGS) @Parameter(
+            description = "Optional filter for exclude tags, " +
+                "asks for tags that are do not match any of the specified patterns.") String excludeHavingAnyTags,
+        @Nullable @QueryParam(PARAMETER_TAGS) @Parameter(deprecated = true, description = "Optional filter for tags, " +
             "asks for tags that are contained in the specified tags. Deprecated, " + PARAMETER_HAVING_ANY_TAGS
             + " should be used instead.") String tags,
-        @Nullable @QueryParam(PARAMETER_EXCLUDE_TAGS)
-        @Parameter(deprecated = true,
+        @Nullable @QueryParam(PARAMETER_EXCLUDE_TAGS) @Parameter(deprecated = true,
             description = "Optional filter for exclude tags, " +
                 "asks for tags that are not contained in the specified tags. Deprecated, "
                 + PARAMETER_EXCLUDE_HAVING_ANY_TAGS + " should be used instead") String excludeTags,
-        @Parameter(description = "Optional filter for offset, defaults to 0.")
-        @Nullable @QueryParam(PARAMETER_OFFSET) String offset,
-        @Parameter(description = "Optional filter for limit, defaults to 100.")
-        @Nullable @QueryParam(PARAMETER_LIMIT) String limit) {
+        @Parameter(
+            description = "Optional filter for offset, defaults to 0.") @Nullable @QueryParam(PARAMETER_OFFSET) String offset,
+        @Parameter(
+            description = "Optional filter for limit, defaults to 100.") @Nullable @QueryParam(PARAMETER_LIMIT) String limit) {
         this.havingAnyTags = Optional.ofNullable(havingAnyTags).or(() -> Optional.ofNullable(tags));
         this.excludeHavingAnyTags =
             Optional.ofNullable(excludeHavingAnyTags).or(() -> Optional.ofNullable(excludeTags));

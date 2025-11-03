@@ -8,7 +8,8 @@ import com.extole.reporting.rest.fixup.transformation.ConditionalAliasChangeFixu
 
 @Component
 public class ConditionalAliasChangeFixupTransformationRestMapper
-    implements FixupTransformationRestMapper<ConditionalAliasChangeFixupTransformation,
+    implements
+    FixupTransformationRestMapper<ConditionalAliasChangeFixupTransformation,
         ConditionalAliasChangeFixupTransformationResponse> {
 
     @Override

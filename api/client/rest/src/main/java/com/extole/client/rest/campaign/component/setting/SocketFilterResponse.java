@@ -1,22 +1,33 @@
 package com.extole.client.rest.campaign.component.setting;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public class SocketFilterResponse {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
+    property = SocketFilterResponse.TYPE,
+    include = JsonTypeInfo.As.EXISTING_PROPERTY,
+    defaultImpl = ComponentTypeSocketFilterResponse.class,
+    visible = true)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = ComponentTypeSocketFilterResponse.class,
+        name = ComponentTypeSocketFilterResponse.TYPE),
+    @JsonSubTypes.Type(value = ComponentFacetSocketFilterResponse.class,
+        name = ComponentFacetSocketFilterResponse.TYPE),
+})
+public abstract class SocketFilterResponse {
 
-    private static final String COMPONENT_TYPE = "component_type";
+    static final String TYPE = "type";
 
-    private final String componentType;
+    private final SocketFilterType type;
 
-    @JsonCreator
-    public SocketFilterResponse(@JsonProperty(COMPONENT_TYPE) String componentType) {
-        this.componentType = componentType;
+    protected SocketFilterResponse(@JsonProperty(TYPE) SocketFilterType type) {
+        this.type = type;
     }
 
-    @JsonProperty(COMPONENT_TYPE)
-    public String getComponentType() {
-        return componentType;
+    @JsonProperty(TYPE)
+    public SocketFilterType getType() {
+        return type;
     }
 
 }

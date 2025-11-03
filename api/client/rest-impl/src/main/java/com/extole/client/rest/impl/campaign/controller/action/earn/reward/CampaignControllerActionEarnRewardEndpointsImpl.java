@@ -35,6 +35,7 @@ import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.evaluateable.BuildtimeEvaluatable;
 import com.extole.evaluateable.RuntimeEvaluatable;
+import com.extole.evaluateable.provided.Provided;
 import com.extole.id.Id;
 import com.extole.model.entity.campaign.Campaign;
 import com.extole.model.entity.campaign.CampaignController;
@@ -52,12 +53,12 @@ import com.extole.model.service.campaign.ConcurrentCampaignUpdateException;
 import com.extole.model.service.campaign.StaleCampaignVersionException;
 import com.extole.model.service.campaign.component.RedundantComponentReferenceException;
 import com.extole.model.service.campaign.controller.action.earn.reward.CampaignControllerActionEarnRewardBuilder;
+import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardDuplicateDataEntryNameException;
 import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardEmptyTagException;
 import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardInvalidDataAttributeNameException;
 import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardInvalidDataAttributeValueException;
 import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardInvalidTagException;
 import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardMissingDataAttributeNameException;
-import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardMissingDataAttributeValueException;
 import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardMissingRewardNameException;
 import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardMissingTagsException;
 import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardRewardInvalidSupplierIdException;
@@ -130,16 +131,18 @@ public class CampaignControllerActionEarnRewardEndpointsImpl
 
             if (!request.getValueOfEventBeingRewarded().isOmitted()) {
                 if (!request.getData().isOmitted()) {
-                    Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-                        RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> data =
-                            Maps.newHashMap(request.getData().getValue());
-                    if (!data.containsKey("earned_event_value")) {
-                        data.put("earned_event_value", request.getValueOfEventBeingRewarded().getValue());
+                    Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+                        BuildtimeEvaluatable<ControllerBuildtimeContext,
+                            RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> data =
+                                Maps.newHashMap(request.getData().getValue());
+                    if (!data.containsKey(Provided.of("earned_event_value"))) {
+                        data.put(Provided.of("earned_event_value"), request.getValueOfEventBeingRewarded().getValue());
                     }
                     actionBuilder.withData(data);
                 } else {
                     actionBuilder.withData(
-                        ImmutableMap.of("earned_event_value", request.getValueOfEventBeingRewarded().getValue()));
+                        ImmutableMap.of(Provided.of("earned_event_value"),
+                            request.getValueOfEventBeingRewarded().getValue()));
                 }
             } else {
                 request.getData().ifPresent(actionBuilder::withData);
@@ -147,6 +150,7 @@ public class CampaignControllerActionEarnRewardEndpointsImpl
 
             request.getEventTime().ifPresent(value -> actionBuilder.withEventTime(value));
             request.getRewardActionId().ifPresent(value -> actionBuilder.withRewardActionId(value));
+            request.getExtraData().ifPresent(value -> actionBuilder.withExtraData(value));
 
             return responseMapper.toResponse(actionBuilder.save(), ZoneOffset.UTC);
         } catch (StaleCampaignVersionException e) {
@@ -206,12 +210,6 @@ public class CampaignControllerActionEarnRewardEndpointsImpl
                 .addParameter("name", e.getAttributeName())
                 .withCause(e)
                 .build();
-        } catch (CampaignControllerActionEarnRewardMissingDataAttributeValueException e) {
-            throw RestExceptionBuilder.newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
-                .withErrorCode(CampaignControllerActionEarnRewardValidationRestException.DATA_ATTRIBUTE_VALUE_INVALID)
-                .addParameter("name", e.getAttributeName())
-                .withCause(e)
-                .build();
         } catch (CampaignControllerActionEarnRewardInvalidDataAttributeNameException e) {
             throw RestExceptionBuilder.newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
                 .withErrorCode(
@@ -245,6 +243,15 @@ public class CampaignControllerActionEarnRewardEndpointsImpl
             throw RestExceptionBuilder.newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
                 .withErrorCode(CampaignControllerActionEarnRewardValidationRestException.REWARD_SUPPLIER_NOT_FOUND)
                 .addParameter("reward_supplier_id", e.getRewardSupplierId())
+                .withCause(e)
+                .build();
+        } catch (CampaignControllerActionEarnRewardDuplicateDataEntryNameException e) {
+            throw RestExceptionBuilder
+                .newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
+                .withErrorCode(CampaignControllerActionEarnRewardValidationRestException.DUPLICATE_DATA_ENTRY_NAME)
+                .addParameter("evaluated_data_entry_name", e.getDataName())
+                .addParameter("first_data_entry_name_evaluatable", e.getFirstDataEntryNameEvaluatable())
+                .addParameter("second_data_entry_name_evaluatable", e.getSecondDataEntryNameEvaluatable())
                 .withCause(e)
                 .build();
         } catch (BuildCampaignException e) {
@@ -302,18 +309,20 @@ public class CampaignControllerActionEarnRewardEndpointsImpl
 
             if (!request.getValueOfEventBeingRewarded().isOmitted()) {
                 if (!request.getData().isOmitted()) {
-                    Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-                        RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> data =
-                            Maps.newHashMap(request.getData().getValue());
-                    if (!data.containsKey("earned_event_value")) {
-                        data.put("earned_event_value", request.getValueOfEventBeingRewarded().getValue());
+                    Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+                        BuildtimeEvaluatable<ControllerBuildtimeContext,
+                            RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> data =
+                                Maps.newHashMap(request.getData().getValue());
+                    if (!data.containsKey(Provided.of("earned_event_value"))) {
+                        data.put(Provided.of("earned_event_value"), request.getValueOfEventBeingRewarded().getValue());
                     }
                     actionBuilder.withData(data);
                 } else {
-                    Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-                        RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> data =
-                            Maps.newHashMap(action.getData());
-                    data.put("earned_event_value", request.getValueOfEventBeingRewarded().getValue());
+                    Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+                        BuildtimeEvaluatable<ControllerBuildtimeContext,
+                            RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> data =
+                                Maps.newHashMap(action.getData());
+                    data.put(Provided.of("earned_event_value"), request.getValueOfEventBeingRewarded().getValue());
                     actionBuilder.withData(data);
                 }
             } else {
@@ -322,6 +331,7 @@ public class CampaignControllerActionEarnRewardEndpointsImpl
 
             request.getEventTime().ifPresent(value -> actionBuilder.withEventTime(value));
             request.getRewardActionId().ifPresent(value -> actionBuilder.withRewardActionId(value));
+            request.getExtraData().ifPresent(value -> actionBuilder.withExtraData(value));
 
             return responseMapper.toResponse(actionBuilder.save(), ZoneOffset.UTC);
         } catch (StaleCampaignVersionException e) {
@@ -381,12 +391,6 @@ public class CampaignControllerActionEarnRewardEndpointsImpl
                 .addParameter("name", e.getAttributeName())
                 .withCause(e)
                 .build();
-        } catch (CampaignControllerActionEarnRewardMissingDataAttributeValueException e) {
-            throw RestExceptionBuilder.newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
-                .withErrorCode(CampaignControllerActionEarnRewardValidationRestException.DATA_ATTRIBUTE_VALUE_INVALID)
-                .addParameter("name", e.getAttributeName())
-                .withCause(e)
-                .build();
         } catch (CampaignControllerActionEarnRewardInvalidDataAttributeNameException e) {
             throw RestExceptionBuilder.newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
                 .withErrorCode(
@@ -420,6 +424,15 @@ public class CampaignControllerActionEarnRewardEndpointsImpl
             throw RestExceptionBuilder.newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
                 .withErrorCode(CampaignControllerActionEarnRewardValidationRestException.REWARD_SUPPLIER_NOT_FOUND)
                 .addParameter("reward_supplier_id", e.getRewardSupplierId())
+                .withCause(e)
+                .build();
+        } catch (CampaignControllerActionEarnRewardDuplicateDataEntryNameException e) {
+            throw RestExceptionBuilder
+                .newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
+                .withErrorCode(CampaignControllerActionEarnRewardValidationRestException.DUPLICATE_DATA_ENTRY_NAME)
+                .addParameter("evaluated_data_entry_name", e.getDataName())
+                .addParameter("first_data_entry_name_evaluatable", e.getFirstDataEntryNameEvaluatable())
+                .addParameter("second_data_entry_name_evaluatable", e.getSecondDataEntryNameEvaluatable())
                 .withCause(e)
                 .build();
         } catch (BuildCampaignException e) {

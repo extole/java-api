@@ -16,32 +16,30 @@ public final class BuildEventStreamExceptionMapper {
     private BuildEventStreamExceptionMapper() {
     }
 
-    public EventStreamValidationRestException map(BuildEventStreamException e) {
-        return internalMap(e);
+    public EventStreamValidationRestException map(BuildEventStreamException exception) {
+        return internalMap(exception);
     }
 
-    private EventStreamValidationRestException internalMap(BuildEventStreamException e) {
-        if (e instanceof InvalidEventStreamNameException) {
-            InvalidEventStreamNameException ex = (InvalidEventStreamNameException) e;
+    private EventStreamValidationRestException internalMap(BuildEventStreamException exception) {
+        if (exception instanceof InvalidEventStreamNameException castedException) {
             return RestExceptionBuilder.newBuilder(EventStreamValidationRestException.class)
                 .withErrorCode(EventStreamValidationRestException.EVENT_STREAM_INVALID_NAME)
-                .addParameter("name", ex.getName())
-                .withCause(ex)
+                .addParameter("name", castedException.getName())
+                .withCause(castedException)
                 .build();
         }
-        if (e instanceof MissingEventStreamNameException) {
-            MissingEventStreamNameException ex = (MissingEventStreamNameException) e;
+        if (exception instanceof MissingEventStreamNameException castedException) {
             return RestExceptionBuilder.newBuilder(EventStreamValidationRestException.class)
                 .withErrorCode(EventStreamValidationRestException.EVENT_STREAM_MISSING_NAME)
-                .withCause(ex)
+                .withCause(castedException)
                 .build();
         }
         return RestExceptionBuilder.newBuilder(EventStreamValidationRestException.class)
             .withErrorCode(EventStreamValidationRestException.EVENT_STREAM_BUILD_FAILED)
-            .addParameter("event_stream_id", e.getEventStreamId())
-            .addParameter("evaluatable_name", e.getEvaluatableName())
-            .addParameter("evaluatable", e.getEvaluatable())
-            .withCause(e)
+            .addParameter("event_stream_id", exception.getEventStreamId())
+            .addParameter("evaluatable_name", exception.getEvaluatableName())
+            .addParameter("evaluatable", exception.getEvaluatable())
+            .withCause(exception)
             .build();
     }
 }

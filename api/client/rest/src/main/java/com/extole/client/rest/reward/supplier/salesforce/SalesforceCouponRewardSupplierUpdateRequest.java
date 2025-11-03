@@ -46,6 +46,8 @@ public class SalesforceCouponRewardSupplierUpdateRequest extends RewardSupplierU
         @JsonProperty(PARTNER_REWARD_KEY_TYPE) Omissible<PartnerRewardKeyType> partnerRewardKeyType,
         @JsonProperty(DISPLAY_TYPE) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> displayType,
         @JsonProperty(NAME) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> name,
+        @JsonProperty(DISPLAY_NAME) Omissible<
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>>> displayName,
         @JsonProperty(BALANCE_REFILL_AMOUNT) Omissible<Integer> balanceRefillAmount,
         @JsonProperty(DESCRIPTION) Omissible<
             BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>>> description,
@@ -58,7 +60,8 @@ public class SalesforceCouponRewardSupplierUpdateRequest extends RewardSupplierU
         @JsonProperty(TAGS) Omissible<Set<String>> tags,
         @JsonProperty(DATA) Omissible<Map<String, BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>>> data,
         @JsonProperty(ENABLED) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean>> enabled) {
-        super(RewardSupplierType.SALESFORCE_COUPON, name, faceValueAlgorithmType, faceValue, cashBackPercentage,
+        super(RewardSupplierType.SALESFORCE_COUPON, name, displayName, faceValueAlgorithmType, faceValue,
+            cashBackPercentage,
             minCashBack, maxCashBack, faceValueType, partnerRewardSupplierId, partnerRewardKeyType, displayType,
             description, limitPerDay, limitPerHour, componentIds, componentReferences, tags, data, enabled);
         this.balanceRefillAmount = balanceRefillAmount;
@@ -106,6 +109,7 @@ public class SalesforceCouponRewardSupplierUpdateRequest extends RewardSupplierU
                 partnerRewardKeyType,
                 displayType,
                 name,
+                displayName,
                 balanceRefillAmount,
                 description,
                 limitPerDay,

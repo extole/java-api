@@ -15,8 +15,7 @@ import com.extole.model.entity.campaign.built.BuiltCampaignControllerActionAppro
 
 @Component
 public class BuiltCampaignControllerActionApproveResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionApprove,
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionApprove,
         BuiltCampaignControllerActionApproveResponse> {
 
     @Override
@@ -34,11 +33,11 @@ public class BuiltCampaignControllerActionApproveResponseMapper implements
             action.getPollingId(),
             action.getPollingName(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

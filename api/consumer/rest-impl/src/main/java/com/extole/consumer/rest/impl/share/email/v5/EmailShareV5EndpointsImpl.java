@@ -2,7 +2,6 @@ package com.extole.consumer.rest.impl.share.email.v5;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,6 +15,7 @@ import javax.ws.rs.ext.Provider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.hash.Hashing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.extole.authorization.service.AuthorizationException;
 import com.extole.authorization.service.person.PersonAuthorization;
 import com.extole.common.lang.ObjectMapperProvider;
+import com.extole.common.lock.LockClosureException;
+import com.extole.common.lock.LockDescription;
+import com.extole.common.rest.exception.FatalRestRuntimeException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.consumer.event.service.processor.EventData;
 import com.extole.consumer.rest.common.AuthorizationRestException;
@@ -48,6 +51,8 @@ import com.extole.consumer.service.event.share.EventShareSubjectForbiddenCharact
 import com.extole.consumer.service.event.share.InvalidRecipientException;
 import com.extole.consumer.service.event.share.ShareInputConsumerEventSendBuilder;
 import com.extole.event.consumer.ConsumerEventName;
+import com.extole.person.service.profile.PersonNotFoundException;
+import com.extole.person.service.profile.PersonService;
 import com.extole.person.service.shareable.Shareable;
 import com.extole.person.service.shareable.ShareableNotFoundException;
 import com.extole.person.service.shareable.ShareableService;
@@ -55,26 +60,32 @@ import com.extole.person.service.shareable.ShareableService;
 @Deprecated // TODO kept for zazzle-client only - ENG-18976
 @Provider
 public class EmailShareV5EndpointsImpl implements EmailShareV5Endpoints {
+
     private static final Logger LOG = LoggerFactory.getLogger(EmailShareV5EndpointsImpl.class);
     private static final ObjectMapper OBJECT_MAPPER = ObjectMapperProvider.getConfiguredInstance();
+
+    private static final int MAX_SHARE_RECIPIENT_SIZE = 100;
+    // TODO ENG-11842 change it to lower case
+    private static final String PARAMETER_BATCH_SHARE_EMAILS = "batchShareEmails";
 
     private final HttpServletRequest servletRequest;
     private final EmailShareService shareService;
     private final ShareableService shareableService;
     private final ConsumerRequestContextService consumerRequestContextService;
-    private static final int MAX_SHARE_RECIPIENT_SIZE = 100;
-    // TODO ENG-11842 change it to lower case
-    private static final String PARAMETER_BATCH_SHARE_EMAILS = "batchShareEmails";
+    private final PersonService personService;
 
     @Autowired
-    public EmailShareV5EndpointsImpl(@Context HttpServletRequest servletRequest,
+    public EmailShareV5EndpointsImpl(
+        @Context HttpServletRequest servletRequest,
         EmailShareService shareService,
         ShareableService shareableService,
-        ConsumerRequestContextService consumerRequestContextService) {
+        ConsumerRequestContextService consumerRequestContextService,
+        PersonService personService) {
         this.servletRequest = servletRequest;
         this.shareService = shareService;
         this.shareableService = shareableService;
         this.consumerRequestContextService = consumerRequestContextService;
+        this.personService = personService;
     }
 
     @Override
@@ -108,6 +119,8 @@ public class EmailShareV5EndpointsImpl implements EmailShareV5Endpoints {
                 .map(email -> CharMatcher.whitespace().trimFrom(email)).collect(Collectors.toList());
 
             Map<ShareInputConsumerEventSendBuilder, String> shareBuilders = new LinkedHashMap<>(recipientEmails.size());
+            PersonAuthorization authorization = null;
+
             for (String recipient : recipientEmails) {
                 ConsumerRequestContext context = consumerRequestContextService.createBuilder(servletRequest)
                     .withAccessToken(accessToken)
@@ -118,7 +131,8 @@ public class EmailShareV5EndpointsImpl implements EmailShareV5Endpoints {
                         });
                     })
                     .build();
-                PersonAuthorization authorization = context.getAuthorization();
+                authorization = context.getAuthorization();
+
                 Shareable shareable = shareableService.getByCode(authorization.getClientId(),
                     shareRequest.getAdvocateCode());
                 ShareInputConsumerEventSendBuilder shareBuilder = shareService
@@ -130,21 +144,28 @@ public class EmailShareV5EndpointsImpl implements EmailShareV5Endpoints {
                 shareBuilders.put(shareBuilder, recipient);
             }
 
-            List<EmailShareV5Response> result = new ArrayList<>();
-            for (Map.Entry<ShareInputConsumerEventSendBuilder, String> shareBuilderEntry : shareBuilders.entrySet()) {
-                String eventId = shareBuilderEntry.getKey().send().getId().getValue();
-                result.add(new EmailShareV5Response(shareBuilderEntry.getValue(), eventId));
-            }
-            return result;
+            return personService.execute(authorization, new LockDescription("consumer-api-v5-email-share-batch"),
+                (person) -> {
+                    ImmutableList.Builder<EmailShareV5Response> responseListBuilder = ImmutableList.builder();
+
+                    for (Map.Entry<ShareInputConsumerEventSendBuilder, String> shareBuilderEntry : shareBuilders
+                        .entrySet()) {
+                        String eventId;
+                        try {
+                            eventId = shareBuilderEntry.getKey().send().getId().getValue();
+                            responseListBuilder.add(new EmailShareV5Response(shareBuilderEntry.getValue(), eventId));
+                        } catch (PersonNotFoundException | EventShareMissingMessageException
+                            | EventShareMissingRecipientException e) {
+                            throw new LockClosureException(e);
+                        }
+                    }
+
+                    return responseListBuilder.build();
+                });
         } catch (AuthorizationException e) {
             throw RestExceptionBuilder.newBuilder(AuthorizationRestException.class)
                 .withCause(e)
                 .withErrorCode(AuthorizationRestException.ACCESS_DENIED)
-                .build();
-        } catch (EventShareMissingRecipientException e) {
-            throw RestExceptionBuilder.newBuilder(EmailRecipientV5RestException.class)
-                .withCause(e)
-                .withErrorCode(EmailRecipientV5RestException.NO_RECIPIENT)
                 .build();
         } catch (InvalidRecipientException e) {
             throw RestExceptionBuilder.newBuilder(EmailRecipientV5RestException.class)
@@ -157,11 +178,6 @@ public class EmailShareV5EndpointsImpl implements EmailShareV5Endpoints {
                 .withCause(e)
                 .withErrorCode(EmailShareContentV5RestException.INVALID_SUBJECT_LENGTH)
                 .addParameter("subject", e.getSubject())
-                .build();
-        } catch (EventShareMissingMessageException e) {
-            throw RestExceptionBuilder.newBuilder(EmailShareContentV5RestException.class)
-                .withCause(e)
-                .withErrorCode(EmailShareContentV5RestException.MESSAGE_MISSING)
                 .build();
         } catch (EventShareInvalidMessageLengthException e) {
             throw RestExceptionBuilder.newBuilder(EmailShareContentV5RestException.class)
@@ -204,6 +220,24 @@ public class EmailShareV5EndpointsImpl implements EmailShareV5Endpoints {
                 .withErrorCode(AdvocateCodeRestException.ADVOCATE_CODE_NOT_FOUND)
                 .withCause(e)
                 .addParameter("advocate_code", shareRequest.getAdvocateCode())
+                .build();
+        } catch (LockClosureException e) {
+            if (e.getCause() instanceof EventShareMissingRecipientException) {
+                throw RestExceptionBuilder.newBuilder(EmailRecipientV5RestException.class)
+                    .withCause(e)
+                    .withErrorCode(EmailRecipientV5RestException.NO_RECIPIENT)
+                    .build();
+            }
+            if (e.getCause() instanceof EventShareMissingMessageException) {
+                throw RestExceptionBuilder.newBuilder(EmailShareContentV5RestException.class)
+                    .withCause(e)
+                    .withErrorCode(EmailShareContentV5RestException.MESSAGE_MISSING)
+                    .build();
+            }
+
+            throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
+                .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
+                .withCause(e)
                 .build();
         }
     }

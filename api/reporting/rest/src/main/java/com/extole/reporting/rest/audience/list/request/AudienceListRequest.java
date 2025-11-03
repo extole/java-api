@@ -36,18 +36,17 @@ public abstract class AudienceListRequest {
     private final AudienceListType type;
 
     public AudienceListRequest(
-        @Parameter(description = "AudienceList type")
-        @JsonProperty(TYPE) AudienceListType type,
-        @Parameter(description = "AudienceList name")
-        @JsonProperty(NAME) Omissible<String> name,
-        @Parameter(description = "AudienceList description")
-        @JsonProperty(DESCRIPTION) Omissible<String> description,
-        @Parameter(description = "A list of columns that will be used when dispatching AudienceList")
-        @JsonProperty(EVENT_COLUMNS) Omissible<Set<String>> eventColumns,
-        @Parameter(description = "Data for the AudienceList")
-        @JsonProperty(EVENT_DATA) Omissible<Map<String, String>> eventData,
-        @Parameter(description = "A set of tags for the AudienceList")
-        @JsonProperty(TAGS) Omissible<Set<String>> tags) {
+        @Parameter(description = "AudienceList type") @JsonProperty(TYPE) AudienceListType type,
+        @Parameter(description = "AudienceList name") @JsonProperty(NAME) Omissible<String> name,
+        @Parameter(description = "AudienceList description") @JsonProperty(DESCRIPTION) Omissible<String> description,
+        @Parameter(
+            description = "A list of columns that will be used when dispatching AudienceList") @JsonProperty(EVENT_COLUMNS) Omissible<
+                Set<String>> eventColumns,
+        @Parameter(
+            description = "Data for the AudienceList") @JsonProperty(EVENT_DATA) Omissible<
+                Map<String, String>> eventData,
+        @Parameter(
+            description = "A set of tags for the AudienceList") @JsonProperty(TAGS) Omissible<Set<String>> tags) {
         this.name = name;
         this.description = description;
         this.tags = tags;

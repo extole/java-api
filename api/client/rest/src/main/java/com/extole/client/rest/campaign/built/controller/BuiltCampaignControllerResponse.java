@@ -32,7 +32,6 @@ public final class BuiltCampaignControllerResponse extends BuiltCampaignStepResp
     private static final String JSON_SELECTORS = "selectors";
     private static final String JSON_ACTIONS = "actions";
     private static final String JSON_ALIASES = "aliases";
-    private static final String JSON_DATA = "data";
     private static final String JSON_JOURNEY_NAMES = "journey_names";
     private static final String JSON_SEND_POLICY = "send_policy";
 
@@ -42,7 +41,6 @@ public final class BuiltCampaignControllerResponse extends BuiltCampaignStepResp
     private final List<CampaignControllerSelectorType> selectors;
     private final List<BuiltCampaignControllerActionResponse> actions;
     private final List<String> aliases;
-    private final List<BuiltStepDataResponse> data;
     private final Set<String> journeyNames;
     private final SendPolicy sendPolicy;
 
@@ -64,7 +62,7 @@ public final class BuiltCampaignControllerResponse extends BuiltCampaignStepResp
         @JsonProperty(JSON_DATA) List<BuiltStepDataResponse> data,
         @JsonProperty(JSON_JOURNEY_NAMES) Set<String> journeyNames,
         @JsonProperty(JSON_SEND_POLICY) SendPolicy sendPolicy) {
-        super(id, enabled, triggers, componentIds, componentReferences, createdDate, updatedDate);
+        super(id, enabled, triggers, componentIds, componentReferences, createdDate, updatedDate, data);
         this.name = name;
         this.scope = scope;
         this.enabledOnStates = enabledOnStates != null ? ImmutableSet.copyOf(enabledOnStates) : ImmutableSet.of();
@@ -72,7 +70,6 @@ public final class BuiltCampaignControllerResponse extends BuiltCampaignStepResp
         this.actions =
             actions != null ? ImmutableList.copyOf(actions) : ImmutableList.of();
         this.aliases = aliases != null ? ImmutableList.copyOf(aliases) : ImmutableList.of();
-        this.data = data != null ? ImmutableList.copyOf(data) : ImmutableList.of();
         this.journeyNames = journeyNames != null ? ImmutableSet.copyOf(journeyNames) : ImmutableSet.of();
         this.sendPolicy = sendPolicy;
     }
@@ -119,11 +116,6 @@ public final class BuiltCampaignControllerResponse extends BuiltCampaignStepResp
         return aliases;
     }
 
-    @JsonProperty(JSON_DATA)
-    public List<BuiltStepDataResponse> getData() {
-        return data;
-    }
-
     @JsonProperty(JSON_JOURNEY_NAMES)
     public Set<String> getJourneyNames() {
         return journeyNames;
@@ -133,4 +125,5 @@ public final class BuiltCampaignControllerResponse extends BuiltCampaignStepResp
     public SendPolicy getSendPolicy() {
         return sendPolicy;
     }
+
 }

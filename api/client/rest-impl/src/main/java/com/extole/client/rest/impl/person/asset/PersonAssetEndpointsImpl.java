@@ -48,7 +48,6 @@ import com.extole.consumer.event.service.processor.EventProcessorConfigurator;
 import com.extole.consumer.event.service.processor.EventProcessorException;
 import com.extole.event.consumer.input.InputConsumerEvent;
 import com.extole.id.Id;
-import com.extole.person.service.profile.Person;
 import com.extole.person.service.profile.PersonHandle;
 import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.profile.PersonService;
@@ -222,8 +221,7 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
                     requestContext.getProcessedRawEvent().getClientDomain().toString(),
                     requestContext.getProcessedRawEvent().getClientDomain().getId().getValue()));
 
-            sendInputEvent(authorization, personService.getPerson(authorization, Id.valueOf(personId)),
-                requestContext);
+            sendInputEvent(authorization, Id.valueOf(personId), requestContext);
 
             return toPersonAssetResponse(asset);
         } catch (AuthorizationException e) {
@@ -283,8 +281,7 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
                     requestContext.getProcessedRawEvent().getClientDomain().toString(),
                     requestContext.getProcessedRawEvent().getClientDomain().getId().getValue());
 
-            sendInputEvent(authorization, personService.getPerson(authorization, Id.valueOf(personId)),
-                requestContext);
+            sendInputEvent(authorization, Id.valueOf(personId), requestContext);
 
             return toPersonAssetResponse(deletedAsset);
         } catch (AuthorizationException e) {
@@ -315,10 +312,10 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
     }
 
     // ENG-19642 person assets cannot be created from inside person lock because the asset upload can take time
-    private InputConsumerEvent sendInputEvent(Authorization authorization, Person person,
-        ClientRequestContext requestContext) throws AuthorizationException {
+    private InputConsumerEvent sendInputEvent(ClientAuthorization authorization, Id<PersonHandle> personId,
+        ClientRequestContext requestContext) throws AuthorizationException, PersonNotFoundException {
         return consumerEventSenderService
-            .createInputEvent(authorization, requestContext.getProcessedRawEvent(), person)
+            .createInputEvent(authorization, requestContext.getProcessedRawEvent(), personId)
             .send();
     }
 

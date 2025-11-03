@@ -24,11 +24,12 @@ public class ComponentTypeValidationRestException extends ExtoleRestException {
             "Component type display name length is invalid", "display_name", "min_length", "max_length");
 
     public static final ErrorCode<
-        ComponentTypeValidationRestException> COMPONENT_TYPE_DISPLAY_NAME_CONTAINS_ILLEGAL_CHARACTERS = new ErrorCode<>(
-            "component_type_display_name_contains_illegal_characters", 400,
-            "Component type display name should contain alphanumeric, dash, underscore, whitespace, asterisk, " +
-                "hash, dollar characters only",
-            "display_name");
+        ComponentTypeValidationRestException> COMPONENT_TYPE_DISPLAY_NAME_CONTAINS_ILLEGAL_CHARACTERS =
+            new ErrorCode<>(
+                "component_type_display_name_contains_illegal_characters", 400,
+                "Component type display name should contain alphanumeric, dash, underscore, whitespace, asterisk, " +
+                    "hash, dollar characters only",
+                "display_name");
 
     public static final ErrorCode<ComponentTypeValidationRestException> COMPONENT_TYPE_NAME_ALREADY_USED =
         new ErrorCode<>(

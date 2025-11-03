@@ -28,8 +28,8 @@ public interface PersonJourneysEndpoints {
     @Operation(summary = "Get a list with journeys", description = "Returns journeys for a person.")
     List<PersonJourneyResponse> list(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @BeanParam PersonJourneysListRequest listRequest,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException, PersonJourneysListRestException;
@@ -39,10 +39,9 @@ public interface PersonJourneysEndpoints {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Get a journey", description = "Returns journey for a person and id.")
     PersonJourneyResponse get(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Journey id parameter.")
-        @PathParam("journey_id") String journeyId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(description = "Journey id parameter.") @PathParam("journey_id") String journeyId,
         @TimeZoneParam ZoneId timeZone)
         throws PersonRestException, UserAuthorizationRestException, PersonJourneyRestException;
 }

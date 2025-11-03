@@ -9,9 +9,7 @@ import com.extole.client.rest.sftp.SftpDestinationValidationRestException;
 import com.extole.id.Id;
 import com.extole.model.entity.client.sftp.SftpDestination;
 
-public interface SftpDestinationUpdateRequestMapper<
-    I extends SftpDestinationUpdateRequest,
-    O extends SftpDestination> {
+public interface SftpDestinationUpdateRequestMapper<I extends SftpDestinationUpdateRequest, O extends SftpDestination> {
 
     O update(Authorization authorization, Id<SftpDestination> sftpDestinationId, I updateRequest)
         throws AuthorizationException, SftpDestinationRestException, SftpDestinationValidationRestException;

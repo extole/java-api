@@ -18,11 +18,11 @@ import com.extole.authorization.service.client.ClientAuthorization;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
+import com.extole.model.entity.report.type.ReportInvalidParametersException;
+import com.extole.model.service.report.ReportMissingParametersException;
+import com.extole.model.service.report.type.ReportTypeNotFoundException;
 import com.extole.reporting.rest.query.QueryEndpoints;
 import com.extole.reporting.rest.query.QueryRestException;
-import com.extole.reporting.service.ReportInvalidParametersException;
-import com.extole.reporting.service.ReportMissingParametersException;
-import com.extole.reporting.service.ReportTypeNotFoundException;
 import com.extole.reporting.service.query.QueryExecutionException;
 import com.extole.reporting.service.query.QueryService;
 

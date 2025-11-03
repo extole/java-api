@@ -12,12 +12,13 @@ import org.springframework.stereotype.Component;
 import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
 import com.extole.id.Id;
+import com.extole.model.entity.report.runner.MergingConfiguration;
+import com.extole.model.entity.report.runner.PauseInfo;
+import com.extole.model.entity.report.runner.ReportRunner;
+import com.extole.model.entity.report.type.ReportParameter;
+import com.extole.model.entity.report.type.ReportType;
 import com.extole.model.service.client.ClientNotFoundException;
-import com.extole.reporting.entity.report.ReportParameter;
-import com.extole.reporting.entity.report.ReportType;
-import com.extole.reporting.entity.report.runner.MergingConfiguration;
-import com.extole.reporting.entity.report.runner.PauseInfo;
-import com.extole.reporting.entity.report.runner.ReportRunner;
+import com.extole.model.service.report.runner.ReportRunnerNotFoundException;
 import com.extole.reporting.rest.report.ParameterValueType;
 import com.extole.reporting.rest.report.ReportParameterDetailsResponse;
 import com.extole.reporting.rest.report.ReportParameterResponse;
@@ -28,19 +29,18 @@ import com.extole.reporting.rest.report.execution.ReportFormat;
 import com.extole.reporting.rest.report.runner.MergingConfigurationResponse;
 import com.extole.reporting.rest.report.runner.PauseInfoResponse;
 import com.extole.reporting.rest.report.runner.ReportRunnerViewResponse;
-import com.extole.reporting.service.report.runner.ReportRunnerNotFoundException;
-import com.extole.reporting.service.report.runner.ReportRunnerService;
+import com.extole.reporting.service.report.runner.ReportRunnerExecutionService;
 import com.extole.reporting.service.report.runner.ReportRunnerWrongTypeException;
 
 @Component
 public class BaseReportRunnerViewResponseMapper {
     private static final String LEGACY_TIME_ZONE_FORMAT_PARAMETER = "legacy_timezone_format";
 
-    private final ReportRunnerService reportRunnerService;
+    private final ReportRunnerExecutionService reportRunnerExecutionService;
 
     @Autowired
-    public BaseReportRunnerViewResponseMapper(ReportRunnerService reportRunnerService) {
-        this.reportRunnerService = reportRunnerService;
+    public BaseReportRunnerViewResponseMapper(ReportRunnerExecutionService reportRunnerExecutionService) {
+        this.reportRunnerExecutionService = reportRunnerExecutionService;
     }
 
     public ReportRunnerViewResponse.Builder applyRequestedChanges(Authorization authorization,
@@ -60,7 +60,7 @@ public class BaseReportRunnerViewResponseMapper {
             .withUserId(reportRunner.getUserId().getValue())
             .withSftpServerId(reportRunner.getSftpServerId().map(Id::getValue).orElse(null))
             .withNextExecutionDate(
-                reportRunnerService.getNextExecutionDate(authorization, reportRunner.getId(), timezone));
+                reportRunnerExecutionService.getNextExecutionDate(authorization, reportRunner.getId(), timezone));
         reportRunner.getPauseInfo().map(this::toPauseInfoResponse).ifPresent(builder::withPaused);
         reportRunner.getMergingConfiguration().map(this::toMergingConfigurationResponse)
             .ifPresent(builder::withMergingConfiguration);

@@ -111,8 +111,8 @@ public class CampaignControllerActionApproveResponse extends CampaignControllerA
     }
 
     @JsonProperty(JSON_REWARD_TAGS)
-    public BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<ApproveActionContext, Set<String>>> getRewardTags() {
+    public BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<ApproveActionContext, Set<String>>>
+        getRewardTags() {
         return rewardTags;
     }
 

@@ -578,6 +578,8 @@ public class TangoRewardSupplierV2EndpointsImpl implements TangoRewardSupplierV2
         updateRequest.getFaceValueAlgorithmType()
             .ifPresent(faceValueAlgorithmType -> rewardSupplierBuilder
                 .withFaceValueAlgorithmType(rewardSupplierRestMapper.toFaceValueAlgorithmType(faceValueAlgorithmType)));
+        updateRequest.getFaceValue()
+            .ifPresent(faceValue -> rewardSupplierBuilder.withFaceValue(faceValue));
         updateRequest.getCashBackPercentage()
             .ifPresent(cashBackPercentage -> rewardSupplierBuilder.withCashBackPercentage(cashBackPercentage));
         updateRequest.getMinCashBack()

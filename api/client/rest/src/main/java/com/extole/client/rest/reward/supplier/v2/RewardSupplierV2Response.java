@@ -31,6 +31,7 @@ public class RewardSupplierV2Response {
     private static final String PARTNER_REWARD_SUPPLIER_ID = "partner_reward_supplier_id";
     private static final String DISPLAY_TYPE = "display_type";
     private static final String NAME = "name";
+    private static final String DISPLAY_NAME = "display_name";
     private static final String DESCRIPTION = "description";
     private static final String CREATED_DATE = "created_date";
     private static final String UPDATED_DATE = "updated_date";
@@ -52,6 +53,7 @@ public class RewardSupplierV2Response {
     private final Optional<String> partnerRewardSupplierId;
     private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> displayType;
     private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name;
+    private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName;
     private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> description;
     private final ZonedDateTime createdDate;
     private final ZonedDateTime updatedDate;
@@ -78,6 +80,7 @@ public class RewardSupplierV2Response {
         @JsonProperty(PARTNER_REWARD_SUPPLIER_ID) Optional<String> partnerRewardSupplierId,
         @JsonProperty(DISPLAY_TYPE) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> displayType,
         @JsonProperty(NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name,
+        @JsonProperty(DISPLAY_NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName,
         @JsonProperty(DESCRIPTION) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> description,
         @JsonProperty(CREATED_DATE) ZonedDateTime createdDate,
         @JsonProperty(UPDATED_DATE) ZonedDateTime updatedDate,
@@ -98,6 +101,7 @@ public class RewardSupplierV2Response {
         this.partnerRewardSupplierId = partnerRewardSupplierId;
         this.displayType = displayType;
         this.name = name;
+        this.displayName = displayName;
         this.description = description;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -170,6 +174,11 @@ public class RewardSupplierV2Response {
     @JsonProperty(NAME)
     public BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> getName() {
         return name;
+    }
+
+    @JsonProperty(DISPLAY_NAME)
+    public BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> getDisplayName() {
+        return displayName;
     }
 
     @JsonProperty(DESCRIPTION)

@@ -7,6 +7,9 @@ import com.extole.common.rest.exception.ExtoleRestException;
 
 public class CampaignComponentValidationRestException extends ExtoleRestException {
 
+    public static final ErrorCode<CampaignComponentValidationRestException> COMPONENT_FACETS_NOT_FOUND =
+        new ErrorCode<>("component_facets_not_found", 400, "Component facets not found", "facets");
+
     public static final ErrorCode<CampaignComponentValidationRestException> INVALID_COMPONENT_REFERENCE =
         new ErrorCode<>(
             "invalid_component_reference", 400, "Unknown referenced campaign component", "identifier_type",
@@ -84,7 +87,7 @@ public class CampaignComponentValidationRestException extends ExtoleRestExceptio
 
     public static final ErrorCode<CampaignComponentValidationRestException> TYPE_VALIDATION_FAILED =
         new ErrorCode<>("campaign_component_type_validation_failed", 400, "Campaign component type validation failed",
-            "validation_result", "name");
+            "validation_result", "name", "component_name", "component_id");
 
     public static final ErrorCode<CampaignComponentValidationRestException> INVALID_COMPONENT_REFERENCE_SOCKET_NAME =
         new ErrorCode<>("invalid_component_reference_socket_name", 400, "Invalid component reference socket name",

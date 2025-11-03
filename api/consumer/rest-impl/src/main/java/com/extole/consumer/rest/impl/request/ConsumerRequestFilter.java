@@ -52,9 +52,6 @@ public class ConsumerRequestFilter implements ContainerRequestFilter {
     private static final String HEADER_X_PROTO = "X-Proto";
 
     private static final String HEADER_X_EXTOLE_INCOMING_URL = "X-Extole-Incoming-Url";
-    private static final String HEADER_HOST = "host";
-    private static final String HEADER_X_ENVOY_ORIGINAL_PATH = "x-envoy-original-path";
-    private static final String HTTPS = "https://";
 
     @Context
     private HttpServletRequest servletRequest;
@@ -94,22 +91,10 @@ public class ConsumerRequestFilter implements ContainerRequestFilter {
 
             URI requestUri = requestContext.getUriInfo().getRequestUri();
             String originalSchemeInProtoHeader = requestContext.getHeaderString(HEADER_X_PROTO);
-            String xExtoleIncomingUrl = servletRequest.getHeader(HEADER_X_EXTOLE_INCOMING_URL);
+            String incomingUrl = servletRequest.getHeader(HEADER_X_EXTOLE_INCOMING_URL);
 
-            String hostHeader = servletRequest.getHeader(HEADER_HOST);
-            String envoyOriginalPathHeader = servletRequest.getHeader(HEADER_X_ENVOY_ORIGINAL_PATH);
-            String incomingUrl;
-            if (envoyOriginalPathHeader != null && !envoyOriginalPathHeader.isEmpty()) {
-                incomingUrl = HTTPS + hostHeader + envoyOriginalPathHeader;
-            } else {
-                incomingUrl = xExtoleIncomingUrl;
-            }
-
-            LOG.trace("Verifying secure request with parameters: request URI: {} host: {} " +
-                    "x-envoy-original-path: {} " +
-                    "X-Extole-Incoming-Url: {} "
-                + "X-Proto: {}", requestUri, hostHeader, envoyOriginalPathHeader, xExtoleIncomingUrl,
-                    originalSchemeInProtoHeader);
+            LOG.trace("Verifying secure request with parameters: request URI: {} X-Extole-Incoming-Url: {} "
+                + "X-Proto: {}", requestUri, incomingUrl, originalSchemeInProtoHeader);
 
             if (!Strings.isNullOrEmpty(incomingUrl)) {
                 try {
@@ -118,9 +103,9 @@ public class ConsumerRequestFilter implements ContainerRequestFilter {
                         redirectInsecureRequestToSecure(requestContext, program, requestUriFromHeader);
                         return;
                     }
-                } catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException | IllegalStateException e) {
                     LOG.warn("Unable to redirect possibly insecure request-Client {}-due to invalid http url {}",
-                        program.getClientId(), incomingUrl);
+                        program.getClientId(), incomingUrl, e);
                 }
 
                 if (!Strings.isNullOrEmpty(originalSchemeInProtoHeader)
@@ -192,42 +177,19 @@ public class ConsumerRequestFilter implements ContainerRequestFilter {
     private PublicProgram digestProgram(ContainerRequestContext requestContext) {
         try {
             InternetDomainName internetDomainName = null;
-            Optional<String> host;
-
             Optional<String> firstHeaderValue =
-                    Optional.ofNullable(requestContext.getHeaders().getFirst(HEADER_X_EXTOLE_INCOMING_URL));
+                Optional.ofNullable(requestContext.getHeaders().getFirst(HEADER_X_EXTOLE_INCOMING_URL));
+            if (!firstHeaderValue.isPresent()) {
+                throw new IllegalArgumentException(
+                    "Header: " + HEADER_X_EXTOLE_INCOMING_URL + " is required and is not present in request");
+            }
 
-            Optional<String> hostHeaderValue =
-                    Optional.ofNullable(requestContext.getHeaders().getFirst(HEADER_HOST));
-
-            Optional<String> envoyOriginalPathHeaderValue =
-                    Optional.ofNullable(requestContext.getHeaders().getFirst(HEADER_X_ENVOY_ORIGINAL_PATH));
-
-            if (hostHeaderValue.isPresent() && envoyOriginalPathHeaderValue.isPresent()) {
-                host = Optional.ofNullable(UriComponentsBuilder.fromUriString(HTTPS + hostHeaderValue.get()
-                                + envoyOriginalPathHeaderValue.get()).build().getHost());
-
-                if (host.isEmpty()) {
-                    throw new IllegalArgumentException(
-                            "Headers: " + HEADER_HOST + " and " + HEADER_X_ENVOY_ORIGINAL_PATH
-                                    + " contain an URI with no host: "
-                                    + HTTPS + hostHeaderValue.get()
-                                    + envoyOriginalPathHeaderValue.get());
-                }
-            } else {
-                if (firstHeaderValue.isEmpty()) {
-                    throw new IllegalArgumentException(
-                            "Header: " + HEADER_X_EXTOLE_INCOMING_URL + " is required and is not present in request");
-                }
-
-                host = Optional.ofNullable(UriComponentsBuilder
-                    .fromUriString(firstHeaderValue.get()).build().getHost());
-
-                if (host.isEmpty()) {
-                    throw new IllegalArgumentException(
-                            "Header: " + HEADER_X_EXTOLE_INCOMING_URL + " contains an URI with no host: "
-                                    + firstHeaderValue.get());
-                }
+            Optional<String> host =
+                Optional.ofNullable(UriComponentsBuilder.fromUriString(firstHeaderValue.get()).build().getHost());
+            if (!host.isPresent()) {
+                throw new IllegalArgumentException(
+                    "Header: " + HEADER_X_EXTOLE_INCOMING_URL + " contains an URI with no host: "
+                        + firstHeaderValue.get());
             }
 
             String hostWithoutPort = HostAndPort.fromString(host.get()).getHost();

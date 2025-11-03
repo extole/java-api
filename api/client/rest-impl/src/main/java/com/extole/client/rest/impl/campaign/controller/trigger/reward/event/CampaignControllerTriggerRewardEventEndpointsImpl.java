@@ -13,6 +13,7 @@ import javax.ws.rs.ext.Provider;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.extole.authorization.service.Authorization;
+import com.extole.client.rest.campaign.BuildCampaignControllerRestException;
 import com.extole.client.rest.campaign.BuildCampaignRestException;
 import com.extole.client.rest.campaign.CampaignRestException;
 import com.extole.client.rest.campaign.CampaignUpdateRestException;
@@ -24,6 +25,7 @@ import com.extole.client.rest.campaign.controller.trigger.reward.event.CampaignC
 import com.extole.client.rest.campaign.controller.trigger.reward.event.CampaignControllerTriggerRewardEventEndpoints;
 import com.extole.client.rest.campaign.controller.trigger.reward.event.CampaignControllerTriggerRewardEventResponse;
 import com.extole.client.rest.campaign.controller.trigger.reward.event.CampaignControllerTriggerRewardEventValidationRestException;
+import com.extole.client.rest.impl.campaign.BuildCampaignControllerRestExceptionMapper;
 import com.extole.client.rest.impl.campaign.BuildCampaignRestExceptionMapper;
 import com.extole.client.rest.impl.campaign.CampaignProvider;
 import com.extole.client.rest.impl.campaign.component.ComponentReferenceRequestMapper;
@@ -36,6 +38,7 @@ import com.extole.common.rest.support.authorization.client.ClientAuthorizationPr
 import com.extole.evaluateable.Evaluatables;
 import com.extole.id.Id;
 import com.extole.model.entity.campaign.Campaign;
+import com.extole.model.entity.campaign.CampaignController;
 import com.extole.model.entity.campaign.CampaignControllerTriggerRewardEvent;
 import com.extole.model.entity.campaign.CampaignStep;
 import com.extole.model.entity.campaign.InvalidComponentReferenceException;
@@ -49,6 +52,7 @@ import com.extole.model.service.campaign.ComponentElementBuilder;
 import com.extole.model.service.campaign.ConcurrentCampaignUpdateException;
 import com.extole.model.service.campaign.StaleCampaignVersionException;
 import com.extole.model.service.campaign.component.RedundantComponentReferenceException;
+import com.extole.model.service.campaign.controller.exception.BuildCampaignControllerException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerBuildException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerDescriptionLengthException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerNameLengthException;
@@ -96,7 +100,8 @@ public class CampaignControllerTriggerRewardEventEndpointsImpl
         CampaignControllerTriggerRewardEventCreateRequest request)
         throws CampaignRestException, UserAuthorizationRestException, CampaignControllerRestException,
         CampaignControllerTriggerRewardEventValidationRestException, CampaignControllerTriggerValidationRestException,
-        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException {
+        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException,
+        BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         Campaign campaign;
@@ -182,10 +187,12 @@ public class CampaignControllerTriggerRewardEventEndpointsImpl
                 .build();
         } catch (TriggerTypeNotSupportedException e) {
             throw TriggerTypeNotSupportedRestExceptionMapper.getInstance().map(e);
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e);
         } catch (BuildCampaignException e) {
             if (e instanceof BuildCampaignEvaluatableException) {
-                throwTriggerRewardEventRelatedBuildCampaignRestExceptionIfPossible(
-                    (BuildCampaignEvaluatableException) e);
+                throwTriggerRewardEventRelatedBuildCampaignRestExceptionIfPossible(Id.valueOf(campaignId),
+                    Id.valueOf(controllerId), (BuildCampaignEvaluatableException) e);
             }
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (CampaignControllerTriggerBuildException e) {
@@ -205,7 +212,8 @@ public class CampaignControllerTriggerRewardEventEndpointsImpl
         CampaignControllerTriggerRewardEventCreateRequest request)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
         CampaignControllerTriggerRewardEventValidationRestException, CampaignControllerTriggerValidationRestException,
-        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException {
+        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException,
+        BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         Campaign campaign;
@@ -292,10 +300,12 @@ public class CampaignControllerTriggerRewardEventEndpointsImpl
                 .addParameter("max_length", Integer.valueOf(e.getDescriptionMaxLength()))
                 .withCause(e)
                 .build();
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e);
         } catch (BuildCampaignException e) {
             if (e instanceof BuildCampaignEvaluatableException) {
-                throwTriggerRewardEventRelatedBuildCampaignRestExceptionIfPossible(
-                    (BuildCampaignEvaluatableException) e);
+                throwTriggerRewardEventRelatedBuildCampaignRestExceptionIfPossible(Id.valueOf(campaignId),
+                    Id.valueOf(campaignId), (BuildCampaignEvaluatableException) e);
             }
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (CampaignControllerTriggerBuildException e) {
@@ -313,7 +323,7 @@ public class CampaignControllerTriggerRewardEventEndpointsImpl
         String controllerId,
         String triggerId)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
-        BuildCampaignRestException, CampaignUpdateRestException {
+        BuildCampaignRestException, CampaignUpdateRestException, BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         Campaign campaign;
@@ -357,6 +367,8 @@ public class CampaignControllerTriggerRewardEventEndpointsImpl
                 .addParameter("campaign_id", e.getCampaignId())
                 .withCause(e)
                 .build();
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e, true);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (ConcurrentCampaignUpdateException e) {
@@ -399,6 +411,8 @@ public class CampaignControllerTriggerRewardEventEndpointsImpl
         request.getTags().ifPresent(value -> triggerBuilder.withTags(value));
 
         request.getName().ifPresent(name -> triggerBuilder.withName(name));
+        request.getParentTriggerGroupName()
+            .ifPresent(parentTriggerGroupName -> triggerBuilder.withParentTriggerGroupName(parentTriggerGroupName));
         request.getDescription().ifPresent(description -> triggerBuilder.withDescription(description));
         request.getEnabled().ifPresent(enabled -> triggerBuilder.withEnabled(enabled));
         request.getNegated().ifPresent(negated -> triggerBuilder.withNegated(negated));
@@ -411,7 +425,7 @@ public class CampaignControllerTriggerRewardEventEndpointsImpl
     }
 
     private void throwTriggerRewardEventRelatedBuildCampaignRestExceptionIfPossible(
-        BuildCampaignEvaluatableException exception)
+        Id<Campaign> campaignId, Id<CampaignController> controllerId, BuildCampaignEvaluatableException exception)
         throws CampaignControllerTriggerRewardEventValidationRestException {
         Throwable cause = exception.getCause();
         if (cause instanceof CampaignControllerTriggerRewardEventEventNameLengthException) {
@@ -443,8 +457,10 @@ public class CampaignControllerTriggerRewardEventEndpointsImpl
             CampaignControllerTriggerRewardEventTagInvalidException e =
                 (CampaignControllerTriggerRewardEventTagInvalidException) cause;
             throw RestExceptionBuilder.newBuilder(CampaignControllerTriggerRewardEventValidationRestException.class)
-                .withErrorCode(CampaignControllerTriggerRewardEventValidationRestException.INVALID_TAG)
+                .withErrorCode(CampaignControllerTriggerRewardEventValidationRestException.INVALID_TAG_FOR_CONTROLLER)
                 .addParameter("tag", e.getTag())
+                .addParameter("campaign_id", campaignId)
+                .addParameter("controller_id", controllerId)
                 .withCause(e)
                 .build();
         }

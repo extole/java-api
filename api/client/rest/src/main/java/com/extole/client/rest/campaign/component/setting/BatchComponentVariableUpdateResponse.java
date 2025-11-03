@@ -22,8 +22,8 @@ public final class BatchComponentVariableUpdateResponse {
     private final String name;
     private final Optional<String> displayName;
     private final SettingType settingType;
-    private final Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-        RuntimeEvaluatable<Object, Optional<Object>>>> values;
+    private final Map<String,
+        BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values;
 
     public static Builder builder(BatchComponentVariableUpdateResponse batchComponentVariableUpdateResponse) {
         return new Builder(batchComponentVariableUpdateResponse);
@@ -35,8 +35,8 @@ public final class BatchComponentVariableUpdateResponse {
         @JsonProperty(FIELD_NAME) String name,
         @JsonProperty(FIELD_DISPLAY_NAME) Optional<String> displayName,
         @JsonProperty(FIELD_TYPE) SettingType settingType,
-        @JsonProperty(FIELD_VALUES) Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values) {
+        @JsonProperty(FIELD_VALUES) Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values) {
         this.componentAbsolutePath = componentAbsolutePath;
         this.name = name;
         this.displayName = displayName;
@@ -80,8 +80,8 @@ public final class BatchComponentVariableUpdateResponse {
         private String name;
         private Optional<String> displayName;
         private SettingType settingType;
-        private Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values;
+        private Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values;
 
         private Builder(BatchComponentVariableUpdateResponse batchComponentVariableUpdateResponse) {
             this.componentAbsolutePath = batchComponentVariableUpdateResponse.componentAbsolutePath;
@@ -112,8 +112,8 @@ public final class BatchComponentVariableUpdateResponse {
         }
 
         public Builder withValues(
-            Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-                RuntimeEvaluatable<Object, Optional<Object>>>> values) {
+            Map<String,
+                BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values) {
             this.values = values;
             return this;
         }

@@ -30,8 +30,8 @@ public interface ShareEndpoints {
     @Produces(MediaType.APPLICATION_JSON)
     List<PublicShareResponse> getShares(@AccessTokenParam(readCookie = false) String accessToken,
         @Nullable @QueryParam("partner_share_id") String partnerShareId,
-        @Parameter(description = "A partner id using this format: <name>:<value>")
-        @Nullable @QueryParam("partner_id") String partnerId)
+        @Parameter(
+            description = "A partner id using this format: <name>:<value>") @Nullable @QueryParam("partner_id") String partnerId)
         throws AuthorizationRestException, ShareUnconstrainedRestException;
 
 }

@@ -179,8 +179,10 @@ public class BuiltBaseRewardSupplierV2Response extends ComponentElementResponse 
     }
 
     @JsonProperty(STATE_TRANSITIONS)
-    public java.util.Map<com.extole.client.rest.reward.supplier.RewardState,
-        java.util.List<com.extole.client.rest.reward.supplier.RewardState>> getStateTransitions() {
+    public
+        java.util.Map<com.extole.client.rest.reward.supplier.RewardState,
+            java.util.List<com.extole.client.rest.reward.supplier.RewardState>>
+        getStateTransitions() {
         return stateTransitions;
     }
 

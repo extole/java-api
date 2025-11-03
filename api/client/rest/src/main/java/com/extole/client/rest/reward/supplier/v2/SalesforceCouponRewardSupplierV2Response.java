@@ -49,6 +49,7 @@ public class SalesforceCouponRewardSupplierV2Response extends BaseRewardSupplier
         @JsonProperty(LIMIT_PER_HOUR) BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
             Optional<Integer>> limitPerHour,
         @JsonProperty(NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name,
+        @JsonProperty(DISPLAY_NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName,
         @JsonProperty(COUPON_POOL_ID) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> couponPoolId,
         @JsonProperty(BALANCE_REFILL_AMOUNT) Integer balanceRefillAmount,
         @JsonProperty(INITIAL_OFFSET) Integer initialOffset,
@@ -61,7 +62,8 @@ public class SalesforceCouponRewardSupplierV2Response extends BaseRewardSupplier
         @JsonProperty(DATA) Map<String, BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> data,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean> enabled,
         @JsonProperty(STATE_TRANSITIONS) Map<RewardState, List<RewardState>> stateTransitions) {
-        super(id, partnerRewardSupplierId, displayType, name, faceValueAlgorithmType, faceValue, cashBackPercentage,
+        super(id, partnerRewardSupplierId, displayType, name, displayName, faceValueAlgorithmType, faceValue,
+            cashBackPercentage,
             minCashBack, maxCashBack, limitPerDay, limitPerHour, faceValueType, createdDate, updatedDate, componentIds,
             componentReferences, tags, data, enabled, stateTransitions);
         this.couponPoolId = couponPoolId;

@@ -79,8 +79,8 @@ public abstract class WebhookDispatchResponse {
         return ToString.create(this);
     }
 
-    public abstract static class Builder<RESPONSE extends WebhookDispatchResponse,
-        BUILDER extends Builder<RESPONSE, BUILDER>> {
+    public abstract static class Builder<RESPONSE extends WebhookDispatchResponse, BUILDER extends Builder<RESPONSE,
+        BUILDER>> {
 
         protected String eventId;
         protected String clientId;

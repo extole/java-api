@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.extole.common.lang.ToString;
@@ -32,6 +33,7 @@ public class DemoDataEventResponse {
     private final String lastName;
     private final BigDecimal cartValue;
     private final String programLabel;
+    @JsonIgnore
     private final Map<String, String> dimensions;
 
     public DemoDataEventResponse(@JsonProperty(EVENT_TIME) ZonedDateTime eventTime,

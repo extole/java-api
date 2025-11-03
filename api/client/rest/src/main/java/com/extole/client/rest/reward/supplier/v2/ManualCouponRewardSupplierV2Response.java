@@ -46,6 +46,7 @@ public class ManualCouponRewardSupplierV2Response extends BaseRewardSupplierV2Re
         @JsonProperty(LIMIT_PER_HOUR) BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
             Optional<Integer>> limitPerHour,
         @JsonProperty(NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name,
+        @JsonProperty(DISPLAY_NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName,
         @JsonProperty(COUPON_COUNT_WARN_LIMIT) Integer couponCountWarnLimit,
         @JsonProperty(CREATED_DATE) ZonedDateTime createdDate,
         @JsonProperty(UPDATED_DATE) ZonedDateTime updatedDate,
@@ -57,7 +58,8 @@ public class ManualCouponRewardSupplierV2Response extends BaseRewardSupplierV2Re
         @JsonProperty(DATA) Map<String, BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> data,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean> enabled,
         @JsonProperty(STATE_TRANSITIONS) Map<RewardState, List<RewardState>> stateTransitions) {
-        super(id, partnerRewardSupplierId, displayType, name, faceValueAlgorithmType, faceValue, cashBackPercentage,
+        super(id, partnerRewardSupplierId, displayType, name, displayName, faceValueAlgorithmType, faceValue,
+            cashBackPercentage,
             minCashBack, maxCashBack, limitPerDay, limitPerHour, faceValueType, createdDate, updatedDate, componentIds,
             componentReferences, tags, data, enabled, stateTransitions);
 

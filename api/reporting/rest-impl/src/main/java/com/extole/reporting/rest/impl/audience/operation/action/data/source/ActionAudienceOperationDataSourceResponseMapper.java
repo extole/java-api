@@ -8,8 +8,9 @@ import com.extole.reporting.rest.audience.operation.action.data.source.ActionAud
 import com.extole.reporting.rest.impl.audience.operation.AudienceOperationDataSourceResponseMapper;
 
 @Component
-public class ActionAudienceOperationDataSourceResponseMapper implements AudienceOperationDataSourceResponseMapper<
-    ActionAudienceOperationDataSource, ActionAudienceOperationDataSourceResponse> {
+public class ActionAudienceOperationDataSourceResponseMapper implements
+    AudienceOperationDataSourceResponseMapper<ActionAudienceOperationDataSource,
+        ActionAudienceOperationDataSourceResponse> {
 
     @Override
     public ActionAudienceOperationDataSourceResponse toResponse(ActionAudienceOperationDataSource dataSource) {

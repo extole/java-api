@@ -24,16 +24,20 @@ import com.extole.evaluateable.BuildtimeEvaluatable;
         name = CampaignComponentClientKeyFlowVariableResponse.SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentPartnerEnumListVariableResponse.class,
         name = CampaignComponentPartnerEnumListVariableResponse.SETTING_TYPE),
+    @JsonSubTypes.Type(value = CampaignComponentPartnerEnumVariableResponse.class,
+        name = CampaignComponentPartnerEnumVariableResponse.SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentEnumVariableResponse.class,
         name = CampaignComponentEnumVariableResponse.SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentEnumListVariableResponse.class,
         name = CampaignComponentEnumListVariableResponse.SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentSocketResponse.class,
-        name = CampaignComponentSocketResponse.SETTING_TYPE),
+        name = CampaignComponentSocketResponse.MULTI_SOCKET_SETTING_TYPE),
+    @JsonSubTypes.Type(value = CampaignComponentSocketResponse.class,
+        name = CampaignComponentSocketResponse.SOCKET_SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentRewardSupplierIdListVariableResponse.class,
         name = CampaignComponentRewardSupplierIdListVariableResponse.SETTING_TYPE),
-    @JsonSubTypes.Type(value = CampaignComponentDelayListVariableResponse.class,
-        name = CampaignComponentDelayListVariableResponse.SETTING_TYPE),
+    @JsonSubTypes.Type(value = CampaignComponentComponentIdVariableResponse.class,
+        name = CampaignComponentComponentIdVariableResponse.SETTING_TYPE),
 })
 public class CampaignComponentSettingResponse {
 

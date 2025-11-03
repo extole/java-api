@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.extole.client.rest.core.ClientCoreSettingsRequest.CookieConsentPolicy;
+import com.extole.client.rest.core.ClientCoreSettingsRequest.CookieDomainPolicy;
 import com.extole.client.rest.core.ClientCoreSettingsRequest.CookiePolicy;
 import com.extole.common.lang.ToString;
 
@@ -25,6 +26,7 @@ public class ClientCoreSettingsResponse {
     private static final String JSON_ORIGIN_HOST_OVERRIDE = "origin_host_override";
     private static final String JSON_COOKIE_POLICY = "cookie_policy";
     private static final String JSON_COOKIE_CONSENT_POLICY = "cookie_consent_policy";
+    private static final String JSON_COOKIE_DOMAIN_POLICY = "cookie_domain_policy";
 
     private final String source;
     private final String version;
@@ -38,6 +40,7 @@ public class ClientCoreSettingsResponse {
     private final String originHostOverride;
     private final CookiePolicy cookiePolicy;
     private final CookieConsentPolicy cookieConsentPolicy;
+    private final CookieDomainPolicy cookieDomainPolicy;
 
     @JsonCreator
     public ClientCoreSettingsResponse(
@@ -52,7 +55,8 @@ public class ClientCoreSettingsResponse {
         @JsonProperty(JSON_DEPRECATED_ACCESS_TOKEN_COOKIE_ALLOWED) boolean deprecatedAccessTokenCookieAllowed,
         @JsonProperty(JSON_ORIGIN_HOST_OVERRIDE) String originHostOverride,
         @JsonProperty(JSON_COOKIE_POLICY) CookiePolicy cookiePolicy,
-        @JsonProperty(JSON_COOKIE_CONSENT_POLICY) CookieConsentPolicy cookieConsentPolicy) {
+        @JsonProperty(JSON_COOKIE_CONSENT_POLICY) CookieConsentPolicy cookieConsentPolicy,
+        @JsonProperty(JSON_COOKIE_DOMAIN_POLICY) CookieDomainPolicy cookieDomainPolicy) {
         this.source = source;
         this.version = version;
         this.legacyTagsEnabled = legacyTagsEnabled;
@@ -65,6 +69,7 @@ public class ClientCoreSettingsResponse {
         this.originHostOverride = originHostOverride;
         this.cookiePolicy = cookiePolicy;
         this.cookieConsentPolicy = cookieConsentPolicy;
+        this.cookieDomainPolicy = cookieDomainPolicy;
     }
 
     @Nullable
@@ -128,6 +133,11 @@ public class ClientCoreSettingsResponse {
     @JsonProperty(JSON_COOKIE_CONSENT_POLICY)
     public CookieConsentPolicy getCookieConsentPolicy() {
         return cookieConsentPolicy;
+    }
+
+    @JsonProperty(JSON_COOKIE_DOMAIN_POLICY)
+    public CookieDomainPolicy getCookieDomainPolicy() {
+        return cookieDomainPolicy;
     }
 
     @Deprecated // TODO remove ENG-10144

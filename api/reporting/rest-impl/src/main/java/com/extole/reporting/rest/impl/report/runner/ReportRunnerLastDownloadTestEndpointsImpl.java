@@ -11,10 +11,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.ext.Provider;
 
 import com.google.common.annotations.Beta;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.extole.authorization.service.Authorization;
 import com.extole.common.rest.authorization.Scope;

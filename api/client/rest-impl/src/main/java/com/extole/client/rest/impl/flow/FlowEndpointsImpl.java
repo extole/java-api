@@ -22,10 +22,10 @@ import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.id.Id;
 import com.extole.model.entity.campaign.Campaign;
+import com.extole.model.entity.flow.FlowFilter;
 import com.extole.model.service.campaign.CampaignNotFoundException;
 import com.extole.model.service.campaign.CampaignVersionState;
 import com.extole.model.service.campaign.program.CampaignProgramLabelNotFoundException;
-import com.extole.model.shared.flow.FlowFilter;
 import com.extole.model.shared.flow.FlowQueryBuilder;
 import com.extole.model.shared.flow.FlowService;
 import com.extole.model.shared.flow.MixedCampaignIdAndProgramLabelFiltersFlowQueryBuilderException;
@@ -103,7 +103,7 @@ public class FlowEndpointsImpl implements FlowEndpoints {
                         .findFirst()
                         .orElseThrow(() -> RestExceptionBuilder.newBuilder(FlowRestException.class)
                             .withErrorCode(FlowRestException.CAMPAIGN_STATE_INVALID)
-                            .addParameter("version_state", flowQueryParams.getCampaignVersionState())
+                            .addParameter("campaign_version_state", flowQueryParams.getCampaignVersionState())
                             .build());
                     flowQueryBuilder.withCampaignVersionState(campaignVersionState);
                 }

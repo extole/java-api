@@ -28,6 +28,7 @@ public class BuiltCampaignControllerTriggerShareResponse extends BuiltCampaignCo
         @JsonProperty(TRIGGER_ID) String triggerId,
         @JsonProperty(TRIGGER_PHASE) CampaignControllerTriggerPhase triggerPhase,
         @JsonProperty(TRIGGER_NAME) String name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) Optional<String> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) Optional<String> description,
         @JsonProperty(ENABLED) Boolean enabled,
         @JsonProperty(NEGATED) Boolean negated,
@@ -36,8 +37,16 @@ public class BuiltCampaignControllerTriggerShareResponse extends BuiltCampaignCo
         @JsonProperty(JSON_QUALITY) ShareQuality shareQuality,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.SHARE, triggerPhase, name, description, enabled,
-            negated, componentIds, componentReferences);
+        super(triggerId,
+            CampaignControllerTriggerType.SHARE,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
+            componentIds,
+            componentReferences);
         if (channels == null) {
             channels = shareTypes;
         }

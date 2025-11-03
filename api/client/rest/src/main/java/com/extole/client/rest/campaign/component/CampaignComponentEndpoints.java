@@ -38,6 +38,7 @@ import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.omissible.OmissibleRestException;
 import com.extole.common.rest.time.TimeZoneParam;
 
+@Deprecated // TODO as soon as UI stops using it ENG-26408, it will be removed, see ENG-26409
 @Path("/v2/campaigns/{campaign_id}{version:(/version/.+)?}/components")
 public interface CampaignComponentEndpoints {
 

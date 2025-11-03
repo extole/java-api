@@ -54,6 +54,9 @@ public class ReportRunnerValidationRestException extends ExtoleRestException {
             "Report Runner name can only contain alphanumeric, space, dash, parenthesis, slash, " +
                 "colon, comma, period, underscore, dollar and percentage",
             "name");
+    public static final ErrorCode<ReportRunnerValidationRestException> REPORT_RUNNER_INVALID_SORT_BY =
+        new ErrorCode<>("report_runner_invalid_sort_by", 400,
+            "Invalid sort by value defined by report merging configuration", "sort_by");
 
     public static final ErrorCode<ReportRunnerValidationRestException> REPORT_RUNNER_LOCKED = new ErrorCode<>(
         "report_runner_locked", 400, "Report runner is locked and cannot be edited via rest api");

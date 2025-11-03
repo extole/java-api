@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
 
 import com.extole.api.campaign.component.install.ComponentInstalltimeContext;
+import com.extole.client.rest.campaign.component.facet.CampaignComponentFacetRequest;
 import com.extole.client.rest.campaign.component.setting.CampaignComponentSettingRequest;
 import com.extole.client.rest.campaign.component.setting.CampaignComponentVariableRequest;
 import com.extole.client.rest.campaign.component.setting.SettingType;
@@ -18,60 +19,69 @@ import com.extole.common.rest.omissible.Omissible;
 import com.extole.evaluateable.InstalltimeEvaluatable;
 import com.extole.id.Id;
 
+@Deprecated // TODO as soon as UI stops using it ENG-26408, it will be removed, see ENG-26409
 public class CampaignComponentUpdateRequest extends ComponentElementRequest {
 
-    private static final String JSON_COMPONENT_VERSION = "component_version";
+    private static final String JSON_UPLOAD_VERSION = "upload_version";
     private static final String JSON_COMPONENT_NAME = "name";
     private static final String JSON_COMPONENT_DISPLAY_NAME = "display_name";
-    private static final String JSON_COMPONENT_TYPE = "type";
+    private static final String JSON_COMPONENT_TYPE = "type"; // TODO Remove ENG-26014
+    private static final String JSON_COMPONENT_TYPES = "types";
     private static final String JSON_COMPONENT_DESCRIPTION = "description";
     private static final String JSON_COMPONENT_INSTALLED_INTO_SOCKET = "installed_into_socket";
     private static final String JSON_COMPONENT_INSTALL = "install";
     private static final String JSON_COMPONENT_TAGS = "tags";
     private static final String JSON_COMPONENT_VARIABLES = "variables";
+    private static final String JSON_COMPONENT_FACETS = "facets";
 
-    private final Omissible<String> componentVersion;
+    private final Omissible<Optional<String>> uploadVersion;
     private final Omissible<String> name;
     private final Omissible<Optional<String>> displayName;
     private final Omissible<Optional<String>> type;
+    private final Omissible<List<String>> types;
     private final Omissible<Optional<String>> description;
     private final Omissible<Optional<String>> installedIntoSocket;
     private final Omissible<Optional<InstalltimeEvaluatable<ComponentInstalltimeContext, Void>>> install;
     private final Omissible<Set<String>> tags;
     private final Omissible<List<CampaignComponentSettingRequest>> settings;
+    private final Omissible<List<CampaignComponentFacetRequest>> facets;
 
     @JsonCreator
-    public CampaignComponentUpdateRequest(@JsonProperty(JSON_COMPONENT_VERSION) Omissible<String> componentVersion,
+    public CampaignComponentUpdateRequest(@JsonProperty(JSON_UPLOAD_VERSION) Omissible<Optional<String>> uploadVersion,
         @JsonProperty(JSON_COMPONENT_NAME) Omissible<String> name,
         @JsonProperty(JSON_COMPONENT_DISPLAY_NAME) Omissible<Optional<String>> displayName,
         @JsonProperty(JSON_COMPONENT_TYPE) Omissible<Optional<String>> type,
+        @JsonProperty(JSON_COMPONENT_TYPES) Omissible<List<String>> types,
         @JsonProperty(JSON_COMPONENT_DESCRIPTION) Omissible<Optional<String>> description,
         @JsonProperty(JSON_COMPONENT_INSTALLED_INTO_SOCKET) Omissible<Optional<String>> installedIntoSocket,
         @JsonProperty(JSON_COMPONENT_INSTALL) Omissible<
             Optional<InstalltimeEvaluatable<ComponentInstalltimeContext, Void>>> install,
         @JsonProperty(JSON_COMPONENT_TAGS) Omissible<Set<String>> tags,
         @JsonProperty(JSON_COMPONENT_VARIABLES) Omissible<List<CampaignComponentSettingRequest>> settings,
+        @JsonProperty(JSON_COMPONENT_FACETS) Omissible<List<CampaignComponentFacetRequest>> facets,
         @JsonProperty(JSON_COMPONENT_IDS) Omissible<List<Id<ComponentResponse>>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) Omissible<List<ComponentReferenceRequest>> componentReferences) {
         super(componentReferences, componentIds);
-        this.componentVersion = componentVersion;
+        this.uploadVersion = uploadVersion;
         this.name = name;
         this.displayName = displayName;
         this.type = type;
+        this.types = types;
         this.description = description;
         this.installedIntoSocket = installedIntoSocket;
         this.install = install;
         this.tags = tags;
         this.settings = settings;
+        this.facets = facets;
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @JsonProperty(JSON_COMPONENT_VERSION)
-    public Omissible<String> getComponentVersion() {
-        return componentVersion;
+    @JsonProperty(JSON_UPLOAD_VERSION)
+    public Omissible<Optional<String>> getUploadVersion() {
+        return uploadVersion;
     }
 
     @JsonProperty(JSON_COMPONENT_NAME)
@@ -87,6 +97,11 @@ public class CampaignComponentUpdateRequest extends ComponentElementRequest {
     @JsonProperty(JSON_COMPONENT_TYPE)
     public Omissible<Optional<String>> getType() {
         return type;
+    }
+
+    @JsonProperty(JSON_COMPONENT_TYPES)
+    public Omissible<List<String>> getTypes() {
+        return types;
     }
 
     @JsonProperty(JSON_COMPONENT_DESCRIPTION)
@@ -119,10 +134,16 @@ public class CampaignComponentUpdateRequest extends ComponentElementRequest {
         return settings;
     }
 
+    @JsonProperty(JSON_COMPONENT_FACETS)
+    public Omissible<List<CampaignComponentFacetRequest>> getFacets() {
+        return facets;
+    }
+
     public static final class Builder extends ComponentElementRequest.Builder<Builder> {
-        private Omissible<String> componentVersion = Omissible.omitted();
+        private Omissible<Optional<String>> uploadVersion = Omissible.omitted();
         private Omissible<String> name = Omissible.omitted();
         private Omissible<Optional<String>> displayName = Omissible.omitted();
+        private Omissible<List<String>> types = Omissible.omitted();
         private Omissible<Optional<String>> type = Omissible.omitted();
         private Omissible<Optional<String>> description = Omissible.omitted();
         private Omissible<Optional<String>> installedIntoSocket = Omissible.omitted();
@@ -131,13 +152,20 @@ public class CampaignComponentUpdateRequest extends ComponentElementRequest {
         private Omissible<Set<String>> tags = Omissible.omitted();
         private List<CampaignComponentSettingRequest.Builder<Builder, ?, ?>> settingBuilders;
         private Omissible<List<CampaignComponentSettingRequest>> settings = Omissible.omitted();
+        private List<CampaignComponentFacetRequest.Builder<Builder>> facetBuilders;
+        private Omissible<List<CampaignComponentFacetRequest>> facets = Omissible.omitted();
 
         private Builder() {
 
         }
 
-        public Builder withComponentVersion(String componentVersion) {
-            this.componentVersion = Omissible.of(componentVersion);
+        public Builder withUploadVersion(String uploadVersion) {
+            this.uploadVersion = Omissible.of(Optional.ofNullable(uploadVersion));
+            return this;
+        }
+
+        public Builder clearUploadVersion() {
+            this.uploadVersion = Omissible.nullified();
             return this;
         }
 
@@ -158,6 +186,11 @@ public class CampaignComponentUpdateRequest extends ComponentElementRequest {
 
         public Builder clearType() {
             this.type = Omissible.nullified();
+            return this;
+        }
+
+        public Builder withTypes(List<String> types) {
+            this.types = Omissible.of(types);
             return this;
         }
 
@@ -215,6 +248,26 @@ public class CampaignComponentUpdateRequest extends ComponentElementRequest {
             return this;
         }
 
+        public CampaignComponentFacetRequest.Builder<Builder> addFacet() {
+            if (this.facetBuilders == null) {
+                this.facetBuilders = Lists.newArrayList();
+            }
+            CampaignComponentFacetRequest.Builder<Builder> builder =
+                CampaignComponentFacetRequest.builder(this);
+            this.facetBuilders.add(builder);
+            return builder;
+        }
+
+        public Builder removeFacets() {
+            this.facetBuilders = Lists.newArrayList();
+            return this;
+        }
+
+        public Builder withNullFacets() {
+            this.facets = Omissible.nullified();
+            return this;
+        }
+
         public CampaignComponentUpdateRequest build() {
             Omissible<List<ComponentReferenceRequest>> componentReferences;
             if (componentReferenceBuilders.isEmpty()) {
@@ -225,16 +278,21 @@ public class CampaignComponentUpdateRequest extends ComponentElementRequest {
                     .collect(Collectors.toList()));
             }
 
-            return new CampaignComponentUpdateRequest(componentVersion,
+            return new CampaignComponentUpdateRequest(uploadVersion,
                 name,
                 displayName,
                 type,
+                types,
                 description,
                 installedIntoSocket,
                 install,
                 tags,
                 settingBuilders == null ? settings
                     : Omissible.of(settingBuilders.stream()
+                        .map(builder -> builder.build())
+                        .collect(Collectors.toList())),
+                facetBuilders == null ? facets
+                    : Omissible.of(facetBuilders.stream()
                         .map(builder -> builder.build())
                         .collect(Collectors.toList())),
                 componentIds,

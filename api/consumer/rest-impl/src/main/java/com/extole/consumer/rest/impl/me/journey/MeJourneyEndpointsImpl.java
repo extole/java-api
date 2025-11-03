@@ -11,11 +11,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.extole.authorization.service.person.PersonAuthorization;
+import com.extole.common.journey.JourneyName;
 import com.extole.consumer.rest.common.AuthorizationRestException;
 import com.extole.consumer.rest.impl.request.context.ConsumerRequestContextService;
 import com.extole.consumer.rest.me.journey.JourneyResponse;
 import com.extole.consumer.rest.me.journey.MeJourneyEndpoints;
-import com.extole.person.service.profile.journey.JourneyName;
 import com.extole.person.service.profile.journey.PersonJourney;
 import com.extole.person.service.profile.referral.PersonReferralReason;
 

@@ -6,6 +6,11 @@ import com.extole.common.rest.exception.ErrorCode;
 import com.extole.common.rest.exception.ExtoleRestException;
 
 public class PersonValidationRestException extends ExtoleRestException {
+    public static final ErrorCode<PersonValidationRestException> FORWARDING_PROFILE_IS_DEVICE =
+        new ErrorCode<>("forwarding_profile_is_device", 400, "Forwarding profile is device", "profile_id");
+
+    public static final ErrorCode<PersonValidationRestException> FORWARD_TO_PROFILE_IS_DEVICE =
+        new ErrorCode<>("forward_to_profile_is_device", 400, "Forward to profile is device", "profile_id");
 
     public static final ErrorCode<PersonValidationRestException> IDENTITY_KEY_VALUE_INVALID =
         new ErrorCode<>("invalid_key_value", 400, "Invalid key value", "identity_key_value");

@@ -37,8 +37,9 @@ public class CampaignControllerActionIncentivizeConfiguration extends CampaignCo
             IncentivizeActionType> incentivizeActionType,
         @JsonProperty(JSON_OVERRIDES) Map<IncentivizeActionOverrideType, String> overrides,
         @JsonProperty(JSON_ACTION_NAME) Optional<String> actionName,
-        @JsonProperty(JSON_DATA) Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<IncentivizeActionContext, Optional<Object>>>> data,
+        @JsonProperty(JSON_DATA) Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeActionContext, Optional<Object>>>> data,
         @JsonProperty(JSON_ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<CampaignComponentReferenceConfiguration> componentReferences,
         @JsonProperty(JSON_REVIEW_STATUS) BuildtimeEvaluatable<ControllerBuildtimeContext, ReviewStatus> reviewStatus) {
@@ -66,8 +67,11 @@ public class CampaignControllerActionIncentivizeConfiguration extends CampaignCo
     }
 
     @JsonProperty(JSON_DATA)
-    public Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<IncentivizeActionContext, Optional<Object>>>> getData() {
+    public
+        Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeActionContext, Optional<Object>>>>
+        getData() {
         return data;
     }
 

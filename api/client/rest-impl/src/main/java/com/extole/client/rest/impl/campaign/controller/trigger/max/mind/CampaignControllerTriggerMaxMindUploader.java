@@ -41,6 +41,8 @@ public class CampaignControllerTriggerMaxMindUploader
         trigger.getIpThreshold().ifDefined(value -> triggerBuilder.withIpThreshold(value));
         trigger.allowHighRiskEmail().ifDefined(value -> triggerBuilder.withAllowHighRiskEmail(value));
         trigger.getName().ifDefined((value) -> triggerBuilder.withName(value));
+        trigger.getParentTriggerGroupName()
+            .ifDefined((value) -> triggerBuilder.withParentTriggerGroupName(value));
         trigger.getEnabled().ifDefined((value) -> triggerBuilder.withEnabled(value));
         trigger.getNegated().ifDefined((negated) -> triggerBuilder.withNegated(negated));
 

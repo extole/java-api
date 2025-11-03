@@ -33,21 +33,20 @@ public class PersonRelationshipsV4ListRequest {
 
     public PersonRelationshipsV4ListRequest(
         @Parameter(description = "Optional container filter, defaults to production container. " +
-            "Pass \"" + ALL_CONTAINERS + "\" to include steps for all containers")
-        @Nullable @QueryParam("container") String container,
-        @Parameter(description = "Optional role of the other person in the relationship, one of friend or advocate.")
-        @Nullable @QueryParam("role") PersonReferralRole role,
-        @Parameter(description = "Optional flag to exclude relationships with anonymous persons.")
-        @DefaultValue("false") @QueryParam("exclude_anonymous") boolean excludeAnonymous,
+            "Pass \"" + ALL_CONTAINERS
+            + "\" to include steps for all containers") @Nullable @QueryParam("container") String container,
+        @Parameter(
+            description = "Optional role of the other person in the relationship, one of friend or advocate.") @Nullable @QueryParam("role") PersonReferralRole role,
+        @Parameter(
+            description = "Optional flag to exclude relationships with anonymous persons.") @DefaultValue("false") @QueryParam("exclude_anonymous") boolean excludeAnonymous,
         @Parameter(description = "Optional flag to return all relationships, not de-duplicate by identity. " +
-            "Default behavior (or when flag is set to false) returns last relationship per person.")
-        @DefaultValue("false") @QueryParam("include_duplicate_identities") boolean includeDuplicateIdentities,
-        @Parameter(description = "Optional flag to include self referrals.")
-        @DefaultValue("false") @QueryParam("include_self_referrals") boolean includeSelfReferrals,
-        @Parameter(description = "Optional offset filter, defaults to 0.")
-        @DefaultValue("" + DEFAULT_OFFSET) @QueryParam("offset") Integer offset,
-        @Parameter(description = "Optional limit filter, defaults to 1000.")
-        @DefaultValue("" + DEFAULT_LIMIT) @QueryParam("limit") Integer limit) {
+            "Default behavior (or when flag is set to false) returns last relationship per person.") @DefaultValue("false") @QueryParam("include_duplicate_identities") boolean includeDuplicateIdentities,
+        @Parameter(
+            description = "Optional flag to include self referrals.") @DefaultValue("false") @QueryParam("include_self_referrals") boolean includeSelfReferrals,
+        @Parameter(description = "Optional offset filter, defaults to 0.") @DefaultValue(""
+            + DEFAULT_OFFSET) @QueryParam("offset") Integer offset,
+        @Parameter(description = "Optional limit filter, defaults to 1000.") @DefaultValue(""
+            + DEFAULT_LIMIT) @QueryParam("limit") Integer limit) {
         this.container = container;
         this.role = role;
         this.excludeAnonymous = excludeAnonymous;

@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -17,18 +18,19 @@ import com.extole.evaluateable.BuildtimeEvaluatable;
 import com.extole.evaluateable.RuntimeEvaluatable;
 
 public final class BatchComponentVariableValues {
+
     private static final String FIELD_ABSOLUTE_PATH = "absolute_name";
     private static final String FIELD_NAME = "name";
     private static final String FIELD_DISPLAY_NAME = "display_name";
     private static final String FIELD_TYPE = "type";
-    private static final String FIELD_VALUES = "values";
 
     private final String componentAbsolutePath;
     private final String name;
     private final Optional<String> displayName;
     private final SettingType settingType;
-    private final Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-        RuntimeEvaluatable<Object, Optional<Object>>>> values =
+    @JsonIgnore
+    private final Map<String,
+        BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values =
             Maps.newHashMap();
 
     @JsonCreator
@@ -45,8 +47,8 @@ public final class BatchComponentVariableValues {
         String name,
         Optional<String> displayName,
         SettingType settingType,
-        Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values) {
+        Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values) {
         this.componentAbsolutePath = componentAbsolutePath;
         this.name = name;
         this.displayName = displayName;
@@ -80,7 +82,6 @@ public final class BatchComponentVariableValues {
         values.put(key, value);
     }
 
-    @JsonProperty(FIELD_VALUES)
     @JsonAnyGetter
     public Map<String, BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>>
         getValues() {
@@ -101,12 +102,13 @@ public final class BatchComponentVariableValues {
     }
 
     public static final class BatchVariableValuesResponseBuilder {
+
         private String componentAbsoluteName;
         private String name;
         private Optional<String> displayName = Optional.empty();
         private SettingType settingType;
-        private Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values =
+        private Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values =
                 Collections.emptyMap();
 
         private BatchVariableValuesResponseBuilder(BatchComponentVariableValues variable) {
@@ -141,8 +143,8 @@ public final class BatchComponentVariableValues {
         }
 
         public BatchVariableValuesResponseBuilder withValues(
-            Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-                RuntimeEvaluatable<Object, Optional<Object>>>> values) {
+            Map<String,
+                BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values) {
             this.values = ImmutableMap.copyOf(values);
             return this;
         }
@@ -150,5 +152,7 @@ public final class BatchComponentVariableValues {
         public BatchComponentVariableValues build() {
             return new BatchComponentVariableValues(componentAbsoluteName, name, displayName, settingType, values);
         }
+
     }
+
 }

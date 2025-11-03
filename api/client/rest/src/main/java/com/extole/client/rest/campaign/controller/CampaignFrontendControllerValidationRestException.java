@@ -7,11 +7,10 @@ import com.extole.common.rest.exception.ExtoleRestException;
 
 public class CampaignFrontendControllerValidationRestException extends ExtoleRestException {
 
-    public static final ErrorCode<
-        CampaignFrontendControllerValidationRestException> NOT_FOUND_PAGE_INVALID_ACTION =
-            new ErrorCode<>("not_found_page_invalid_action", 400,
-                "Frontend controller for not found page must have only one action of display type with ALWAYS quality",
-                "campaign_id", "controller_id");
+    public static final ErrorCode<CampaignFrontendControllerValidationRestException> NOT_FOUND_PAGE_INVALID_ACTION =
+        new ErrorCode<>("not_found_page_invalid_action", 400,
+            "Frontend controller for not found page must have only one action of display type with ALWAYS quality",
+            "campaign_id", "controller_id");
 
     public static final ErrorCode<
         CampaignFrontendControllerValidationRestException> NOT_FOUND_PAGE_FORBIDDEN_RUNTIME_EXPRESSIONS =
@@ -34,10 +33,9 @@ public class CampaignFrontendControllerValidationRestException extends ExtoleRes
                 "Campaign frontend controller name is not of valid length", "evaluatable", "controller_name",
                 "min_length", "max_length");
 
-    public static final ErrorCode<
-        CampaignFrontendControllerValidationRestException> RESERVED_NAME =
-            new ErrorCode<>("reserved_name", 400,
-                "Campaign frontend controller name is reserved", "evaluatable", "controller_name");
+    public static final ErrorCode<CampaignFrontendControllerValidationRestException> RESERVED_NAME =
+        new ErrorCode<>("reserved_name", 400,
+            "Campaign frontend controller name is reserved", "evaluatable", "controller_name");
 
     public static final ErrorCode<CampaignFrontendControllerValidationRestException> NAME_CONTAINS_ILLEGAL_CHARACTER =
         new ErrorCode<>("name_contains_illegal_character", 400,

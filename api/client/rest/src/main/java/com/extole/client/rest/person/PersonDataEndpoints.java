@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -74,5 +75,16 @@ public interface PersonDataEndpoints {
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException, PersonDataRestException,
         PersonDataValidationRestException;
+
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{name}")
+    @Operation(summary = "Delete a Person Data parameter.")
+    PersonDataResponse delete(
+        @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
+        @PathParam("person_id") String personId,
+        @PathParam("name") String name,
+        @TimeZoneParam ZoneId timeZone)
+        throws UserAuthorizationRestException, PersonRestException, PersonDataRestException;
 
 }

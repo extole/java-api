@@ -68,20 +68,25 @@ public class CampaignControllerActionIncentivizeStatusUpdateConfiguration
     }
 
     @JsonProperty(JSON_LEGACY_ACTION_ID)
-    public BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>> getLegacyActionId() {
+    public
+        BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>>
+        getLegacyActionId() {
         return legacyActionId;
     }
 
     @JsonProperty(JSON_EVENT_TYPE)
-    public BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<IncentivizeActionType>>> getEventType() {
+    public
+        BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<IncentivizeActionType>>>
+        getEventType() {
         return eventType;
     }
 
     @JsonProperty(JSON_PARTNER_EVENT_ID)
-    public BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>>
+    public
+        BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<String>>>
         getIncentivizePartnerId() {
         return partnerEventId;
     }
@@ -108,8 +113,11 @@ public class CampaignControllerActionIncentivizeStatusUpdateConfiguration
     }
 
     @JsonProperty(JSON_DATA)
-    public Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<Object>>>> getData() {
+    public
+        Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeStatusUpdateActionContext, Optional<Object>>>>
+        getData() {
         return data;
     }
 

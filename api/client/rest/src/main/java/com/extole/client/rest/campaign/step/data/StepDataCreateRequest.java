@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
 
 import com.extole.api.campaign.CampaignBuildtimeContext;
 import com.extole.api.step.data.StepDataContext;
@@ -14,6 +15,7 @@ import com.extole.client.rest.campaign.component.ComponentResponse;
 import com.extole.common.rest.omissible.Omissible;
 import com.extole.evaluateable.BuildtimeEvaluatable;
 import com.extole.evaluateable.RuntimeEvaluatable;
+import com.extole.evaluateable.provided.Provided;
 import com.extole.id.Id;
 
 public class StepDataCreateRequest extends ComponentElementRequest {
@@ -89,8 +91,9 @@ public class StepDataCreateRequest extends ComponentElementRequest {
     }
 
     @JsonProperty(JSON_DEFAULT_VALUE)
-    public Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext,
-        RuntimeEvaluatable<StepDataContext, Optional<Object>>>> getDefaultValue() {
+    public
+        Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, RuntimeEvaluatable<StepDataContext, Optional<Object>>>>
+        getDefaultValue() {
         return defaultValue;
     }
 
@@ -120,7 +123,8 @@ public class StepDataCreateRequest extends ComponentElementRequest {
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, List<StepDataPersistType>>> persistTypes =
             Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext,
-            RuntimeEvaluatable<StepDataContext, Optional<Object>>>> defaultValue = Omissible.omitted();
+            RuntimeEvaluatable<StepDataContext, Optional<Object>>>> defaultValue =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, StepDataKeyType>> keyType =
             Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Boolean>> enabled =
@@ -135,8 +139,14 @@ public class StepDataCreateRequest extends ComponentElementRequest {
             return this;
         }
 
-        public Builder<T> withValue(BuildtimeEvaluatable<CampaignBuildtimeContext,
-            RuntimeEvaluatable<StepDataContext, Optional<Object>>> value) {
+        public Builder<T> withName(String name) {
+            this.name = Provided.of(name);
+            return this;
+        }
+
+        public Builder<T> withValue(
+            BuildtimeEvaluatable<CampaignBuildtimeContext,
+                RuntimeEvaluatable<StepDataContext, Optional<Object>>> value) {
             this.value = value;
             return this;
         }
@@ -157,8 +167,14 @@ public class StepDataCreateRequest extends ComponentElementRequest {
             return this;
         }
 
-        public Builder<T> withDefaultValue(BuildtimeEvaluatable<CampaignBuildtimeContext,
-            RuntimeEvaluatable<StepDataContext, Optional<Object>>> defaultValue) {
+        public Builder<T> withPersistTypes(List<StepDataPersistType> persistTypes) {
+            this.persistTypes = Omissible.of(Provided.of(persistTypes));
+            return this;
+        }
+
+        public Builder<T> withDefaultValue(
+            BuildtimeEvaluatable<CampaignBuildtimeContext,
+                RuntimeEvaluatable<StepDataContext, Optional<Object>>> defaultValue) {
             this.defaultValue = Omissible.of(defaultValue);
             return this;
         }
@@ -168,8 +184,19 @@ public class StepDataCreateRequest extends ComponentElementRequest {
             return this;
         }
 
+        public Builder<T> withKeyType(StepDataKeyType keyType) {
+            this.keyType = Omissible.of(Provided.of(keyType));
+            return this;
+        }
+
         public Builder<T> withEnabled(BuildtimeEvaluatable<CampaignBuildtimeContext, Boolean> enabled) {
             this.enabled = Omissible.of(enabled);
+            return this;
+        }
+
+        public Builder<T> clearComponentReferences() {
+            this.componentReferenceBuilders = Lists.newArrayList();
+            this.componentIds = Omissible.omitted();
             return this;
         }
 

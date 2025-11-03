@@ -256,7 +256,7 @@ public class ShareableV4EndpointsImpl implements ShareableV4Endpoints {
         }
 
         InputConsumerEvent inputEvent =
-            consumerEventSenderService.createInputEvent(authorization, processedRawEvent, authorization.getIdentity())
+            consumerEventSenderService.createInputEvent(authorization, processedRawEvent)
                 .send();
 
         Authorization backendAuthorization =
@@ -265,7 +265,7 @@ public class ShareableV4EndpointsImpl implements ShareableV4Endpoints {
         // ENG-19642 person update is performed using backendAuthorization hence cannot send it from input event
         return personService.updatePerson(backendAuthorization, existingShareableWithKey.getPersonId(),
             new LockDescription("shareable-v4-endpoint-update"),
-            (personBuilder, originalPersonProfile) -> {
+            (personBuilder, initialPerson) -> {
                 try {
                     ConsumerShareableV4Builder builder =
                         consumerShareableService.editV4(existingShareableWithKey, personBuilder);
@@ -307,10 +307,10 @@ public class ShareableV4EndpointsImpl implements ShareableV4Endpoints {
 
     private DeprecatedConsumerShareable createShareable(PersonAuthorization authorization,
         ProcessedRawEvent processedRawEvent, CreateShareableV4Request request, String shareableKey)
-        throws LockClosureException, AuthorizationException {
+        throws LockClosureException, AuthorizationException, PersonNotFoundException {
 
         return consumerEventSenderService
-            .createInputEvent(authorization, processedRawEvent, authorization.getIdentity())
+            .createInputEvent(authorization, processedRawEvent)
             .withLockDescription(new LockDescription("shareable-v4-endpoint-create"))
             .executeAndSend((personBuilder, person, inputEventBuilder) -> {
                 try {

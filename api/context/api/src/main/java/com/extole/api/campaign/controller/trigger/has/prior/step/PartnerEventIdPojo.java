@@ -1,5 +1,6 @@
 package com.extole.api.campaign.controller.trigger.has.prior.step;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -33,6 +34,19 @@ final class PartnerEventIdPojo implements PartnerEventId {
     @JsonProperty(JSON_VALUE)
     public RuntimeEvaluatable<HasPriorStepTriggerContext, Optional<String>> getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof PartnerEventIdPojo that)) {
+            return false;
+        }
+        return Objects.equals(getName(), that.getName()) && Objects.equals(getValue(), that.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getValue());
     }
 
     @Override

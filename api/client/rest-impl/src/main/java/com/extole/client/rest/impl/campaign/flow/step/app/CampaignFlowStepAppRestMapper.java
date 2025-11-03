@@ -33,11 +33,11 @@ public final class CampaignFlowStepAppRestMapper {
             flowStepApp.getName(),
             flowStepApp.getDescription(),
             new CampaignFlowStepAppTypeResponse(flowStepApp.getType().getName()),
-            flowStepApp.getCampaignComponentReferences()
+            flowStepApp.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            flowStepApp.getCampaignComponentReferences()
+            flowStepApp.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -51,7 +51,7 @@ public final class CampaignFlowStepAppRestMapper {
             flowStepApp.getName(),
             flowStepApp.getDescription(),
             new CampaignFlowStepAppTypeConfiguration(flowStepApp.getType().getName()),
-            flowStepApp.getCampaignComponentReferences()
+            flowStepApp.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

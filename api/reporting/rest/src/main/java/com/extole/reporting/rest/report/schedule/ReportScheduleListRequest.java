@@ -39,24 +39,21 @@ public class ReportScheduleListRequest {
     private final Optional<ZoneId> timezone;
 
     public ReportScheduleListRequest(
-        @Parameter(description = "Optional filter for report type name.")
-        @Nullable @QueryParam(PARAMETER_REPORT_TYPE) String reportType,
+        @Parameter(
+            description = "Optional filter for report type name.") @Nullable @QueryParam(PARAMETER_REPORT_TYPE) String reportType,
         @Nullable @QueryParam(PARAMETER_DISPLAY_NAME) String displayName,
         @Nullable @QueryParam(PARAMETER_USER_ID) String userId,
         @Parameter(description = "Optional filter for report runner tags, " +
-            "asks for runners that contain at least one of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_TAGS) String tags,
+            "asks for runners that contain at least one of the specified tags.") @Nullable @QueryParam(PARAMETER_TAGS) String tags,
         @Parameter(description = "Optional filter for required report runner tags, " +
-            "asks for runners that contain all of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_REQUIRED_TAGS) String requiredTags,
+            "asks for runners that contain all of the specified tags.") @Nullable @QueryParam(PARAMETER_REQUIRED_TAGS) String requiredTags,
         @Parameter(description = "Optional filter for report runner exclude tags, " +
-            "asks for runners that do not contain any of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_EXCLUDE_TAGS) String excludeTags,
+            "asks for runners that do not contain any of the specified tags.") @Nullable @QueryParam(PARAMETER_EXCLUDE_TAGS) String excludeTags,
         @Nullable @QueryParam(PARAMETER_SEARCH_QUERY) String searchQuery,
-        @Parameter(description = "Optional filter for offset, defaults to 0.")
-        @Nullable @QueryParam(PARAMETER_OFFSET) String offset,
-        @Parameter(description = "Optional filter for limit, defaults to all.")
-        @Nullable @QueryParam(PARAMETER_LIMIT) String limit,
+        @Parameter(
+            description = "Optional filter for offset, defaults to 0.") @Nullable @QueryParam(PARAMETER_OFFSET) String offset,
+        @Parameter(
+            description = "Optional filter for limit, defaults to all.") @Nullable @QueryParam(PARAMETER_LIMIT) String limit,
         @Nullable @QueryParam(PARAMETER_ORDER_BY) String orderBy,
         @Nullable @QueryParam(PARAMETER_ORDER) String order,
         @Nullable @TimeZoneParam ZoneId timezone) {

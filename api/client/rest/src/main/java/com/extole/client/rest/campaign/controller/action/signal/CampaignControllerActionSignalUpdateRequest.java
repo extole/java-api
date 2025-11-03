@@ -74,8 +74,11 @@ public class CampaignControllerActionSignalUpdateRequest extends ComponentElemen
     }
 
     @JsonProperty(JSON_DATA)
-    public Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<SignalActionContext, Optional<Object>>>>> getData() {
+    public
+        Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<SignalActionContext, Optional<Object>>>>>
+        getData() {
         return data;
     }
 
@@ -94,8 +97,10 @@ public class CampaignControllerActionSignalUpdateRequest extends ComponentElemen
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled = Omissible.omitted();
         private Omissible<RuntimeEvaluatable<SignalActionContext, String>> signalPollingId = Omissible.omitted();
         private Omissible<RuntimeEvaluatable<SignalActionContext, String>> name = Omissible.omitted();
-        private Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<SignalActionContext, Optional<Object>>>>> data = Omissible.omitted();
+        private Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<SignalActionContext, Optional<Object>>>>> data =
+                    Omissible.omitted();
 
         private Builder() {
         }
@@ -120,8 +125,9 @@ public class CampaignControllerActionSignalUpdateRequest extends ComponentElemen
             return this;
         }
 
-        public Builder withData(Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<SignalActionContext, Optional<Object>>>> data) {
+        public Builder withData(
+            Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<SignalActionContext, Optional<Object>>>> data) {
             this.data = Omissible.of(data);
             return this;
         }

@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
@@ -23,6 +25,8 @@ import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
 import com.extole.authorization.service.ClientHandle;
 import com.extole.authorization.service.client.ClientAuthorization;
+import com.extole.client.consumer.event.service.event.context.ClientRequestContext;
+import com.extole.client.consumer.event.service.event.context.ClientRequestContextService;
 import com.extole.client.rest.impl.person.PersonShareableRestMapper;
 import com.extole.client.rest.person.v4.PersonShareableV4Response;
 import com.extole.client.rest.program.ProgramRestException;
@@ -43,7 +47,11 @@ import com.extole.common.rest.support.authorization.client.ClientAuthorizationPr
 import com.extole.common.security.HashAlgorithm;
 import com.extole.consumer.event.service.ConsumerEventSender;
 import com.extole.consumer.event.service.ConsumerEventSenderService;
+import com.extole.consumer.event.service.input.InputEventLockClosureResult;
+import com.extole.consumer.event.service.processor.EventData;
+import com.extole.consumer.event.service.processor.EventProcessorException;
 import com.extole.event.consumer.ClientDomainContext;
+import com.extole.event.consumer.ConsumerEventName;
 import com.extole.id.Id;
 import com.extole.model.entity.program.PublicProgram;
 import com.extole.model.service.program.ProgramNotFoundException;
@@ -84,6 +92,8 @@ public class ClientPersonShareableEndpointsImpl implements ClientPersonShareable
     private final ClientShareableService clientShareableService;
     private final ConsumerEventSenderService consumerEventSenderService;
     private final PersonShareableRestMapper shareableRestMapper;
+    private final HttpServletRequest servletRequest;
+    private final ClientRequestContextService clientRequestContextService;
 
     @Autowired
     public ClientPersonShareableEndpointsImpl(PersonService personService,
@@ -91,13 +101,17 @@ public class ClientPersonShareableEndpointsImpl implements ClientPersonShareable
         ClientAuthorizationProvider authorizationProvider,
         ClientShareableService clientShareableService,
         ConsumerEventSenderService consumerEventSenderService,
-        PersonShareableRestMapper shareableRestMapper) {
+        PersonShareableRestMapper shareableRestMapper,
+        @Context HttpServletRequest servletRequest,
+        ClientRequestContextService clientRequestContextService) {
         this.personService = personService;
         this.programCache = programCache;
         this.authorizationProvider = authorizationProvider;
         this.clientShareableService = clientShareableService;
         this.consumerEventSenderService = consumerEventSenderService;
         this.shareableRestMapper = shareableRestMapper;
+        this.servletRequest = servletRequest;
+        this.clientRequestContextService = clientRequestContextService;
     }
 
     @Override
@@ -150,7 +164,7 @@ public class ClientPersonShareableEndpointsImpl implements ClientPersonShareable
         throws UserAuthorizationRestException, ProgramRestException, ClientShareableCreateRestException,
         ClientShareableValidationRestException, ClientShareableRestException {
 
-        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         PublicProgram program = getProgram(authorization, request.getProgramUrl().getValue());
 
         if (Strings.isNullOrEmpty(request.getLabel())) {
@@ -158,29 +172,43 @@ public class ClientPersonShareableEndpointsImpl implements ClientPersonShareable
                 .withErrorCode(ClientShareableCreateRestException.LABEL_IS_MISSING).build();
         }
         try {
-            ClientShareable shareable =
-                personService.updatePerson(authorization, Id.valueOf(personId),
-                    new LockDescription("client-person-shareable-endpoint-create"),
-                    (personBuilder, originalPersonProfile) -> {
-                        try {
-                            ClientShareableBuilder builder =
-                                clientShareableService.create(authorization.getClientId(), program.getId(),
-                                    personBuilder);
-                            if (authorization.isAuthorized(authorization.getClientId(),
-                                Authorization.Scope.USER_SUPPORT)) {
-                                builder.withIgnoringNaughtyWords();
-                            }
-                            builder.withLabel(request.getLabel());
-                            request.getCode().ifPresent(builder::withCode);
-                            request.getKey().ifPresent(builder::withKey);
-                            request.getContent().ifPresent(content -> addContent(builder, content));
-                            request.getData().ifPresent(data -> addData(builder, data));
+            Person person = personService.getPerson(authorization, Id.valueOf(personId));
+            ClientRequestContext requestContext =
+                clientRequestContextService.createBuilder(authorization, servletRequest)
+                    .withEventName(ConsumerEventName.EXTOLE_SHAREABLE.getEventName())
+                    .withEventProcessing(configurator -> {
+                        request.getData().ifPresent(map -> map.forEach((k, v) -> configurator
+                            .addData(new EventData(k, v, EventData.Source.REQUEST_BODY, false, true))));
+                    })
+                    .build();
 
-                            return builder.save();
-                        } catch (ClientShareableValidationRestException | ShareableServiceException e) {
-                            throw new LockClosureException(e);
+            ClientShareable shareable = consumerEventSenderService
+                .createInputEvent(authorization, requestContext.getProcessedRawEvent(), person.getId())
+                .withLockDescription(new LockDescription("client-person-shareable-endpoint-create"))
+                .executeAndSend((personBuilder, originalPerson, inputEventBuilder) -> {
+                    try {
+                        ClientShareableBuilder builder =
+                            clientShareableService.create(authorization.getClientId(), program.getId(),
+                                personBuilder);
+                        if (authorization.isAuthorized(authorization.getClientId(),
+                            Authorization.Scope.USER_SUPPORT)) {
+                            builder.withIgnoringNaughtyWords();
                         }
-                    }, createConsumerEventSender(program));
+                        builder.withLabel(request.getLabel());
+                        request.getCode().ifPresent(builder::withCode);
+                        request.getKey().ifPresent(builder::withKey);
+                        request.getContent().ifPresent(content -> addContent(builder, content));
+                        request.getData().ifPresent(data -> addData(builder, data));
+
+                        inputEventBuilder.withClientDomainContext(
+                            new ClientDomainContext(program.getProgramDomain().toString(), program.getId()));
+
+                        ClientShareable createdShareable = builder.save();
+                        return new InputEventLockClosureResult<>(originalPerson, createdShareable);
+                    } catch (ClientShareableValidationRestException | ShareableServiceException e) {
+                        throw new LockClosureException(e);
+                    }
+                }).getPreEventSendingResult();
             return shareableRestMapper.toPersonShareableV4Response(shareable);
         } catch (LockClosureException e) {
             Throwable cause = e.getCause();
@@ -249,6 +277,11 @@ public class ClientPersonShareableEndpointsImpl implements ClientPersonShareable
         } catch (AuthorizationException e) {
             throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
                 .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED).withCause(e).build();
+        } catch (EventProcessorException e) {
+            throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
+                .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
+                .withCause(e)
+                .build();
         }
     }
 
@@ -256,7 +289,7 @@ public class ClientPersonShareableEndpointsImpl implements ClientPersonShareable
     public PersonShareableV4Response update(String accessToken, String personId, String code,
         UpdateClientShareableRequest request) throws UserAuthorizationRestException, ClientShareableRestException,
         ClientShareableValidationRestException, ProgramRestException {
-        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
             Person person = personService.getPerson(authorization, Id.valueOf(personId));
             ClientShareable clientShareable = clientShareableService.getByCode(authorization, code);
@@ -279,9 +312,22 @@ public class ClientPersonShareableEndpointsImpl implements ClientPersonShareable
             }
             Id<ProgramHandle> programId = program != null ? program.getId() : null;
 
-            ClientShareable shareable = personService.updatePerson(authorization, clientShareable.getPersonId(),
-                new LockDescription("client-person-shareable-endpoint-update"),
-                (personBuilder, originalPersonProfile) -> {
+            ClientRequestContext requestContext =
+                clientRequestContextService.createBuilder(authorization, servletRequest)
+                    .withEventName(ConsumerEventName.EXTOLE_SHAREABLE.getEventName())
+                    .withEventProcessing(configurator -> {
+                        request.getData().ifPresent(map -> map.forEach((k, v) -> configurator
+                            .addData(new EventData(k, v, EventData.Source.REQUEST_BODY, false, true))));
+                    })
+                    .build();
+
+            PublicProgram shareableProgram = getProgram(authorization, clientShareable.getProgramId());
+
+            ClientShareable shareable = consumerEventSenderService
+                .createInputEvent(authorization, requestContext.getProcessedRawEvent(),
+                    clientShareable.getPersonId())
+                .withLockDescription(new LockDescription("client-person-shareable-endpoint-update"))
+                .executeAndSend((personBuilder, originalPerson, inputEventBuilder) -> {
                     try {
                         ClientShareableBuilder builder =
                             clientShareableService.edit(authorization.getClientId(), clientShareable, personBuilder);
@@ -305,11 +351,15 @@ public class ClientPersonShareableEndpointsImpl implements ClientPersonShareable
                         request.getContent().ifPresent(content -> addContent(builder, content));
                         request.getData().ifPresent(data -> addData(builder, data));
 
-                        return builder.save();
+                        inputEventBuilder.withClientDomainContext(new ClientDomainContext(
+                            shareableProgram.getProgramDomain().toString(), shareableProgram.getId()));
+
+                        ClientShareable updatedShareable = builder.save();
+                        return new InputEventLockClosureResult<>(originalPerson, updatedShareable);
                     } catch (ClientShareableValidationRestException | ShareableServiceException e) {
                         throw new LockClosureException(e);
                     }
-                }, createConsumerEventSender(clientShareable.getProgramId(), clientShareable.getClientId()));
+                }).getPreEventSendingResult();
             return shareableRestMapper.toPersonShareableV4Response(shareable);
         } catch (LockClosureException e) {
             Throwable cause = e.getCause();
@@ -356,6 +406,11 @@ public class ClientPersonShareableEndpointsImpl implements ClientPersonShareable
         } catch (AuthorizationException e) {
             throw RestExceptionBuilder.newBuilder(UserAuthorizationRestException.class)
                 .withErrorCode(UserAuthorizationRestException.ACCESS_DENIED).withCause(e).build();
+        } catch (EventProcessorException e) {
+            throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
+                .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
+                .withCause(e)
+                .build();
         }
     }
 
@@ -451,6 +506,19 @@ public class ClientPersonShareableEndpointsImpl implements ClientPersonShareable
             throw RestExceptionBuilder.newBuilder(ProgramRestException.class)
                 .withErrorCode(ProgramRestException.UNKNOWN_PROGRAM)
                 .addParameter("program_url", domain)
+                .withCause(e)
+                .build();
+        }
+    }
+
+    private PublicProgram getProgram(Authorization authorization, Id<ProgramHandle> programId)
+        throws ProgramRestException {
+        try {
+            return programCache.getById(programId, authorization.getClientId());
+        } catch (ProgramNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(ProgramRestException.class)
+                .withErrorCode(ProgramRestException.UNKNOWN_PROGRAM)
+                .addParameter("program_id", programId.toString())
                 .withCause(e)
                 .build();
         }

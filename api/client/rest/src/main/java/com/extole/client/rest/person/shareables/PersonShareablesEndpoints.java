@@ -35,8 +35,8 @@ public interface PersonShareablesEndpoints {
         description = "Returns shareable for a person identified by id.")
     PersonShareableResponse get(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @Parameter(description = "Shareable id parameter") @PathParam("code") String code,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException, PersonShareableRestException;
@@ -47,8 +47,8 @@ public interface PersonShareablesEndpoints {
         description = "Returns shareables for a person, sorted by created date in descending order.")
     List<PersonShareableResponse> list(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @BeanParam PersonShareablesListRequest shareableListRequest,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException, PersonShareablesListRestException;

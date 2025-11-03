@@ -39,8 +39,8 @@ import com.extole.model.service.reward.supplier.RewardSupplierValidationExceptio
 import com.extole.model.service.reward.supplier.built.BuildRewardSupplierException;
 import com.extole.model.service.reward.supplier.custom.reward.InvalidMissingFulfillmentAutoFailDelayException;
 
-public abstract class BaseRewardSupplierUpdateRequestMapper<REQUEST extends RewardSupplierUpdateRequest,
-    SUPPLIER extends RewardSupplier, BUILDER extends RewardSupplierBuilder<SUPPLIER, ?>>
+public abstract class BaseRewardSupplierUpdateRequestMapper<REQUEST extends RewardSupplierUpdateRequest, SUPPLIER extends RewardSupplier, BUILDER extends RewardSupplierBuilder<
+    SUPPLIER, ?>>
     implements RewardSupplierUpdateRequestMapper<REQUEST, SUPPLIER> {
 
     private final ComponentService componentService;
@@ -85,6 +85,8 @@ public abstract class BaseRewardSupplierUpdateRequestMapper<REQUEST extends Rewa
 
             updateRequest.getName()
                 .ifPresent(name -> builder.withName(name));
+            updateRequest.getDisplayName()
+                .ifPresent(displayName -> builder.withDisplayName(displayName));
             updateRequest.getFaceValueAlgorithmType()
                 .ifPresent(faceValueAlgorithmType -> builder.withFaceValueAlgorithmType(
                     rewardSupplierRestMapper.toFaceValueAlgorithmType(faceValueAlgorithmType)));
@@ -201,8 +203,8 @@ public abstract class BaseRewardSupplierUpdateRequestMapper<REQUEST extends Rewa
         }
     }
 
-    interface UpdateInitializer<REQUEST extends RewardSupplierUpdateRequest,
-        BUILDER extends RewardSupplierBuilder<?, ?>> {
+    interface UpdateInitializer<REQUEST extends RewardSupplierUpdateRequest, BUILDER extends RewardSupplierBuilder<?,
+        ?>> {
         BUILDER initialize(Authorization authorization, String rewardSupplierId, REQUEST request)
             throws CustomRewardSupplierRestException, AuthorizationException, RewardSupplierCreationRestException,
             BuildRewardSupplierRestException, TangoRewardSupplierCreationRestException,

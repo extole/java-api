@@ -22,8 +22,8 @@ public class ExpressionRewardWebhookFilterCreateRequest {
     }
 
     @JsonProperty(EXPRESSION)
-    public BuildtimeEvaluatable<WebhookBuildtimeContext,
-        RuntimeEvaluatable<RewardWebhookFilterRuntimeContext, Boolean>> getExpression() {
+    public BuildtimeEvaluatable<WebhookBuildtimeContext, RuntimeEvaluatable<RewardWebhookFilterRuntimeContext, Boolean>>
+        getExpression() {
         return expression;
     }
 
@@ -45,8 +45,9 @@ public class ExpressionRewardWebhookFilterCreateRequest {
 
         }
 
-        public Builder withExpression(BuildtimeEvaluatable<WebhookBuildtimeContext,
-            RuntimeEvaluatable<RewardWebhookFilterRuntimeContext, Boolean>> expression) {
+        public Builder withExpression(
+            BuildtimeEvaluatable<WebhookBuildtimeContext,
+                RuntimeEvaluatable<RewardWebhookFilterRuntimeContext, Boolean>> expression) {
             this.expression = expression;
             return this;
         }

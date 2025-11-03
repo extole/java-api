@@ -25,13 +25,12 @@ public interface PersonNetworkStatsEndpoints {
     @Operation(summary = "Gets calculated statistics for the network of a Person")
     PersonNetworkStatsResponse getNetworkStats(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.", required = true)
-        @PathParam("person_id") String personId,
+        @Parameter(description = "The Extole unique profile identifier of this user at Extole.",
+            required = true) @PathParam("person_id") String personId,
         @Parameter(description = "Optional container filter, defaults to production container. " +
-            "Pass \"*\" to include steps for all containers")
-        @Nullable @QueryParam("container") String container,
-        @Parameter(description = "Optional flag to exclude relationships with anonymous persons.")
-        @Nullable @QueryParam("exclude_anonymous") Boolean excludeAnonymous)
+            "Pass \"*\" to include steps for all containers") @Nullable @QueryParam("container") String container,
+        @Parameter(
+            description = "Optional flag to exclude relationships with anonymous persons.") @Nullable @QueryParam("exclude_anonymous") Boolean excludeAnonymous)
         throws UserAuthorizationRestException, PersonRestException;
 
 }

@@ -48,8 +48,9 @@ import com.extole.model.service.reward.supplier.tango.TangoRewardSupplierUnsuppo
 import com.extole.model.service.tango.TangoServiceUnavailableException;
 
 @Component
-public class TangoRewardSupplierCreateRequestMapper extends BaseRewardSupplierCreateRequestMapper<
-    TangoRewardSupplierCreateRequest, TangoRewardSupplier, TangoRewardSupplierBuilder> {
+public class TangoRewardSupplierCreateRequestMapper extends
+    BaseRewardSupplierCreateRequestMapper<TangoRewardSupplierCreateRequest, TangoRewardSupplier,
+        TangoRewardSupplierBuilder> {
 
     private final TangoRewardSupplierService tangoRewardSupplierService;
     private final RewardSupplierService rewardSupplierService;

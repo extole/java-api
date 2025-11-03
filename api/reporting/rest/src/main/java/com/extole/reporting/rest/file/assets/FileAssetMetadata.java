@@ -17,12 +17,11 @@ public class FileAssetMetadata {
     private final Optional<String> format;
 
     public FileAssetMetadata(
-        @Parameter(description = "Optional name, max length 255")
-        @JsonProperty(NAME) Optional<String> name,
-        @Parameter(description = "Optional tags, tag max length 255")
-        @JsonProperty(TAGS) Optional<Set<String>> tags,
-        @Parameter(description = "Optional file format, one of: CSV, PSV, JSON")
-        @JsonProperty(FORMAT) Optional<String> format) {
+        @Parameter(description = "Optional name, max length 255") @JsonProperty(NAME) Optional<String> name,
+        @Parameter(description = "Optional tags, tag max length 255") @JsonProperty(TAGS) Optional<Set<String>> tags,
+        @Parameter(
+            description = "Optional file format, one of: CSV, PSV, JSON") @JsonProperty(FORMAT) Optional<
+                String> format) {
         this.name = name;
         this.tags = tags;
         this.format = format;

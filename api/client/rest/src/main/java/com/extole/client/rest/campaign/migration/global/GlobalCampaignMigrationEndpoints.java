@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import io.swagger.v3.oas.annotations.Hidden;
 
-import com.extole.api.campaign.Campaign;
+import com.extole.api.campaign.BuiltCampaign;
 import com.extole.client.rest.campaign.migration.GlobalCampaignMigrationRestException;
 import com.extole.common.rest.authorization.UserAccessTokenParam;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
@@ -30,7 +30,7 @@ public interface GlobalCampaignMigrationEndpoints {
     @Path("/pull-client-variables")
     GlobalCampaignMigrationResponse pullClientVariables(
         @UserAccessTokenParam String accessToken,
-        @QueryParam("source_campaign_id") Optional<Id<Campaign>> sourceCampaignId,
+        @QueryParam("source_campaign_id") Optional<Id<BuiltCampaign>> sourceCampaignId,
         @TimeZoneParam ZoneId timeZone) throws UserAuthorizationRestException, GlobalCampaignMigrationRestException;
 
 }

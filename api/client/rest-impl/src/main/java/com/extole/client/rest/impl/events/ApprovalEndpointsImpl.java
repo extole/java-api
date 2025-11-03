@@ -1,5 +1,8 @@
 package com.extole.client.rest.impl.events;
 
+import static com.extole.event.consumer.ConsumerEventDecorator.PARAMETER_NAME_TARGET;
+import static com.extole.event.consumer.ConsumerEventDecorator.TARGET_PREFIX_CAMPAIGN_ID;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,6 +50,7 @@ import com.extole.model.service.program.ProgramNotFoundException;
 import com.extole.model.shared.program.ProgramDomainCache;
 import com.extole.person.service.ProgramHandle;
 import com.extole.person.service.profile.Person;
+import com.extole.person.service.profile.PersonHandle;
 import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.profile.PersonService;
 import com.extole.signal.service.event.SignalPendingOperationReadService;
@@ -61,7 +65,6 @@ public class ApprovalEndpointsImpl implements ApprovalEndpoints {
     private static final String EVENT_PARAMETER_NOTE = "note";
     private static final String EVENT_PARAMETER_FORCE = "force";
     private static final String EVENT_PARAMETER_CAUSE_TYPE = "cause_type";
-    private static final String EVENT_PARAMETER_TARGET = "target";
 
     private static final String RESPONSE_STATUS_SUCCESS = "success";
     private static final String RESPONSE_STATUS_FAILURE = "failure";
@@ -160,12 +163,20 @@ public class ApprovalEndpointsImpl implements ApprovalEndpoints {
                 .entity(new ConversionResponse(e.getMessage()))
                 .header("Cache-Control", "no-cache")
                 .build();
+        } catch (PersonNotFoundException e) {
+            LOG.warn("approval endpoints received PersonNotFoundException for accessToken {} eventId {} " +
+                "partnerConversionId {} approvalEvent {} note {} force {}",
+                accessToken, eventId, partnerConversionId, approvalEvent, note, Boolean.valueOf(force), e);
+            return Response.ok()
+                .entity(new ConversionResponse(e.getMessage()))
+                .header("Cache-Control", "no-cache")
+                .build();
         }
     }
 
     private ConversionResponse process(ClientAuthorization authorization, Long eventId, String partnerConversionId,
         String approvalEvent, String note, boolean force)
-        throws ApprovalException, AuthorizationException, EventProcessorException {
+        throws ApprovalException, AuthorizationException, EventProcessorException, PersonNotFoundException {
         Id<ClientHandle> clientId = authorization.getClientId();
         Long clientIdAsLong = Long.valueOf(clientId.getValue());
         ApprovalRequest request =
@@ -194,16 +205,18 @@ public class ApprovalEndpointsImpl implements ApprovalEndpoints {
 
         switch (request.getApproveType()) {
             case APPROVE:
-                return approveAction(authorization, person, targetAction, programDomain, request);
+                return approveAction(authorization, person.getId(), targetAction, programDomain, request);
             case DECLINE:
-                return declineAction(authorization, person, targetAction, programDomain, request);
+                return declineAction(authorization, person.getId(), targetAction, programDomain, request);
             default:
                 return null;
         }
     }
 
-    private ConversionResponse approveAction(ClientAuthorization authorization, Person person, Action action,
-        PublicProgram programDomain, ApprovalRequest request) throws AuthorizationException, EventProcessorException {
+    private ConversionResponse approveAction(ClientAuthorization authorization, Id<PersonHandle> personId,
+        Action action,
+        PublicProgram programDomain, ApprovalRequest request)
+        throws AuthorizationException, EventProcessorException, PersonNotFoundException {
 
         String pollingId = UUID.randomUUID().toString();
 
@@ -212,7 +225,7 @@ public class ApprovalEndpointsImpl implements ApprovalEndpoints {
             .put(EVENT_PARAMETER_ACTION_ID, action.getActionId().getValue())
             .put(EVENT_PARAMETER_FORCE, Boolean.toString(request.getForce()))
             .put(EVENT_PARAMETER_CAUSE_TYPE, ReviewStatusCauseType.ADMIN_USER.name())
-            .put(EVENT_PARAMETER_TARGET, "campaign_id:" + action.getCampaignId().getValue());
+            .put(PARAMETER_NAME_TARGET, TARGET_PREFIX_CAMPAIGN_ID + action.getCampaignId().getValue());
 
         if (StringUtils.isNotBlank(request.getNote())) {
             approveParametersBuilder.put(EVENT_PARAMETER_NOTE, request.getNote());
@@ -231,7 +244,7 @@ public class ApprovalEndpointsImpl implements ApprovalEndpoints {
                 .build();
 
         InputConsumerEvent inputConsumerEvent = consumerEventSenderService
-            .createInputEvent(authorization, requestContext.getProcessedRawEvent(), person)
+            .createInputEvent(authorization, requestContext.getProcessedRawEvent(), personId)
             .send();
 
         Id<ClientHandle> clientId = authorization.getClientId();
@@ -246,8 +259,9 @@ public class ApprovalEndpointsImpl implements ApprovalEndpoints {
                 action.getActionId().getValue()));
     }
 
-    private ConversionResponse declineAction(ClientAuthorization authorization, Person person, Action action,
-        PublicProgram programDomain, ApprovalRequest request) throws AuthorizationException, EventProcessorException {
+    private ConversionResponse declineAction(ClientAuthorization authorization, Id<PersonHandle> personId,
+        Action action, PublicProgram programDomain, ApprovalRequest request)
+        throws AuthorizationException, EventProcessorException, PersonNotFoundException {
 
         String pollingId = UUID.randomUUID().toString();
 
@@ -255,7 +269,7 @@ public class ApprovalEndpointsImpl implements ApprovalEndpoints {
             .put(EVENT_PARAMETER_POLLING_ID, pollingId)
             .put(EVENT_PARAMETER_ACTION_ID, action.getActionId().getValue())
             .put(EVENT_PARAMETER_CAUSE_TYPE, ReviewStatusCauseType.ADMIN_USER.name())
-            .put(EVENT_PARAMETER_TARGET, "campaign_id:" + action.getCampaignId().getValue());
+            .put(PARAMETER_NAME_TARGET, TARGET_PREFIX_CAMPAIGN_ID + action.getCampaignId().getValue());
 
         if (StringUtils.isNotBlank(request.getNote())) {
             declineParametersBuilder.put(EVENT_PARAMETER_NOTE, request.getNote());
@@ -274,7 +288,7 @@ public class ApprovalEndpointsImpl implements ApprovalEndpoints {
                 .build();
 
         InputConsumerEvent inputConsumerEvent = consumerEventSenderService
-            .createInputEvent(authorization, requestContext.getProcessedRawEvent(), person)
+            .createInputEvent(authorization, requestContext.getProcessedRawEvent(), personId)
             .send();
 
         Id<ClientHandle> clientId = authorization.getClientId();

@@ -1,10 +1,14 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.extole.client.rest.campaign.component.setting.SettingType;
 import com.extole.client.rest.campaign.configuration.CampaignComponentVariableConfiguration;
 import com.extole.client.rest.campaign.configuration.VariableSource;
+import com.extole.client.rest.impl.campaign.component.CampaignComponentRestMapperContext;
 import com.extole.model.entity.campaign.Setting;
 import com.extole.model.entity.campaign.Variable;
 
@@ -13,7 +17,8 @@ public class ComponentSettingDefaultConfigurationMapper
     implements ComponentSettingConfigurationMapper<CampaignComponentVariableConfiguration> {
 
     @Override
-    public CampaignComponentVariableConfiguration mapToSettingConfiguration(Setting setting) {
+    public CampaignComponentVariableConfiguration mapToSettingConfiguration(
+        CampaignComponentRestMapperContext restMapperContext, Setting setting) {
         Variable variable = (Variable) setting;
         return new CampaignComponentVariableConfiguration(variable.getName(),
             variable.getDisplayName(),
@@ -27,8 +32,8 @@ public class ComponentSettingDefaultConfigurationMapper
     }
 
     @Override
-    public com.extole.model.entity.campaign.SettingType getSettingType() {
-        return com.extole.model.entity.campaign.SettingType.STRING;
+    public List<com.extole.model.entity.campaign.SettingType> getSettingTypes() {
+        return Collections.singletonList(com.extole.model.entity.campaign.SettingType.STRING);
     }
 
 }

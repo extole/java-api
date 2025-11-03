@@ -4,8 +4,7 @@ import com.extole.client.rest.campaign.controller.action.fire.as.person.identifi
 import com.extole.model.entity.campaign.FireAsPersonIdenticationType;
 import com.extole.model.entity.campaign.built.BuiltFireAsPersonIdentification;
 
-public interface BuiltFireAsPersonIdentificationResponseMapper<FROM extends BuiltFireAsPersonIdentification,
-    RESPONSE extends FireAsPersonIdentification> {
+public interface BuiltFireAsPersonIdentificationResponseMapper<FROM extends BuiltFireAsPersonIdentification, RESPONSE extends FireAsPersonIdentification> {
 
     RESPONSE toResponse(FROM identification);
 

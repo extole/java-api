@@ -65,8 +65,10 @@ public class CampaignControllerActionEmailUpdateRequest extends ComponentElement
     }
 
     @JsonProperty(JSON_DATA)
-    public Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<EmailActionContext, Optional<Object>>>>> getData() {
+    public
+        Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<EmailActionContext, Optional<Object>>>>>
+        getData() {
         return data;
     }
 
@@ -84,8 +86,10 @@ public class CampaignControllerActionEmailUpdateRequest extends ComponentElement
         private Omissible<CampaignControllerActionQuality> quality = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> zoneName = Omissible.omitted();
-        private Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<EmailActionContext, Optional<Object>>>>> data = Omissible.omitted();
+        private Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<EmailActionContext, Optional<Object>>>>> data =
+                    Omissible.omitted();
 
         public Builder withQuality(CampaignControllerActionQuality quality) {
             this.quality = Omissible.of(quality);
@@ -102,8 +106,9 @@ public class CampaignControllerActionEmailUpdateRequest extends ComponentElement
             return this;
         }
 
-        public Builder withData(Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<EmailActionContext, Optional<Object>>>> data) {
+        public Builder withData(
+            Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<EmailActionContext, Optional<Object>>>> data) {
             this.data = Omissible.of(data);
             return this;
         }

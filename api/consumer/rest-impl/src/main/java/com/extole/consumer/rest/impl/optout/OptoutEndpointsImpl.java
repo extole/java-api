@@ -32,6 +32,7 @@ import com.extole.optout.client.OptoutUpdateClient;
 import com.extole.optout.client.OptoutUpdateClient.OptoutType;
 import com.extole.optout.external.ExternalOptoutClientException;
 import com.extole.optout.external.OptoutService;
+import com.extole.person.service.profile.PersonNotFoundException;
 
 @Provider
 public class OptoutEndpointsImpl implements OptoutEndpoints {
@@ -114,10 +115,9 @@ public class OptoutEndpointsImpl implements OptoutEndpoints {
                 .build();
 
             consumerEventSenderService
-                .createInputEvent(requestContext.getAuthorization(), requestContext.getProcessedRawEvent(),
-                    requestContext.getAuthorization().getIdentity())
+                .createInputEvent(requestContext.getAuthorization(), requestContext.getProcessedRawEvent())
                 .send();
-        } catch (AuthorizationRestException | AuthorizationException e) {
+        } catch (AuthorizationRestException | AuthorizationException | PersonNotFoundException e) {
             LOG.warn("Failed to produce optout event={} for clientId={}", optoutAction, clientId, e);
         }
     }

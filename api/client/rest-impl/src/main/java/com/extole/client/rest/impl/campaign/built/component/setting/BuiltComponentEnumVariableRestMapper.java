@@ -1,5 +1,7 @@
 package com.extole.client.rest.impl.campaign.built.component.setting;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -28,6 +30,7 @@ public class BuiltComponentEnumVariableRestMapper
             enumVariable.getDescription(),
             enumVariable.getTags(),
             Id.valueOf(enumVariable.getSourceComponentId().getValue()),
+            enumVariable.getSourceVersion(),
             enumVariable.getPriority(),
             enumVariable.getAllowedValues().stream()
                 .map(allowedValue -> allowedValue.getValue())
@@ -36,7 +39,7 @@ public class BuiltComponentEnumVariableRestMapper
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.ENUM;
+    public List<SettingType> getSettingTypes() {
+        return Collections.singletonList(SettingType.ENUM);
     }
 }

@@ -28,12 +28,11 @@ public interface ReportRecommendationEndpoints {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Gets a list of reports that are recommended according to the selected recommendation type.")
     List<ReportResponse> getRecommendations(@UserAccessTokenParam String accessToken,
-        @Parameter(description = "Recommendation type, can be one of: SCHEDULE")
-        @QueryParam("type") ReportRecommendationType type,
-        @Parameter(description = "Optional filter for limit, defaults to 4.")
-        @QueryParam("limit") Optional<String> limit,
-        @Parameter(description = "Time zone to be used when representing dates.")
-        @TimeZoneParam ZoneId timezone)
+        @Parameter(
+            description = "Recommendation type, can be one of: SCHEDULE") @QueryParam("type") ReportRecommendationType type,
+        @Parameter(
+            description = "Optional filter for limit, defaults to 4.") @QueryParam("limit") Optional<String> limit,
+        @Parameter(description = "Time zone to be used when representing dates.") @TimeZoneParam ZoneId timezone)
         throws UserAuthorizationRestException, QueryLimitsRestException;
 
 }

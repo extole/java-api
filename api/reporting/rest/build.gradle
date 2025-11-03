@@ -1,14 +1,11 @@
 description = """Reporting Rest"""
 
-
 dependencies {
     api project(':common-id')
     api project(':common-evaluatable')
     implementation project(':common-rest-support')
     implementation project(':context-api')
 
-    libraries.with {
-        implementation jsr305
-        implementation jersey
-    }
+    implementation libs.jsr305
+    implementation libs.bundles.jersey
 }

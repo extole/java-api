@@ -28,6 +28,8 @@ public class TangoRewardSupplierUpdateRequest extends RewardSupplierUpdateReques
 
     public TangoRewardSupplierUpdateRequest(
         @JsonProperty(NAME) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> name,
+        @JsonProperty(DISPLAY_NAME) Omissible<
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>>> displayName,
         @JsonProperty(FACE_VALUE_ALGORITHM_TYPE) Omissible<
             BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType,
         @JsonProperty(FACE_VALUE) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> faceValue,
@@ -53,8 +55,9 @@ public class TangoRewardSupplierUpdateRequest extends RewardSupplierUpdateReques
         @JsonProperty(TAGS) Omissible<Set<String>> tags,
         @JsonProperty(DATA) Omissible<Map<String, BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>>> data,
         @JsonProperty(ENABLED) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean>> enabled) {
-        super(RewardSupplierType.TANGO_V2, name, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack,
-            maxCashBack, faceValueType, partnerRewardSupplierId, partnerRewardKeyType, displayType, description,
+        super(RewardSupplierType.TANGO_V2, name, displayName, faceValueAlgorithmType, faceValue, cashBackPercentage,
+            minCashBack, maxCashBack, faceValueType, partnerRewardSupplierId, partnerRewardKeyType, displayType,
+            description,
             limitPerDay, limitPerHour, componentIds, componentReferences, tags, data, enabled);
     }
 
@@ -80,6 +83,7 @@ public class TangoRewardSupplierUpdateRequest extends RewardSupplierUpdateReques
 
             return new TangoRewardSupplierUpdateRequest(
                 name,
+                displayName,
                 faceValueAlgorithmType,
                 faceValue,
                 cashBackPercentage,

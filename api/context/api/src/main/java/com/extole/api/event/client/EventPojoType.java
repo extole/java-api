@@ -15,6 +15,7 @@ public enum EventPojoType {
     LEGACY_PREHANDLER("PrehandlerChangeEvent"),
     AUTH_PROVIDER("AuthProviderChangeEvent"),
     EMAIL_DOMAIN("EmailDomainPojo"),
+    COMPONENT_FACET("ComponentFacet"),
     LOGO("LogoChangeEvent"),
     CLIENT_SALESFORCE_SETTINGS("ClientSalesforceSettingsPojo"),
     CLIENT_SECURITY_SETTINGS("ClientSecuritySettingsChangeEvent"),

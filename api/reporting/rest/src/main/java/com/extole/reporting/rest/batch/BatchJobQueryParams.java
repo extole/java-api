@@ -30,13 +30,13 @@ public class BatchJobQueryParams {
         @Parameter(description = "Optional name filter.") @QueryParam(NAME) String name,
         @Parameter(description = "Optional tags filter.") @QueryParam(TAGS) Set<String> tags,
         @Parameter(description = "Optional statuses filter.") @QueryParam(STATUS) Set<BatchJobStatus> status,
-        @Parameter(description = "Optional event name filter specified on the creation of batch job.")
-        @QueryParam(EVENT_NAME) String eventName,
+        @Parameter(
+            description = "Optional event name filter specified on the creation of batch job.") @QueryParam(EVENT_NAME) String eventName,
         @Parameter(description = "Optional user id filter.") @QueryParam(USER_ID) String userId,
-        @Parameter(description = "Optional offset filter, defaults to 0.")
-        @QueryParam(OFFSET) @DefaultValue("0") Integer offset,
-        @Parameter(description = "Optional limit filter, defaults to 100.")
-        @QueryParam(LIMIT) @DefaultValue("100") Integer limit) {
+        @Parameter(
+            description = "Optional offset filter, defaults to 0.") @QueryParam(OFFSET) @DefaultValue("0") Integer offset,
+        @Parameter(
+            description = "Optional limit filter, defaults to 100.") @QueryParam(LIMIT) @DefaultValue("100") Integer limit) {
         this.name = Optional.ofNullable(name);
         this.eventName = Optional.ofNullable(eventName);
         this.userId = Optional.ofNullable(userId);

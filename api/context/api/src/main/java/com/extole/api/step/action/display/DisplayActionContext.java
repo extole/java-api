@@ -6,11 +6,12 @@ import com.extole.api.PersonContext;
 import com.extole.api.RuntimeVariableContext;
 import com.extole.api.campaign.VariableContext;
 import com.extole.api.event.internal.InternalConsumerEventBuilder;
+import com.extole.api.person.full.FullPerson;
 import com.extole.api.step.action.StepActionContext;
 
 @Schema
 public interface DisplayActionContext
-    extends StepActionContext, PersonContext, RuntimeVariableContext, VariableContext {
+    extends StepActionContext, PersonContext<FullPerson>, RuntimeVariableContext, VariableContext {
 
     InternalConsumerEventBuilder internalConsumerEventBuilder();
 

@@ -1,10 +1,14 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.extole.client.rest.campaign.component.setting.SettingType;
 import com.extole.client.rest.campaign.configuration.CampaignComponentClientKeyFlowVariableConfiguration;
 import com.extole.client.rest.campaign.configuration.VariableSource;
+import com.extole.client.rest.impl.campaign.component.CampaignComponentRestMapperContext;
 import com.extole.model.entity.campaign.ClientKeyFlowVariable;
 import com.extole.model.entity.campaign.Setting;
 
@@ -12,7 +16,8 @@ import com.extole.model.entity.campaign.Setting;
 public class ComponentClientKeyFlowVariableConfigurationMapper
     implements ComponentSettingConfigurationMapper<CampaignComponentClientKeyFlowVariableConfiguration> {
     @Override
-    public CampaignComponentClientKeyFlowVariableConfiguration mapToSettingConfiguration(Setting setting) {
+    public CampaignComponentClientKeyFlowVariableConfiguration mapToSettingConfiguration(
+        CampaignComponentRestMapperContext restMapperContext, Setting setting) {
         ClientKeyFlowVariable clientKeyFlowVariable = (ClientKeyFlowVariable) setting;
         return new CampaignComponentClientKeyFlowVariableConfiguration(setting.getName(),
             setting.getDisplayName(),
@@ -29,8 +34,8 @@ public class ComponentClientKeyFlowVariableConfigurationMapper
     }
 
     @Override
-    public com.extole.model.entity.campaign.SettingType getSettingType() {
-        return com.extole.model.entity.campaign.SettingType.CLIENT_KEY_FLOW;
+    public List<com.extole.model.entity.campaign.SettingType> getSettingTypes() {
+        return Collections.singletonList(com.extole.model.entity.campaign.SettingType.CLIENT_KEY_FLOW);
     }
 
 }

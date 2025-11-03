@@ -98,11 +98,16 @@ public class ConversionEndpointsImpl implements ConversionEndpoints {
             return Response.ok().entity(new ConversionResponse(e.getMessage()))
                 .header("Cache-Control", "no-cache")
                 .build();
+        } catch (PersonNotFoundException e) {
+            return Response.ok()
+                .entity(new ConversionResponse("Unable to find person with personId=" + e.getPersonId()))
+                .header("Cache-Control", "no-cache")
+                .build();
         }
     }
 
     private Id<? extends ConsumerEvent> convert(ClientAuthorization authorization, ConversionRequest conversion)
-        throws ConversionException, AuthorizationException, EventProcessorException {
+        throws ConversionException, AuthorizationException, EventProcessorException, PersonNotFoundException {
 
         conversion.validate();
         conversion.checkDateRange();

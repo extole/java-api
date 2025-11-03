@@ -1,12 +1,9 @@
 description = """Optout REST API"""
 
-
 dependencies {
     implementation project(':common-rest')
     implementation project(':optout-service')
 
-    libraries.with {
-        implementation jackson
-        compileOnly javaWs
-    }
+    implementation libs.bundles.jackson
+    compileOnly libs.javaWs
 }

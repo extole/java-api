@@ -11,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Provider;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.extole.appboot.health.AppbootHealthCheckpoint;
 import com.extole.common.rest.exception.RestExceptionBuilder;
@@ -41,7 +40,7 @@ public class MaintenanceEndpoints {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public MaintenanceResponse setState(@RequestBody MaintenanceRequest maintenanceRequest)
+    public MaintenanceResponse setState(MaintenanceRequest maintenanceRequest)
         throws AppbootRestException {
         validatePort();
         appbootHealthCheckpoint.setMaintenanceState(maintenanceRequest.getState());

@@ -27,6 +27,7 @@ import com.extole.id.Id;
 public class CustomRewardSupplierCreationV2Request extends ComponentElementRequest {
 
     private static final String NAME = "name";
+    private static final String DISPLAY_NAME = "display_name";
     private static final String FACE_VALUE_ALGORITHM_TYPE = "face_value_algorithm_type";
     private static final String FACE_VALUE = "face_value";
     private static final String FACE_VALUE_TYPE = "face_value_type";
@@ -51,8 +52,9 @@ public class CustomRewardSupplierCreationV2Request extends ComponentElementReque
     private static final String STATE_TRANSITIONS = "state_transitions";
 
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> name;
-    private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
-        FaceValueAlgorithmType>> faceValueAlgorithmType;
+    private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>>> displayName;
+    private final Omissible<
+        BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> faceValue;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> cashBackPercentage;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> minCashBack;
@@ -77,6 +79,8 @@ public class CustomRewardSupplierCreationV2Request extends ComponentElementReque
 
     public CustomRewardSupplierCreationV2Request(
         @JsonProperty(NAME) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> name,
+        @JsonProperty(DISPLAY_NAME) Omissible<
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>>> displayName,
         @JsonProperty(FACE_VALUE_ALGORITHM_TYPE) Omissible<
             BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType,
         @JsonProperty(FACE_VALUE) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> faceValue,
@@ -110,6 +114,7 @@ public class CustomRewardSupplierCreationV2Request extends ComponentElementReque
         @JsonProperty(STATE_TRANSITIONS) Omissible<Map<RewardState, List<RewardState>>> stateTransitions) {
         super(componentReferences, componentIds);
         this.name = name;
+        this.displayName = displayName;
         this.faceValueAlgorithmType = faceValueAlgorithmType;
         this.faceValue = faceValue;
         this.cashBackPercentage = cashBackPercentage;
@@ -137,6 +142,11 @@ public class CustomRewardSupplierCreationV2Request extends ComponentElementReque
     @JsonProperty(NAME)
     public Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> getName() {
         return name;
+    }
+
+    @JsonProperty(DISPLAY_NAME)
+    public Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>>> getDisplayName() {
+        return displayName;
     }
 
     @JsonProperty(FACE_VALUE_ALGORITHM_TYPE)
@@ -262,8 +272,11 @@ public class CustomRewardSupplierCreationV2Request extends ComponentElementReque
     public static final class CustomRewardSupplierCreationRequestBuilder
         extends ComponentElementRequest.Builder<CustomRewardSupplierCreationRequestBuilder> {
         private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> name = Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
-            FaceValueAlgorithmType>> faceValueAlgorithmType = Omissible.omitted();
+        private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>>> displayName =
+            Omissible.omitted();
+        private Omissible<
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> faceValue =
             Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> cashBackPercentage =
@@ -300,6 +313,12 @@ public class CustomRewardSupplierCreationV2Request extends ComponentElementReque
         public CustomRewardSupplierCreationRequestBuilder withName(
             BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name) {
             this.name = Omissible.of(name);
+            return this;
+        }
+
+        public CustomRewardSupplierCreationRequestBuilder withDisplayName(
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName) {
+            this.displayName = Omissible.of(displayName);
             return this;
         }
 
@@ -443,6 +462,7 @@ public class CustomRewardSupplierCreationV2Request extends ComponentElementReque
             }
 
             return new CustomRewardSupplierCreationV2Request(name,
+                displayName,
                 faceValueAlgorithmType,
                 faceValue,
                 cashBackPercentage,

@@ -53,7 +53,8 @@ public final class CampaignComponentEnumListVariableRequest extends CampaignComp
     }
 
     public static final class Builder<CALLER, BUILDER_TYPE extends Builder<CALLER, BUILDER_TYPE>>
-        extends CampaignComponentVariableRequest.Builder<CALLER, CampaignComponentEnumListVariableRequest,
+        extends
+        CampaignComponentVariableRequest.Builder<CALLER, CampaignComponentEnumListVariableRequest,
             Builder<CALLER, BUILDER_TYPE>> {
 
         private Omissible<List<String>> allowedValues = Omissible.omitted();

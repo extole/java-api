@@ -59,6 +59,7 @@ import com.extole.id.Id;
 import com.extole.model.entity.campaign.Campaign;
 import com.extole.model.entity.campaign.CampaignComponent;
 import com.extole.model.entity.campaign.CampaignComponentAsset;
+import com.extole.model.entity.campaign.ComponentElementPart;
 import com.extole.model.entity.campaign.Setting;
 import com.extole.model.entity.campaign.SettingType;
 import com.extole.model.entity.campaign.Variable;
@@ -111,7 +112,7 @@ public class GlobalCampaignMigrationEndpointsImpl implements GlobalCampaignMigra
 
     @Override
     public GlobalCampaignMigrationResponse pullClientVariables(String accessToken,
-        Optional<Id<com.extole.api.campaign.Campaign>> sourceCampaignId,
+        Optional<Id<com.extole.api.campaign.BuiltCampaign>> sourceCampaignId,
         ZoneId timeZone) throws UserAuthorizationRestException, GlobalCampaignMigrationRestException {
         authorization = authorizationProvider.getClientAuthorization(accessToken);
         if (!authorization.isClientAuthorized(authorization.getClientId(), Authorization.Scope.CLIENT_SUPERUSER)) {
@@ -217,9 +218,10 @@ public class GlobalCampaignMigrationEndpointsImpl implements GlobalCampaignMigra
             Optional<VariableAndAsset> merged = mergeIfNeeded(variables);
             if (merged.isPresent()) {
                 VariableAndAsset clientVariableAndAsset = merged.get();
-                Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-                    RuntimeEvaluatable<Object, Optional<Object>>>> values =
-                        clientVariableAndAsset.getVariable().getValues();
+                Map<String,
+                    BuildtimeEvaluatable<VariableBuildtimeContext,
+                        RuntimeEvaluatable<Object, Optional<Object>>>> values =
+                            clientVariableAndAsset.getVariable().getValues();
                 if (variable.getTags().contains(TRANSLATABLE_TAG)) {
                     values = moveDefaultValueToEnIfNeeded(values);
                 }
@@ -246,17 +248,19 @@ public class GlobalCampaignMigrationEndpointsImpl implements GlobalCampaignMigra
     }
 
     private Map<String, BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>>
-        moveDefaultValueToEnIfNeeded(Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values) {
+        moveDefaultValueToEnIfNeeded(
+            Map<String,
+                BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values) {
 
         if (!values.containsKey("default")) {
             return values;
         }
 
-        Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> copiedMap = new LinkedHashMap<>(values);
-        BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>> defaultValue = copiedMap.remove("default");
+        Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> copiedMap =
+                new LinkedHashMap<>(values);
+        BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>> defaultValue =
+            copiedMap.remove("default");
 
         if (!copiedMap.containsKey("en")) {
             copiedMap.put("en", defaultValue);
@@ -450,8 +454,9 @@ public class GlobalCampaignMigrationEndpointsImpl implements GlobalCampaignMigra
             .stream()
             .flatMap(variable -> variable.getVariable().getValues().keySet().stream())
             .collect(Collectors.toSet());
-        Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> mergedValues = Maps.newHashMap();
+        Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> mergedValues =
+                Maps.newHashMap();
         Map<String, ByteSource> mergedAssetBinaries = Maps.newHashMap();
         for (String locale : allLocales) {
             mergedValues.put(locale, mostCommon(variables
@@ -485,6 +490,11 @@ public class GlobalCampaignMigrationEndpointsImpl implements GlobalCampaignMigra
             @Override
             public Variable getVariable() {
                 return new Variable() {
+                    @Override
+                    public boolean coreEquals(ComponentElementPart other) {
+                        return false;
+                    }
+
                     private final Variable variable = variables.get(0).getVariable();
 
                     @Override
@@ -503,8 +513,11 @@ public class GlobalCampaignMigrationEndpointsImpl implements GlobalCampaignMigra
                     }
 
                     @Override
-                    public Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-                        RuntimeEvaluatable<Object, Optional<Object>>>> getValues() {
+                    public
+                        Map<String,
+                            BuildtimeEvaluatable<VariableBuildtimeContext,
+                                RuntimeEvaluatable<Object, Optional<Object>>>>
+                        getValues() {
                         return mergedValues;
                     }
 

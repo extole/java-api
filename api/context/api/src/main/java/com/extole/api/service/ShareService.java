@@ -1,10 +1,10 @@
 package com.extole.api.service;
 
-import java.util.Map;
-
 import javax.annotation.Nullable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import com.extole.api.person.Share;
 
 @Schema
 public interface ShareService {
@@ -15,12 +15,4 @@ public interface ShareService {
     @Nullable
     Share getShare(String shareId);
 
-    interface Share {
-        String getId();
-
-        Map<String, String> getData();
-
-        @Nullable
-        String getChannel();
-    }
 }

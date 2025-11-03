@@ -7,4 +7,6 @@ public interface JwtService {
 
     JwtBuilder createJwtBuilder();
 
+    boolean isValid(String jwt);
+
 }

@@ -1,5 +1,6 @@
 package com.extole.client.rest.impl.campaign.upload;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import com.google.common.io.ByteSource;
 
 import com.extole.client.rest.campaign.configuration.CampaignComponentAssetConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentConfiguration;
+import com.extole.client.rest.campaign.configuration.CampaignComponentFacetConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentSettingConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentSocketConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentVariableConfiguration;
@@ -46,6 +48,7 @@ import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerCo
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerDataIntelligenceEventConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerEventConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerExpressionConfiguration;
+import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerGroupConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerHasIdentityConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerHasPriorRewardConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerHasPriorStepConfiguration;
@@ -57,6 +60,8 @@ import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerRe
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerScoreConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerSendRewardEventConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerShareConfiguration;
+import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerStepEventConfiguration;
+import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerTargetingConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerZoneStateConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignFlowStepAppConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignFlowStepConfiguration;
@@ -70,11 +75,13 @@ import com.extole.client.rest.campaign.configuration.RewardRuleConfiguration;
 import com.extole.client.rest.campaign.configuration.StepDataConfiguration;
 import com.extole.client.rest.campaign.configuration.TransitionRuleConfiguration;
 import com.extole.client.rest.impl.campaign.component.asset.UploadedAssetId;
+import com.extole.common.lang.KeyCaseInsensitiveMap;
 import com.extole.id.Id;
 import com.extole.model.entity.QualityRuleType;
 import com.extole.model.entity.campaign.Campaign;
 import com.extole.model.entity.campaign.CampaignComponent;
 import com.extole.model.entity.campaign.CampaignComponentAsset;
+import com.extole.model.entity.campaign.CampaignComponentFacet;
 import com.extole.model.entity.campaign.CampaignController;
 import com.extole.model.entity.campaign.CampaignControllerAction;
 import com.extole.model.entity.campaign.CampaignControllerActionType;
@@ -100,6 +107,7 @@ import com.extole.model.service.campaign.ConcurrentCampaignUpdateException;
 import com.extole.model.service.campaign.StaleCampaignVersionException;
 import com.extole.model.service.campaign.component.CampaignComponentBuilder;
 import com.extole.model.service.campaign.component.asset.CampaignComponentAssetBuilder;
+import com.extole.model.service.campaign.component.facet.CampaignComponentFacetBuilder;
 import com.extole.model.service.campaign.controller.CampaignControllerBuilder;
 import com.extole.model.service.campaign.controller.FrontendControllerBuilder;
 import com.extole.model.service.campaign.controller.action.CampaignControllerActionBuilder;
@@ -136,6 +144,7 @@ import com.extole.model.service.campaign.controller.trigger.audience.membership.
 import com.extole.model.service.campaign.controller.trigger.client.domain.CampaignControllerTriggerClientDomainBuilder;
 import com.extole.model.service.campaign.controller.trigger.event.CampaignControllerTriggerEventBuilder;
 import com.extole.model.service.campaign.controller.trigger.expression.CampaignControllerTriggerExpressionBuilder;
+import com.extole.model.service.campaign.controller.trigger.group.CampaignControllerTriggerGroupBuilder;
 import com.extole.model.service.campaign.controller.trigger.has.identity.CampaignControllerTriggerHasIdentityBuilder;
 import com.extole.model.service.campaign.controller.trigger.has.prior.reward.CampaignControllerTriggerHasPriorRewardBuilder;
 import com.extole.model.service.campaign.controller.trigger.has.prior.step.CampaignControllerTriggerHasPriorStepBuilder;
@@ -146,6 +155,8 @@ import com.extole.model.service.campaign.controller.trigger.reward.event.Campaig
 import com.extole.model.service.campaign.controller.trigger.score.CampaignControllerTriggerScoreBuilder;
 import com.extole.model.service.campaign.controller.trigger.send.reward.event.CampaignControllerTriggerSendRewardEventBuilder;
 import com.extole.model.service.campaign.controller.trigger.share.CampaignControllerTriggerShareBuilder;
+import com.extole.model.service.campaign.controller.trigger.step.event.CampaignControllerTriggerStepEventBuilder;
+import com.extole.model.service.campaign.controller.trigger.targeting.CampaignControllerTriggerTargetingBuilder;
 import com.extole.model.service.campaign.controller.trigger.zone.state.CampaignControllerTriggerZoneStateBuilder;
 import com.extole.model.service.campaign.flow.step.CampaignFlowStepBuilder;
 import com.extole.model.service.campaign.flow.step.app.CampaignFlowStepAppBuilder;
@@ -186,12 +197,15 @@ public class CampaignUploadContextImpl implements CampaignUploadContext {
     private final ImmutableMap<String, CampaignLabel> labelByNames;
     private final Map<String, ByteSource> creatives;
     private final Map<UploadedAssetId, ByteSource> componentAssets;
+    private final Map<Id<CampaignComponent>, Map<String, CampaignComponentFacet>> facetsByComponentAndFacetName;
 
     private final Map<CampaignComponentConfiguration, CampaignComponentBuilder> componentBuilders = new HashMap<>();
     private final Map<CampaignComponentSettingConfiguration, SettingBuilder> settingBuilders = new HashMap<>();
     private final Map<CampaignComponentVariableConfiguration, VariableBuilder> socketParameterBuilders =
         new HashMap<>();
     private final Map<CampaignComponentAssetConfiguration, CampaignComponentAssetBuilder> assetBuilders =
+        new HashMap<>();
+    private final Map<CampaignComponentFacetConfiguration, CampaignComponentFacetBuilder> facetBuilders =
         new HashMap<>();
     private final Map<CampaignControllerConfiguration, CampaignControllerBuilder> controllerBuilders = new HashMap<>();
     private final Map<CampaignFrontendControllerConfiguration, FrontendControllerBuilder> frontendControllerBuilder =
@@ -275,6 +289,14 @@ public class CampaignUploadContextImpl implements CampaignUploadContext {
             .collect(ImmutableMap.toImmutableMap(StepData::getId, Function.identity()));
         this.creatives = creatives;
         this.componentAssets = componentAssets;
+        this.facetsByComponentAndFacetName = Collections.unmodifiableMap(
+            campaign.getComponents().stream()
+                .reduce(new HashMap<>(), (accumulator, current) -> {
+                    Map<String, CampaignComponentFacet> facetsByName =
+                        accumulator.computeIfAbsent(current.getId(), (key) -> KeyCaseInsensitiveMap.create());
+                    current.getFacets().forEach(facet -> facetsByName.put(facet.getName(), facet));
+                    return accumulator;
+                }, (a, b) -> a));
         this.isNewCampaign = false;
     }
 
@@ -283,6 +305,7 @@ public class CampaignUploadContextImpl implements CampaignUploadContext {
         this.campaignBuilder = campaignBuilder;
         this.creatives = creatives;
         this.componentAssets = componentAssets;
+        this.facetsByComponentAndFacetName = ImmutableMap.of();
         this.componentsById = ImmutableMap.of();
         this.assetsById = ImmutableMap.of();
         this.controllersById = ImmutableMap.of();
@@ -432,6 +455,26 @@ public class CampaignUploadContextImpl implements CampaignUploadContext {
             return campaignComponentBuilder.updateAsset(assetsById.get(asset.getId().getValue()));
         });
 
+    }
+
+    @Override
+    public CampaignComponentFacetBuilder get(CampaignComponentConfiguration component,
+        CampaignComponentFacetConfiguration facet) {
+
+        return facetBuilders.compute(facet, (key, existing) -> {
+            if (existing != null) {
+                return existing;
+            }
+            CampaignComponentBuilder campaignComponentBuilder = get(component);
+            if (isNewCampaign || component.getId().isOmitted()
+                || !facetsByComponentAndFacetName.containsKey(component.getId().getValue())
+                || !facetsByComponentAndFacetName.get(component.getId().getValue()).containsKey(facet.getName())) {
+                return campaignComponentBuilder.addFacet();
+            }
+            CampaignComponentFacet facetToUpdate =
+                facetsByComponentAndFacetName.get(component.getId().getValue()).get(facet.getName());
+            return campaignComponentBuilder.updateFacet(facetToUpdate);
+        });
     }
 
     @Override
@@ -724,6 +767,24 @@ public class CampaignUploadContextImpl implements CampaignUploadContext {
     @Override
     public CampaignControllerTriggerAudienceMembershipBuilder get(CampaignStepConfiguration step,
         CampaignControllerTriggerAudienceMembershipConfiguration trigger) {
+        return getTriggerBuilder(step, trigger);
+    }
+
+    @Override
+    public CampaignControllerTriggerGroupBuilder get(CampaignStepConfiguration step,
+        CampaignControllerTriggerGroupConfiguration trigger) {
+        return getTriggerBuilder(step, trigger);
+    }
+
+    @Override
+    public CampaignControllerTriggerStepEventBuilder get(CampaignStepConfiguration step,
+        CampaignControllerTriggerStepEventConfiguration trigger) {
+        return getTriggerBuilder(step, trigger);
+    }
+
+    @Override
+    public CampaignControllerTriggerTargetingBuilder get(CampaignStepConfiguration step,
+        CampaignControllerTriggerTargetingConfiguration trigger) {
         return getTriggerBuilder(step, trigger);
     }
 

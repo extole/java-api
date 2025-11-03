@@ -45,6 +45,7 @@ import com.extole.id.Id;
 import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.rewards.service.Reward;
 import com.extole.rewards.service.RewardService;
+import com.extole.sandbox.Container;
 
 @Provider
 public class ActionEndpointsImpl implements ActionEndpoints {
@@ -311,7 +312,9 @@ public class ActionEndpointsImpl implements ActionEndpoints {
             ReviewStatus.valueOf(action.getReviewStatus().name()),
             action.getShareableId(),
             conversionsFlag,
-            rewarded);
+            rewarded,
+            Optional.ofNullable(action.getContainer()).map(value -> value.getName())
+                .orElse(Container.DEFAULT.getName()));
     }
 
 }

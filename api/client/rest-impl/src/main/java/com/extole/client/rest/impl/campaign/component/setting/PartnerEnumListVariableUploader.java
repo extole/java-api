@@ -1,6 +1,7 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -24,18 +25,13 @@ import com.extole.model.service.campaign.setting.VariableValueKeyLengthException
 public class PartnerEnumListVariableUploader
     implements SettingUploader<CampaignComponentPartnerEnumListVariableConfiguration> {
 
-    private final DefaultSettingUploader defaultSettingUploader;
-
-    public PartnerEnumListVariableUploader(DefaultSettingUploader defaultSettingUploader) {
-        this.defaultSettingUploader = defaultSettingUploader;
-    }
-
     @Override
-    public void upload(CampaignUploadContext context, CampaignComponentConfiguration component,
+    public void upload(SettingUploaderRegistry uploaderRegistry,
+        CampaignUploadContext context, CampaignComponentConfiguration component,
         CampaignComponentPartnerEnumListVariableConfiguration variable)
         throws SettingNameLengthException, SettingInvalidNameException, SettingDisplayNameLengthException,
         SettingIllegalCharacterInDisplayNameException, VariableValueKeyLengthException, SettingTagLengthException {
-        defaultSettingUploader.upload(context, component, variable);
+        uploaderRegistry.getDefaultUploader().upload(uploaderRegistry, context, component, variable);
 
         PartnerEnumListVariableBuilder variableBuilder =
             (PartnerEnumListVariableBuilder) context.get(component, variable);
@@ -45,7 +41,6 @@ public class PartnerEnumListVariableUploader
             PartnerEnumListVariableOption option = PartnerEnumListVariableOption.builder()
                 .withId(optionRequest.getId())
                 .withName(optionRequest.getName())
-                .withDefault(optionRequest.getDefault())
                 .build();
             options.add(option);
         }
@@ -53,11 +48,12 @@ public class PartnerEnumListVariableUploader
     }
 
     @Override
-    public void upload(CampaignUploadContext context, CampaignComponentSocketConfiguration socket,
+    public void upload(SettingUploaderRegistry uploaderRegistry,
+        CampaignUploadContext context, CampaignComponentSocketConfiguration socket,
         CampaignComponentConfiguration component, CampaignComponentPartnerEnumListVariableConfiguration variable)
         throws SettingNameLengthException, SettingInvalidNameException, SettingDisplayNameLengthException,
         SettingIllegalCharacterInDisplayNameException, VariableValueKeyLengthException, SettingTagLengthException {
-        defaultSettingUploader.upload(context, socket, component, variable);
+        uploaderRegistry.getDefaultUploader().upload(uploaderRegistry, context, socket, component, variable);
 
         PartnerEnumListVariableBuilder variableBuilder =
             (PartnerEnumListVariableBuilder) context.get(component, socket, variable);
@@ -67,7 +63,6 @@ public class PartnerEnumListVariableUploader
             PartnerEnumListVariableOption option = PartnerEnumListVariableOption.builder()
                 .withId(optionRequest.getId())
                 .withName(optionRequest.getName())
-                .withDefault(optionRequest.getDefault())
                 .build();
             options.add(option);
         }
@@ -75,7 +70,7 @@ public class PartnerEnumListVariableUploader
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.PARTNER_ENUM_LIST;
+    public List<SettingType> getSettingTypes() {
+        return Collections.singletonList(SettingType.PARTNER_ENUM_LIST);
     }
 }

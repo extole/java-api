@@ -10,10 +10,7 @@ import com.extole.model.entity.campaign.CampaignComponent;
 import com.extole.model.entity.campaign.CampaignControllerAction;
 import com.extole.model.entity.campaign.CampaignControllerActionType;
 
-public interface CampaignControllerActionResponseMapper<
-    I extends CampaignControllerAction,
-    O_RESPONSE extends CampaignControllerActionResponse,
-    O_CONFIGURATION extends CampaignControllerActionConfiguration> {
+public interface CampaignControllerActionResponseMapper<I extends CampaignControllerAction, O_RESPONSE extends CampaignControllerActionResponse, O_CONFIGURATION extends CampaignControllerActionConfiguration> {
 
     O_RESPONSE toResponse(I action, ZoneId timeZone);
 

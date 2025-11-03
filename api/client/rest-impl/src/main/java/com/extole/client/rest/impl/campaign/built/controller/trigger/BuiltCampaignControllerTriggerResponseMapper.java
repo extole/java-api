@@ -6,8 +6,7 @@ import com.extole.client.rest.campaign.built.controller.trigger.BuiltCampaignCon
 import com.extole.model.entity.campaign.CampaignControllerTriggerType;
 import com.extole.model.entity.campaign.built.BuiltCampaignControllerTrigger;
 
-public interface BuiltCampaignControllerTriggerResponseMapper<I extends BuiltCampaignControllerTrigger,
-    O extends BuiltCampaignControllerTriggerResponse> {
+public interface BuiltCampaignControllerTriggerResponseMapper<I extends BuiltCampaignControllerTrigger, O extends BuiltCampaignControllerTriggerResponse> {
 
     O toResponse(I trigger, ZoneId timeZone);
 

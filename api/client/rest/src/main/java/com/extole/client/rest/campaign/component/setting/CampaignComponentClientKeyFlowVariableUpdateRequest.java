@@ -33,8 +33,7 @@ public final class CampaignComponentClientKeyFlowVariableUpdateRequest
         @JsonProperty(JSON_COMPONENT_SETTING_NAME) Omissible<String> name,
         @JsonProperty(JSON_COMPONENT_SETTING_DISPLAY_NAME) Omissible<Optional<String>> displayName,
         @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES) Omissible<Map<String,
-            BuildtimeEvaluatable<VariableBuildtimeContext,
-                RuntimeEvaluatable<Object, Optional<Object>>>>> values,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>>> values,
         @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE) Omissible<VariableSource> source,
         @JsonProperty(JSON_COMPONENT_VARIABLE_DESCRIPTION) Omissible<
             BuildtimeEvaluatable<VariableDescriptionBuildtimeContext, Optional<String>>> description,
@@ -73,8 +72,9 @@ public final class CampaignComponentClientKeyFlowVariableUpdateRequest
     }
 
     public static final class Builder<CALLER, BUILDER_TYPE extends Builder<CALLER, BUILDER_TYPE>>
-        extends CampaignComponentVariableUpdateRequest.Builder<CALLER,
-            CampaignComponentClientKeyFlowVariableUpdateRequest, Builder<CALLER, BUILDER_TYPE>> {
+        extends
+        CampaignComponentVariableUpdateRequest.Builder<CALLER, CampaignComponentClientKeyFlowVariableUpdateRequest,
+            Builder<CALLER, BUILDER_TYPE>> {
 
         private Omissible<String> redirectUri = Omissible.omitted();
         private Omissible<String> clientKeyUrl = Omissible.omitted();

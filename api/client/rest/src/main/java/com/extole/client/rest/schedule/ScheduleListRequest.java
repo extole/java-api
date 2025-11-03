@@ -23,21 +23,20 @@ public class ScheduleListRequest {
     private final ZoneId timeZone;
 
     public ScheduleListRequest(
-        @Parameter(description = "Schedule status, defaults to SCHEDULED")
-        @QueryParam("status") Optional<ScheduleStatus> status,
-        @Parameter(description = "Schedule name")
-        @QueryParam("schedule_name") Optional<String> scheduleName,
-        @Parameter(description = "Person id")
-        @QueryParam("person_id") Optional<String> personId,
-        @Parameter(description = "Person identity id")
-        @QueryParam("person_identity_id") Optional<String> personIdentityId,
-        @Parameter(description = "Scheduled execution date from. Defaults to now")
-        @QueryParam("scheduled_execution_date_from")  Optional<ZonedDateTime> scheduledExecutionDateFrom,
+        @Parameter(
+            description = "Schedule status, defaults to SCHEDULED") @QueryParam("status") Optional<
+                ScheduleStatus> status,
+        @Parameter(description = "Schedule name") @QueryParam("schedule_name") Optional<String> scheduleName,
+        @Parameter(description = "Person id") @QueryParam("person_id") Optional<String> personId,
+        @Parameter(
+            description = "Person identity id") @QueryParam("person_identity_id") Optional<String> personIdentityId,
+        @Parameter(
+            description = "Scheduled execution date from. Defaults to now") @QueryParam("scheduled_execution_date_from") Optional<
+                ZonedDateTime> scheduledExecutionDateFrom,
         @Parameter(description = "Scheduled execution date to."
-            + " Defaults to last 30 days when person is specified, otherwise 24 hours")
-        @QueryParam("scheduled_execution_date_to")  Optional<ZonedDateTime> scheduledExecutionDateTo,
-        @Parameter(description = "Limit, defaults to 100. Max limit 1000")
-        @QueryParam("limit") Optional<Integer> limit,
+            + " Defaults to last 30 days when person is specified, otherwise 24 hours") @QueryParam("scheduled_execution_date_to") Optional<
+                ZonedDateTime> scheduledExecutionDateTo,
+        @Parameter(description = "Limit, defaults to 100. Max limit 1000") @QueryParam("limit") Optional<Integer> limit,
         @Nullable @TimeZoneParam ZoneId timeZone) {
         this.status = status;
         this.scheduleName = scheduleName;

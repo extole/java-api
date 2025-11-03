@@ -49,6 +49,7 @@ public class BuiltCampaignControllerTriggerHasPriorStepResponse extends BuiltCam
     private static final String COUNT_MAX = "count_max";
     private static final String COUNT_MATCHES = "count_matches";
     private static final String PERSON_ID = "person_id";
+    private static final String HAVING_ALL_NAMES = "having_all_names";
 
     private final Set<String> filterNames;
     private final StepFilterScope filterScope;
@@ -74,11 +75,13 @@ public class BuiltCampaignControllerTriggerHasPriorStepResponse extends BuiltCam
     private final Optional<Integer> countMax;
     private final Set<Integer> countMatches;
     private final RuntimeEvaluatable<HasPriorStepTriggerContext, Optional<Id<Person>>> personId;
+    private final RuntimeEvaluatable<HasPriorStepTriggerContext, Set<String>> havingAllNames;
 
     public BuiltCampaignControllerTriggerHasPriorStepResponse(
         @JsonProperty(TRIGGER_ID) String triggerId,
         @JsonProperty(TRIGGER_PHASE) CampaignControllerTriggerPhase triggerPhase,
         @JsonProperty(TRIGGER_NAME) String name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) Optional<String> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) Optional<String> description,
         @JsonProperty(ENABLED) Boolean enabled,
         @JsonProperty(NEGATED) Boolean negated,
@@ -108,9 +111,18 @@ public class BuiltCampaignControllerTriggerHasPriorStepResponse extends BuiltCam
         @JsonProperty(COUNT_MATCHES) Set<Integer> countMatches,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences,
-        @JsonProperty(PERSON_ID) RuntimeEvaluatable<HasPriorStepTriggerContext, Optional<Id<Person>>> personId) {
-        super(triggerId, CampaignControllerTriggerType.HAS_PRIOR_STEP, triggerPhase, name, description, enabled,
-            negated, componentIds, componentReferences);
+        @JsonProperty(PERSON_ID) RuntimeEvaluatable<HasPriorStepTriggerContext, Optional<Id<Person>>> personId,
+        @JsonProperty(HAVING_ALL_NAMES) RuntimeEvaluatable<HasPriorStepTriggerContext, Set<String>> havingAllNames) {
+        super(triggerId,
+            CampaignControllerTriggerType.HAS_PRIOR_STEP,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
+            componentIds,
+            componentReferences);
         this.filterNames = filterNames;
         this.filterScope = filterScope;
         this.filterPartnerEventIdName = filterPartnerEventIdName;
@@ -135,6 +147,7 @@ public class BuiltCampaignControllerTriggerHasPriorStepResponse extends BuiltCam
         this.countMax = countMax;
         this.countMatches = countMatches != null ? ImmutableSet.copyOf(countMatches) : ImmutableSet.of();
         this.personId = personId;
+        this.havingAllNames = havingAllNames;
     }
 
     @JsonProperty(FILTER_NAMES)
@@ -255,6 +268,11 @@ public class BuiltCampaignControllerTriggerHasPriorStepResponse extends BuiltCam
     @JsonProperty(PERSON_ID)
     public RuntimeEvaluatable<HasPriorStepTriggerContext, Optional<Id<Person>>> getPersonId() {
         return personId;
+    }
+
+    @JsonProperty(HAVING_ALL_NAMES)
+    public RuntimeEvaluatable<HasPriorStepTriggerContext, Set<String>> getHavingAllNames() {
+        return havingAllNames;
     }
 
 }

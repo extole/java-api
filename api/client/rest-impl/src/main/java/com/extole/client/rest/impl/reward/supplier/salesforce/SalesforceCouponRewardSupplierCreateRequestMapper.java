@@ -51,8 +51,9 @@ import com.extole.salesforce.api.salesforce.SalesforceServiceUnavailableExceptio
 
 @Component
 public class SalesforceCouponRewardSupplierCreateRequestMapper
-    extends BaseRewardSupplierCreateRequestMapper<SalesforceCouponRewardSupplierCreateRequest,
-        SalesforceCouponRewardSupplier, SalesforceCouponRewardSupplierBuilder> {
+    extends
+    BaseRewardSupplierCreateRequestMapper<SalesforceCouponRewardSupplierCreateRequest, SalesforceCouponRewardSupplier,
+        SalesforceCouponRewardSupplierBuilder> {
 
     private final RewardSupplierService rewardSupplierService;
     private final RewardSupplierRestMapper rewardSupplierRestMapper;

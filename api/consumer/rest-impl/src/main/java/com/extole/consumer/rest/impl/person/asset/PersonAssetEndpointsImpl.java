@@ -1,6 +1,7 @@
 package com.extole.consumer.rest.impl.person.asset;
 
 import java.net.URI;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -84,6 +85,7 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
             throw RestExceptionBuilder.newBuilder(PersonRestException.class)
                 .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
                 .addParameter("person_id", personId)
+                .addParameter("client_id", authorization.getClientId())
                 .withCause(e)
                 .build();
         } catch (AssetNotFoundException e) {
@@ -104,16 +106,19 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
     }
 
     @Override
-    public Response downloadAssetByName(String accessToken, String personId, String name, String defaultUrl)
+    public Response downloadAssetByName(String accessToken, String personId, Optional<String> name,
+        Optional<String> defaultUrl)
         throws AuthorizationRestException, PersonRestException, PersonAssetRestException {
         Authorization authorization = getAuthorizationFromRequest(accessToken);
         try {
+            String assetName = name.orElseThrow(() -> new AssetNotFoundException("Asset not found for name: " + name));
             PersonAsset asset;
             if (isAuthorized(authorization, personId)) {
-                asset = personAssetService.getAssetByName(authorization, Id.valueOf(personId), name);
+                asset = personAssetService.getAssetByName(authorization, Id.valueOf(personId), assetName);
             } else {
                 asset =
-                    personAssetService.getPublicAssetByName(authorization.getClientId(), Id.valueOf(personId), name);
+                    personAssetService.getPublicAssetByName(authorization.getClientId(), Id.valueOf(personId),
+                        assetName);
             }
             return downloadAsset(authorization, Id.valueOf(personId), asset);
         } catch (AuthorizationException e) {
@@ -123,22 +128,22 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
             throw RestExceptionBuilder.newBuilder(PersonRestException.class)
                 .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
                 .addParameter("person_id", personId)
+                .addParameter("client_id", authorization.getClientId())
                 .withCause(e)
                 .build();
         } catch (AssetNotFoundException e) {
-            if (!Strings.isNullOrEmpty(defaultUrl)
+            if (defaultUrl.isPresent()
                 && sitePatternsUrlValidator.isSupported(authorization.getClientId(),
-                    requestContext.getUriInfo().getBaseUri().getHost(), defaultUrl)) {
-                return Response.temporaryRedirect(URI.create(defaultUrl)).build();
-            } else {
-                throw RestExceptionBuilder.newBuilder(PersonAssetRestException.class)
-                    .withErrorCode(PersonAssetRestException.ASSET_NOT_FOUND)
-                    .addParameter("person_id", personId)
-                    .addParameter("criteria", "name")
-                    .addParameter("value", name)
-                    .withCause(e)
-                    .build();
+                    requestContext.getUriInfo().getBaseUri().getHost(), defaultUrl.get())) {
+                return Response.temporaryRedirect(URI.create(defaultUrl.get())).build();
             }
+            throw RestExceptionBuilder.newBuilder(PersonAssetRestException.class)
+                .withErrorCode(PersonAssetRestException.ASSET_NOT_FOUND)
+                .addParameter("person_id", personId)
+                .addParameter("criteria", "name")
+                .addParameter("value", name.orElse(null))
+                .withCause(e)
+                .build();
         }
     }
 
@@ -169,6 +174,7 @@ public class PersonAssetEndpointsImpl implements PersonAssetEndpoints {
                     convertException(RestExceptionBuilder.newBuilder(PersonRestException.class)
                         .withErrorCode(PersonRestException.PERSON_NOT_FOUND)
                         .addParameter("person_id", personId)
+                        .addParameter("client_id", authorization.getClientId())
                         .withCause(e)
                         .build());
                 } catch (AssetNotFoundException e) {

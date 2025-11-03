@@ -17,18 +17,19 @@ public class DynamicAudienceListRequest extends AudienceListRequest {
     private final String reportRunnerId;
 
     public DynamicAudienceListRequest(
-        @Parameter(description = "AudienceList name, max length 255")
-        @JsonProperty(NAME) Omissible<String> name,
-        @Parameter(description = "AudienceList description, max length 1024")
-        @JsonProperty(DESCRIPTION) Omissible<String> description,
-        @Parameter(description = "A list of columns that will be used when dispatching AudienceList")
-        @JsonProperty(EVENT_COLUMNS) Omissible<Set<String>> eventColumns,
-        @Parameter(description = "Data for the AudienceList")
-        @JsonProperty(EVENT_DATA) Omissible<Map<String, String>> eventData,
-        @Parameter(description = "A set of tags for the AudienceList")
-        @JsonProperty(TAGS) Omissible<Set<String>> tags,
-        @Parameter(description = "An existing reportRunnerId for the AudienceList")
-        @JsonProperty(REPORT_RUNNER_ID) String reportRunnerId) {
+        @Parameter(description = "AudienceList name, max length 255") @JsonProperty(NAME) Omissible<String> name,
+        @Parameter(
+            description = "AudienceList description, max length 1024") @JsonProperty(DESCRIPTION) Omissible<
+                String> description,
+        @Parameter(
+            description = "A list of columns that will be used when dispatching AudienceList") @JsonProperty(EVENT_COLUMNS) Omissible<
+                Set<String>> eventColumns,
+        @Parameter(
+            description = "Data for the AudienceList") @JsonProperty(EVENT_DATA) Omissible<
+                Map<String, String>> eventData,
+        @Parameter(description = "A set of tags for the AudienceList") @JsonProperty(TAGS) Omissible<Set<String>> tags,
+        @Parameter(
+            description = "An existing reportRunnerId for the AudienceList") @JsonProperty(REPORT_RUNNER_ID) String reportRunnerId) {
         super(AudienceListType.DYNAMIC, name, description, eventColumns, eventData, tags);
         this.reportRunnerId = reportRunnerId;
     }

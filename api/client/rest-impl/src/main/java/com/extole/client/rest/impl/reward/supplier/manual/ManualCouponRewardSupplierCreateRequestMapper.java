@@ -35,8 +35,9 @@ import com.extole.model.service.reward.supplier.coupon.CouponRewardSupplierIlleg
 import com.extole.model.service.reward.supplier.manual.coupon.ManualCouponRewardSupplierBuilder;
 
 @Component
-public class ManualCouponRewardSupplierCreateRequestMapper extends BaseRewardSupplierCreateRequestMapper<
-    ManualCouponRewardSupplierCreateRequest, ManualCouponRewardSupplier, ManualCouponRewardSupplierBuilder> {
+public class ManualCouponRewardSupplierCreateRequestMapper extends
+    BaseRewardSupplierCreateRequestMapper<ManualCouponRewardSupplierCreateRequest, ManualCouponRewardSupplier,
+        ManualCouponRewardSupplierBuilder> {
 
     private final RewardSupplierService rewardSupplierService;
     private final RewardSupplierRestMapper rewardSupplierRestMapper;

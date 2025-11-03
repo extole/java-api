@@ -22,7 +22,13 @@ public class CampaignControllerTriggerRewardEventValidationRestException
     public static final ErrorCode<CampaignControllerTriggerRewardEventValidationRestException> INVALID_TAG =
         new ErrorCode<>("campaign_controller_trigger_reward_event_invalid_event_tag", 400,
             "tag should contain alphanumeric or _ - characters, length should be between 0 and 255",
-            "campaign_id", "controller_id", "tag");
+            "campaign_id", "controller_id");
+
+    public static final ErrorCode<
+        CampaignControllerTriggerRewardEventValidationRestException> INVALID_TAG_FOR_CONTROLLER =
+            new ErrorCode<>("campaign_controller_trigger_reward_event_invalid_event_tag", 400,
+                "tag should contain alphanumeric or _ - characters, length should be between 0 and 255",
+                "campaign_id", "controller_id", "tag");
 
     public static final ErrorCode<CampaignControllerTriggerRewardEventValidationRestException> INVALID_REWARD_STATES =
         new ErrorCode<>("campaign_controller_trigger_reward_event_invalid_reward_states", 400,

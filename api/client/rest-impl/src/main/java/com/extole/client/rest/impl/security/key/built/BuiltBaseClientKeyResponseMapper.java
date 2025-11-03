@@ -21,8 +21,8 @@ import com.extole.model.entity.client.security.key.ClientKey;
 import com.extole.model.entity.client.security.key.built.BuiltClientKey;
 import com.extole.model.service.encryption.EncryptionService;
 
-public abstract class BuiltBaseClientKeyResponseMapper<KEY extends BuiltClientKey,
-    RESPONSE extends BuiltClientKeyResponse> implements BuiltClientKeyResponseMapper<KEY, RESPONSE> {
+public abstract class BuiltBaseClientKeyResponseMapper<KEY extends BuiltClientKey, RESPONSE extends BuiltClientKeyResponse>
+    implements BuiltClientKeyResponseMapper<KEY, RESPONSE> {
 
     private static final Set<ClientKey.Algorithm> SUPPORTED_PRIVATE_KEY_ASYMMETRIC_ALGORITHMS = Set.of(
         ClientKey.Algorithm.ES256_PUBLIC,

@@ -19,11 +19,11 @@ public final class BuiltCampaignFlowStepAppRestMapper {
             flowStepApp.getName(),
             flowStepApp.getDescription(),
             new BuiltCampaignFlowStepAppTypeResponse(flowStepApp.getType().getName()),
-            flowStepApp.getCampaignComponentReferences()
+            flowStepApp.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            flowStepApp.getCampaignComponentReferences()
+            flowStepApp.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

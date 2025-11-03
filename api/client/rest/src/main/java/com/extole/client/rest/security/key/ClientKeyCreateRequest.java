@@ -84,8 +84,9 @@ public class ClientKeyCreateRequest extends ComponentElementRequest {
         return ToString.create(this);
     }
 
-    public abstract static class Builder<REQUEST extends ClientKeyCreateRequest,
-        BUILDER extends Builder<REQUEST, BUILDER>> extends ComponentElementRequest.Builder<BUILDER> {
+    public abstract static class Builder<REQUEST extends ClientKeyCreateRequest, BUILDER extends Builder<REQUEST,
+        BUILDER>>
+        extends ComponentElementRequest.Builder<BUILDER> {
 
         protected ClientKeyType type;
         protected BuildtimeEvaluatable<ClientKeyBuildtimeContext, String> name;

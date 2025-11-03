@@ -40,8 +40,8 @@ import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.profile.PersonParameterInvalidLengthException;
 import com.extole.person.service.profile.PersonParameterMissingException;
 import com.extole.person.service.profile.PersonService;
-import com.extole.person.service.profile.journey.Container;
 import com.extole.person.service.profile.referral.PersonReferral;
+import com.extole.sandbox.Container;
 
 @Provider
 public class PersonRelationshipV2EndpointsImpl implements PersonRelationshipV2Endpoints {
@@ -163,7 +163,7 @@ public class PersonRelationshipV2EndpointsImpl implements PersonRelationshipV2En
 
     private void updateReferral(ClientAuthorization authorization, Person person,
         PersonReferral referral, Container container)
-        throws AuthorizationException, LockClosureException, EventProcessorException {
+        throws AuthorizationException, LockClosureException, EventProcessorException, PersonNotFoundException {
 
         ProcessedRawEvent processedRawEvent = clientRequestContextService.createBuilder(authorization, servletRequest)
             .withEventName(EVENT_NAME_FOR_RELATIONSHIP_UPDATE)
@@ -174,7 +174,7 @@ public class PersonRelationshipV2EndpointsImpl implements PersonRelationshipV2En
                     + " New container: " + container + ".");
             }).build().getProcessedRawEvent();
 
-        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person)
+        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person.getId())
             .withLockDescription(LOCK_DESCRIPTION)
             .executeAndSend((personBuilder, originalPerson, inputEventBuilder) -> {
                 try {

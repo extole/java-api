@@ -17,10 +17,11 @@ public class PersonDataUpdateRequest {
 
     @JsonCreator
     public PersonDataUpdateRequest(
-        @Parameter(description = "Scope of the data parameter to update.")
-        @JsonProperty(JSON_SCOPE) Omissible<PersonDataScope> scope,
-        @Parameter(description = "Value of the data parameter to update.")
-        @JsonProperty(JSON_VALUE) Omissible<Object> value) {
+        @Parameter(
+            description = "Scope of the data parameter to update.") @JsonProperty(JSON_SCOPE) Omissible<
+                PersonDataScope> scope,
+        @Parameter(
+            description = "Value of the data parameter to update.") @JsonProperty(JSON_VALUE) Omissible<Object> value) {
         this.scope = scope;
         this.value = value;
     }

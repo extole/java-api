@@ -32,6 +32,7 @@ public class BuiltPayPalPayoutsRewardSupplierResponseMapper
             PartnerRewardKeyType.valueOf(rewardSupplier.getPartnerRewardKeyType().name()),
             rewardSupplier.getDisplayType(),
             rewardSupplier.getName(),
+            rewardSupplier.getDisplayName(),
             com.extole.client.rest.reward.supplier.FaceValueAlgorithmType
                 .valueOf(rewardSupplier.getFaceValueAlgorithmType().name()),
             rewardSupplier.getFaceValue(),

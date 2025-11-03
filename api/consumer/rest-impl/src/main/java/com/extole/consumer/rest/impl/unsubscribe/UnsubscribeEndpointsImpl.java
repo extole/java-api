@@ -93,8 +93,7 @@ public class UnsubscribeEndpointsImpl implements UnsubscribeEndpoints {
                 })
                 .build();
             consumerEventSenderService
-                .createInputEvent(requestContext.getAuthorization(), requestContext.getProcessedRawEvent(),
-                    requestContext.getAuthorization().getIdentity())
+                .createInputEvent(requestContext.getAuthorization(), requestContext.getProcessedRawEvent())
                 .send();
         } catch (Exception e) {
             LOG.error("Failed to produce {} event for clientId={}", EVENT_NAME, clientId, e);

@@ -15,8 +15,7 @@ import com.extole.model.entity.campaign.built.BuiltCampaignControllerActionShare
 
 @Component
 public class BuiltCampaignControllerActionShareEventResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionShareEvent,
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionShareEvent,
         BuiltCampaignControllerActionShareEventResponse> {
 
     @Override
@@ -25,11 +24,11 @@ public class BuiltCampaignControllerActionShareEventResponseMapper implements
         return new BuiltCampaignControllerActionShareEventResponse(
             action.getId().getValue(), CampaignControllerActionQuality.valueOf(action.getQuality().name()),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

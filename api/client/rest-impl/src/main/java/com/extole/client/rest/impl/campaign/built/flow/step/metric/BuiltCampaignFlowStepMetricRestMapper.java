@@ -22,11 +22,11 @@ public final class BuiltCampaignFlowStepMetricRestMapper {
             flowStepMetric.getExpression(),
             flowStepMetric.getUnit(),
             flowStepMetric.getTags(),
-            flowStepMetric.getCampaignComponentReferences()
+            flowStepMetric.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            flowStepMetric.getCampaignComponentReferences()
+            flowStepMetric.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

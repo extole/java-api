@@ -26,16 +26,17 @@ public class ReportTypeGetRequest {
     private final Optional<ReportOrderDirection> orderDirection;
 
     public ReportTypeGetRequest(
-        @Parameter(description = "The Extole unique report type identifier.")
-        @QueryParam("report_type_id") Optional<String> reportTypeId,
-        @Parameter(description = "The display name of report type")
-        @QueryParam("display_name") Optional<String> displayName,
-        @Parameter(description = "The description of report type")
-        @QueryParam("description") Optional<String> description,
-        @Parameter(description = "The visibility of report type")
-        @QueryParam("visibility") Optional<ReportTypeVisibility> visibility,
-        @Parameter(description = "The clientId related to report type")
-        @QueryParam("tags") Optional<String> tags,
+        @Parameter(
+            description = "The Extole unique report type identifier.") @QueryParam("report_type_id") Optional<
+                String> reportTypeId,
+        @Parameter(
+            description = "The display name of report type") @QueryParam("display_name") Optional<String> displayName,
+        @Parameter(
+            description = "The description of report type") @QueryParam("description") Optional<String> description,
+        @Parameter(
+            description = "The visibility of report type") @QueryParam("visibility") Optional<
+                ReportTypeVisibility> visibility,
+        @Parameter(description = "The clientId related to report type") @QueryParam("tags") Optional<String> tags,
         @QueryParam("exclude_tags") Optional<String> excludeTags,
         @QueryParam("search_query") Optional<String> searchQuery,
         @DefaultValue("100") @QueryParam("limit") Optional<Integer> limit,

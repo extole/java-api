@@ -1,6 +1,4 @@
 description = """Client Topic Rest"""
-
-
 dependencies {
     api project(':common-lang')
     implementation project(':common-rest')
@@ -9,12 +7,10 @@ dependencies {
     implementation project(':context-api')
     implementation project(':client-rest')
 
-    libraries.with {
-        implementation jackson
-        implementation jersey
-        implementation jsr305
-        implementation javaWs
-        implementation spring
-        implementation swaggercore
-    }
+    implementation libs.bundles.jackson
+    implementation libs.bundles.jersey
+    implementation libs.jsr305
+    implementation libs.javaWs
+    implementation libs.bundles.spring
+    implementation libs.swaggercore
 }

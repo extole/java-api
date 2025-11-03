@@ -19,6 +19,7 @@ import com.extole.id.Id;
 
 public class BuiltStepDataResponse extends ComponentElementResponse {
 
+    private static final String JSON_ID = "id";
     private static final String JSON_NAME = "name";
     private static final String JSON_VALUE = "value";
     private static final String JSON_SCOPE = "scope";
@@ -28,6 +29,7 @@ public class BuiltStepDataResponse extends ComponentElementResponse {
     private static final String JSON_KEY_TYPE = "key_type";
     private static final String JSON_ENABLED = "enabled";
 
+    private final String id;
     private final String name;
     private final RuntimeEvaluatable<StepDataContext, Optional<Object>> value;
     private final StepDataScope scope;
@@ -37,7 +39,9 @@ public class BuiltStepDataResponse extends ComponentElementResponse {
     private final StepDataKeyType keyType;
     private final Boolean enabled;
 
-    public BuiltStepDataResponse(@JsonProperty(JSON_NAME) String name,
+    public BuiltStepDataResponse(
+        @JsonProperty(JSON_ID) String id,
+        @JsonProperty(JSON_NAME) String name,
         @JsonProperty(JSON_VALUE) RuntimeEvaluatable<StepDataContext, Optional<Object>> value,
         @JsonProperty(JSON_SCOPE) StepDataScope scope,
         @JsonProperty(JSON_DIMENSION) Boolean dimension,
@@ -48,6 +52,7 @@ public class BuiltStepDataResponse extends ComponentElementResponse {
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
         super(componentReferences, componentIds);
+        this.id = id;
         this.name = name;
         this.value = value;
         this.scope = scope;
@@ -56,6 +61,11 @@ public class BuiltStepDataResponse extends ComponentElementResponse {
         this.defaultValue = defaultValue;
         this.keyType = keyType;
         this.enabled = enabled;
+    }
+
+    @JsonProperty(JSON_ID)
+    public String getId() {
+        return id;
     }
 
     @JsonProperty(JSON_NAME)

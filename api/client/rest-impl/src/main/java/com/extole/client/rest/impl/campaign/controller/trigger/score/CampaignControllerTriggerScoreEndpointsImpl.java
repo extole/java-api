@@ -9,6 +9,7 @@ import javax.ws.rs.ext.Provider;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.extole.authorization.service.Authorization;
+import com.extole.client.rest.campaign.BuildCampaignControllerRestException;
 import com.extole.client.rest.campaign.BuildCampaignRestException;
 import com.extole.client.rest.campaign.CampaignRestException;
 import com.extole.client.rest.campaign.CampaignUpdateRestException;
@@ -21,6 +22,7 @@ import com.extole.client.rest.campaign.controller.trigger.score.CampaignControll
 import com.extole.client.rest.campaign.controller.trigger.score.CampaignControllerTriggerScoreResponse;
 import com.extole.client.rest.campaign.controller.trigger.score.CampaignControllerTriggerScoreUpdateRequest;
 import com.extole.client.rest.campaign.controller.trigger.score.CampaignControllerTriggerScoreValidationRestException;
+import com.extole.client.rest.impl.campaign.BuildCampaignControllerRestExceptionMapper;
 import com.extole.client.rest.impl.campaign.BuildCampaignRestExceptionMapper;
 import com.extole.client.rest.impl.campaign.CampaignProvider;
 import com.extole.client.rest.impl.campaign.component.ComponentReferenceRequestMapper;
@@ -46,6 +48,7 @@ import com.extole.model.service.campaign.ComponentElementBuilder;
 import com.extole.model.service.campaign.ConcurrentCampaignUpdateException;
 import com.extole.model.service.campaign.StaleCampaignVersionException;
 import com.extole.model.service.campaign.component.RedundantComponentReferenceException;
+import com.extole.model.service.campaign.controller.exception.BuildCampaignControllerException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerBuildException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerDescriptionLengthException;
 import com.extole.model.service.campaign.controller.trigger.CampaignControllerTriggerNameLengthException;
@@ -90,7 +93,8 @@ public class CampaignControllerTriggerScoreEndpointsImpl implements CampaignCont
         CampaignControllerTriggerScoreCreateRequest request)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
         CampaignControllerTriggerScoreValidationRestException, CampaignControllerTriggerValidationRestException,
-        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException {
+        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException,
+        BuildCampaignControllerRestException {
 
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         Campaign campaign;
@@ -137,6 +141,8 @@ public class CampaignControllerTriggerScoreEndpointsImpl implements CampaignCont
                 triggerBuilder.withChannel(request.getChannel().toLowerCase());
             }
             request.getName().ifPresent(name -> triggerBuilder.withName(name));
+            request.getParentTriggerGroupName()
+                .ifPresent(parentTriggerGroupName -> triggerBuilder.withParentTriggerGroupName(parentTriggerGroupName));
             request.getDescription().ifPresent(description -> triggerBuilder.withDescription(description));
             request.getEnabled().ifPresent(enabled -> triggerBuilder.withEnabled(enabled));
             request.getNegated().ifPresent(negated -> triggerBuilder.withNegated(negated));
@@ -212,6 +218,8 @@ public class CampaignControllerTriggerScoreEndpointsImpl implements CampaignCont
                 .build();
         } catch (TriggerTypeNotSupportedException e) {
             throw TriggerTypeNotSupportedRestExceptionMapper.getInstance().map(e);
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (CampaignControllerTriggerBuildException e) {
@@ -231,7 +239,7 @@ public class CampaignControllerTriggerScoreEndpointsImpl implements CampaignCont
         CampaignControllerTriggerScoreUpdateRequest request)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
         CampaignControllerTriggerValidationRestException, CampaignComponentValidationRestException,
-        BuildCampaignRestException, CampaignUpdateRestException {
+        BuildCampaignRestException, CampaignUpdateRestException, BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         Campaign campaign;
@@ -277,6 +285,8 @@ public class CampaignControllerTriggerScoreEndpointsImpl implements CampaignCont
                 triggerBuilder.withCauseEventName(request.getCauseEventName());
             }
             request.getName().ifPresent(name -> triggerBuilder.withName(name));
+            request.getParentTriggerGroupName()
+                .ifPresent(parentTriggerGroupName -> triggerBuilder.withParentTriggerGroupName(parentTriggerGroupName));
             request.getDescription().ifPresent(description -> triggerBuilder.withDescription(description));
             request.getEnabled().ifPresent(enabled -> triggerBuilder.withEnabled(enabled));
             request.getNegated().ifPresent(negated -> triggerBuilder.withNegated(negated));
@@ -337,6 +347,8 @@ public class CampaignControllerTriggerScoreEndpointsImpl implements CampaignCont
                 .addParameter("max_length", Integer.valueOf(e.getDescriptionMaxLength()))
                 .withCause(e)
                 .build();
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (CampaignControllerTriggerBuildException e) {
@@ -354,7 +366,7 @@ public class CampaignControllerTriggerScoreEndpointsImpl implements CampaignCont
         String controllerId,
         String triggerId) throws UserAuthorizationRestException,
         CampaignRestException, CampaignControllerRestException,
-        BuildCampaignRestException, CampaignUpdateRestException {
+        BuildCampaignRestException, CampaignUpdateRestException, BuildCampaignControllerRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         Campaign campaign;
@@ -398,6 +410,8 @@ public class CampaignControllerTriggerScoreEndpointsImpl implements CampaignCont
                 .addParameter("campaign_id", e.getCampaignId())
                 .withCause(e)
                 .build();
+        } catch (BuildCampaignControllerException e) {
+            throw BuildCampaignControllerRestExceptionMapper.getInstance().map(e, true);
         } catch (BuildCampaignException e) {
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (ConcurrentCampaignUpdateException e) {

@@ -4,8 +4,7 @@ import com.extole.client.rest.prehandler.condition.response.PrehandlerConditionR
 import com.extole.model.entity.prehandler.PrehandlerCondition;
 import com.extole.model.entity.prehandler.PrehandlerConditionType;
 
-public interface PrehandlerConditionResponseMapper<C extends PrehandlerCondition,
-    R extends PrehandlerConditionResponse> {
+public interface PrehandlerConditionResponseMapper<C extends PrehandlerCondition, R extends PrehandlerConditionResponse> {
 
     R toResponse(C condition);
 

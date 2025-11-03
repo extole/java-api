@@ -22,8 +22,8 @@ public class GlobalCampaignMigrationResponse {
     public GlobalCampaignMigrationResponse(
         @JsonProperty(MIGRATED_VARIABLES) List<String> migratedVariables,
         @JsonProperty(MIGRATED_ASSETS) List<String> migratedAssets,
-        @JsonProperty(SKIPPED_CONFLICTING_VARIABLES) Map<String, Map<String,
-            CampaignComponentVariableResponse>> skippedConflictingVariables) {
+        @JsonProperty(SKIPPED_CONFLICTING_VARIABLES) Map<String,
+            Map<String, CampaignComponentVariableResponse>> skippedConflictingVariables) {
         this.migratedVariables = migratedVariables;
         this.migratedAssets = migratedAssets;
         this.skippedConflictingVariables = skippedConflictingVariables;

@@ -19,52 +19,50 @@ public final class BuildPrehandlerExceptionMapper {
     private BuildPrehandlerExceptionMapper() {
     }
 
-    public BuildPrehandlerRestException map(BuildPrehandlerException e) {
-        return internalMap(e);
+    public BuildPrehandlerRestException map(BuildPrehandlerException exception) {
+        return internalMap(exception);
     }
 
-    private BuildPrehandlerRestException internalMap(BuildPrehandlerException e) {
-        if (e instanceof PrehandlerNameMissingException) {
+    private BuildPrehandlerRestException internalMap(BuildPrehandlerException exception) {
+        if (exception instanceof PrehandlerNameMissingException) {
             return RestExceptionBuilder.newBuilder(BuildPrehandlerRestException.class)
                 .withErrorCode(BuildPrehandlerRestException.PREHANDLER_NAME_MISSING)
-                .withCause(e)
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof PrehandlerInvalidNameLengthException) {
+        if (exception instanceof PrehandlerInvalidNameLengthException) {
             return RestExceptionBuilder.newBuilder(BuildPrehandlerRestException.class)
                 .withErrorCode(BuildPrehandlerRestException.PREHANDLER_NAME_LENGTH_OUT_OF_RANGE)
-                .withCause(e)
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof PrehandlerInvalidDescriptionLengthException) {
+        if (exception instanceof PrehandlerInvalidDescriptionLengthException) {
             return RestExceptionBuilder.newBuilder(BuildPrehandlerRestException.class)
                 .withErrorCode(BuildPrehandlerRestException.PREHANDLER_DESCRIPTION_LENGTH_OUT_OF_RANGE)
-                .withCause(e)
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof PrehandlerIllegalCharacterInNameException) {
-            PrehandlerIllegalCharacterInNameException ex = (PrehandlerIllegalCharacterInNameException) e;
+        if (exception instanceof PrehandlerIllegalCharacterInNameException castedException) {
             return RestExceptionBuilder.newBuilder(BuildPrehandlerRestException.class)
                 .withErrorCode(BuildPrehandlerRestException.PREHANDLER_NAME_CONTAINS_ILLEGAL_CHARACTER)
-                .addParameter("name", ex.getName())
-                .withCause(e)
+                .addParameter("name", castedException.getName())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof PrehandlerNameAlreadyExistsException) {
-            PrehandlerNameAlreadyExistsException ex = (PrehandlerNameAlreadyExistsException) e;
+        if (exception instanceof PrehandlerNameAlreadyExistsException castedException) {
             return RestExceptionBuilder.newBuilder(BuildPrehandlerRestException.class)
                 .withErrorCode(BuildPrehandlerRestException.PREHANDLER_NAME_DUPLICATED)
-                .addParameter("name", ex.getName())
-                .withCause(e)
+                .addParameter("name", castedException.getName())
+                .withCause(exception)
                 .build();
         }
 
         return RestExceptionBuilder.newBuilder(BuildPrehandlerRestException.class)
             .withErrorCode(BuildPrehandlerRestException.PREHANDLER_BUILD_FAILED)
-            .addParameter("prehandler_id", e.getPrehandlerId())
-            .addParameter("evaluatable_name", e.getEvaluatableName())
-            .addParameter("evaluatable", e.getEvaluatable().toString())
-            .withCause(e)
+            .addParameter("prehandler_id", exception.getPrehandlerId())
+            .addParameter("evaluatable_name", exception.getEvaluatableName())
+            .addParameter("evaluatable", exception.getEvaluatable().toString())
+            .withCause(exception)
             .build();
     }
 }

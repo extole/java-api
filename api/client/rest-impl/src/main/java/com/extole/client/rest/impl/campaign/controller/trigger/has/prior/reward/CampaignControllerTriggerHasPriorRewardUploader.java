@@ -65,6 +65,8 @@ public class CampaignControllerTriggerHasPriorRewardUploader
             trigger.getCountMatches().ifDefined((value) -> triggerBuilder.withCountMatches(value));
             trigger.getTaxYearStart().ifDefined((value) -> triggerBuilder.withTaxYearStart(value));
             trigger.getName().ifDefined((value) -> triggerBuilder.withName(value));
+            trigger.getParentTriggerGroupName()
+                .ifDefined((value) -> triggerBuilder.withParentTriggerGroupName(value));
             trigger.getEnabled().ifDefined((value) -> triggerBuilder.withEnabled(value));
             trigger.getNegated().ifDefined((negated) -> triggerBuilder.withNegated(negated));
         } catch (CampaignControllerTriggerHasPriorRewardInvalidFilterExpressionLengthException e) {

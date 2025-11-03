@@ -24,6 +24,7 @@ public class BaseRewardSupplierV2Response extends ComponentElementResponse {
     protected static final String PARTNER_REWARD_SUPPLIER_ID = "partner_reward_supplier_id";
     protected static final String DISPLAY_TYPE = "display_type";
     protected static final String NAME = "name";
+    protected static final String DISPLAY_NAME = "display_name";
     protected static final String FACE_VALUE_ALGORITHM_TYPE = "face_value_algorithm_type";
     protected static final String FACE_VALUE = "face_value";
     protected static final String FACE_VALUE_TYPE = "face_value_type";
@@ -43,6 +44,7 @@ public class BaseRewardSupplierV2Response extends ComponentElementResponse {
     private final Optional<String> partnerRewardSupplierId;
     private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> displayType;
     private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name;
+    private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName;
     private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType> faceValueAlgorithmType;
     private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal> faceValue;
     private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal> cashBackPercentage;
@@ -63,6 +65,7 @@ public class BaseRewardSupplierV2Response extends ComponentElementResponse {
         Optional<String> partnerRewardSupplierId,
         BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> displayType,
         BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name,
+        BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName,
         BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType> faceValueAlgorithmType,
         BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal> faceValue,
         BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal> cashBackPercentage,
@@ -84,6 +87,7 @@ public class BaseRewardSupplierV2Response extends ComponentElementResponse {
         this.partnerRewardSupplierId = partnerRewardSupplierId;
         this.displayType = displayType;
         this.name = name;
+        this.displayName = displayName;
         this.faceValueAlgorithmType = faceValueAlgorithmType;
         this.faceValue = faceValue;
         this.cashBackPercentage = cashBackPercentage;
@@ -118,6 +122,11 @@ public class BaseRewardSupplierV2Response extends ComponentElementResponse {
     @JsonProperty(NAME)
     public BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> getName() {
         return name;
+    }
+
+    @JsonProperty(DISPLAY_NAME)
+    public BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> getDisplayName() {
+        return displayName;
     }
 
     @JsonProperty(FACE_VALUE_ALGORITHM_TYPE)

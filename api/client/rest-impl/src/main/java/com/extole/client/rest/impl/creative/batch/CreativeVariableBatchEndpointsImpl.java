@@ -106,6 +106,7 @@ import com.extole.model.service.campaign.StaleCampaignVersionException;
 import com.extole.model.service.campaign.component.CampaignComponentException;
 import com.extole.model.service.campaign.component.CampaignComponentNameDuplicateException;
 import com.extole.model.service.campaign.component.CampaignComponentTypeValidationException;
+import com.extole.model.service.campaign.component.facet.CampaignComponentFacetsNotFoundException;
 import com.extole.model.service.campaign.controller.FrontendControllerBuilder;
 import com.extole.model.service.campaign.controller.action.creative.CampaignControllerActionCreativeBuilder;
 import com.extole.model.service.campaign.controller.action.creative.CampaignControllerActionCreativeInvalidCreativeArchiveException;
@@ -308,7 +309,8 @@ public class CreativeVariableBatchEndpointsImpl implements CreativeVariableBatch
             | TransitionRuleAlreadyExistsForActionType | CampaignScheduleException | CampaignFlowStepException
             | CampaignGlobalDeleteException | CampaignGlobalArchiveException | CampaignGlobalStateChangeException
             | CampaignComponentTypeValidationException | AuthorizationException | ComponentTypeNotFoundException
-            | ReferencedExternalElementException | IncompatibleRewardRuleException | CampaignComponentException e) {
+            | ReferencedExternalElementException | IncompatibleRewardRuleException | CampaignComponentException
+            | CampaignComponentFacetsNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)
@@ -354,7 +356,7 @@ public class CreativeVariableBatchEndpointsImpl implements CreativeVariableBatch
             | CampaignFlowStepException | CampaignGlobalDeleteException | CampaignGlobalArchiveException
             | CampaignGlobalStateChangeException | CampaignComponentTypeValidationException | AuthorizationException
             | ComponentTypeNotFoundException | ReferencedExternalElementException | IncompatibleRewardRuleException
-            | CampaignComponentException e) {
+            | CampaignComponentException | CampaignComponentFacetsNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)
@@ -503,7 +505,7 @@ public class CreativeVariableBatchEndpointsImpl implements CreativeVariableBatch
             | CampaignFlowStepException | CampaignGlobalDeleteException | CampaignGlobalArchiveException
             | CampaignGlobalStateChangeException | CampaignComponentTypeValidationException | AuthorizationException
             | ComponentTypeNotFoundException | ReferencedExternalElementException | IncompatibleRewardRuleException
-            | CampaignComponentException e) {
+            | CampaignComponentException | CampaignComponentFacetsNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)
@@ -516,19 +518,17 @@ public class CreativeVariableBatchEndpointsImpl implements CreativeVariableBatch
         List<ZoneCreativeVariableUpdateRequest> updateRequest)
         throws CampaignRestException, CreativeVariableBatchRestException, BuildCampaignRestException,
         CreativeArchiveVersionException, UserAuthorizationRestException, CreativeVariableServiceInvalidNameException,
-        ClientCoreAssetsVersionNotFoundException, CampaignComponentException,
-        CampaignLabelMissingNameException, CampaignLabelDuplicateNameException,
-        CampaignStartDateAfterStopDateException,
+        ClientCoreAssetsVersionNotFoundException, CampaignComponentException, CampaignLabelMissingNameException,
+        CampaignLabelDuplicateNameException, CampaignStartDateAfterStopDateException,
         CampaignDateBeforeStartDateException, CampaignDateAfterStopDateException, CampaignHasScheduledSiblingException,
         ConcurrentCampaignUpdateException, CreativeArchiveBuilderException, CampaignServiceNameLengthException,
         CampaignServiceIllegalCharacterInNameException, CampaignControllerTriggerBuildException,
         CampaignServiceNameMissingException, CampaignComponentNameDuplicateException,
         InvalidComponentReferenceException, TransitionRuleAlreadyExistsForActionType, CampaignFlowStepException,
         StepDataBuildException, StaleCampaignVersionException, CampaignGlobalDeleteException,
-        CampaignGlobalArchiveException, CampaignGlobalStateChangeException,
-        CampaignComponentTypeValidationException, AuthorizationException,
-        ComponentTypeNotFoundException, ReferencedExternalElementException,
-        CreativeVariableRestException, IncompatibleRewardRuleException {
+        CampaignGlobalArchiveException, CampaignGlobalStateChangeException, CampaignComponentTypeValidationException,
+        AuthorizationException, ComponentTypeNotFoundException, ReferencedExternalElementException,
+        CreativeVariableRestException, IncompatibleRewardRuleException, CampaignComponentFacetsNotFoundException {
         Campaign campaign = campaignProvider.getLatestCampaign(authorization, Id.valueOf(campaignId));
         List<ZoneCreativeVariableUpdateRequest> updateRequestWithCreativeActionId =
             updateRequest.stream().filter(value -> value.getCreativeActionId().isPresent())
@@ -555,18 +555,17 @@ public class CreativeVariableBatchEndpointsImpl implements CreativeVariableBatch
         throws CampaignRestException, CreativeVariableBatchRestException, BuildCampaignRestException,
         StepDataBuildException, StaleCampaignVersionException, CreativeArchiveVersionException,
         UserAuthorizationRestException, CreativeVariableServiceInvalidNameException,
-        ClientCoreAssetsVersionNotFoundException, CampaignComponentException,
-        CampaignLabelMissingNameException, CampaignLabelDuplicateNameException,
-        CampaignStartDateAfterStopDateException,
+        ClientCoreAssetsVersionNotFoundException, CampaignComponentException, CampaignLabelMissingNameException,
+        CampaignLabelDuplicateNameException, CampaignStartDateAfterStopDateException,
         CampaignDateBeforeStartDateException, CampaignDateAfterStopDateException, CampaignHasScheduledSiblingException,
         ConcurrentCampaignUpdateException, CreativeArchiveBuilderException, CampaignServiceNameLengthException,
         CampaignServiceIllegalCharacterInNameException, CampaignControllerTriggerBuildException,
         CampaignServiceNameMissingException, CampaignComponentNameDuplicateException,
         InvalidComponentReferenceException, TransitionRuleAlreadyExistsForActionType, CampaignFlowStepException,
-        CampaignGlobalDeleteException, CampaignGlobalArchiveException,
-        CampaignGlobalStateChangeException, CampaignComponentTypeValidationException,
-        AuthorizationException, ComponentTypeNotFoundException, ReferencedExternalElementException,
-        CreativeVariableRestException, IncompatibleRewardRuleException {
+        CampaignGlobalDeleteException, CampaignGlobalArchiveException, CampaignGlobalStateChangeException,
+        CampaignComponentTypeValidationException, AuthorizationException, ComponentTypeNotFoundException,
+        ReferencedExternalElementException, CreativeVariableRestException, IncompatibleRewardRuleException,
+        CampaignComponentFacetsNotFoundException {
         CampaignBuilder campaignBuilder = getCampaignBuilder(campaign, authorization, expectedCurrentVersion);
 
         for (Entry<Id<CreativeArchive>, List<VariableUpdateRequest>> variablesToUpdate : batchedVariables

@@ -30,8 +30,8 @@ public interface PersonLocationsEndpoints {
         description = "Returns locations for a person, sorted by created date in descending order.")
     List<PersonLocationResponse> list(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @BeanParam PersonLocationsListRequest listRequest,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException;

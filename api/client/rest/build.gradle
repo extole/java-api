@@ -1,5 +1,6 @@
 description = """Client REST API"""
 
+apply from: rootProject.file("maven_release.gradle")
 
 dependencies {
 
@@ -13,15 +14,13 @@ dependencies {
     implementation project(':common-url-template')
     implementation project(':context-api')
 
-    libraries.with {
-        implementation jackson
-        implementation jersey
-        api servlet
-        implementation jsr305
-        implementation javaWs
-        implementation spring
-        implementation swaggercore
-        implementation swaggerjaxrs2
-    }
+    implementation libs.bundles.jackson
+    implementation libs.bundles.jersey
+    api libs.servlet
+    implementation libs.jsr305
+    implementation libs.javaWs
+    implementation libs.bundles.spring
+    implementation libs.swaggercore
+    implementation libs.swaggerjaxrs2
 
 }

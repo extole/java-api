@@ -46,11 +46,11 @@ public class BuiltCampaignFlowStepRestMapper {
             flowStep.getIconColor(),
             flowStep.getDescription(),
             toFlowStepWordsResponse(flowStep.getWords()),
-            flowStep.getCampaignComponentReferences()
+            flowStep.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            flowStep.getCampaignComponentReferences()
+            flowStep.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

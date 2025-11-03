@@ -8,9 +8,8 @@ import javax.ws.rs.ext.Provider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
-import com.extole.client.rest.campaign.component.CampaignComponentValidationRestException;
+import com.extole.authorization.service.client.ClientAuthorization;
 import com.extole.client.rest.component.type.ComponentTypeArchiveRestException;
 import com.extole.client.rest.component.type.ComponentTypeCreateRequest;
 import com.extole.client.rest.component.type.ComponentTypeEndpoints;
@@ -58,7 +57,7 @@ public class ComponentTypeEndpointsImpl implements ComponentTypeEndpoints {
     @Override
     public List<ComponentTypeResponse> list(String accessToken, ComponentTypeQueryParams queryParams, ZoneId timeZone)
         throws UserAuthorizationRestException {
-        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
             ComponentTypeQueryBuilder queryBuilder = componentTypeService.list(authorization);
 
@@ -88,7 +87,7 @@ public class ComponentTypeEndpointsImpl implements ComponentTypeEndpoints {
     @Override
     public ComponentTypeResponse get(String accessToken, String name, ZoneId timeZone)
         throws UserAuthorizationRestException, ComponentTypeRestException {
-        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
             ComponentType componentType = componentTypeService.getByName(authorization, name);
             return componentTypeRestMapper.toComponentTypeResponse(componentType, timeZone);
@@ -108,9 +107,8 @@ public class ComponentTypeEndpointsImpl implements ComponentTypeEndpoints {
 
     @Override
     public ComponentTypeResponse create(String accessToken, ComponentTypeCreateRequest createRequest, ZoneId timeZone)
-        throws UserAuthorizationRestException, ComponentTypeValidationRestException,
-        CampaignComponentValidationRestException {
-        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        throws UserAuthorizationRestException, ComponentTypeValidationRestException {
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
             ComponentTypeBuilder componentTypeBuilder = componentTypeService.create(authorization)
                 .withName(createRequest.getName())
@@ -194,8 +192,8 @@ public class ComponentTypeEndpointsImpl implements ComponentTypeEndpoints {
     @Override
     public ComponentTypeResponse update(String accessToken, String name, ComponentTypeUpdateRequest updateRequest,
         ZoneId timeZone) throws UserAuthorizationRestException, ComponentTypeRestException,
-        ComponentTypeValidationRestException, CampaignComponentValidationRestException {
-        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        ComponentTypeValidationRestException {
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
             ComponentTypeBuilder componentTypeBuilder = componentTypeService.update(authorization, name);
 
@@ -249,7 +247,7 @@ public class ComponentTypeEndpointsImpl implements ComponentTypeEndpoints {
     @Override
     public ComponentTypeResponse archive(String accessToken, String name, ZoneId timeZone)
         throws UserAuthorizationRestException, ComponentTypeRestException, ComponentTypeArchiveRestException {
-        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
             ComponentType componentType = componentTypeService.archive(authorization, name);
             return componentTypeRestMapper.toComponentTypeResponse(componentType, timeZone);
@@ -278,7 +276,7 @@ public class ComponentTypeEndpointsImpl implements ComponentTypeEndpoints {
     @Override
     public List<ComponentTypeResponse> listDefault(String accessToken, ComponentTypeQueryParams queryParams,
         ZoneId timeZone) throws UserAuthorizationRestException {
-        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
             List<ComponentType> componentTypes = componentTypeService.listDefault(authorization);
             return componentTypes.stream()

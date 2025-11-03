@@ -22,21 +22,21 @@ public class CampaignComponentPartnerEnumListVariableResponse extends CampaignCo
     private static final String JSON_WEBHOOK_ID = "webhook_id";
     private static final String JSON_OPTIONS = "options";
 
-    private final BuildtimeEvaluatable<CampaignBuildtimeContext, Id<?>> webhookId;
+    private final BuildtimeEvaluatable<CampaignBuildtimeContext, Optional<Id<?>>> webhookId;
     private final List<PartnerEnumListVariableOptionResponse> options;
 
     @JsonCreator
     public CampaignComponentPartnerEnumListVariableResponse(@JsonProperty(JSON_COMPONENT_SETTING_NAME) String name,
         @JsonProperty(JSON_COMPONENT_SETTING_DISPLAY_NAME) Optional<String> displayName,
         @JsonProperty(JSON_COMPONENT_SETTING_TYPE) SettingType type,
-        @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES) Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values,
+        @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES) Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values,
         @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE) VariableSource source,
-        @JsonProperty(JSON_COMPONENT_SETTING_DESCRIPTION)
-        BuildtimeEvaluatable<VariableDescriptionBuildtimeContext, Optional<String>> description,
+        @JsonProperty(JSON_COMPONENT_SETTING_DESCRIPTION) BuildtimeEvaluatable<VariableDescriptionBuildtimeContext,
+            Optional<String>> description,
         @JsonProperty(JSON_COMPONENT_SETTING_TAGS) Set<String> tags,
         @JsonProperty(JSON_COMPONENT_SETTING_PRIORITY) DeweyDecimal priority,
-        @JsonProperty(JSON_WEBHOOK_ID) BuildtimeEvaluatable<CampaignBuildtimeContext, Id<?>> webhookId,
+        @JsonProperty(JSON_WEBHOOK_ID) BuildtimeEvaluatable<CampaignBuildtimeContext, Optional<Id<?>>> webhookId,
         @JsonProperty(JSON_OPTIONS) List<PartnerEnumListVariableOptionResponse> options) {
         super(name, displayName, type, values, source, description, tags, priority);
         this.webhookId = webhookId;
@@ -44,7 +44,7 @@ public class CampaignComponentPartnerEnumListVariableResponse extends CampaignCo
     }
 
     @JsonProperty(JSON_WEBHOOK_ID)
-    public BuildtimeEvaluatable<CampaignBuildtimeContext, Id<?>> getWebhookId() {
+    public BuildtimeEvaluatable<CampaignBuildtimeContext, Optional<Id<?>>> getWebhookId() {
         return webhookId;
     }
 

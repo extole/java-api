@@ -1,7 +1,7 @@
 package com.extole.consumer.rest.impl.debug;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,7 +11,7 @@ public final class HttpUserAgentExtractor {
 
     private static final HttpUserAgentExtractor INSTANCE = new HttpUserAgentExtractor();
 
-    private static final Set<String> USER_AGENT_HEADER_NAMES = Set.of("user_agent", "http_user_agent");
+    private static final List<String> USER_AGENT_HEADER_NAMES = List.of("User-Agent", "user_agent", "http_user_agent");
 
     private HttpUserAgentExtractor() {
     }

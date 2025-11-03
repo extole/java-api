@@ -38,6 +38,7 @@ import com.extole.client.rest.campaign.BuildCampaignRestException;
 import com.extole.client.rest.campaign.CampaignArchiveRestException;
 import com.extole.client.rest.campaign.CampaignResponse;
 import com.extole.client.rest.campaign.CampaignRestException;
+import com.extole.client.rest.campaign.CampaignUpdateRestException;
 import com.extole.client.rest.campaign.CampaignValidationRestException;
 import com.extole.client.rest.campaign.GlobalCampaignRestException;
 import com.extole.client.rest.campaign.component.CampaignComponentRestException;
@@ -222,7 +223,7 @@ public class CampaignUploaderImpl implements CampaignUploader {
         CampaignControllerActionRestException, SettingValidationRestException,
         CampaignComponentAssetValidationRestException, CampaignFlowStepAppValidationRestException,
         CampaignFlowStepMetricValidationRestException, CampaignComponentRestException, GlobalCampaignRestException,
-        CampaignFrontendControllerValidationRestException {
+        CampaignFrontendControllerValidationRestException, CampaignUpdateRestException {
         try {
             if (com.extole.client.rest.campaign.configuration.CampaignState.LIVE == uploaded.getState()) {
                 campaignBuilder.withStartDateNow();
@@ -627,7 +628,7 @@ public class CampaignUploaderImpl implements CampaignUploader {
         }
     }
 
-    private class SimpleCampaignUploadBuilder implements CampaignUploadBuilder {
+    private final class SimpleCampaignUploadBuilder implements CampaignUploadBuilder {
 
         private Campaign campaign;
         private InputStream inputStream;
@@ -675,7 +676,7 @@ public class CampaignUploaderImpl implements CampaignUploader {
 
         @Override
         public CampaignResponse upload() throws UserAuthorizationRestException, CampaignArchiveRestException,
-            CampaignValidationRestException, RewardRuleValidationRestException,
+            CampaignValidationRestException, RewardRuleValidationRestException, CampaignUpdateRestException,
             CampaignControllerValidationRestException, CampaignControllerActionRestException,
             CampaignControllerTriggerRestException, TransitionRuleValidationRestException,
             QualityRuleValidationRestException, CampaignLabelValidationRestException, CreativeArchiveRestException,
@@ -683,7 +684,8 @@ public class CampaignUploaderImpl implements CampaignUploader {
             BuildCampaignRestException, CampaignComponentValidationRestException,
             CampaignComponentAssetValidationRestException, CampaignFlowStepMetricValidationRestException,
             CampaignFlowStepAppValidationRestException, CampaignComponentRestException,
-            GlobalCampaignRestException, ComponentTypeRestException, CampaignFrontendControllerValidationRestException {
+            GlobalCampaignRestException, ComponentTypeRestException,
+            CampaignFrontendControllerValidationRestException, CampaignUpdateRestException {
 
             ClientAuthorization authorization = clientAuthorizationProvider.getClientAuthorization(accessToken);
             CampaignBuilder campaignBuilder;
@@ -1117,6 +1119,7 @@ public class CampaignUploaderImpl implements CampaignUploader {
             throw RestExceptionBuilder.newBuilder(CampaignArchiveRestException.class)
                 .withErrorCode(CampaignArchiveRestException.INVALID_CAMPAIGN_ARCHIVE)
                 .withCause(e)
+                .addParameter("details", e.getMessage())
                 .build();
         }
     }

@@ -44,8 +44,9 @@ import com.extole.salesforce.api.salesforce.SalesforceServiceUnavailableExceptio
 
 @Component
 public class SalesforceCouponRewardSupplierUpdateRequestMapper
-    extends BaseRewardSupplierUpdateRequestMapper<SalesforceCouponRewardSupplierUpdateRequest,
-        SalesforceCouponRewardSupplier, SalesforceCouponRewardSupplierBuilder> {
+    extends
+    BaseRewardSupplierUpdateRequestMapper<SalesforceCouponRewardSupplierUpdateRequest, SalesforceCouponRewardSupplier,
+        SalesforceCouponRewardSupplierBuilder> {
 
     private final RewardSupplierService rewardSupplierService;
     private final RewardSupplierRestMapper rewardSupplierRestMapper;

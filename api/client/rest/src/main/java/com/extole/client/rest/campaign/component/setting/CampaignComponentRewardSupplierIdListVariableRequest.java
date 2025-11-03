@@ -63,8 +63,9 @@ public class CampaignComponentRewardSupplierIdListVariableRequest
     }
 
     public static final class Builder<CALLER, BUILDER_TYPE extends Builder<CALLER, BUILDER_TYPE>>
-        extends CampaignComponentVariableRequest.Builder<CALLER,
-            CampaignComponentRewardSupplierIdListVariableRequest, Builder<CALLER, BUILDER_TYPE>> {
+        extends
+        CampaignComponentVariableRequest.Builder<CALLER, CampaignComponentRewardSupplierIdListVariableRequest,
+            Builder<CALLER, BUILDER_TYPE>> {
 
         private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, List<Id<?>>>> allowedRewardSupplierIds =
             Omissible.omitted();

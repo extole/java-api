@@ -1,6 +1,7 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -15,8 +16,8 @@ import com.extole.model.service.campaign.setting.VariableValueKeyLengthException
 
 @Component
 public class PartnerEnumListVariableUpdateRequestMapper
-    implements SettingUpdateRequestMapper<CampaignComponentPartnerEnumListVariableUpdateRequest,
-    PartnerEnumListVariableBuilder> {
+    implements
+    SettingUpdateRequestMapper<CampaignComponentPartnerEnumListVariableUpdateRequest, PartnerEnumListVariableBuilder> {
 
     @Override
     public void complete(CampaignComponentPartnerEnumListVariableUpdateRequest updateRequest,
@@ -31,7 +32,6 @@ public class PartnerEnumListVariableUpdateRequestMapper
                 PartnerEnumListVariableOption option = PartnerEnumListVariableOption.builder()
                     .withId(optionRequest.getId())
                     .withName(optionRequest.getName())
-                    .withDefault(optionRequest.getDefault())
                     .build();
                 options.add(option);
             }
@@ -40,7 +40,7 @@ public class PartnerEnumListVariableUpdateRequestMapper
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.PARTNER_ENUM_LIST;
+    public List<SettingType> getSettingTypes() {
+        return Collections.singletonList(SettingType.PARTNER_ENUM_LIST);
     }
 }

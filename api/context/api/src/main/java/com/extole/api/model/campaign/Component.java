@@ -1,17 +1,16 @@
 package com.extole.api.model.campaign;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 public interface Component {
 
     String getId();
 
-    String getComponentVersion();
-
     String getName();
 
-    @Nullable
-    String getType();
+    List<String> getType();
 
     @Nullable
     String getDescription();

@@ -7,6 +7,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema
 public interface ReferralContext {
 
+    String getMySide();
+
+    String getOtherPersonSide();
+
     String getOtherPersonId();
 
     String getReason();

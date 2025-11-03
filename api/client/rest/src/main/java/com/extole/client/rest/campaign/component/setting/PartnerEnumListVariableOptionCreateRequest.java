@@ -9,19 +9,15 @@ public class PartnerEnumListVariableOptionCreateRequest {
 
     private static final String ID = "id";
     private static final String NAME = "name";
-    private static final String DEFAULT = "default";
 
     private final String id;
     private final String name;
-    private final String defaultValue;
 
     @JsonCreator
     public PartnerEnumListVariableOptionCreateRequest(@JsonProperty(ID) String id,
-        @JsonProperty(NAME) String name,
-        @JsonProperty(DEFAULT) String defaultValue) {
+        @JsonProperty(NAME) String name) {
         this.id = id;
         this.name = name;
-        this.defaultValue = defaultValue;
     }
 
     @JsonProperty(ID)
@@ -32,11 +28,6 @@ public class PartnerEnumListVariableOptionCreateRequest {
     @JsonProperty(NAME)
     public String getName() {
         return name;
-    }
-
-    @JsonProperty(DEFAULT)
-    public String getDefault() {
-        return defaultValue;
     }
 
     @Override

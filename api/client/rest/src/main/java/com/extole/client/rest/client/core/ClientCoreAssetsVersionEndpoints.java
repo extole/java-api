@@ -23,7 +23,8 @@ public interface ClientCoreAssetsVersionEndpoints {
     @Path("/{clientId}")
     @DefaultApplicationJSON
     @Produces(MediaType.APPLICATION_JSON)
-    ClientCoreAssetsVersionResponse incrementClientCoreAssetsVersion(@UserAccessTokenParam String accessToken,
+    ClientCoreAssetsVersionResponse incrementClientCoreAssetsVersion(
+        @UserAccessTokenParam(requiredScope = Scope.CLIENT_SUPERUSER) String accessToken,
         @Deprecated // TODO clientId != authorization unsupported. ENG-13367
         @PathParam("clientId") String clientId, @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException;

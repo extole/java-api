@@ -26,12 +26,29 @@ import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.common.rest.support.request.resolver.ResolvesPolymorphicType;
 import com.extole.id.Id;
+import com.extole.model.entity.report.type.ReportOrderDirection;
+import com.extole.model.entity.report.type.ReportType;
+import com.extole.model.entity.report.type.ReportType.Type;
+import com.extole.model.entity.report.type.ReportTypeOrderBy;
+import com.extole.model.entity.report.type.ReportTypeTagType;
+import com.extole.model.entity.report.type.ReportTypeVisibility;
 import com.extole.model.service.client.ClientNotFoundException;
 import com.extole.model.service.client.ClientService;
-import com.extole.reporting.entity.report.ReportType;
-import com.extole.reporting.entity.report.ReportType.Type;
-import com.extole.reporting.entity.report.ReportTypeTagType;
-import com.extole.reporting.entity.report.ReportTypeVisibility;
+import com.extole.model.service.report.type.ConfiguredReportTypeBuilder;
+import com.extole.model.service.report.type.ReportTypeBuilder;
+import com.extole.model.service.report.type.ReportTypeClientsException;
+import com.extole.model.service.report.type.ReportTypeEmptyParameterNameException;
+import com.extole.model.service.report.type.ReportTypeEmptyTagNameException;
+import com.extole.model.service.report.type.ReportTypeException;
+import com.extole.model.service.report.type.ReportTypeIsReferencedDeleteException;
+import com.extole.model.service.report.type.ReportTypeNameMissingException;
+import com.extole.model.service.report.type.ReportTypeNotFoundException;
+import com.extole.model.service.report.type.ReportTypeParameterDescriptionTooLongException;
+import com.extole.model.service.report.type.ReportTypeQueryBuilder;
+import com.extole.model.service.report.type.ReportTypeService;
+import com.extole.model.service.report.type.ReportTypeStaticParameterChangeException;
+import com.extole.model.service.report.type.ReportTypeStaticParameterCreateException;
+import com.extole.model.service.report.type.ReportTypeStaticParameterDeleteException;
 import com.extole.reporting.rest.impl.report.execution.ReportRuntimeException;
 import com.extole.reporting.rest.impl.report.type.mappers.ReportTypeResponseMapper;
 import com.extole.reporting.rest.impl.report.type.resolver.ReportTypeRequestResolver;
@@ -49,21 +66,6 @@ import com.extole.reporting.rest.report.type.ReportTypeResponse;
 import com.extole.reporting.rest.report.type.ReportTypeUpdateRequest;
 import com.extole.reporting.rest.report.type.ReportTypeValidationRestException;
 import com.extole.reporting.rest.report.type.ReportTypeWithClientsResponse;
-import com.extole.reporting.service.ReportTypeNotFoundException;
-import com.extole.reporting.service.report.ReportTypeService;
-import com.extole.reporting.service.report.type.ConfiguredReportTypeBuilder;
-import com.extole.reporting.service.report.type.ReportTypeBuilder;
-import com.extole.reporting.service.report.type.ReportTypeClientsException;
-import com.extole.reporting.service.report.type.ReportTypeEmptyParameterNameException;
-import com.extole.reporting.service.report.type.ReportTypeEmptyTagNameException;
-import com.extole.reporting.service.report.type.ReportTypeException;
-import com.extole.reporting.service.report.type.ReportTypeIsReferencedDeleteException;
-import com.extole.reporting.service.report.type.ReportTypeNameMissingException;
-import com.extole.reporting.service.report.type.ReportTypeParameterDescriptionTooLongException;
-import com.extole.reporting.service.report.type.ReportTypeQueryBuilder;
-import com.extole.reporting.service.report.type.ReportTypeStaticParameterChangeException;
-import com.extole.reporting.service.report.type.ReportTypeStaticParameterCreateException;
-import com.extole.reporting.service.report.type.ReportTypeStaticParameterDeleteException;
 
 @Provider
 public class ReportTypeEndpointsImpl implements ReportTypeEndpoints {
@@ -188,11 +190,11 @@ public class ReportTypeEndpointsImpl implements ReportTypeEndpoints {
         }
 
         request.getOrderBy()
-            .map(reportTypeOrderBy -> com.extole.reporting.entity.report.type.ReportTypeOrderBy
+            .map(reportTypeOrderBy -> ReportTypeOrderBy
                 .valueOf(reportTypeOrderBy.name()))
             .ifPresent(listFilterBuilder::withOrderBy);
         request.getOrderDirection()
-            .map(reportOrderDirection -> com.extole.reporting.entity.report.ReportOrderDirection
+            .map(reportOrderDirection -> ReportOrderDirection
                 .valueOf(reportOrderDirection.name()))
             .ifPresent(listFilterBuilder::withOrder);
 
@@ -252,11 +254,11 @@ public class ReportTypeEndpointsImpl implements ReportTypeEndpoints {
             }
 
             request.getOrderBy()
-                .map(reportTypeOrderBy -> com.extole.reporting.entity.report.type.ReportTypeOrderBy
+                .map(reportTypeOrderBy -> ReportTypeOrderBy
                     .valueOf(reportTypeOrderBy.name()))
                 .ifPresent(listFilterBuilder::withOrderBy);
             request.getOrderDirection()
-                .map(reportOrderDirection -> com.extole.reporting.entity.report.ReportOrderDirection
+                .map(reportOrderDirection -> ReportOrderDirection
                     .valueOf(reportOrderDirection.name()))
                 .ifPresent(listFilterBuilder::withOrder);
 

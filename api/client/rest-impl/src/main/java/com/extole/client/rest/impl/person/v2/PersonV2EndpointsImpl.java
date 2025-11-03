@@ -311,7 +311,7 @@ public class PersonV2EndpointsImpl implements PersonV2Endpoints {
                 .withErrorCode(PersonValidationV2RestException.EMAIL_INVALID)
                 .addParameter("email", personRequest.getEmail())
                 .withCause(e).build();
-        } catch (EventProcessorException e) {
+        } catch (EventProcessorException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e).build();
@@ -333,7 +333,8 @@ public class PersonV2EndpointsImpl implements PersonV2Endpoints {
             PersonOperations personOperations = consumerEventSenderService.createConsumerEventSender()
                 .log("Person updated via client person endpoints." + " Person id: " + personId);
             Person updatedPerson = personService.updatePerson(authorization, Id.valueOf(personId),
-                new LockDescription("person-endpoints-update"), (personBuilder, originalPersonProfile) -> {
+                new LockDescription("person-endpoints-update"),
+                (personBuilder, initialPerson) -> {
                     try {
                         if (verifiedEmail != null) {
                             personBuilder.withEmail(verifiedEmail.getEmail());
@@ -831,7 +832,7 @@ public class PersonV2EndpointsImpl implements PersonV2Endpoints {
     }
 
     private void sendEvents(ClientAuthorization authorization, PersonV2Request request, Person person)
-        throws EventProcessorException, AuthorizationException {
+        throws EventProcessorException, AuthorizationException, PersonNotFoundException {
         boolean sendBlockEvent = false;
         boolean sendUnBlockEvent = false;
         if (request.getBlocked() != null) {
@@ -859,12 +860,12 @@ public class PersonV2EndpointsImpl implements PersonV2Endpoints {
     }
 
     private void sendInputEvent(ClientAuthorization authorization, Person person, String eventName)
-        throws EventProcessorException, AuthorizationException {
+        throws EventProcessorException, AuthorizationException, PersonNotFoundException {
         ProcessedRawEvent processedRawEvent = clientRequestContextService.createBuilder(authorization, servletRequest)
             .withEventName(eventName)
             .withHttpRequestBodyCapturing(ClientRequestContextService.HttpRequestBodyCapturingType.LIMITED)
             .build().getProcessedRawEvent();
-        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person).send();
+        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person.getId()).send();
     }
 
     private void sentProfileBlockClientEvent(Authorization authorization, String eventName, String message,

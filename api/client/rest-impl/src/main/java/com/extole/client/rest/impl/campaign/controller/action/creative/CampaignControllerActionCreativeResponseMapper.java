@@ -28,8 +28,8 @@ import com.extole.model.entity.campaign.CampaignControllerActionType;
 
 @Component
 public class CampaignControllerActionCreativeResponseMapper implements
-    CampaignControllerActionResponseMapper<CampaignControllerActionCreative,
-        CampaignControllerActionCreativeResponse, CampaignControllerActionCreativeConfiguration> {
+    CampaignControllerActionResponseMapper<CampaignControllerActionCreative, CampaignControllerActionCreativeResponse,
+        CampaignControllerActionCreativeConfiguration> {
 
     private final CampaignComponentRestMapper campaignComponentRestMapper;
 
@@ -49,11 +49,11 @@ public class CampaignControllerActionCreativeResponseMapper implements
             action.getCreativeArchiveId().isPresent(),
             action.getCreativeArchiveId().map(value -> value.getVersion()),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(toUnmodifiableList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -73,11 +73,11 @@ public class CampaignControllerActionCreativeResponseMapper implements
             action.getCreativeArchiveId().isPresent(),
             action.getCreativeArchiveId().map(value -> value.getVersion()),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(toUnmodifiableList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -99,7 +99,7 @@ public class CampaignControllerActionCreativeResponseMapper implements
             action.getThemeVersion().orElse(StringUtils.EMPTY),
             action.getCreativeArchiveId().map(value -> value.getVersion()),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

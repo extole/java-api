@@ -22,13 +22,22 @@ public class CampaignControllerTriggerClientDomainConfiguration extends Campaign
         @JsonProperty(TRIGGER_PHASE) BuildtimeEvaluatable<ControllerBuildtimeContext,
             CampaignControllerTriggerPhase> triggerPhase,
         @JsonProperty(TRIGGER_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            Optional<String>> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
         @JsonProperty(NEGATED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> negated,
         @JsonProperty(CLIENT_DOMAIN_IDS) BuildtimeEvaluatable<ControllerBuildtimeContext, Set<Id<?>>> clientDomainIds,
         @JsonProperty(COMPONENT_REFERENCES) List<CampaignComponentReferenceConfiguration> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.CLIENT_DOMAIN, triggerPhase, name, description, enabled, negated,
+        super(triggerId,
+            CampaignControllerTriggerType.CLIENT_DOMAIN,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
             componentReferences);
         this.clientDomainIds = clientDomainIds;
     }

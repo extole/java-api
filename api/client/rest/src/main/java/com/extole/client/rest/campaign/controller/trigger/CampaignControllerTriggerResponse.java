@@ -19,6 +19,7 @@ import com.extole.client.rest.campaign.controller.trigger.client.domain.Campaign
 import com.extole.client.rest.campaign.controller.trigger.data.intelligence.event.CampaignControllerTriggerDataIntelligenceEventResponse;
 import com.extole.client.rest.campaign.controller.trigger.event.CampaignControllerTriggerEventResponse;
 import com.extole.client.rest.campaign.controller.trigger.expression.CampaignControllerTriggerExpressionResponse;
+import com.extole.client.rest.campaign.controller.trigger.group.CampaignControllerTriggerGroupResponse;
 import com.extole.client.rest.campaign.controller.trigger.has.identity.CampaignControllerTriggerHasIdentityResponse;
 import com.extole.client.rest.campaign.controller.trigger.has.prior.reward.CampaignControllerTriggerHasPriorRewardResponse;
 import com.extole.client.rest.campaign.controller.trigger.has.prior.step.CampaignControllerTriggerHasPriorStepResponse;
@@ -30,6 +31,8 @@ import com.extole.client.rest.campaign.controller.trigger.reward.event.CampaignC
 import com.extole.client.rest.campaign.controller.trigger.score.CampaignControllerTriggerScoreResponse;
 import com.extole.client.rest.campaign.controller.trigger.send.reward.event.CampaignControllerTriggerSendRewardEventResponse;
 import com.extole.client.rest.campaign.controller.trigger.share.CampaignControllerTriggerShareResponse;
+import com.extole.client.rest.campaign.controller.trigger.step.event.CampaignControllerTriggerStepEventResponse;
+import com.extole.client.rest.campaign.controller.trigger.targeting.CampaignControllerTriggerTargetingResponse;
 import com.extole.client.rest.campaign.controller.trigger.zone.state.CampaignControllerTriggerZoneStateResponse;
 import com.extole.common.lang.ToString;
 import com.extole.evaluateable.BuildtimeEvaluatable;
@@ -56,7 +59,11 @@ import com.extole.id.Id;
     @Type(value = CampaignControllerTriggerHasPriorRewardResponse.class, name = "HAS_PRIOR_REWARD"),
     @Type(value = CampaignControllerTriggerHasIdentityResponse.class, name = "HAS_IDENTITY"),
     @Type(value = CampaignControllerTriggerClientDomainResponse.class, name = "CLIENT_DOMAIN"),
-    @Type(value = CampaignControllerTriggerLegacyLabelTargetingResponse.class, name = "LEGACY_LABEL_TARGETING")
+    @Type(value = CampaignControllerTriggerLegacyLabelTargetingResponse.class, name = "LEGACY_LABEL_TARGETING"),
+    @Type(value = CampaignControllerTriggerStepEventResponse.class, name = "STEP_EVENT"),
+    @Type(value = CampaignControllerTriggerTargetingResponse.class, name = "TARGETING"),
+    @Type(value = CampaignControllerTriggerGroupResponse.class, name = "GROUP")
+
 })
 public abstract class CampaignControllerTriggerResponse extends ComponentElementResponse {
 
@@ -64,6 +71,7 @@ public abstract class CampaignControllerTriggerResponse extends ComponentElement
     protected static final String TRIGGER_TYPE = "trigger_type";
     protected static final String TRIGGER_PHASE = "trigger_phase";
     protected static final String TRIGGER_NAME = "trigger_name";
+    protected static final String PARENT_TRIGGER_GROUP_NAME = "parent_trigger_group_name";
     protected static final String TRIGGER_DESCRIPTION = "trigger_description";
     protected static final String ENABLED = "enabled";
     protected static final String NEGATED = "negated";
@@ -72,6 +80,7 @@ public abstract class CampaignControllerTriggerResponse extends ComponentElement
     private final CampaignControllerTriggerType triggerType;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerPhase> triggerPhase;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, String> name;
+    private final BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>> parentTriggerGroupName;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>> description;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> negated;
@@ -82,10 +91,12 @@ public abstract class CampaignControllerTriggerResponse extends ComponentElement
         @JsonProperty(TRIGGER_PHASE) BuildtimeEvaluatable<ControllerBuildtimeContext,
             CampaignControllerTriggerPhase> triggerPhase,
         @JsonProperty(TRIGGER_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            Optional<String>> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
-        @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> negated,
+        @JsonProperty(NEGATED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> negated,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
         super(componentReferences, componentIds);
@@ -93,6 +104,7 @@ public abstract class CampaignControllerTriggerResponse extends ComponentElement
         this.triggerType = triggerType;
         this.triggerPhase = triggerPhase;
         this.name = name;
+        this.parentTriggerGroupName = parentTriggerGroupName;
         this.description = description;
         this.enabled = enabled;
         this.negated = negated;
@@ -117,6 +129,11 @@ public abstract class CampaignControllerTriggerResponse extends ComponentElement
     @JsonProperty(TRIGGER_NAME)
     public BuildtimeEvaluatable<ControllerBuildtimeContext, String> getName() {
         return name;
+    }
+
+    @JsonProperty(PARENT_TRIGGER_GROUP_NAME)
+    public BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>> getParentTriggerGroupName() {
+        return parentTriggerGroupName;
     }
 
     @JsonProperty(TRIGGER_DESCRIPTION)

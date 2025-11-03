@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema
 public interface PersonJourney {
 
+    String getId();
+
     String getCampaignId();
 
     String getJourneyName();
@@ -23,5 +25,7 @@ public interface PersonJourney {
 
     @Nullable
     JourneyKey getKey();
+
+    String getCreatedDate();
 
 }

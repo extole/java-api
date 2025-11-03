@@ -59,14 +59,18 @@ public class OAuthGenericClientKeyCreateRequest extends OAuthClientKeyCreateRequ
     }
 
     @JsonProperty(REQUEST)
-    public Omissible<BuildtimeEvaluatable<ClientKeyBuildtimeContext,
-        RuntimeEvaluatable<OAuthClientKeyRuntimeContext, OAuthRequest>>> getRequest() {
+    public
+        Omissible<BuildtimeEvaluatable<ClientKeyBuildtimeContext,
+            RuntimeEvaluatable<OAuthClientKeyRuntimeContext, OAuthRequest>>>
+        getRequest() {
         return request;
     }
 
     @JsonProperty(RESPONSE_HANDLER)
-    public Omissible<BuildtimeEvaluatable<ClientKeyBuildtimeContext,
-        RuntimeEvaluatable<OAuthClientKeyResponseContext, OAuthResponse>>> getResponseHandler() {
+    public
+        Omissible<BuildtimeEvaluatable<ClientKeyBuildtimeContext,
+            RuntimeEvaluatable<OAuthClientKeyResponseContext, OAuthResponse>>>
+        getResponseHandler() {
         return responseHandler;
     }
 
@@ -77,21 +81,25 @@ public class OAuthGenericClientKeyCreateRequest extends OAuthClientKeyCreateRequ
     public static final class Builder extends OAuthClientKeyCreateRequest.Builder {
 
         private Omissible<BuildtimeEvaluatable<ClientKeyBuildtimeContext,
-            RuntimeEvaluatable<OAuthClientKeyRuntimeContext, OAuthRequest>>> request = Omissible.omitted();
+            RuntimeEvaluatable<OAuthClientKeyRuntimeContext, OAuthRequest>>> request =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ClientKeyBuildtimeContext,
-            RuntimeEvaluatable<OAuthClientKeyResponseContext, OAuthResponse>>> responseHandler = Omissible.omitted();
+            RuntimeEvaluatable<OAuthClientKeyResponseContext, OAuthResponse>>> responseHandler =
+                Omissible.omitted();
 
         private Builder() {
         }
 
-        public Builder withRequest(BuildtimeEvaluatable<ClientKeyBuildtimeContext,
-            RuntimeEvaluatable<OAuthClientKeyRuntimeContext, OAuthRequest>> request) {
+        public Builder withRequest(
+            BuildtimeEvaluatable<ClientKeyBuildtimeContext,
+                RuntimeEvaluatable<OAuthClientKeyRuntimeContext, OAuthRequest>> request) {
             this.request = Omissible.of(request);
             return this;
         }
 
-        public Builder withResponseHandler(BuildtimeEvaluatable<ClientKeyBuildtimeContext,
-            RuntimeEvaluatable<OAuthClientKeyResponseContext, OAuthResponse>> responseHandler) {
+        public Builder withResponseHandler(
+            BuildtimeEvaluatable<ClientKeyBuildtimeContext,
+                RuntimeEvaluatable<OAuthClientKeyResponseContext, OAuthResponse>> responseHandler) {
             this.responseHandler = Omissible.of(responseHandler);
             return this;
         }

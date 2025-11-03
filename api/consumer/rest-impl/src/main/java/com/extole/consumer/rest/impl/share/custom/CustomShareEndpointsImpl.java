@@ -39,6 +39,7 @@ import com.extole.consumer.service.event.share.InvalidRecipientException;
 import com.extole.consumer.service.event.share.ShareInputConsumerEventSendBuilder;
 import com.extole.event.consumer.ConsumerEventName;
 import com.extole.id.Id;
+import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.share.Channel;
 import com.extole.person.service.shareable.Shareable;
 import com.extole.person.service.shareable.ShareableNotFoundException;
@@ -131,7 +132,7 @@ public class CustomShareEndpointsImpl implements CustomShareEndpoints {
                 .addParameter("share_message", e.getShareMessage())
                 .build();
         } catch (EventShareMissingChannelException | EventShareMissingMessageException
-            | EventShareMissingRecipientException | AuthorizationException e) {
+            | EventShareMissingRecipientException | AuthorizationException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)

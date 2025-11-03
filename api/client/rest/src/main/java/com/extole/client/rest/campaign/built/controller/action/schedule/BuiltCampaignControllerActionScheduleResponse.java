@@ -27,7 +27,7 @@ public class BuiltCampaignControllerActionScheduleResponse extends BuiltCampaign
     private static final String JSON_FORCE = "force";
     private static final String JSON_DATA = "data";
 
-    private final String scheduleName;
+    private final RuntimeEvaluatable<ScheduleActionContext, String> scheduleName;
     private final List<Duration> delays;
     private final List<ZonedDateTime> dates;
     private final boolean force;
@@ -36,7 +36,7 @@ public class BuiltCampaignControllerActionScheduleResponse extends BuiltCampaign
     public BuiltCampaignControllerActionScheduleResponse(
         @JsonProperty(JSON_ACTION_ID) String actionId,
         @JsonProperty(JSON_QUALITY) CampaignControllerActionQuality quality,
-        @JsonProperty(JSON_SCHEDULE_NAME) String scheduleName,
+        @JsonProperty(JSON_SCHEDULE_NAME) RuntimeEvaluatable<ScheduleActionContext, String> scheduleName,
         @JsonProperty(JSON_DELAYS) List<Duration> delays,
         @JsonProperty(JSON_DATES) List<ZonedDateTime> dates,
         @JsonProperty(JSON_FORCE) boolean force,
@@ -53,7 +53,7 @@ public class BuiltCampaignControllerActionScheduleResponse extends BuiltCampaign
     }
 
     @JsonProperty(JSON_SCHEDULE_NAME)
-    public String getScheduleName() {
+    public RuntimeEvaluatable<ScheduleActionContext, String> getScheduleName() {
         return scheduleName;
     }
 

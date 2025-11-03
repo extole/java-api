@@ -42,15 +42,16 @@ public class CampaignControllerTriggerDataIntelligenceEventResponseMapper implem
             trigger.getId().getValue(),
             Evaluatables.remapEnum(trigger.getPhase(), new TypeReference<>() {}),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
             trigger.getEventName(),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -66,11 +67,12 @@ public class CampaignControllerTriggerDataIntelligenceEventResponseMapper implem
             Omissible.of(Id.valueOf(trigger.getId().getValue())),
             Evaluatables.remapEnum(trigger.getPhase(), new TypeReference<>() {}),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
             trigger.getEventName(),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

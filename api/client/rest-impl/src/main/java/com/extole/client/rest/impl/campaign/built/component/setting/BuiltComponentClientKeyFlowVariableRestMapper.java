@@ -1,5 +1,8 @@
 package com.extole.client.rest.impl.campaign.built.component.setting;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.extole.client.rest.campaign.built.component.setting.BuiltComponentClientKeyFlowVariableResponse;
@@ -25,6 +28,7 @@ public class BuiltComponentClientKeyFlowVariableRestMapper
             clientKeyFlowVariable.getDescription(),
             setting.getTags(),
             Id.valueOf(clientKeyFlowVariable.getSourceComponentId().getValue()),
+            clientKeyFlowVariable.getSourceVersion(),
             clientKeyFlowVariable.getPriority(),
             clientKeyFlowVariable.getRedirectUri(),
             clientKeyFlowVariable.getClientKeyUrl(),
@@ -33,7 +37,7 @@ public class BuiltComponentClientKeyFlowVariableRestMapper
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.CLIENT_KEY_FLOW;
+    public List<SettingType> getSettingTypes() {
+        return Collections.singletonList(SettingType.CLIENT_KEY_FLOW);
     }
 }

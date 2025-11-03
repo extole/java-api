@@ -22,6 +22,7 @@ public class ClientCoreSettingsRequest {
     private static final String JSON_ORIGIN_HOST_OVERRIDE = "origin_host_override";
     private static final String JSON_COOKIE_POLICY = "cookie_policy";
     private static final String JSON_COOKIE_CONSENT_POLICY = "cookie_consent_policy";
+    private static final String JSON_COOKIE_DOMAIN_POLICY = "cookie_domain_policy";
 
     private final String source;
     private final String version;
@@ -35,6 +36,7 @@ public class ClientCoreSettingsRequest {
     private final String originHostOverride;
     private final CookiePolicy cookiePolicy;
     private final CookieConsentPolicy cookieConsentPolicy;
+    private final CookieDomainPolicy cookieDomainPolicy;
 
     @JsonCreator
     ClientCoreSettingsRequest(
@@ -45,12 +47,12 @@ public class ClientCoreSettingsRequest {
         @Nullable @JsonProperty(JSON_GLOBAL_ZONE_PARAMETERS_ENABLED) Boolean globalZoneParametersEnabled,
         @Nullable @JsonProperty(JSON_ZONE_POST_ENABLED) Boolean zonePostEnabled,
         @Nullable @JsonProperty(JSON_JS_CREATIVE_RESPONDS_HTML_ENABLED) Boolean jsCreativeRespondsWithHtmlEnabled,
-        @Nullable @JsonProperty(JSON_ACCESS_TOKEN_INCLUDED_IN_RESPONSE_ENABLED)
-        Boolean accessTokenIncludedInResponseEnabled,
+        @Nullable @JsonProperty(JSON_ACCESS_TOKEN_INCLUDED_IN_RESPONSE_ENABLED) Boolean accessTokenIncludedInResponseEnabled,
         @Nullable @JsonProperty(JSON_DEPRECATED_ACCESS_TOKEN_COOKIE_ALLOWED) Boolean deprecatedAccessTokenCookieAllowed,
         @Nullable @JsonProperty(JSON_ORIGIN_HOST_OVERRIDE) String originHostOverride,
         @Nullable @JsonProperty(JSON_COOKIE_POLICY) CookiePolicy cookiePolicy,
-        @Nullable @JsonProperty(JSON_COOKIE_CONSENT_POLICY) CookieConsentPolicy cookieConsentPolicy) {
+        @Nullable @JsonProperty(JSON_COOKIE_CONSENT_POLICY) CookieConsentPolicy cookieConsentPolicy,
+        @Nullable @JsonProperty(JSON_COOKIE_DOMAIN_POLICY) CookieDomainPolicy cookieDomainPolicy) {
         this.source = source;
         this.version = version;
         this.legacyTagsEnabled = legacyTagsEnabled;
@@ -63,6 +65,7 @@ public class ClientCoreSettingsRequest {
         this.originHostOverride = originHostOverride;
         this.cookiePolicy = cookiePolicy;
         this.cookieConsentPolicy = cookieConsentPolicy;
+        this.cookieDomainPolicy = cookieDomainPolicy;
     }
 
     @Nullable
@@ -137,6 +140,12 @@ public class ClientCoreSettingsRequest {
         return cookieConsentPolicy;
     }
 
+    @Nullable
+    @JsonProperty(JSON_COOKIE_DOMAIN_POLICY)
+    public CookieDomainPolicy getCookieDomainPolicy() {
+        return cookieDomainPolicy;
+    }
+
     @Override
     public String toString() {
         return ToString.create(this);
@@ -156,6 +165,11 @@ public class ClientCoreSettingsRequest {
         COOKIE_CONSENT_OR_SESSION_COOKIE, COOKIE_CONSENT_OR_NO_COOKIE
     }
 
+    @Schema
+    public enum CookieDomainPolicy {
+        SUBDOMAIN, ROOT_DOMAIN
+    }
+
     public static final class Builder {
         private String source;
         private String version;
@@ -169,6 +183,7 @@ public class ClientCoreSettingsRequest {
         private String originHostOverride;
         private CookiePolicy cookiePolicy;
         private CookieConsentPolicy cookieConsentPolicy;
+        private CookieDomainPolicy cookieDomainPolicy;
 
         private Builder() {
         }
@@ -233,11 +248,16 @@ public class ClientCoreSettingsRequest {
             return this;
         }
 
+        public Builder withCookieDomainPolicy(CookieDomainPolicy cookieDomainPolicy) {
+            this.cookieDomainPolicy = cookieDomainPolicy;
+            return this;
+        }
+
         public ClientCoreSettingsRequest build() {
             return new ClientCoreSettingsRequest(source, version, legacyTagsEnabled, thirdPartyCookiesDisabled,
                 globalZoneParametersEnabled, zonePostEnabled, jsCreativeRespondsWithHtmlEnabled,
                 accessTokenIncludedInResponseEnabled, deprecatedAccessTokenCookieAllowed, originHostOverride,
-                cookiePolicy, cookieConsentPolicy);
+                cookiePolicy, cookieConsentPolicy, cookieDomainPolicy);
         }
     }
 

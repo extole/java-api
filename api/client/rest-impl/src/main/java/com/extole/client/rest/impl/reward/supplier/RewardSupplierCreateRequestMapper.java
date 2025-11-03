@@ -19,8 +19,7 @@ import com.extole.client.rest.tango.TangoConnectionRestException;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.model.entity.reward.supplier.RewardSupplier;
 
-public interface RewardSupplierCreateRequestMapper<REQUEST extends RewardSupplierCreateRequest,
-    KEY extends RewardSupplier> {
+public interface RewardSupplierCreateRequestMapper<REQUEST extends RewardSupplierCreateRequest, KEY extends RewardSupplier> {
 
     KEY create(Authorization authorization, REQUEST createRequest)
         throws CustomRewardSupplierRestException, UserAuthorizationRestException, RewardSupplierRestException,

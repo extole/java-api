@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 import io.swagger.v3.oas.annotations.Operation;
 
 import com.extole.client.rest.audience.BuildAudienceRestException;
+import com.extole.client.rest.campaign.BuildCampaignControllerRestException;
 import com.extole.client.rest.campaign.BuildCampaignRestException;
 import com.extole.client.rest.campaign.BuildWebhookRestException;
 import com.extole.client.rest.campaign.CampaignRestException;
@@ -47,7 +48,9 @@ import com.extole.common.rest.ExtoleMediaType;
 import com.extole.common.rest.authorization.Scope;
 import com.extole.common.rest.authorization.UserAccessTokenParam;
 import com.extole.common.rest.exception.FileFormatRestException;
+import com.extole.common.rest.exception.QueryLimitsRestException;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
+import com.extole.common.rest.omissible.OmissibleRestException;
 import com.extole.common.rest.request.FileInputStreamRequest;
 import com.extole.common.rest.time.TimeZoneParam;
 
@@ -58,22 +61,60 @@ public interface ComponentEndpoints {
     @GET
     List<ComponentResponse> list(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
         @Nullable @BeanParam ComponentListRequest componentListRequest)
-        throws UserAuthorizationRestException, ComponentRestException;
+        throws UserAuthorizationRestException, ComponentRestException, QueryLimitsRestException;
 
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    @Path("/{component_id}")
+    @Path("/duplicatable")
+    List<ComponentResponse> listDuplicatableComponents(
+        @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
+        @Nullable @BeanParam DuplicatableComponentListRequest componentListRequest)
+        throws UserAuthorizationRestException, ComponentRestException, QueryLimitsRestException;
+
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    @Path("/{component_id}{version:(/version/.+)?}")
     ComponentResponse get(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
         @PathParam("component_id") String componentId,
+        @PathParam("version") String version,
         @Nullable @TimeZoneParam ZoneId timeZone)
-        throws UserAuthorizationRestException, ComponentRestException;
+        throws UserAuthorizationRestException, ComponentRestException, CampaignRestException;
 
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    @Path("/{component_id}/anchors")
+    @Path("/{component_id}{version:(/version/.+)?}/anchors")
     List<AnchorDetailsResponse> getAnchors(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @PathParam("component_id") String componentId, @Nullable @TimeZoneParam ZoneId timeZone)
-        throws UserAuthorizationRestException, ComponentRestException;
+        @PathParam("component_id") String componentId,
+        @PathParam("version") String version,
+        @Nullable @TimeZoneParam ZoneId timeZone)
+        throws UserAuthorizationRestException, ComponentRestException, CampaignRestException;
+
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @POST
+    ComponentResponse create(@UserAccessTokenParam String accessToken,
+        ComponentCreateRequest request,
+        @Nullable @TimeZoneParam ZoneId timeZone)
+        throws UserAuthorizationRestException, CampaignRestException, CampaignComponentValidationRestException,
+        SettingValidationRestException, BuildCampaignRestException, CampaignComponentRestException,
+        CampaignUpdateRestException, ComponentTypeRestException, BuildWebhookRestException,
+        BuildPrehandlerRestException, BuildRewardSupplierRestException, BuildClientKeyRestException,
+        BuildAudienceRestException, EventStreamValidationRestException, OAuthClientKeyBuildRestException;
+
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @PUT
+    @Path("/{component_id}")
+    ComponentResponse update(@UserAccessTokenParam String accessToken,
+        @PathParam("component_id") String componentId,
+        ComponentUpdateRequest request,
+        @Nullable @TimeZoneParam ZoneId timeZone)
+        throws UserAuthorizationRestException, CampaignRestException, CampaignComponentRestException,
+        CampaignComponentValidationRestException, CampaignComponentRootValidationRestException,
+        SettingValidationRestException, BuildCampaignRestException, OmissibleRestException, CampaignUpdateRestException,
+        ComponentTypeRestException, BuildWebhookRestException, BuildPrehandlerRestException,
+        BuildRewardSupplierRestException, BuildClientKeyRestException, BuildAudienceRestException,
+        EventStreamValidationRestException, OAuthClientKeyBuildRestException, ComponentRestException;
 
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -90,7 +131,17 @@ public interface ComponentEndpoints {
         CampaignComponentRestException, CreativeArchiveRestException, ComponentTypeRestException, SettingRestException,
         BuildWebhookRestException, BuildPrehandlerRestException, BuildRewardSupplierRestException,
         BuildClientKeyRestException, BuildAudienceRestException, EventStreamValidationRestException,
-        OAuthClientKeyBuildRestException;
+        OAuthClientKeyBuildRestException, BuildCampaignControllerRestException;
+
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{component_id}/upgrade")
+    @POST
+    ComponentResponse upgrade(@UserAccessTokenParam String accessToken,
+        @PathParam("component_id") String componentId,
+        @Nullable @TimeZoneParam ZoneId timeZone)
+        throws UserAuthorizationRestException, ComponentRestException, CampaignRestException,
+        ComponentUpgradeRestException;
 
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -113,13 +164,15 @@ public interface ComponentEndpoints {
     @Path("/built")
     List<BuiltComponentResponse> listBuilt(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
         @Nullable @BeanParam ComponentListRequest componentListRequest)
-        throws UserAuthorizationRestException, ComponentRestException;
+        throws UserAuthorizationRestException, ComponentRestException, QueryLimitsRestException;
 
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    @Path("/{component_id}/built")
+    @Path("/{component_id}{version:(/version/.+)?}/built")
     BuiltComponentResponse getBuilt(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @PathParam("component_id") String componentId, @Nullable @TimeZoneParam ZoneId timeZone)
+        @PathParam("component_id") String componentId,
+        @PathParam("version") String version,
+        @Nullable @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, ComponentRestException, BuildCampaignRestException;
 
     @GET
@@ -196,5 +249,13 @@ public interface ComponentEndpoints {
         BuildWebhookRestException, BuildPrehandlerRestException, BuildRewardSupplierRestException,
         BuildClientKeyRestException, BuildAudienceRestException, EventStreamValidationRestException,
         OAuthClientKeyBuildRestException;
+
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    @Path("/duplicatable/built")
+    List<BuiltComponentResponse> listBuiltDuplicatableComponents(
+        @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
+        @Nullable @BeanParam DuplicatableComponentListRequest componentListRequest)
+        throws UserAuthorizationRestException, ComponentRestException, QueryLimitsRestException;
 
 }

@@ -15,9 +15,10 @@ public class UserSubscriptionValidationRestException extends ExtoleRestException
             "dedupe_duration_ms", "min_dedupe_duration_ms", "max_dedupe_duration_ms");
 
     public static final ErrorCode<
-        UserSubscriptionValidationRestException> INVALID_CHANNEL_TYPES_FOR_ZERO_DEDUPE_DURATION = new ErrorCode<>(
-            "invalid_channel_types_for_zero_dedupe_duration", 400,
-            "invalid channel types for 0ms dedupe duration", "invalid_channel_types");
+        UserSubscriptionValidationRestException> INVALID_CHANNEL_TYPES_FOR_ZERO_DEDUPE_DURATION =
+            new ErrorCode<>(
+                "invalid_channel_types_for_zero_dedupe_duration", 400,
+                "invalid channel types for 0ms dedupe duration", "invalid_channel_types");
 
     public UserSubscriptionValidationRestException(String uniqueId, ErrorCode<?> errorCode,
         Map<String, Object> parameters,

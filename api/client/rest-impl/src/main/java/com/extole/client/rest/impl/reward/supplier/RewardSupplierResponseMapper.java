@@ -7,8 +7,7 @@ import com.extole.client.rest.reward.supplier.RewardSupplierResponse;
 import com.extole.client.rest.reward.supplier.RewardSupplierType;
 import com.extole.model.entity.reward.supplier.RewardSupplier;
 
-public interface RewardSupplierResponseMapper<SUPPLIER extends RewardSupplier,
-    RESPONSE extends RewardSupplierResponse> {
+public interface RewardSupplierResponseMapper<SUPPLIER extends RewardSupplier, RESPONSE extends RewardSupplierResponse> {
 
     RESPONSE toResponse(Authorization authorization, SUPPLIER rewardSupplier, ZoneId timeZone);
 

@@ -47,42 +47,39 @@ public class PersonRewardsListRequest {
 
     public PersonRewardsListRequest(
         @Parameter(description = "Optional campaign id filter. " +
-            "Will include rewards that match at least one of the campaign ids.") @QueryParam(PARAMETER_CAMPAIGN_IDS)
-        List<String> campaignIds,
+            "Will include rewards that match at least one of the campaign ids.") @QueryParam(PARAMETER_CAMPAIGN_IDS) List<
+                String> campaignIds,
         @Parameter(description = "Optional program label filter. " +
-            "Will include rewards that match at least one of the programs.") @QueryParam(PARAMETER_PROGRAMS)
-        List<String> programs,
+            "Will include rewards that match at least one of the programs.") @QueryParam(PARAMETER_PROGRAMS) List<
+                String> programs,
         @Parameter(description = "Optional containers filter. " +
             "Will include rewards for all containers if not specified or match at least one of " +
-            "the specified containers.")
-        @QueryParam(PARAMETER_CONTAINERS) List<String> containers,
+            "the specified containers.") @QueryParam(PARAMETER_CONTAINERS) List<String> containers,
         @Parameter(description = "Optional data keys filter. " +
-            "Will include rewards that match at least one of the data keys.")
-        @QueryParam(PARAMETER_DATA_KEYS) List<String> dataKeys,
+            "Will include rewards that match at least one of the data keys.") @QueryParam(PARAMETER_DATA_KEYS) List<
+                String> dataKeys,
         @Parameter(description = "Optional filter for existence of specific data values. " +
             "Will include rewards that have at least one of the specified data name-value pair. " +
-            "Valid format is name:value.")
-        @QueryParam(PARAMETER_DATA_VALUES) List<String> dataValues,
+            "Valid format is name:value.") @QueryParam(PARAMETER_DATA_VALUES) List<String> dataValues,
         @Parameter(description = "Optional reward types filter. " +
-            "Will include rewards that match at least one of the reward types.")
-        @QueryParam(PARAMETER_REWARD_TYPES) List<RewardSupplierType> rewardTypes,
+            "Will include rewards that match at least one of the reward types.") @QueryParam(PARAMETER_REWARD_TYPES) List<
+                RewardSupplierType> rewardTypes,
         @Parameter(description = "Optional reward states filter. " +
-            "Will include rewards that match at least one of the reward states.")
-        @QueryParam(PARAMETER_REWARD_STATES) List<RewardState> rewardStates,
+            "Will include rewards that match at least one of the reward states.") @QueryParam(PARAMETER_REWARD_STATES) List<
+                RewardState> rewardStates,
         @Parameter(description = "Optional offset filter, defaults to " + DEFAULT_OFFSET + ".") @DefaultValue(""
             + DEFAULT_OFFSET) @QueryParam(PARAMETER_OFFSET) Optional<Integer> offset,
         @Parameter(description = "Optional limit filter, defaults to " + DEFAULT_LIMIT + ".") @DefaultValue(""
             + DEFAULT_LIMIT) @QueryParam(PARAMETER_LIMIT) Optional<Integer> limit,
         @Parameter(description = "Optional journey names filter. " +
-            "Will include rewards that match at least one of the journey names.")
-        @QueryParam(PARAMETER_JOURNEY_NAMES) List<String> journeyNames,
+            "Will include rewards that match at least one of the journey names.") @QueryParam(PARAMETER_JOURNEY_NAMES) List<
+                String> journeyNames,
         @Parameter(description = "Optional journey key names filter. " +
-            "Will include rewards, whose journey key matches one of the journey key names.")
-        @QueryParam(PARAMETER_JOURNEY_KEY_NAMES) List<String> journeyKeyNames,
+            "Will include rewards, whose journey key matches one of the journey key names.") @QueryParam(PARAMETER_JOURNEY_KEY_NAMES) List<
+                String> journeyKeyNames,
         @Parameter(description = "Optional journey key values filter. " +
             "Will include rewards that have one of the specified journey keys. " +
-            "Valid format is name:value.")
-        @QueryParam(PARAMETER_JOURNEY_KEY_VALUES) List<String> journeyKeyValues) {
+            "Valid format is name:value.") @QueryParam(PARAMETER_JOURNEY_KEY_VALUES) List<String> journeyKeyValues) {
         this.programs = programs == null ? ImmutableList.of() : ImmutableList.copyOf(programs);
         this.campaignIds = campaignIds == null ? ImmutableList.of() : ImmutableList.copyOf(campaignIds);
         this.containers = containers == null ? ImmutableList.of() : ImmutableList.copyOf(containers);

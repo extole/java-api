@@ -28,10 +28,12 @@ public class PersonSearchRequest {
     private final int offset;
 
     public PersonSearchRequest(
-        @Parameter(description = "The identity key value of the person.")
-        @QueryParam(JSON_IDENTITY_KEY_VALUE) Optional<String> identityKeyValue,
-        @Parameter(description = "The person keys using this format: <name>:<value>")
-        @QueryParam(JSON_PERSON_KEYS) List<String> personKeys,
+        @Parameter(
+            description = "The identity key value of the person.") @QueryParam(JSON_IDENTITY_KEY_VALUE) Optional<
+                String> identityKeyValue,
+        @Parameter(
+            description = "The person keys using this format: <name>:<value>") @QueryParam(JSON_PERSON_KEYS) List<
+                String> personKeys,
         @DefaultValue("" + DEFAULT_LIMIT) @QueryParam(JSON_LIMIT) Optional<Integer> limit,
         @DefaultValue("" + DEFAULT_OFFSET) @QueryParam(JSON_OFFSET) Optional<Integer> offset) {
         this.identityKeyValue = identityKeyValue;

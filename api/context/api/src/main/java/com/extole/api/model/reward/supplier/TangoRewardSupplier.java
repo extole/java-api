@@ -1,6 +1,7 @@
 package com.extole.api.model.reward.supplier;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -40,6 +41,8 @@ public interface TangoRewardSupplier extends EventEntity {
     BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Integer> getLimitPerHour();
 
     BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> getName();
+
+    BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> getDisplayName();
 
     BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> getDescription();
 

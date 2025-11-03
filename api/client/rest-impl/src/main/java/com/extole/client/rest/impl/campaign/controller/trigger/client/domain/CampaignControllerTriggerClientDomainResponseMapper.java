@@ -23,10 +23,8 @@ import com.extole.model.entity.campaign.CampaignControllerTriggerType;
 
 @Component
 public class CampaignControllerTriggerClientDomainResponseMapper implements
-    CampaignControllerTriggerResponseMapper<
-        CampaignControllerTriggerClientDomain,
-        CampaignControllerTriggerClientDomainResponse,
-        CampaignControllerTriggerClientDomainConfiguration> {
+    CampaignControllerTriggerResponseMapper<CampaignControllerTriggerClientDomain,
+        CampaignControllerTriggerClientDomainResponse, CampaignControllerTriggerClientDomainConfiguration> {
 
     private final CampaignComponentRestMapper campaignComponentRestMapper;
 
@@ -44,15 +42,16 @@ public class CampaignControllerTriggerClientDomainResponseMapper implements
             trigger.getId().getValue(),
             Evaluatables.remapEnum(trigger.getPhase(), new TypeReference<>() {}),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
             trigger.getClientDomainIds(),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -67,11 +66,12 @@ public class CampaignControllerTriggerClientDomainResponseMapper implements
             Omissible.of(Id.valueOf(trigger.getId().getValue())),
             Evaluatables.remapEnum(trigger.getPhase(), new TypeReference<>() {}),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
             trigger.getClientDomainIds(),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

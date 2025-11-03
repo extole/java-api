@@ -9,7 +9,8 @@ import com.extole.reporting.rest.posthandler.action.JavascriptReportPostHandlerA
 
 @Component
 public class JavascriptReportPostHandlerActionResponseMapper
-    implements ReportPostHandlerActionResponseMapper<JavascriptReportPostHandlerAction,
+    implements
+    ReportPostHandlerActionResponseMapper<JavascriptReportPostHandlerAction,
         JavascriptReportPostHandlerActionResponse> {
 
     @Override

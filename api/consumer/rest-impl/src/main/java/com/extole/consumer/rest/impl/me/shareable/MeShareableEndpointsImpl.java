@@ -46,6 +46,7 @@ import com.extole.consumer.service.shareable.MalformedPartnerContentUrlException
 import com.extole.consumer.service.shareable.ShareableCodeBlacklistedException;
 import com.extole.event.consumer.ConsumerEventName;
 import com.extole.person.service.profile.Person;
+import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.shareable.Shareable;
 import com.extole.person.service.shareable.ShareableBlockedUrlException;
 import com.extole.person.service.shareable.ShareableCodeReservedException;
@@ -151,7 +152,7 @@ public class MeShareableEndpointsImpl implements MeShareableEndpoints {
         ProcessedRawEvent processedRawEvent = requestContext.getProcessedRawEvent();
         try {
             Shareable shareable = consumerEventSenderService
-                .createInputEvent(authorization, processedRawEvent, authorization.getIdentity())
+                .createInputEvent(authorization, processedRawEvent)
                 .withLockDescription(new LockDescription("me-shareable-endpoints-create"))
                 .executeAndSend((personBuilder, person, inputEventBuilder) -> {
                     try {
@@ -267,7 +268,7 @@ public class MeShareableEndpointsImpl implements MeShareableEndpoints {
             }
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR).withCause(cause).build();
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)

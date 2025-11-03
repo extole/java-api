@@ -40,8 +40,8 @@ public class ExpressionRewardWebhookFilterResponse {
     }
 
     @JsonProperty(EXPRESSION)
-    public BuildtimeEvaluatable<WebhookBuildtimeContext,
-        RuntimeEvaluatable<RewardWebhookFilterRuntimeContext, Boolean>> getExpression() {
+    public BuildtimeEvaluatable<WebhookBuildtimeContext, RuntimeEvaluatable<RewardWebhookFilterRuntimeContext, Boolean>>
+        getExpression() {
         return expression;
     }
 

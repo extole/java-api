@@ -163,8 +163,8 @@ public abstract class StringBasedClientKeyCreateRequest extends ClientKeyCreateR
         return key;
     }
 
-    public abstract static class Builder<REQUEST extends StringBasedClientKeyCreateRequest,
-        BUILDER extends Builder<REQUEST, BUILDER>>
+    public abstract static class Builder<REQUEST extends StringBasedClientKeyCreateRequest, BUILDER extends Builder<
+        REQUEST, BUILDER>>
         extends ClientKeyCreateRequest.Builder<REQUEST, BUILDER> {
 
         protected String key;

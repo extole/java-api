@@ -28,6 +28,8 @@ public class CampaignControllerTriggerScoreResponse extends CampaignControllerTr
         @JsonProperty(TRIGGER_PHASE) BuildtimeEvaluatable<ControllerBuildtimeContext,
             CampaignControllerTriggerPhase> triggerPhase,
         @JsonProperty(TRIGGER_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            Optional<String>> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
@@ -37,8 +39,8 @@ public class CampaignControllerTriggerScoreResponse extends CampaignControllerTr
         @JsonProperty(CHANNEL) String channel,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.SCORE, triggerPhase, name, description, enabled, negated,
-            componentIds, componentReferences);
+        super(triggerId, CampaignControllerTriggerType.SCORE, triggerPhase, name, parentTriggerGroupName, description,
+            enabled, negated, componentIds, componentReferences);
         this.scoreResult = scoreResult;
         this.causeEventName = causeEventName;
         this.channel = channel;

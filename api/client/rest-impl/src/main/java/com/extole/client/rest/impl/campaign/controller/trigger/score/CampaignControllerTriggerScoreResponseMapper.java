@@ -23,8 +23,7 @@ import com.extole.model.entity.campaign.CampaignControllerTriggerType;
 
 @Component
 public class CampaignControllerTriggerScoreResponseMapper implements
-    CampaignControllerTriggerResponseMapper<CampaignControllerTriggerScore,
-        CampaignControllerTriggerScoreResponse,
+    CampaignControllerTriggerResponseMapper<CampaignControllerTriggerScore, CampaignControllerTriggerScoreResponse,
         CampaignControllerTriggerScoreConfiguration> {
 
     private final CampaignComponentRestMapper campaignComponentRestMapper;
@@ -40,17 +39,18 @@ public class CampaignControllerTriggerScoreResponseMapper implements
         return new CampaignControllerTriggerScoreResponse(trigger.getId().getValue(),
             Evaluatables.remapEnum(trigger.getPhase(), new TypeReference<>() {}),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
             trigger.getScoreResult(),
             trigger.getCauseEventName(),
             trigger.getChannel(),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -63,13 +63,14 @@ public class CampaignControllerTriggerScoreResponseMapper implements
         return new CampaignControllerTriggerScoreConfiguration(Omissible.of(Id.valueOf(trigger.getId().getValue())),
             Evaluatables.remapEnum(trigger.getPhase(), new TypeReference<>() {}),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
             trigger.getScoreResult(),
             trigger.getCauseEventName(),
             trigger.getChannel(),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

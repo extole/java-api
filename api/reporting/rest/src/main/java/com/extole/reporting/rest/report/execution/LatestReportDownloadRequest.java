@@ -36,37 +36,29 @@ public class LatestReportDownloadRequest {
 
     public LatestReportDownloadRequest(
         @Parameter(description = "Optional filter for report tags, " +
-            "asks for reports that contain at least one of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_HAVING_ANY_TAGS) String havingAnyTags,
+            "asks for reports that contain at least one of the specified tags.") @Nullable @QueryParam(PARAMETER_HAVING_ANY_TAGS) String havingAnyTags,
         @Parameter(description = "Optional filter for required report tags, " +
-            "asks for reports that contain all of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_HAVING_ALL_TAGS) String havingAllTags,
+            "asks for reports that contain all of the specified tags.") @Nullable @QueryParam(PARAMETER_HAVING_ALL_TAGS) String havingAllTags,
         @Parameter(description = "Optional filter for report exclude tags, " +
-            "asks for reports that do not contain any of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ANY_TAGS) String excludeHavingAnyTags,
+            "asks for reports that do not contain any of the specified tags.") @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ANY_TAGS) String excludeHavingAnyTags,
         @Parameter(description = "Optional filter for report exclude tags, " +
-            "asks for reports that do not contain all of the specified tags.")
-        @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ALL_TAGS) String excludeHavingAllTags,
+            "asks for reports that do not contain all of the specified tags.") @Nullable @QueryParam(PARAMETER_EXCLUDE_HAVING_ALL_TAGS) String excludeHavingAllTags,
         @Parameter(deprecated = true, description = "Optional filter for report tags, " +
             "asks for reports that contain at least one of the specified tags. Deprecated, " + PARAMETER_HAVING_ANY_TAGS
-            + " should be used instead.")
-        @Nullable @QueryParam(PARAMETER_TAGS) String tags,
+            + " should be used instead.") @Nullable @QueryParam(PARAMETER_TAGS) String tags,
         @Parameter(deprecated = true, description = "Optional filter for report exclude tags, " +
             "asks for reports that do not contain any of the specified tags. Deprecated, " + PARAMETER_HAVING_ANY_TAGS
-            + " should be used instead.")
-        @Nullable @QueryParam(PARAMETER_EXCLUDE_TAGS) String excludeTags,
+            + " should be used instead.") @Nullable @QueryParam(PARAMETER_EXCLUDE_TAGS) String excludeTags,
         @Parameter(description = "Optional order by property, " +
             "will return latest report based on order by property. " +
-            "Valid values: NAME, USER, DATE_RUN, DATE_COMPLETED, STATUS, DATE_SCHEDULED")
-        @Nullable @QueryParam(PARAMETER_ORDER_BY) ReportOrderBy orderBy,
+            "Valid values: NAME, USER, DATE_RUN, DATE_COMPLETED, STATUS, DATE_SCHEDULED") @Nullable @QueryParam(PARAMETER_ORDER_BY) ReportOrderBy orderBy,
         @Parameter(description = "Optional order direction, " +
             "will return latest report sorted in specified direction. " +
-            "Valid values: ASCENDING, DESCENDING")
-        @Nullable @QueryParam(PARAMETER_ORDER) ReportOrderDirection order,
-        @Parameter(description = "Optional filter for offset, defaults to 0.")
-        @Nullable @QueryParam(PARAMETER_OFFSET) String offset,
-        @Parameter(description = "Optional filter for limit, defaults to all.")
-        @Nullable @QueryParam(PARAMETER_LIMIT) String limit,
+            "Valid values: ASCENDING, DESCENDING") @Nullable @QueryParam(PARAMETER_ORDER) ReportOrderDirection order,
+        @Parameter(
+            description = "Optional filter for offset, defaults to 0.") @Nullable @QueryParam(PARAMETER_OFFSET) String offset,
+        @Parameter(
+            description = "Optional filter for limit, defaults to all.") @Nullable @QueryParam(PARAMETER_LIMIT) String limit,
         @Nullable @QueryParam(PARAMETER_FILENAME) String filename) {
         this.havingAnyTags = Optional.ofNullable(havingAnyTags).or(() -> Optional.ofNullable(tags));
         this.havingAllTags = Optional.ofNullable(havingAllTags);

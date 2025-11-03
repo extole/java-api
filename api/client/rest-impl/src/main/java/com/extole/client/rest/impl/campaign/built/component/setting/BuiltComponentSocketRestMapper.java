@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 
 import com.extole.client.rest.campaign.built.component.setting.BuiltCampaignComponentVariableResponse;
 import com.extole.client.rest.campaign.built.component.setting.BuiltComponentSocketResponse;
-import com.extole.client.rest.campaign.component.setting.SocketFilterResponse;
 import com.extole.client.rest.impl.campaign.component.setting.CampaignComponentSettingRestMapper;
+import com.extole.client.rest.impl.campaign.component.setting.ComponentSocketFilterMapper;
 import com.extole.common.lang.ObjectMapperProvider;
 import com.extole.id.Id;
 import com.extole.model.entity.campaign.SettingType;
@@ -27,10 +27,13 @@ import com.extole.model.entity.campaign.built.BuiltSocket;
 public class BuiltComponentSocketRestMapper implements BuiltComponentSettingRestMapper<BuiltComponentSocketResponse> {
 
     private final CampaignComponentSettingRestMapper componentSettingRestMapper;
+    private final ComponentSocketFilterMapper componentSocketFilterMapper;
 
     @Autowired
-    public BuiltComponentSocketRestMapper(@Lazy CampaignComponentSettingRestMapper componentSettingRestMapper) {
+    public BuiltComponentSocketRestMapper(@Lazy CampaignComponentSettingRestMapper componentSettingRestMapper,
+        ComponentSocketFilterMapper componentSocketFilterMapper) {
         this.componentSettingRestMapper = componentSettingRestMapper;
+        this.componentSocketFilterMapper = componentSocketFilterMapper;
     }
 
     @Override
@@ -42,7 +45,7 @@ public class BuiltComponentSocketRestMapper implements BuiltComponentSettingRest
             .stream()
             .filter(component -> component.getInstalledIntoSocket().isPresent()
                 && component.getInstalledIntoSocket().get().equals(setting.getName()))
-            .filter(component -> component.getCampaignComponentReferences().stream()
+            .filter(component -> component.getComponentReferences().stream()
                 .anyMatch(reference -> reference.getComponentId().equals(Id.valueOf(componentId))))
             .map(component -> component.getId().getValue())
             .collect(Collectors.toList());
@@ -55,7 +58,8 @@ public class BuiltComponentSocketRestMapper implements BuiltComponentSettingRest
                     ObjectMapperProvider.getConfiguredInstance().readValue(
                         ObjectMapperProvider.getConfiguredInstance().writeValueAsString(installedComponentIds),
                         new TypeReference<>() {})),
-                new SocketFilterResponse(socket.getFilter().getComponentType()),
+                componentSocketFilterMapper.mapToSocketFilter(socket.getFilter()),
+                socket.getFilters().stream().map(componentSocketFilterMapper::mapToSocketFilter).toList(),
                 socket.getDescription(),
                 socket.getTags(),
                 socket.getPriority(),
@@ -69,8 +73,8 @@ public class BuiltComponentSocketRestMapper implements BuiltComponentSettingRest
     }
 
     @Override
-    public SettingType getSettingType() {
-        return SettingType.MULTI_SOCKET;
+    public List<SettingType> getSettingTypes() {
+        return List.of(SettingType.MULTI_SOCKET, SettingType.SOCKET);
     }
 
 }

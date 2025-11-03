@@ -19,26 +19,25 @@ public final class FrontendControllerNotFoundPageRestExceptionMapper {
     }
 
     public CampaignFrontendControllerValidationRestException
-        map(CampaignFrontendControllerNotFoundPageMisconfigurationException e, String campaignId)
+        map(CampaignFrontendControllerNotFoundPageMisconfigurationException exception, String campaignId)
             throws CampaignFrontendControllerValidationRestException {
-        if (e instanceof CampaignFrontendControllerNotFoundPageForbiddenEvaluatablePhaseException) {
+        if (exception instanceof CampaignFrontendControllerNotFoundPageForbiddenEvaluatablePhaseException castedException) {
             return RestExceptionBuilder.newBuilder(CampaignFrontendControllerValidationRestException.class)
                 .withErrorCode(
                     CampaignFrontendControllerValidationRestException.NOT_FOUND_PAGE_FORBIDDEN_RUNTIME_EXPRESSIONS)
                 .addParameter("campaign_id", campaignId)
-                .addParameter("controller_id", e.getEntityId())
-                .addParameter("action_id",
-                    ((CampaignFrontendControllerNotFoundPageForbiddenEvaluatablePhaseException) e).getActionId())
-                .withCause(e)
+                .addParameter("controller_id", exception.getEntityId())
+                .addParameter("action_id", castedException.getActionId())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof CampaignFrontendControllerNotFoundPageInvalidActionException) {
+        if (exception instanceof CampaignFrontendControllerNotFoundPageInvalidActionException) {
             return RestExceptionBuilder.newBuilder(CampaignFrontendControllerValidationRestException.class)
                 .withErrorCode(
                     CampaignFrontendControllerValidationRestException.NOT_FOUND_PAGE_INVALID_ACTION)
                 .addParameter("campaign_id", campaignId)
-                .addParameter("controller_id", e.getEntityId())
-                .withCause(e)
+                .addParameter("controller_id", exception.getEntityId())
+                .withCause(exception)
                 .build();
         }
         throw new IllegalStateException();

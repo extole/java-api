@@ -43,7 +43,7 @@ public interface ClientPersonShareableV2Endpoints {
         @PathParam("person_id") String personId,
         @PathParam("shareable_id") String shareableId, UpdateShareableV2Request request)
         throws UserAuthorizationRestException, PersonRestException, ClientShareableV2RestException,
-        ClientShareableValidationV2RestException;
+        ClientShareableValidationV2RestException, ClientShareableCreateV2RestException;
 
     @GET
     @Path("/{shareable_id}")

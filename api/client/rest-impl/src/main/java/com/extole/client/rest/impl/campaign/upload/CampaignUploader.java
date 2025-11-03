@@ -11,6 +11,7 @@ import com.extole.client.rest.campaign.BuildCampaignRestException;
 import com.extole.client.rest.campaign.CampaignArchiveRestException;
 import com.extole.client.rest.campaign.CampaignResponse;
 import com.extole.client.rest.campaign.CampaignRestException;
+import com.extole.client.rest.campaign.CampaignUpdateRestException;
 import com.extole.client.rest.campaign.CampaignValidationRestException;
 import com.extole.client.rest.campaign.GlobalCampaignRestException;
 import com.extole.client.rest.campaign.component.CampaignComponentRestException;
@@ -60,7 +61,7 @@ public interface CampaignUploader {
         CampaignUploadBuilder withObjectMapper(ObjectMapper mapper);
 
         CampaignResponse upload() throws UserAuthorizationRestException, CampaignArchiveRestException,
-            CampaignValidationRestException, RewardRuleValidationRestException,
+            CampaignValidationRestException, RewardRuleValidationRestException, CampaignUpdateRestException,
             CampaignControllerValidationRestException, CampaignControllerActionRestException,
             CampaignControllerTriggerRestException, TransitionRuleValidationRestException,
             QualityRuleValidationRestException, CampaignLabelValidationRestException, CreativeArchiveRestException,
@@ -68,7 +69,7 @@ public interface CampaignUploader {
             BuildCampaignRestException, CampaignComponentValidationRestException,
             CampaignComponentAssetValidationRestException, CampaignFlowStepMetricValidationRestException,
             CampaignFlowStepAppValidationRestException, CampaignComponentRestException, GlobalCampaignRestException,
-            ComponentTypeRestException, CampaignFrontendControllerValidationRestException;
+            ComponentTypeRestException, CampaignFrontendControllerValidationRestException, CampaignUpdateRestException;
 
     }
 }

@@ -24,9 +24,7 @@ import com.extole.model.entity.campaign.CampaignControllerActionType;
 
 @Component
 public class CampaignControllerActionScheduleResponseMapper implements
-    CampaignControllerActionResponseMapper<
-        CampaignControllerActionSchedule,
-        CampaignControllerActionScheduleResponse,
+    CampaignControllerActionResponseMapper<CampaignControllerActionSchedule, CampaignControllerActionScheduleResponse,
         CampaignControllerActionScheduleConfiguration> {
 
     private final CampaignComponentRestMapper campaignComponentRestMapper;
@@ -43,15 +41,16 @@ public class CampaignControllerActionScheduleResponseMapper implements
             .map(date -> date.atZone(timeZone))
             .collect(Collectors.toList());
 
-        return new CampaignControllerActionScheduleResponse(action.getId().getValue(),
+        return new CampaignControllerActionScheduleResponse(
+            action.getId().getValue(),
             CampaignControllerActionQuality.valueOf(action.getQuality().name()), action.getScheduleName(),
             action.getScheduleDelays(), dates, action.isForce(), action.getData(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -71,7 +70,7 @@ public class CampaignControllerActionScheduleResponseMapper implements
             action.getScheduleName(),
             action.getScheduleDelays(), dates, action.isForce(), action.getData(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

@@ -15,8 +15,7 @@ import com.extole.model.entity.campaign.built.BuiltCampaignControllerActionDecli
 
 @Component
 public class BuiltCampaignControllerActionDeclineResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionDecline,
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionDecline,
         BuiltCampaignControllerActionDeclineResponse> {
 
     @Override
@@ -33,11 +32,11 @@ public class BuiltCampaignControllerActionDeclineResponseMapper implements
             action.getPollingId(),
             action.getPollingName(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

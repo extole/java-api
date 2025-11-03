@@ -72,6 +72,8 @@ public class CampaignControllerTriggerHasPriorRewardConfiguration extends Campai
         @JsonProperty(TRIGGER_PHASE) BuildtimeEvaluatable<ControllerBuildtimeContext,
             CampaignControllerTriggerPhase> triggerPhase,
         @JsonProperty(TRIGGER_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            Optional<String>> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
@@ -102,8 +104,15 @@ public class CampaignControllerTriggerHasPriorRewardConfiguration extends Campai
         @JsonProperty(COUNT_MATCHES) BuildtimeEvaluatable<ControllerBuildtimeContext, Set<Integer>> countMatches,
         @JsonProperty(TAX_YEAR_START) BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<MonthDay>> taxYearStart,
         @JsonProperty(COMPONENT_REFERENCES) List<CampaignComponentReferenceConfiguration> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.HAS_PRIOR_REWARD, triggerPhase, name, description, enabled,
-            negated, componentReferences);
+        super(triggerId,
+            CampaignControllerTriggerType.HAS_PRIOR_REWARD,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
+            componentReferences);
         this.filterNames = filterNames;
         this.filterScope = filterScope;
         this.filterTags = filterTags;

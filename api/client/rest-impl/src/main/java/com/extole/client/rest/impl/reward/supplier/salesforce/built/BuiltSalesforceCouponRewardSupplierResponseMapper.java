@@ -20,7 +20,8 @@ import com.extole.model.entity.reward.supplier.built.salesforce.coupon.BuiltSale
 
 @Component
 public class BuiltSalesforceCouponRewardSupplierResponseMapper
-    implements BuiltRewardSupplierResponseMapper<BuiltSalesforceCouponRewardSupplier,
+    implements
+    BuiltRewardSupplierResponseMapper<BuiltSalesforceCouponRewardSupplier,
         BuiltSalesforceCouponRewardSupplierResponse> {
 
     @Override
@@ -41,6 +42,7 @@ public class BuiltSalesforceCouponRewardSupplierResponseMapper
             rewardSupplier.getLimitPerDay(),
             rewardSupplier.getLimitPerHour(),
             rewardSupplier.getName(),
+            rewardSupplier.getDisplayName(),
             rewardSupplier.getCouponPoolId(),
             rewardSupplier.getBalanceRefillAmount(),
             rewardSupplier.getInitialOffset(),

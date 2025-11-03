@@ -26,6 +26,7 @@ public class BuiltCampaignControllerTriggerShareResponseMapper implements
         return new BuiltCampaignControllerTriggerShareResponse(trigger.getId().getValue(),
             CampaignControllerTriggerPhase.valueOf(trigger.getPhase().name()),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
@@ -35,11 +36,11 @@ public class BuiltCampaignControllerTriggerShareResponseMapper implements
                     .valueOf(shareType.name()))
                 .collect(Collectors.toSet()),
             ShareQuality.valueOf(trigger.getQuality().name()),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

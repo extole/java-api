@@ -25,14 +25,20 @@ import com.extole.evaluateable.RuntimeEvaluatable;
         name = BuiltComponentClientKeyFlowVariableResponse.SETTING_TYPE),
     @JsonSubTypes.Type(value = BuiltComponentPartnerEnumListVariableResponse.class,
         name = BuiltComponentPartnerEnumListVariableResponse.SETTING_TYPE),
+    @JsonSubTypes.Type(value = BuiltComponentPartnerEnumVariableResponse.class,
+        name = BuiltComponentPartnerEnumVariableResponse.SETTING_TYPE),
     @JsonSubTypes.Type(value = BuiltComponentEnumVariableResponse.class,
         name = BuiltComponentEnumVariableResponse.SETTING_TYPE),
     @JsonSubTypes.Type(value = BuiltComponentEnumListVariableResponse.class,
         name = BuiltComponentEnumListVariableResponse.SETTING_TYPE),
     @JsonSubTypes.Type(value = BuiltComponentSocketResponse.class,
-        name = BuiltComponentSocketResponse.SETTING_TYPE),
+        name = BuiltComponentSocketResponse.MULTI_SOCKET_SETTING_TYPE),
+    @JsonSubTypes.Type(value = BuiltComponentSocketResponse.class,
+        name = BuiltComponentSocketResponse.SOCKET_SETTING_TYPE),
     @JsonSubTypes.Type(value = BuiltComponentRewardSupplierIdListVariableResponse.class,
         name = BuiltComponentRewardSupplierIdListVariableResponse.SETTING_TYPE),
+    @JsonSubTypes.Type(value = BuiltComponentComponentIdVariableResponse.class,
+        name = BuiltComponentComponentIdVariableResponse.SETTING_TYPE),
 })
 public class BuiltCampaignComponentSettingResponse {
 

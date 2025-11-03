@@ -44,6 +44,7 @@ public class BuiltCustomRewardSupplierResponse extends BuiltRewardSupplierRespon
     public BuiltCustomRewardSupplierResponse(
         @JsonProperty(REWARD_SUPPLIER_ID) String id,
         @JsonProperty(NAME) String name,
+        @JsonProperty(DISPLAY_NAME) Optional<String> displayName,
         @JsonProperty(FACE_VALUE_ALGORITHM_TYPE) FaceValueAlgorithmType faceValueAlgorithmType,
         @JsonProperty(FACE_VALUE) BigDecimal faceValue,
         @JsonProperty(CASH_BACK_PERCENTAGE) BigDecimal cashBackPercentage,
@@ -71,7 +72,8 @@ public class BuiltCustomRewardSupplierResponse extends BuiltRewardSupplierRespon
         @JsonProperty(ENABLED) Boolean enabled,
         @JsonProperty(STATE_TRANSITIONS) Map<RewardState, List<RewardState>> stateTransitions) {
         super(RewardSupplierType.CUSTOM_REWARD, id, partnerRewardSupplierId, partnerRewardKeyType, displayType,
-            name, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack, limitPerDay,
+            name, displayName, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack,
+            limitPerDay,
             limitPerHour, faceValueType, createdDate, updatedDate, componentIds, componentReferences, tags, data,
             enabled, stateTransitions);
         this.type = type;

@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.ws.rs.ext.Provider;
 
-import org.apache.commons.compress.utils.Lists;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.extole.authorization.service.Authorization;
@@ -27,7 +27,7 @@ import com.extole.model.shared.audience.BuiltAudienceCache;
 import com.extole.person.service.profile.FullPersonService;
 import com.extole.person.service.profile.PersonAudienceMembershipQueryBuilder;
 import com.extole.person.service.profile.PersonNotFoundException;
-import com.extole.person.service.profile.PersonService;
+import com.extole.person.service.profile.audience.membership.AudienceHandle;
 import com.extole.person.service.profile.audience.membership.PersonAudienceMembership;
 
 @Provider
@@ -38,7 +38,7 @@ public class PersonMembershipsEndpointsImpl implements PersonMembershipsEndpoint
     private final BuiltAudienceCache builtAudienceCache;
 
     @Autowired
-    public PersonMembershipsEndpointsImpl(PersonService personService,
+    public PersonMembershipsEndpointsImpl(
         FullPersonService fullPersonService,
         BuiltAudienceCache builtAudienceCache,
         ClientAuthorizationProvider authorizationProvider) {
@@ -55,7 +55,7 @@ public class PersonMembershipsEndpointsImpl implements PersonMembershipsEndpoint
         try {
             PersonAudienceMembershipQueryBuilder builder =
                 fullPersonService.createAudienceMembershipsQueryBuilder(userAuthorization, Id.valueOf(personId))
-                    .withIds(listRequest.getAudienceIds().stream().map(Id::<PersonAudienceMembership>valueOf)
+                    .withIds(listRequest.getAudienceIds().stream().map(Id::<AudienceHandle>valueOf)
                         .collect(Collectors.toList()))
                     .withNames(listRequest.getAudienceNames())
                     .withOffset(listRequest.getOffset().intValue())

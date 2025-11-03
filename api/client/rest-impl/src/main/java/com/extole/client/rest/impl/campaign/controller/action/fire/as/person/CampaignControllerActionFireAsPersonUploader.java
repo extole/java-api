@@ -19,6 +19,7 @@ import com.extole.client.rest.campaign.controller.action.fire.as.person.Campaign
 import com.extole.client.rest.impl.campaign.controller.action.CampaignControllerActionUploader;
 import com.extole.client.rest.impl.campaign.controller.action.fire.as.person.request.FireAsPersonIdentificationRequestMapperRepository;
 import com.extole.client.rest.impl.campaign.upload.CampaignUploadContext;
+import com.extole.common.journey.JourneyName;
 import com.extole.common.rest.exception.FatalRestRuntimeException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.model.entity.campaign.CampaignControllerActionQuality;
@@ -26,17 +27,12 @@ import com.extole.model.entity.campaign.FireAsPersonIdenticationType;
 import com.extole.model.service.campaign.BuildCampaignException;
 import com.extole.model.service.campaign.component.reference.CampaignComponentReferenceBuilder;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonBuilder;
-import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonDataNameInvalidException;
-import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonDataNameLengthException;
-import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonDataValueInvalidException;
-import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonDataValueLengthException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonLabelInvalidCharactersException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.CampaignControllerActionFireAsPersonLabelLengthException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.identification.FireAsPersonIdentificationBuilder;
 import com.extole.model.service.campaign.controller.action.fire.as.person.journey.FireAsPersonJourneyBuilder;
 import com.extole.model.service.campaign.controller.action.fire.as.person.journey.FireAsPersonJourneyFieldInvalidException;
 import com.extole.model.service.campaign.controller.action.fire.as.person.journey.FireAsPersonJourneyFieldLengthException;
-import com.extole.person.service.profile.journey.JourneyName;
 import com.extole.person.service.profile.referral.PersonReferralReason;
 
 @Component
@@ -63,21 +59,25 @@ public class CampaignControllerActionFireAsPersonUploader
                 actionBuilder.withQuality(CampaignControllerActionQuality.valueOf(action.getQuality().name()));
             }
 
-            FireAsPersonIdentification asPersonIdentification = action.getAsPersonIdentification();
-            if (asPersonIdentification != null) {
+            Optional<FireAsPersonIdentification> asPersonIdentification = action.getAsPersonIdentification();
+            if (asPersonIdentification.isPresent()) {
                 FireAsPersonIdentificationBuilder asPersonIdentificationBuilder =
                     actionBuilder.withAsPersonIdentification(FireAsPersonIdenticationType.valueOf(
-                        asPersonIdentification.getPersonIdentificationType().name()));
+                        asPersonIdentification.get().getPersonIdentificationType().name()));
                 fireAsPersonIdentificationRequestMapperRepository
                     .getMapper(
                         com.extole.client.rest.campaign.controller.action.fire.as.person.FireAsPersonIdenticationType
-                            .valueOf(asPersonIdentification.getPersonIdentificationType().name()))
-                    .uploadConfiguration(asPersonIdentification, asPersonIdentificationBuilder);
+                            .valueOf(asPersonIdentification.get().getPersonIdentificationType().name()))
+                    .uploadConfiguration(asPersonIdentification.get(), asPersonIdentificationBuilder);
+            } else {
+                actionBuilder.clearAsPersonIdentification();
             }
 
             Optional<FireAsPersonJourney> asPersonJourney = action.getAsPersonJourney();
             if (asPersonJourney.isPresent()) {
                 addAsPersonJourney(actionBuilder, asPersonJourney.get());
+            } else {
+                actionBuilder.clearAsPersonJourney();
             }
             if (action.getData() != null) {
                 actionBuilder.withData(action.getData());
@@ -99,39 +99,15 @@ public class CampaignControllerActionFireAsPersonUploader
                 referenceBuilder.withTags(SetUtils.emptyIfNull(componentReference.getTags()));
                 referenceBuilder.withSocketNames(ListUtils.emptyIfNull(componentReference.getSocketNames()));
             }
+
+            action.getPersonId().ifDefined(personId -> actionBuilder.withPersonId(personId));
+            action.getExtraData().ifDefined(extraData -> actionBuilder.withExtraData(extraData));
         } catch (FireAsPersonJourneyFieldLengthException e) {
             throw RestExceptionBuilder
                 .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
                 .withErrorCode(
                     CampaignControllerActionFireAsPersonValidationRestException.AS_PERSON_JOURNEY_FIELD_OUT_OF_RANGE)
                 .addParameter("field_name", e.getFieldName())
-                .withCause(e)
-                .build();
-        } catch (CampaignControllerActionFireAsPersonDataValueInvalidException e) {
-            throw RestExceptionBuilder
-                .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
-                .withErrorCode(CampaignControllerActionFireAsPersonValidationRestException.DATA_VALUE_INVALID)
-                .addParameter("data_name", e.getDataName())
-                .withCause(e)
-                .build();
-        } catch (CampaignControllerActionFireAsPersonDataValueLengthException e) {
-            throw RestExceptionBuilder
-                .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
-                .withErrorCode(CampaignControllerActionFireAsPersonValidationRestException.DATA_VALUE_OUT_OF_RANGE)
-                .addParameter("data_name", e.getDataName())
-                .withCause(e)
-                .build();
-        } catch (CampaignControllerActionFireAsPersonDataNameLengthException e) {
-            throw RestExceptionBuilder
-                .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
-                .withErrorCode(CampaignControllerActionFireAsPersonValidationRestException.DATA_NAME_OUT_OF_RANGE)
-                .addParameter("data_name", e.getDataName())
-                .withCause(e)
-                .build();
-        } catch (CampaignControllerActionFireAsPersonDataNameInvalidException e) {
-            throw RestExceptionBuilder
-                .newBuilder(CampaignControllerActionFireAsPersonValidationRestException.class)
-                .withErrorCode(CampaignControllerActionFireAsPersonValidationRestException.DATA_NAME_INVALID)
                 .withCause(e)
                 .build();
         } catch (CampaignControllerActionFireAsPersonLabelLengthException e) {

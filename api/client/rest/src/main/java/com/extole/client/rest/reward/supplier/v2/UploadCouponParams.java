@@ -18,12 +18,10 @@ public class UploadCouponParams {
 
     public UploadCouponParams(
         @Parameter(
-            description = "Allows coupon codes containing restricted characters")
-        @QueryParam("allow_restricted_characters") boolean allowRestrictedCharacters,
+            description = "Allows coupon codes containing restricted characters") @QueryParam("allow_restricted_characters") boolean allowRestrictedCharacters,
         @Parameter(description = "Allows expired coupons") @QueryParam("allow_expired") boolean allowExpired,
         @Parameter(
-            description = "Discards duplicated coupons")
-        @QueryParam("discard_duplicated") boolean discardDuplicated) {
+            description = "Discards duplicated coupons") @QueryParam("discard_duplicated") boolean discardDuplicated) {
         this.allowRestrictedCharacters = allowRestrictedCharacters;
         this.allowExpired = allowExpired;
         this.discardDuplicated = discardDuplicated;

@@ -15,13 +15,13 @@ public class JourneyKeyConfiguration {
     private static final String JSON_VALUE = "value";
 
     private final BuildtimeEvaluatable<CampaignBuildtimeContext, String> name;
-    private final BuildtimeEvaluatable<
-        CampaignBuildtimeContext, RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value;
+    private final BuildtimeEvaluatable<CampaignBuildtimeContext,
+        RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value;
 
     public JourneyKeyConfiguration(
         @JsonProperty(JSON_NAME) BuildtimeEvaluatable<CampaignBuildtimeContext, String> name,
-        @JsonProperty(JSON_VALUE) BuildtimeEvaluatable<
-            CampaignBuildtimeContext, RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value) {
+        @JsonProperty(JSON_VALUE) BuildtimeEvaluatable<CampaignBuildtimeContext,
+            RuntimeEvaluatable<JourneyKeyContext, Optional<Object>>> value) {
         this.name = name;
         this.value = value;
     }

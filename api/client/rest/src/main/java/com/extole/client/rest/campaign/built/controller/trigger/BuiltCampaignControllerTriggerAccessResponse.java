@@ -24,14 +24,23 @@ public class BuiltCampaignControllerTriggerAccessResponse extends BuiltCampaignC
         @JsonProperty(TRIGGER_ID) String triggerId,
         @JsonProperty(TRIGGER_PHASE) CampaignControllerTriggerPhase triggerPhase,
         @JsonProperty(TRIGGER_NAME) String name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) Optional<String> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) Optional<String> description,
         @JsonProperty(ENABLED) Boolean enabled,
         @JsonProperty(NEGATED) Boolean negated,
         @JsonProperty(TRUSTED_SCOPES) Set<Scope> trustedScopes,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.ACCESS, triggerPhase, name, description, enabled, negated,
-            componentIds, componentReferences);
+        super(triggerId,
+            CampaignControllerTriggerType.ACCESS,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
+            componentIds,
+            componentReferences);
         this.trustedScopes = ImmutableSet.copyOf(trustedScopes);
     }
 

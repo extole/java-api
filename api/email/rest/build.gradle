@@ -1,16 +1,13 @@
 description = """Email Rest"""
 
-
 dependencies {
     implementation project(':common-rest')
     api project(':common-lang')
     api project(':common-id')
     implementation project(':client-rest')
 
-    libraries.with {
-        implementation jackson
-        implementation jsr305
-        implementation servlet
-        compileOnly javaWs
-    }
+    implementation libs.bundles.jackson
+    implementation libs.jsr305
+    implementation libs.servlet
+    compileOnly libs.javaWs
 }

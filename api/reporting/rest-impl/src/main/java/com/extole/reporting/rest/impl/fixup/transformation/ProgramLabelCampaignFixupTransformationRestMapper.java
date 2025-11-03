@@ -8,7 +8,8 @@ import com.extole.reporting.rest.fixup.transformation.ProgramLabelCampaignFixupT
 
 @Component
 public class ProgramLabelCampaignFixupTransformationRestMapper
-    implements FixupTransformationRestMapper<ProgramLabelCampaignFixupTransformation,
+    implements
+    FixupTransformationRestMapper<ProgramLabelCampaignFixupTransformation,
         ProgramLabelCampaignFixupTransformationResponse> {
 
     @Override

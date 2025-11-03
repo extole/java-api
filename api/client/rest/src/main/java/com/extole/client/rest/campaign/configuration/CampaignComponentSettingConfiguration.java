@@ -23,16 +23,20 @@ import com.extole.dewey.decimal.DeweyDecimal;
         name = CampaignComponentClientKeyFlowVariableConfiguration.SETTING_TYPE_CLIENT_KEY_FLOW),
     @JsonSubTypes.Type(value = CampaignComponentPartnerEnumListVariableConfiguration.class,
         name = CampaignComponentPartnerEnumListVariableConfiguration.SETTING_TYPE_PARTNER),
+    @JsonSubTypes.Type(value = CampaignComponentPartnerEnumVariableConfiguration.class,
+        name = CampaignComponentPartnerEnumVariableConfiguration.SETTING_TYPE_PARTNER),
     @JsonSubTypes.Type(value = CampaignComponentEnumVariableConfiguration.class,
         name = CampaignComponentEnumVariableConfiguration.SETTING_TYPE_ENUM),
     @JsonSubTypes.Type(value = CampaignComponentEnumListVariableConfiguration.class,
         name = CampaignComponentEnumListVariableConfiguration.SETTING_TYPE_ENUM_LIST),
-    @JsonSubTypes.Type(value = CampaignComponentDelayListVariableConfiguration.class,
-        name = CampaignComponentDelayListVariableConfiguration.SETTING_TYPE_DELAY_LIST),
     @JsonSubTypes.Type(value = CampaignComponentSocketConfiguration.class,
-        name = CampaignComponentSocketConfiguration.SETTING_TYPE_MULTI_SOCKET),
+        name = CampaignComponentSocketConfiguration.MULTI_SOCKET_SETTING_TYPE),
+    @JsonSubTypes.Type(value = CampaignComponentSocketConfiguration.class,
+        name = CampaignComponentSocketConfiguration.SOCKET_SETTING_TYPE),
     @JsonSubTypes.Type(value = CampaignComponentRewardSupplierIdListVariableConfiguration.class,
         name = CampaignComponentRewardSupplierIdListVariableConfiguration.SETTING_TYPE_REWARD_SUPPLIER_ID_LIST),
+    @JsonSubTypes.Type(value = CampaignComponentComponentIdVariableConfiguration.class,
+        name = CampaignComponentComponentIdVariableConfiguration.SETTING_TYPE_COMPONENT_REFERENCE),
 })
 public class CampaignComponentSettingConfiguration {
 

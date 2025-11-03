@@ -24,15 +24,16 @@ public class BuiltCampaignControllerTriggerDataIntelligenceEventResponseMapper i
         return new BuiltCampaignControllerTriggerDataIntelligenceEventResponse(trigger.getId().getValue(),
             CampaignControllerTriggerPhase.valueOf(trigger.getPhase().name()),
             trigger.getName(),
+            trigger.getParentTriggerGroupName(),
             trigger.getDescription(),
             trigger.getEnabled(),
             trigger.getNegated(),
             trigger.getEventName(),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            trigger.getCampaignComponentReferences()
+            trigger.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

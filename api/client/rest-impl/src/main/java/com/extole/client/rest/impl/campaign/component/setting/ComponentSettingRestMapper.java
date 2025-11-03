@@ -1,5 +1,7 @@
 package com.extole.client.rest.impl.campaign.component.setting;
 
+import java.util.List;
+
 import com.extole.client.rest.campaign.component.setting.CampaignComponentSettingResponse;
 import com.extole.model.entity.campaign.Setting;
 import com.extole.model.entity.campaign.SettingType;
@@ -8,5 +10,5 @@ public interface ComponentSettingRestMapper<TYPE extends CampaignComponentSettin
 
     TYPE mapToSettingResponse(Setting setting);
 
-    SettingType getSettingType();
+    List<SettingType> getSettingTypes();
 }

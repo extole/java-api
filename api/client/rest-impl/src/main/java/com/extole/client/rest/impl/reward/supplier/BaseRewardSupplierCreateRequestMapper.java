@@ -38,8 +38,8 @@ import com.extole.model.service.reward.supplier.RewardSupplierValidationExceptio
 import com.extole.model.service.reward.supplier.built.BuildRewardSupplierException;
 import com.extole.model.service.reward.supplier.custom.reward.InvalidMissingFulfillmentAutoFailDelayException;
 
-public abstract class BaseRewardSupplierCreateRequestMapper<REQUEST extends RewardSupplierCreateRequest,
-    SUPPLIER extends RewardSupplier, BUILDER extends RewardSupplierBuilder<SUPPLIER, ?>>
+public abstract class BaseRewardSupplierCreateRequestMapper<REQUEST extends RewardSupplierCreateRequest, SUPPLIER extends RewardSupplier, BUILDER extends RewardSupplierBuilder<
+    SUPPLIER, ?>>
     implements RewardSupplierCreateRequestMapper<REQUEST, SUPPLIER> {
 
     private final ComponentService componentService;
@@ -82,6 +82,8 @@ public abstract class BaseRewardSupplierCreateRequestMapper<REQUEST extends Rewa
 
             createRequest.getName()
                 .ifPresent(name -> builder.withName(name));
+            createRequest.getDisplayName()
+                .ifPresent(displayName -> builder.withDisplayName(displayName));
             createRequest.getFaceValueAlgorithmType()
                 .ifPresent(faceValueAlgorithmType -> builder.withFaceValueAlgorithmType(
                     rewardSupplierRestMapper.toFaceValueAlgorithmType(faceValueAlgorithmType)));
@@ -191,8 +193,8 @@ public abstract class BaseRewardSupplierCreateRequestMapper<REQUEST extends Rewa
         }
     }
 
-    interface CreateInitializer<REQUEST extends RewardSupplierCreateRequest,
-        BUILDER extends RewardSupplierBuilder<?, ?>> {
+    interface CreateInitializer<REQUEST extends RewardSupplierCreateRequest, BUILDER extends RewardSupplierBuilder<?,
+        ?>> {
         BUILDER initialize(Authorization authorization, REQUEST builder)
             throws CustomRewardSupplierRestException, AuthorizationException, RewardSupplierCreationRestException,
             BuildRewardSupplierRestException, TangoRewardSupplierCreationRestException,

@@ -60,11 +60,11 @@ public class BuiltCampaignControllerResponseMapper
                 .stream()
                 .map(trigger -> toTriggerResponse(trigger, timeZone))
                 .collect(Collectors.toList()),
-            controller.getCampaignComponentReferences()
+            controller.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            controller.getCampaignComponentReferences()
+            controller.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

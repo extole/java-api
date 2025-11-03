@@ -100,16 +100,6 @@ public class ConsumerRequestRawEventProducer {
     }
 
     private String getRawEventUrl(HttpServletRequest servletRequest) {
-        // TODO https://extole.atlassian.net/browse/ENG-25077
-        if (Boolean.parseBoolean(System.getProperty("local.dev.env"))) {
-            String incomingHostHeader = servletRequest.getHeader("host");
-            String incomingXEnvoyOriginalPath = servletRequest.getHeader("x-envoy-original-path");
-
-            if (StringUtils.isNotBlank(incomingHostHeader) && StringUtils.isNotBlank(incomingXEnvoyOriginalPath)) {
-                return "https://" + incomingHostHeader + incomingXEnvoyOriginalPath;
-            }
-        }
-
         String incomingUrlFromHeaders = servletRequest.getHeader("X-Extole-Incoming-Url");
 
         if (StringUtils.isNotBlank(incomingUrlFromHeaders)) {

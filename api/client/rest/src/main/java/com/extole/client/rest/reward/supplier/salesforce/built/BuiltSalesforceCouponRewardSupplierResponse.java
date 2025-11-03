@@ -48,6 +48,7 @@ public class BuiltSalesforceCouponRewardSupplierResponse extends BuiltRewardSupp
         @JsonProperty(LIMIT_PER_DAY) Optional<Integer> limitPerDay,
         @JsonProperty(LIMIT_PER_HOUR) Optional<Integer> limitPerHour,
         @JsonProperty(NAME) String name,
+        @JsonProperty(DISPLAY_NAME) Optional<String> displayName,
         @JsonProperty(COUPON_POOL_ID) String couponPoolId,
         @JsonProperty(BALANCE_REFILL_AMOUNT) Integer balanceRefillAmount,
         @JsonProperty(INITIAL_OFFSET) Integer initialOffset,
@@ -61,9 +62,9 @@ public class BuiltSalesforceCouponRewardSupplierResponse extends BuiltRewardSupp
         @JsonProperty(ENABLED) Boolean enabled,
         @JsonProperty(STATE_TRANSITIONS) Map<RewardState, List<RewardState>> stateTransitions) {
         super(RewardSupplierType.SALESFORCE_COUPON, id, partnerRewardSupplierId, partnerRewardKeyType, displayType,
-            name, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack, limitPerDay,
-            limitPerHour, faceValueType, createdDate, updatedDate, componentIds, componentReferences, tags, data,
-            enabled, stateTransitions);
+            name, displayName, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack,
+            limitPerDay, limitPerHour, faceValueType, createdDate, updatedDate, componentIds, componentReferences,
+            tags, data, enabled, stateTransitions);
         this.couponPoolId = couponPoolId;
         this.balanceRefillAmount = balanceRefillAmount;
         this.initialOffset = initialOffset;

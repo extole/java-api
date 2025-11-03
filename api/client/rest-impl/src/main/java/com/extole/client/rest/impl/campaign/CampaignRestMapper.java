@@ -16,8 +16,8 @@ import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.extole.authorization.service.Authorization;
 import com.extole.authorization.service.AuthorizationException;
+import com.extole.authorization.service.client.ClientAuthorization;
 import com.extole.client.rest.campaign.CampaignLockType;
 import com.extole.client.rest.campaign.CampaignResponse;
 import com.extole.client.rest.campaign.CampaignState;
@@ -66,7 +66,6 @@ import com.extole.model.service.campaign.CampaignVersionDescription;
 import com.extole.model.service.campaign.component.ComponentAbsoluteNameFinder;
 import com.extole.model.service.campaign.component.ComponentNotFoundException;
 import com.extole.model.service.campaign.component.ComponentService;
-import com.extole.model.service.creative.CreativeArchiveService;
 
 @Component
 public class CampaignRestMapper {
@@ -84,7 +83,6 @@ public class CampaignRestMapper {
     private final CampaignLabelRestMapper labelRestMapper;
     private final ComponentService componentService;
     private final ComponentAbsoluteNameFinder componentAbsoluteNameFinder;
-    private final CreativeArchiveService creativeArchiveService;
     private final CampaignStepResponseMapperRepository stepResponseMapperRepository;
 
     @Autowired
@@ -94,14 +92,12 @@ public class CampaignRestMapper {
         CampaignLabelRestMapper labelRestMapper,
         ComponentService componentService,
         ComponentAbsoluteNameFinder componentAbsoluteNameFinder,
-        CreativeArchiveService creativeArchiveService,
         CampaignStepResponseMapperRepository stepResponseMapperRepository) {
         this.componentRestMapper = componentRestMapper;
         this.flowStepRestMapper = flowStepRestMapper;
         this.labelRestMapper = labelRestMapper;
         this.componentService = componentService;
         this.componentAbsoluteNameFinder = componentAbsoluteNameFinder;
-        this.creativeArchiveService = creativeArchiveService;
         this.stepResponseMapperRepository = stepResponseMapperRepository;
     }
 
@@ -162,7 +158,7 @@ public class CampaignRestMapper {
             CampaignType.valueOf(campaign.getCampaignType().name()));
     }
 
-    public CampaignConfiguration toCampaignConfiguration(Authorization authorization, Campaign campaign,
+    public CampaignConfiguration toCampaignConfiguration(ClientAuthorization authorization, Campaign campaign,
         ZoneId timeZone) {
         ExternalAbsoluteNames externalAbsoluteNames = loadExternalAbsoluteNames(authorization, campaign);
 
@@ -198,11 +194,12 @@ public class CampaignRestMapper {
             .map(lockType -> com.extole.client.rest.campaign.configuration.CampaignLockType.valueOf(lockType.name()))
             .collect(Collectors.toSet());
 
-        IncentiveConfiguration incentiveResponse = toIncentiveConfiguration(campaign);
+        IncentiveConfiguration incentiveConfiguration = toIncentiveConfiguration(campaign);
+
         return new CampaignConfiguration(
             campaign.getName(),
             campaign.getDescription(),
-            incentiveResponse.getId(),
+            incentiveConfiguration.getId(),
             campaign.getUpdatedDate().atZone(timeZone),
             campaign.getLastPublishedDate().map(date -> date.atZone(timeZone)).orElse(null),
             campaign.getStartDate().map(date -> date.atZone(timeZone)).orElse(null),
@@ -213,7 +210,7 @@ public class CampaignRestMapper {
             stepConfigurations,
             labelConfigurations,
             campaign.getProgramLabel().getName(),
-            incentiveResponse,
+            incentiveConfiguration,
             campaign.getVersion(),
             campaign.getParentVersion().orElse(null),
             campaign.getProgramType(),
@@ -402,7 +399,7 @@ public class CampaignRestMapper {
             editorType);
     }
 
-    private ExternalAbsoluteNames loadExternalAbsoluteNames(Authorization authorization, Campaign campaign) {
+    private ExternalAbsoluteNames loadExternalAbsoluteNames(ClientAuthorization authorization, Campaign campaign) {
         Map<Id<CampaignComponent>, List<String>> idToNameMappings = Maps.newHashMap();
         List<Campaign> parents = getParents(authorization, campaign);
 
@@ -415,13 +412,13 @@ public class CampaignRestMapper {
         return () -> unmodifiableMap(idToNameMappings);
     }
 
-    private List<Campaign> getParents(Authorization authorization, Campaign campaign) {
+    private List<Campaign> getParents(ClientAuthorization authorization, Campaign campaign) {
         List<Campaign> parents = Lists.newArrayList();
 
         return getParentsRecursively(authorization, campaign, parents);
     }
 
-    private List<Campaign> getParentsRecursively(Authorization authorization, Campaign campaign,
+    private List<Campaign> getParentsRecursively(ClientAuthorization authorization, Campaign campaign,
         List<Campaign> parents) {
         CampaignComponent root = campaign.getComponents()
             .stream()
@@ -429,8 +426,8 @@ public class CampaignRestMapper {
             .findFirst()
             .get();
 
-        if (!root.getCampaignComponentReferences().isEmpty()) {
-            for (CampaignComponentReference externalReference : root.getCampaignComponentReferences()) {
+        if (!root.getComponentReferences().isEmpty()) {
+            for (CampaignComponentReference externalReference : root.getComponentReferences()) {
                 Campaign parent = getCampaignByComponentId(authorization, externalReference.getComponentId());
                 parents.add(parent);
                 return getParentsRecursively(authorization, parent, parents);
@@ -439,7 +436,7 @@ public class CampaignRestMapper {
         return parents;
     }
 
-    private Campaign getCampaignByComponentId(Authorization authorization, Id<CampaignComponent> componentId) {
+    private Campaign getCampaignByComponentId(ClientAuthorization authorization, Id<CampaignComponent> componentId) {
         try {
             return componentService.get(authorization, componentId).getCampaign();
         } catch (AuthorizationException | ComponentNotFoundException e) {

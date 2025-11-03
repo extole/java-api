@@ -599,7 +599,7 @@ public class RewardEndpointsImpl implements RewardEndpoints {
                         processor.addLogMessage(message);
                     }).build().getProcessedRawEvent();
 
-            consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person)
+            consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person.getId())
                 .withLockDescription(LOCK_DESCRIPTION_FOR_REWARD_UPDATE)
                 .executeAndSend((personBuilder, originalPerson, inputEventBuilder) -> {
                     return new InputEventLockClosureResult<>(originalPerson);

@@ -31,12 +31,11 @@ public interface PersonRewardsEndpoints {
         description = "Returns reward for a person identified by id.")
     PersonRewardResponse get(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Reward id parameter")
-        @PathParam("reward_id") String rewardId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(description = "Reward id parameter") @PathParam("reward_id") String rewardId,
         @TimeZoneParam ZoneId timeZone)
-            throws UserAuthorizationRestException, PersonRestException, PersonRewardRestException;
+        throws UserAuthorizationRestException, PersonRestException, PersonRewardRestException;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -44,9 +43,9 @@ public interface PersonRewardsEndpoints {
         description = "Returns rewards for a person, sorted by created date in descending order.")
     List<PersonRewardResponse> list(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @BeanParam PersonRewardsListRequest rewardsListRequest,
         @TimeZoneParam ZoneId timeZone)
-            throws UserAuthorizationRestException, PersonRestException, PersonRewardsListRestException;
+        throws UserAuthorizationRestException, PersonRestException, PersonRewardsListRestException;
 }

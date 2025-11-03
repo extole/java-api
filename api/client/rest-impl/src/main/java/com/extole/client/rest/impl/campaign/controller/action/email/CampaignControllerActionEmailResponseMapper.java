@@ -22,9 +22,7 @@ import com.extole.model.entity.campaign.CampaignControllerActionType;
 
 @Component
 public class CampaignControllerActionEmailResponseMapper implements
-    CampaignControllerActionResponseMapper<
-        CampaignControllerActionEmail,
-        CampaignControllerActionEmailResponse,
+    CampaignControllerActionResponseMapper<CampaignControllerActionEmail, CampaignControllerActionEmailResponse,
         CampaignControllerActionEmailConfiguration> {
 
     private final CampaignComponentRestMapper campaignComponentRestMapper;
@@ -40,11 +38,11 @@ public class CampaignControllerActionEmailResponseMapper implements
             CampaignControllerActionQuality.valueOf(action.getQuality().name()), action.getZoneName(),
             action.getData(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -61,7 +59,7 @@ public class CampaignControllerActionEmailResponseMapper implements
             action.getZoneName(),
             action.getData(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

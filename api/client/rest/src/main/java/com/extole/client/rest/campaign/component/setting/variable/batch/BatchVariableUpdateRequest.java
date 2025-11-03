@@ -16,8 +16,9 @@ public final class BatchVariableUpdateRequest {
     private final Omissible<Map<String, CampaignComponentVariableUpdateRequest>> variables;
 
     @JsonCreator
-    private BatchVariableUpdateRequest(@JsonProperty(JSON_COMPONENT_VARIABLE_VALUES) Omissible<
-        Map<String, CampaignComponentVariableUpdateRequest>> variables) {
+    private BatchVariableUpdateRequest(
+        @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES) Omissible<
+            Map<String, CampaignComponentVariableUpdateRequest>> variables) {
         this.variables = variables;
     }
 

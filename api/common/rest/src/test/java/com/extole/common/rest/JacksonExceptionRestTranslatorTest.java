@@ -28,7 +28,7 @@ import com.extole.common.rest.exception.WebApplicationRestRuntimeException;
 
 public class JacksonExceptionRestTranslatorTest {
 
-    private static class IdentificationDocument {
+    private static final class IdentificationDocument {
 
         private String uniqueIdentifier;
 
@@ -45,7 +45,7 @@ public class JacksonExceptionRestTranslatorTest {
 
     }
 
-    private static class CalendarRecord {
+    private static final class CalendarRecord {
         private Date showedDate;
 
         public Date getShowedDate() {
@@ -62,10 +62,10 @@ public class JacksonExceptionRestTranslatorTest {
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-    private static class TypeIdPojo {
+    private static final class TypeIdPojo {
     }
 
-    private static class PojoWithId {
+    private static final class PojoWithId {
         private TypeIdPojo id;
 
         public TypeIdPojo getId() {
@@ -73,7 +73,7 @@ public class JacksonExceptionRestTranslatorTest {
         }
     }
 
-    private static class Car {
+    private static final class Car {
         private String seat;
 
         @JsonSetter(nulls = Nulls.FAIL)

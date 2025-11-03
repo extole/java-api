@@ -4,8 +4,7 @@ import com.extole.client.rest.subcription.channel.response.SubscriptionChannelRe
 import com.extole.model.entity.subscription.ChannelType;
 import com.extole.model.entity.subscription.UserSubscriptionChannel;
 
-public interface UserSubscriptionChannelResponseMapper<R extends UserSubscriptionChannel,
-    C extends SubscriptionChannelResponse> {
+public interface UserSubscriptionChannelResponseMapper<R extends UserSubscriptionChannel, C extends SubscriptionChannelResponse> {
 
     C toResponse(R channel);
 

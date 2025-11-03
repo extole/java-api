@@ -24,6 +24,7 @@ import com.extole.id.Id;
 public class PayPalPayoutsRewardSupplierCreationV2Request extends ComponentElementRequest {
 
     private static final String NAME = "name";
+    private static final String DISPLAY_NAME = "display_name";
     private static final String MERCHANT_TOKEN = "merchant_token";
     private static final String FACE_VALUE_ALGORITHM_TYPE = "face_value_algorithm_type";
     private static final String FACE_VALUE = "face_value";
@@ -41,9 +42,10 @@ public class PayPalPayoutsRewardSupplierCreationV2Request extends ComponentEleme
     private static final String ENABLED = "enabled";
 
     private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name;
+    private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName;
     private final String merchantToken;
-    private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
-        FaceValueAlgorithmType>> faceValueAlgorithmType;
+    private final Omissible<
+        BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType;
     private final BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal> faceValue;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> cashBackPercentage;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> minCashBack;
@@ -60,6 +62,7 @@ public class PayPalPayoutsRewardSupplierCreationV2Request extends ComponentEleme
 
     public PayPalPayoutsRewardSupplierCreationV2Request(
         @JsonProperty(NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name,
+        @JsonProperty(DISPLAY_NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName,
         @JsonProperty(MERCHANT_TOKEN) String merchantToken,
         @JsonProperty(FACE_VALUE_ALGORITHM_TYPE) Omissible<
             BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType,
@@ -87,6 +90,7 @@ public class PayPalPayoutsRewardSupplierCreationV2Request extends ComponentEleme
         @JsonProperty(ENABLED) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean>> enabled) {
         super(componentReferences, componentIds);
         this.name = name;
+        this.displayName = displayName;
         this.merchantToken = merchantToken;
         this.faceValueAlgorithmType = faceValueAlgorithmType;
         this.faceValue = faceValue;
@@ -107,6 +111,11 @@ public class PayPalPayoutsRewardSupplierCreationV2Request extends ComponentEleme
     @JsonProperty(NAME)
     public BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> getName() {
         return name;
+    }
+
+    @JsonProperty(DISPLAY_NAME)
+    public BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> getDisplayName() {
+        return displayName;
     }
 
     @JsonProperty(MERCHANT_TOKEN)
@@ -196,9 +205,11 @@ public class PayPalPayoutsRewardSupplierCreationV2Request extends ComponentEleme
 
     public static final class Builder extends ComponentElementRequest.Builder<Builder> {
         private BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name;
+        private BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName;
         private String merchantToken;
-        private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
-            FaceValueAlgorithmType>> faceValueAlgorithmType = Omissible.omitted();
+        private Omissible<
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType =
+                Omissible.omitted();
         private BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal> faceValue;
         private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> cashBackPercentage =
             Omissible.omitted();
@@ -226,6 +237,12 @@ public class PayPalPayoutsRewardSupplierCreationV2Request extends ComponentEleme
 
         public Builder withName(BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder
+            withDisplayName(BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName) {
+            this.displayName = displayName;
             return this;
         }
 
@@ -321,6 +338,7 @@ public class PayPalPayoutsRewardSupplierCreationV2Request extends ComponentEleme
             }
 
             return new PayPalPayoutsRewardSupplierCreationV2Request(name,
+                displayName,
                 merchantToken,
                 faceValueAlgorithmType,
                 faceValue,

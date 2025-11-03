@@ -5,9 +5,7 @@ import com.extole.client.rest.campaign.controller.action.fire.as.person.Campaign
 import com.extole.client.rest.campaign.controller.action.fire.as.person.FireAsPersonIdenticationType;
 import com.extole.model.service.campaign.controller.action.fire.as.person.identification.FireAsPersonIdentificationBuilder;
 
-public interface FireAsPersonIdentificationRequestMapper<FROM extends
-        com.extole.client.rest.campaign.controller.action.fire.as.person.identification.FireAsPersonIdentification,
-    FROM_CONFIGURATION extends FireAsPersonIdentification, BUILDER extends FireAsPersonIdentificationBuilder> {
+public interface FireAsPersonIdentificationRequestMapper<FROM extends com.extole.client.rest.campaign.controller.action.fire.as.person.identification.FireAsPersonIdentification, FROM_CONFIGURATION extends FireAsPersonIdentification, BUILDER extends FireAsPersonIdentificationBuilder> {
 
     void upload(FROM identification, BUILDER asPersonIdentificationBuilder)
         throws CampaignControllerActionFireAsPersonIdentificationValidationRestException;

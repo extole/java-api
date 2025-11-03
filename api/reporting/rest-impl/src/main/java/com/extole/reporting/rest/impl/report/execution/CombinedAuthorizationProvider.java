@@ -14,7 +14,7 @@ import com.extole.common.rest.support.authorization.client.ClientAuthorizationPr
 import com.extole.common.rest.support.authorization.person.PersonAuthorizationProvider;
 
 @Component
-class CombinedAuthorizationProvider {
+public class CombinedAuthorizationProvider {
 
     private final HttpServletRequest servletRequest;
     private final ClientAuthorizationProvider clientAuthorizationProvider;

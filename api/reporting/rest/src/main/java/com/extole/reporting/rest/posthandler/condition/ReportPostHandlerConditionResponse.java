@@ -1,6 +1,5 @@
 package com.extole.reporting.rest.posthandler.condition;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -24,7 +23,6 @@ public abstract class ReportPostHandlerConditionResponse {
     protected final String conditionId;
     protected final ConditionType type;
 
-    @JsonCreator
     public ReportPostHandlerConditionResponse(@JsonProperty(JSON_ID) String conditionId,
         @JsonProperty(JSON_TYPE) ConditionType type) {
         this.conditionId = conditionId;

@@ -68,7 +68,7 @@ public class RuntimePersonAudienceMembershipEndpointsImpl implements RuntimePers
     public PersonAudienceMembershipV4Response create(String accessToken, Id<com.extole.api.person.Person> personId,
         PersonAudienceMembershipV4CreateRequest createRequest, ZoneId timeZone)
         throws UserAuthorizationRestException, PersonMembershipValidationRestException,
-            PersonMembershipRestException, PersonRestException {
+        PersonMembershipRestException, PersonRestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
             if (createRequest.getAudienceId() == null) {

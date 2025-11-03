@@ -27,6 +27,8 @@ public class CampaignControllerTriggerMaxMindConfiguration extends CampaignContr
         @JsonProperty(TRIGGER_PHASE) BuildtimeEvaluatable<ControllerBuildtimeContext,
             CampaignControllerTriggerPhase> triggerPhase,
         @JsonProperty(TRIGGER_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            Optional<String>> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
@@ -38,7 +40,14 @@ public class CampaignControllerTriggerMaxMindConfiguration extends CampaignContr
         @JsonProperty(ALLOW_HIGH_RISK_EMAIL) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Boolean> allowHighRiskEmail,
         @JsonProperty(COMPONENT_REFERENCES) List<CampaignComponentReferenceConfiguration> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.MAXMIND, triggerPhase, name, description, enabled, negated,
+        super(triggerId,
+            CampaignControllerTriggerType.MAXMIND,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
             componentReferences);
         this.defaultQualityScore = defaultQualityScore;
         this.riskThreshold = riskThreshold;

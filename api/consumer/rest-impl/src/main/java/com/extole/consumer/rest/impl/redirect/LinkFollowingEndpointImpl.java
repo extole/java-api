@@ -198,25 +198,14 @@ public class LinkFollowingEndpointImpl implements LinkFollowingEndpoint {
     }
 
     @Override
-    public Response fetch(String accessToken, String incomingUrl, String incomingHost, String incomingPath)
-            throws LinkFollowingRestException {
+    public Response fetch(String accessToken, String incomingUrl) throws LinkFollowingRestException {
         Stopwatch stopwatch = Stopwatch.createStarted();
         Optional<Id<ClientHandle>> clientId = Optional.empty();
         URI incomingRequest;
-        String finalIncomingUrl = "";
-        if (incomingPath != null && !incomingPath.trim().isEmpty()) {
-            finalIncomingUrl = "https://" + incomingHost + incomingPath;
-        }
-
         try {
             try {
-                if (finalIncomingUrl.isEmpty()) {
-                    URI.create(incomingUrl);
-                    incomingRequest = UriComponentsBuilder.fromHttpUrl(incomingUrl).build().toUri();
-                } else {
-                    incomingRequest = UriComponentsBuilder.fromHttpUrl(finalIncomingUrl).build().toUri();
-                }
-
+                URI.create(incomingUrl);
+                incomingRequest = UriComponentsBuilder.fromHttpUrl(incomingUrl).build().toUri();
                 if (incomingRequest.getPath().endsWith("/")) {
                     incomingRequest = UriComponentsBuilder.fromUri(incomingRequest)
                         .replacePath(incomingRequest.getPath().replaceFirst("/*$", "")).build().toUri();

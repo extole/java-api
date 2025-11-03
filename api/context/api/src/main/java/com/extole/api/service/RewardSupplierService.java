@@ -10,4 +10,7 @@ public interface RewardSupplierService {
     RewardSupplier getById(String rewardSupplierId) throws RewardSupplierNotFoundException;
 
     RewardSupplier[] findAll();
+
+    String getRewardValueDisplay(RewardSupplier rewardSupplier);
+
 }

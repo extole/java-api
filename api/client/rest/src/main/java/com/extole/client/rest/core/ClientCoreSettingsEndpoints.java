@@ -22,7 +22,7 @@ public interface ClientCoreSettingsEndpoints {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    ClientCoreSettingsResponse update(@UserAccessTokenParam String accessToken,
+    ClientCoreSettingsResponse update(@UserAccessTokenParam(requiredScope = Scope.CLIENT_SUPERUSER) String accessToken,
         ClientCoreSettingsRequest request)
         throws UserAuthorizationRestException, ClientCoreSettingsRestException;
 

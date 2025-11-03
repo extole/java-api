@@ -52,6 +52,7 @@ public class ManualCouponRewardSupplierResponse extends RewardSupplierResponse {
         @JsonProperty(LIMIT_PER_HOUR) BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
             Optional<Integer>> limitPerHour,
         @JsonProperty(NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name,
+        @JsonProperty(DISPLAY_NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName,
         @JsonProperty(COUPON_COUNT_WARN_LIMIT) Integer couponCountWarnLimit,
         @JsonProperty(CREATED_DATE) ZonedDateTime createdDate,
         @JsonProperty(UPDATED_DATE) ZonedDateTime updatedDate,
@@ -64,7 +65,8 @@ public class ManualCouponRewardSupplierResponse extends RewardSupplierResponse {
         @JsonProperty(ENABLED) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean> enabled,
         @JsonProperty(STATE_TRANSITIONS) Map<RewardState, List<RewardState>> stateTransitions) {
         super(RewardSupplierType.MANUAL_COUPON, id, partnerRewardSupplierId, partnerRewardKeyType, displayType,
-            name, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack, limitPerDay,
+            name, displayName, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack,
+            limitPerDay,
             limitPerHour, faceValueType, createdDate, updatedDate, componentIds, componentReferences, tags, data,
             enabled, stateTransitions);
         this.couponCountWarnLimit = couponCountWarnLimit;

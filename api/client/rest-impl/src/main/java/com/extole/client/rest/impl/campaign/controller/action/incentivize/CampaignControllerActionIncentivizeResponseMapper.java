@@ -25,10 +25,8 @@ import com.extole.model.entity.campaign.CampaignControllerActionType;
 
 @Component
 public class CampaignControllerActionIncentivizeResponseMapper implements
-    CampaignControllerActionResponseMapper<
-        CampaignControllerActionIncentivize,
-        CampaignControllerActionIncentivizeResponse,
-        CampaignControllerActionIncentivizeConfiguration> {
+    CampaignControllerActionResponseMapper<CampaignControllerActionIncentivize,
+        CampaignControllerActionIncentivizeResponse, CampaignControllerActionIncentivizeConfiguration> {
 
     private final CampaignComponentRestMapper campaignComponentRestMapper;
 
@@ -57,11 +55,11 @@ public class CampaignControllerActionIncentivizeResponseMapper implements
             action.getActionName(),
             action.getData(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -93,7 +91,7 @@ public class CampaignControllerActionIncentivizeResponseMapper implements
             action.getActionName(),
             action.getData(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

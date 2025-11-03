@@ -70,6 +70,7 @@ public class TangoRewardSupplierResponse extends RewardSupplierResponse {
         @JsonProperty(FACE_VALUE_TYPE) BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
             FaceValueType> faceValueType,
         @JsonProperty(NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String> name,
+        @JsonProperty(DISPLAY_NAME) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>> displayName,
         @JsonProperty(BRAND_NAME) String brandName,
         @JsonProperty(BRAND_DESCRIPTION) String brandDescription,
         @JsonProperty(BRAND_DISCLAIMER) String brandDisclaimer,
@@ -84,6 +85,7 @@ public class TangoRewardSupplierResponse extends RewardSupplierResponse {
         @JsonProperty(ENABLED) BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean> enabled,
         @JsonProperty(STATE_TRANSITIONS) Map<RewardState, List<RewardState>> stateTransitions) {
         super(RewardSupplierType.TANGO_V2, id, partnerRewardSupplierId, partnerRewardKeyType, displayType, name,
+            displayName,
             faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack, maxCashBack, limitPerDay, limitPerHour,
             faceValueType, createdDate, updatedDate, componentIds, componentReferences, tags, data, enabled,
             stateTransitions);

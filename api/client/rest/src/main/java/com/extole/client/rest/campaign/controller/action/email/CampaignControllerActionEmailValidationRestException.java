@@ -15,9 +15,10 @@ public class CampaignControllerActionEmailValidationRestException extends Campai
             "Zone name length must be between 2 and 50 characters", "zone_name");
 
     public static final ErrorCode<
-        CampaignControllerActionEmailValidationRestException> ZONE_NAME_CONTAINS_ILLEGAL_CHARACTER = new ErrorCode<>(
-            "campaign_controller_action_email_zone_name_contains_illegal_character", 400,
-            "Zone name can only contain alphanumeric and underscore characters", "zone_name");
+        CampaignControllerActionEmailValidationRestException> ZONE_NAME_CONTAINS_ILLEGAL_CHARACTER =
+            new ErrorCode<>(
+                "campaign_controller_action_email_zone_name_contains_illegal_character", 400,
+                "Zone name can only contain alphanumeric and underscore characters", "zone_name");
 
     public static final ErrorCode<CampaignControllerActionEmailValidationRestException> DATA_NAME_INVALID =
         new ErrorCode<>("data_name_invalid", 400, "Data name is invalid");

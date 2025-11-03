@@ -29,8 +29,8 @@ public class EventStreamUpdateRequest extends ComponentElementRequest {
 
     public EventStreamUpdateRequest(
         @JsonProperty(NAME) Omissible<BuildtimeEvaluatable<EventStreamBuildtimeContext, String>> name,
-        @JsonProperty(DESCRIPTION) Omissible<BuildtimeEvaluatable<EventStreamBuildtimeContext,
-            Optional<String>>> description,
+        @JsonProperty(DESCRIPTION) Omissible<
+            BuildtimeEvaluatable<EventStreamBuildtimeContext, Optional<String>>> description,
         @JsonProperty(TAGS) Omissible<Set<String>> tags,
         @JsonProperty(ComponentElementRequest.JSON_COMPONENT_IDS) Omissible<List<Id<ComponentResponse>>> componentIds,
         @JsonProperty(ComponentElementRequest.JSON_COMPONENT_REFERENCES) Omissible<

@@ -88,7 +88,7 @@ public class PersonParametersV2EndpointsImpl implements PersonParametersV2Endpoi
         try {
             Person person = personService.updatePerson(authorization, Id.valueOf(personId),
                 new LockDescription("person-data-endpoints-edit-person-profile-data"),
-                (personBuilder, originalPersonProfile) -> {
+                (personBuilder, initialPerson) -> {
                     PersonData.Scope scope;
                     if (bulkUpdateRequest.getScope() == null) {
                         scope = PersonData.Scope.PRIVATE;
@@ -180,15 +180,14 @@ public class PersonParametersV2EndpointsImpl implements PersonParametersV2Endpoi
         try {
             Person person = personService.updatePerson(authorization, Id.valueOf(personId),
                 new LockDescription("person-data-endpoints-put-person-profile-param"),
-                (personBuilder, originalPersonProfile) -> {
+                (personBuilder, initialPerson) -> {
                     try {
-                        PersonDataBuilder builder =
-                            personBuilder.addOrReplaceData(parameterName).withScope(scope);
-
+                        PersonDataBuilder builder = personBuilder.addOrReplaceData(parameterName).withScope(scope);
                         if (parameterRequest.getValue() != null) {
                             builder.withValue(parameterRequest.getValue());
                         }
                         builder.validate();
+
                         return personBuilder.save();
                     } catch (PersonDataInvalidNameException | PersonDataInvalidValueException
                         | PersonDataValueLengthException | PersonDataNameLengthException
@@ -242,12 +241,12 @@ public class PersonParametersV2EndpointsImpl implements PersonParametersV2Endpoi
     }
 
     private void sendInputEvent(ClientAuthorization authorization, Person person, String eventName)
-        throws EventProcessorException, AuthorizationException {
+        throws EventProcessorException, AuthorizationException, PersonNotFoundException {
         ProcessedRawEvent processedRawEvent = clientRequestContextService.createBuilder(authorization, servletRequest)
             .withEventName(eventName)
             .withHttpRequestBodyCapturing(ClientRequestContextService.HttpRequestBodyCapturingType.LIMITED)
             .build().getProcessedRawEvent();
-        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person).send();
+        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person.getId()).send();
     }
 
 }

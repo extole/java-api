@@ -1,30 +1,39 @@
 package com.extole.client.rest.campaign.component.setting;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import com.extole.common.lang.ToString;
-import com.extole.common.rest.omissible.Omissible;
 
-public class SocketFilterUpdateRequest {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
+    property = SocketFilterUpdateRequest.TYPE,
+    include = JsonTypeInfo.As.EXISTING_PROPERTY,
+    defaultImpl = ComponentTypeSocketFilterUpdateRequest.class,
+    visible = true)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = ComponentTypeSocketFilterUpdateRequest.class,
+        name = ComponentTypeSocketFilterUpdateRequest.TYPE),
+    @JsonSubTypes.Type(value = ComponentFacetSocketFilterUpdateRequest.class,
+        name = ComponentFacetSocketFilterUpdateRequest.TYPE),
+})
+public abstract class SocketFilterUpdateRequest {
 
-    private static final String COMPONENT_TYPE = "component_type";
+    static final String TYPE = "type";
 
-    private final Omissible<String> componentType;
+    private final SocketFilterType type;
 
-    @JsonCreator
-    public SocketFilterUpdateRequest(@JsonProperty(COMPONENT_TYPE) Omissible<String> componentType) {
-        this.componentType = componentType;
+    protected SocketFilterUpdateRequest(@JsonProperty(TYPE) SocketFilterType type) {
+        this.type = type;
     }
 
-    @JsonProperty(COMPONENT_TYPE)
-    public Omissible<String> getComponentType() {
-        return componentType;
+    @JsonProperty(TYPE)
+    public SocketFilterType getType() {
+        return type;
     }
 
     @Override
     public String toString() {
         return ToString.create(this);
     }
-
 }

@@ -22,6 +22,7 @@ public class PersonRelationshipResponse {
     public static final String DATA_NAME_PARTNER_EVENT_ID_VALUE = "partner_event_id_value";
     public static final String DATA_NAME_REASON = "reason";
 
+    private static final String JSON_ID = "id";
     private static final String JSON_MY_ROLE = "my_role";
     private static final String JSON_OTHER_PERSON_ID = "other_person_id";
     private static final String JSON_CONTAINER = "container";
@@ -33,6 +34,7 @@ public class PersonRelationshipResponse {
     private static final String JSON_CREATED_DATE = "created_date";
     private static final String JSON_UPDATED_DATE = "updated_date";
 
+    private final String id;
     private final PersonReferralRole myRole;
     private final String otherPersonId;
     private final String container;
@@ -45,6 +47,7 @@ public class PersonRelationshipResponse {
     private final ZonedDateTime updatedDate;
 
     public PersonRelationshipResponse(
+        @JsonProperty(JSON_ID) String id,
         @JsonProperty(JSON_MY_ROLE) PersonReferralRole myRole,
         @JsonProperty(JSON_OTHER_PERSON_ID) String otherPersonId,
         @JsonProperty(JSON_CONTAINER) String container,
@@ -55,6 +58,7 @@ public class PersonRelationshipResponse {
         @JsonProperty(JSON_DATA) Map<String, PersonRelationshipDataResponse> data,
         @JsonProperty(JSON_CREATED_DATE) ZonedDateTime createdDate,
         @JsonProperty(JSON_UPDATED_DATE) ZonedDateTime updatedDate) {
+        this.id = id;
         this.myRole = myRole;
         this.otherPersonId = otherPersonId;
         this.container = container;
@@ -65,6 +69,11 @@ public class PersonRelationshipResponse {
         this.data = ImmutableMap.copyOf(data);
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
+    }
+
+    @JsonProperty(JSON_ID)
+    public String getId() {
+        return id;
     }
 
     @JsonProperty(JSON_MY_ROLE)
@@ -128,6 +137,7 @@ public class PersonRelationshipResponse {
 
     public static final class Builder {
 
+        private String id;
         private PersonReferralRole myRole;
         private String otherPersonId;
         private String container;
@@ -140,6 +150,11 @@ public class PersonRelationshipResponse {
         private ZonedDateTime updatedDate;
 
         private Builder() {
+        }
+
+        public Builder withId(String id) {
+            this.id = id;
+            return this;
         }
 
         public Builder withMyRole(PersonReferralRole myRole) {
@@ -193,7 +208,7 @@ public class PersonRelationshipResponse {
         }
 
         public PersonRelationshipResponse build() {
-            return new PersonRelationshipResponse(myRole, otherPersonId, container,
+            return new PersonRelationshipResponse(id, myRole, otherPersonId, container,
                 program, campaignId, rootEventId, causeEventId, data, createdDate, updatedDate);
         }
 

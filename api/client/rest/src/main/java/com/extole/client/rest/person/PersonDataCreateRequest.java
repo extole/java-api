@@ -19,12 +19,11 @@ public class PersonDataCreateRequest {
 
     @JsonCreator
     public PersonDataCreateRequest(
-        @Parameter(description = "Name of the data parameter to create.")
-        @JsonProperty(JSON_NAME) String name,
-        @Parameter(description = "Scope of the data parameter to create, defaults to PRIVATE when not provided.")
-        @JsonProperty(JSON_SCOPE) Omissible<PersonDataScope> scope,
-        @Parameter(description = "Value of the data parameter to create.")
-        @JsonProperty(JSON_VALUE) Object value) {
+        @Parameter(description = "Name of the data parameter to create.") @JsonProperty(JSON_NAME) String name,
+        @Parameter(
+            description = "Scope of the data parameter to create, defaults to PRIVATE when not provided.") @JsonProperty(JSON_SCOPE) Omissible<
+                PersonDataScope> scope,
+        @Parameter(description = "Value of the data parameter to create.") @JsonProperty(JSON_VALUE) Object value) {
         this.name = name;
         this.scope = scope;
         this.value = value;

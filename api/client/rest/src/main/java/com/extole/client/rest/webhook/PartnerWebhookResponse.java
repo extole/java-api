@@ -59,8 +59,9 @@ public class PartnerWebhookResponse extends WebhookResponse {
     }
 
     @JsonProperty(RESPONSE_BODY_HANDLER)
-    public BuildtimeEvaluatable<WebhookBuildtimeContext,
-        RuntimeEvaluatable<WebhookResponseContext, Map<String, Object>>> getResponseBodyHandler() {
+    public
+        BuildtimeEvaluatable<WebhookBuildtimeContext, RuntimeEvaluatable<WebhookResponseContext, Map<String, Object>>>
+        getResponseBodyHandler() {
         return responseBodyHandler;
     }
 

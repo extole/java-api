@@ -26,8 +26,8 @@ public class CampaignControllerActionExpressionResponse extends CampaignControll
 
     private final BuildtimeEvaluatable<ControllerBuildtimeContext,
         RuntimeEvaluatable<ExpressionActionCommandContext, Void>> expression;
-    private final Map<String, BuildtimeEvaluatable<
-        ControllerBuildtimeContext, RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>> data;
+    private final Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>> data;
 
     public CampaignControllerActionExpressionResponse(
         @JsonProperty(JSON_ACTION_ID) String actionId,
@@ -37,23 +37,25 @@ public class CampaignControllerActionExpressionResponse extends CampaignControll
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences,
         @JsonProperty(JSON_EXPRESSION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             RuntimeEvaluatable<ExpressionActionCommandContext, Void>> expression,
-        @JsonProperty(JSON_DATA) Map<String,
-            BuildtimeEvaluatable<ControllerBuildtimeContext,
-                RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>> data) {
+        @JsonProperty(JSON_DATA) Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>> data) {
         super(actionId, CampaignControllerActionType.EXPRESSION, quality, enabled, componentIds, componentReferences);
         this.expression = expression;
         this.data = data != null ? ImmutableMap.copyOf(data) : ImmutableMap.of();
     }
 
     @JsonProperty(JSON_EXPRESSION)
-    public BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<ExpressionActionCommandContext, Void>> getExpression() {
+    public BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<ExpressionActionCommandContext, Void>>
+        getExpression() {
         return expression;
     }
 
     @JsonProperty(JSON_DATA)
-    public Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>> getData() {
+    public
+        Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>>
+        getData() {
         return data;
     }
 

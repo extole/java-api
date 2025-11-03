@@ -11,6 +11,7 @@ import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.ParamConverterProvider;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.stream.Streams;
 import org.glassfish.jersey.internal.inject.InjectionManager;
 import org.glassfish.jersey.internal.inject.Providers;
 import org.glassfish.jersey.internal.util.ReflectionHelper;
@@ -49,8 +50,7 @@ public class OptionalParamConverterProvider implements ParamConverterProvider {
                 }
             };
         }
-        return Providers.getProviders(injectionManager, ParamConverterProvider.class)
-            .stream()
+        return Streams.of(Providers.getAllProviders(injectionManager, ParamConverterProvider.class))
             .map(provider -> provider.getConverter(classTypePair.rawClass(), classTypePair.type(), annotations))
             .filter(Objects::nonNull)
             .findFirst()

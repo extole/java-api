@@ -26,7 +26,7 @@ public final class CampaignComponentPartnerEnumListVariableRequest
     private static final String JSON_WEBHOOK_ID = "webhook_id";
     private static final String JSON_OPTIONS = "options";
 
-    private final Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Id<?>>> webhookId;
+    private final Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Optional<Id<?>>>> webhookId;
     private final Omissible<List<PartnerEnumListVariableOptionCreateRequest>> options;
 
     @JsonCreator
@@ -41,7 +41,8 @@ public final class CampaignComponentPartnerEnumListVariableRequest
             BuildtimeEvaluatable<VariableDescriptionBuildtimeContext, Optional<String>>> description,
         @JsonProperty(JSON_COMPONENT_SETTING_TAGS) Omissible<Set<String>> tags,
         @JsonProperty(JSON_COMPONENT_SETTING_PRIORITY) Omissible<DeweyDecimal> priority,
-        @JsonProperty(JSON_WEBHOOK_ID) Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Id<?>>> webhookId,
+        @JsonProperty(JSON_WEBHOOK_ID) Omissible<
+            BuildtimeEvaluatable<CampaignBuildtimeContext, Optional<Id<?>>>> webhookId,
         @JsonProperty(JSON_OPTIONS) Omissible<List<PartnerEnumListVariableOptionCreateRequest>> options) {
         super(name, displayName, SettingType.PARTNER_ENUM_LIST, values, source, description, tags, priority);
         this.webhookId = webhookId;
@@ -49,7 +50,7 @@ public final class CampaignComponentPartnerEnumListVariableRequest
     }
 
     @JsonProperty(JSON_WEBHOOK_ID)
-    public Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Id<?>>> getWebhookId() {
+    public Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Optional<Id<?>>>> getWebhookId() {
         return webhookId;
     }
 
@@ -67,11 +68,12 @@ public final class CampaignComponentPartnerEnumListVariableRequest
     }
 
     public static final class Builder<CALLER, BUILDER_TYPE extends Builder<CALLER, BUILDER_TYPE>>
-        extends CampaignComponentVariableRequest.Builder<CALLER,
-            CampaignComponentPartnerEnumListVariableRequest,
+        extends
+        CampaignComponentVariableRequest.Builder<CALLER, CampaignComponentPartnerEnumListVariableRequest,
             Builder<CALLER, BUILDER_TYPE>> {
 
-        private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Id<?>>> webhookId = Omissible.omitted();
+        private Omissible<BuildtimeEvaluatable<CampaignBuildtimeContext, Optional<Id<?>>>> webhookId =
+            Omissible.omitted();
         private Omissible<List<PartnerEnumListVariableOptionCreateRequest>> options = Omissible.omitted();
 
         private Builder() {
@@ -82,7 +84,7 @@ public final class CampaignComponentPartnerEnumListVariableRequest
             super(caller);
         }
 
-        public BUILDER_TYPE withWebhookId(BuildtimeEvaluatable<CampaignBuildtimeContext, Id<?>> webhookId) {
+        public BUILDER_TYPE withWebhookId(BuildtimeEvaluatable<CampaignBuildtimeContext, Optional<Id<?>>> webhookId) {
             this.webhookId = Omissible.of(webhookId);
             return (BUILDER_TYPE) this;
         }

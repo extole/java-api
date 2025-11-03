@@ -8,11 +8,11 @@ import java.util.stream.Collectors;
 
 import com.extole.authorization.service.Authorization;
 import com.extole.id.Id;
-import com.extole.reporting.entity.report.ReportParameter;
-import com.extole.reporting.entity.report.ReportType;
-import com.extole.reporting.entity.report.runner.MergingConfiguration;
-import com.extole.reporting.entity.report.runner.PauseInfo;
-import com.extole.reporting.entity.report.runner.ReportRunner;
+import com.extole.model.entity.report.runner.MergingConfiguration;
+import com.extole.model.entity.report.runner.PauseInfo;
+import com.extole.model.entity.report.runner.ReportRunner;
+import com.extole.model.entity.report.type.ReportParameter;
+import com.extole.model.entity.report.type.ReportType;
 import com.extole.reporting.rest.report.ParameterValueType;
 import com.extole.reporting.rest.report.ReportParameterDetailsResponse;
 import com.extole.reporting.rest.report.ReportParameterResponse;

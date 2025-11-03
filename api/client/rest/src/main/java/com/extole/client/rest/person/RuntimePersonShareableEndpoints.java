@@ -36,8 +36,8 @@ public interface RuntimePersonShareableEndpoints {
     @Operation(summary = "Get a list with shareables", description = "Returns shareables for a person.")
     List<PersonShareableV4Response> getShareables(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId)
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId)
         throws UserAuthorizationRestException, PersonRestException;
 
     @GET
@@ -46,8 +46,8 @@ public interface RuntimePersonShareableEndpoints {
     @Operation(summary = "Get a shareable", description = "Returns a shareable by a given code.")
     PersonShareableV4Response getShareableByCode(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @Parameter(description = "Shareable code") @PathParam("code") String code)
         throws UserAuthorizationRestException, PersonRestException, ShareableRestException;
 

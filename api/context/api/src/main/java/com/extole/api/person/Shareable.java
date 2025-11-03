@@ -26,4 +26,6 @@ public interface Shareable {
     String getClientDomainId();
 
     String getPersonId();
+
+    String getCreatedDate();
 }

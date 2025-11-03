@@ -7,9 +7,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.extole.authorization.service.Authorization;
-import com.extole.reporting.entity.report.ReportType;
-import com.extole.reporting.entity.report.ReportTypeColumn;
-import com.extole.reporting.entity.report.ReportTypeParameterDetails;
+import com.extole.model.entity.report.type.ReportType;
+import com.extole.model.entity.report.type.ReportTypeColumn;
+import com.extole.model.entity.report.type.ReportTypeParameterDetails;
 import com.extole.reporting.rest.report.ParameterValueType;
 import com.extole.reporting.rest.report.ReportExecutorType;
 import com.extole.reporting.rest.report.ReportParameterTypeName;

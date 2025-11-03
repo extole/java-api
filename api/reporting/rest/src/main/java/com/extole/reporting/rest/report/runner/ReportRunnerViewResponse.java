@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -61,7 +60,6 @@ public abstract class ReportRunnerViewResponse {
     private final Optional<MergingConfigurationResponse> mergingConfiguration;
     private final ZonedDateTime nextExecutionDate;
 
-    @JsonCreator
     public ReportRunnerViewResponse(
         @JsonProperty(JSON_TYPE) String type,
         @JsonProperty(JSON_ID) String id,

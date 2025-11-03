@@ -19,11 +19,14 @@ import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.id.Id;
+import com.extole.model.entity.report.type.ReportType;
+import com.extole.model.entity.report.type.ReportTypeColumn;
+import com.extole.model.entity.report.type.ReportTypeParameterDetails;
 import com.extole.model.service.client.ClientNotFoundException;
 import com.extole.model.service.client.ClientService;
-import com.extole.reporting.entity.report.ReportType;
-import com.extole.reporting.entity.report.ReportTypeColumn;
-import com.extole.reporting.entity.report.ReportTypeParameterDetails;
+import com.extole.model.service.report.type.ReportTypeNameMissingException;
+import com.extole.model.service.report.type.ReportTypeNotFoundException;
+import com.extole.model.service.report.type.ReportTypeService;
 import com.extole.reporting.rest.report.ParameterValueType;
 import com.extole.reporting.rest.report.ReportExecutorType;
 import com.extole.reporting.rest.report.ReportParameterTypeName;
@@ -35,9 +38,6 @@ import com.extole.reporting.rest.report.ReportTypeScope;
 import com.extole.reporting.rest.report.ReportTypeV4Endpoints;
 import com.extole.reporting.rest.report.ReportTypeV4Response;
 import com.extole.reporting.rest.report.execution.ReportFormat;
-import com.extole.reporting.service.ReportTypeNotFoundException;
-import com.extole.reporting.service.report.ReportTypeService;
-import com.extole.reporting.service.report.type.ReportTypeNameMissingException;
 
 @Provider
 public class ReportTypeV4EndpointsImpl implements ReportTypeV4Endpoints {

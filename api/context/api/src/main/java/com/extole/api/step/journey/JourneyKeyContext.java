@@ -4,11 +4,13 @@ import javax.annotation.Nullable;
 
 import com.extole.api.GlobalContext;
 import com.extole.api.LoggerContext;
+import com.extole.api.RuntimeVariableContext;
+import com.extole.api.campaign.VariableContext;
 import com.extole.api.event.ConsumerEvent;
 import com.extole.api.event.Sandbox;
 import com.extole.api.person.Person;
 
-public interface JourneyKeyContext extends GlobalContext, LoggerContext {
+public interface JourneyKeyContext extends GlobalContext, LoggerContext, VariableContext, RuntimeVariableContext {
 
     Person getPerson();
 

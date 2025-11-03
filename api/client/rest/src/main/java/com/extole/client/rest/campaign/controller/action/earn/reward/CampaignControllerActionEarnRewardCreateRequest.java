@@ -34,21 +34,25 @@ public class CampaignControllerActionEarnRewardCreateRequest extends ComponentEl
     private static final String JSON_VALUE_OF_EVENT_BEING_REWARDED = "value_of_event_being_rewarded";
     private static final String JSON_EVENT_TIME = "event_time";
     private static final String JSON_REWARD_ACTION_ID = "reward_action_id";
+    private static final String JSON_EXTRA_DATA = "extra_data";
 
     private final Omissible<CampaignControllerActionQuality> quality;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> rewardName;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<Id<?>>>> rewardSupplierId;
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<RewardActionContext, Set<String>>>> tags;
-    private final Omissible<Map<String,
+    private final Omissible<
+        BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<RewardActionContext, Set<String>>>> tags;
+    private final Omissible<Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
         BuildtimeEvaluatable<ControllerBuildtimeContext,
             RuntimeEvaluatable<RewardActionContext, Optional<Object>>>>> data;
-    private final Omissible<BuildtimeEvaluatable<
-        ControllerBuildtimeContext,
+    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
         RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> valueOfEventBeingRewarded;
     private final Omissible<RuntimeEvaluatable<RewardActionContext, Optional<Instant>>> eventTime;
     private final Omissible<RuntimeEvaluatable<RewardActionContext, Id<?>>> rewardActionId;
+    private final Omissible<
+        BuildtimeEvaluatable<
+            ControllerBuildtimeContext,
+            RuntimeEvaluatable<RewardActionContext, Map<String, Optional<Object>>>>> extraData;
 
     public CampaignControllerActionEarnRewardCreateRequest(
         @JsonProperty(JSON_QUALITY) Omissible<CampaignControllerActionQuality> quality,
@@ -62,14 +66,17 @@ public class CampaignControllerActionEarnRewardCreateRequest extends ComponentEl
             RuntimeEvaluatable<RewardActionContext, Set<String>>>> slots,
         @JsonProperty(JSON_TAGS) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
             RuntimeEvaluatable<RewardActionContext, Set<String>>>> tags,
-        @JsonProperty(JSON_DATA) Omissible<Map<String,
+        @JsonProperty(JSON_DATA) Omissible<Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
             BuildtimeEvaluatable<ControllerBuildtimeContext,
                 RuntimeEvaluatable<RewardActionContext, Optional<Object>>>>> data,
-        @JsonProperty(JSON_VALUE_OF_EVENT_BEING_REWARDED) Omissible<BuildtimeEvaluatable<
-            ControllerBuildtimeContext,
+        @JsonProperty(JSON_VALUE_OF_EVENT_BEING_REWARDED) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
             RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> valueOfEventBeingRewarded,
         @JsonProperty(JSON_EVENT_TIME) Omissible<RuntimeEvaluatable<RewardActionContext, Optional<Instant>>> eventTime,
-        @JsonProperty(JSON_REWARD_ACTION_ID) Omissible<RuntimeEvaluatable<RewardActionContext, Id<?>>> rewardActionId) {
+        @JsonProperty(JSON_REWARD_ACTION_ID) Omissible<RuntimeEvaluatable<RewardActionContext, Id<?>>> rewardActionId,
+        @JsonProperty(JSON_EXTRA_DATA) Omissible<
+            BuildtimeEvaluatable<
+                ControllerBuildtimeContext,
+                RuntimeEvaluatable<RewardActionContext, Map<String, Optional<Object>>>>> extraData) {
         super(componentReferences, componentIds);
         this.quality = quality;
         this.enabled = enabled;
@@ -79,6 +86,7 @@ public class CampaignControllerActionEarnRewardCreateRequest extends ComponentEl
         this.data = data;
         this.valueOfEventBeingRewarded = valueOfEventBeingRewarded;
         this.eventTime = eventTime;
+        this.extraData = extraData;
         this.rewardActionId = rewardActionId;
     }
 
@@ -104,30 +112,36 @@ public class CampaignControllerActionEarnRewardCreateRequest extends ComponentEl
 
     @Deprecated // TODO remove after UI switch ENG-15542
     @JsonProperty(JSON_SLOTS)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<RewardActionContext, Set<String>>>> getSlots() {
+    public
+        Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<RewardActionContext, Set<String>>>>
+        getSlots() {
         return tags;
     }
 
     @JsonProperty(JSON_TAGS)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<RewardActionContext, Set<String>>>> getTags() {
+    public
+        Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<RewardActionContext, Set<String>>>>
+        getTags() {
         return tags;
     }
 
     @JsonProperty(JSON_DATA)
-    public Omissible<Map<String,
-        BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<RewardActionContext, Optional<Object>>>>>
+    public
+        Omissible<Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<RewardActionContext, Optional<Object>>>>>
         getData() {
         return data;
     }
 
     @Deprecated // TODO remove after UI switch ENG-15542
     @JsonProperty(JSON_VALUE_OF_EVENT_BEING_REWARDED)
-    public Omissible<BuildtimeEvaluatable<
-        ControllerBuildtimeContext,
-        RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> getValueOfEventBeingRewarded() {
+    public
+        Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<RewardActionContext, Optional<Object>>>>
+        getValueOfEventBeingRewarded() {
         return valueOfEventBeingRewarded;
     }
 
@@ -139,6 +153,15 @@ public class CampaignControllerActionEarnRewardCreateRequest extends ComponentEl
     @JsonProperty(JSON_REWARD_ACTION_ID)
     public Omissible<RuntimeEvaluatable<RewardActionContext, Id<?>>> getRewardActionId() {
         return rewardActionId;
+    }
+
+    @JsonProperty(JSON_EXTRA_DATA)
+    public Omissible<
+        BuildtimeEvaluatable<
+            ControllerBuildtimeContext,
+            RuntimeEvaluatable<RewardActionContext, Map<String, Optional<Object>>>>>
+        getExtraData() {
+        return extraData;
     }
 
     @Override
@@ -158,15 +181,22 @@ public class CampaignControllerActionEarnRewardCreateRequest extends ComponentEl
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<Id<?>>>> rewardSupplierId =
             Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<RewardActionContext, Set<String>>>> tags = Omissible.omitted();
-        private Omissible<Map<String,
+            RuntimeEvaluatable<RewardActionContext, Set<String>>>> tags =
+                Omissible.omitted();
+        private Omissible<Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
             BuildtimeEvaluatable<ControllerBuildtimeContext,
-                RuntimeEvaluatable<RewardActionContext, Optional<Object>>>>> data = Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<
-            ControllerBuildtimeContext,
-            RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> valueOfEventBeingRewarded = Omissible.omitted();
+                RuntimeEvaluatable<RewardActionContext, Optional<Object>>>>> data =
+                    Omissible.omitted();
+        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> valueOfEventBeingRewarded =
+                Omissible.omitted();
         private Omissible<RuntimeEvaluatable<RewardActionContext, Optional<Instant>>> eventTime = Omissible.omitted();
         private Omissible<RuntimeEvaluatable<RewardActionContext, Id<?>>> rewardActionId = Omissible.omitted();
+        private Omissible<
+            BuildtimeEvaluatable<
+                ControllerBuildtimeContext,
+                RuntimeEvaluatable<RewardActionContext, Map<String, Optional<Object>>>>> extraData =
+                    Omissible.omitted();
 
         private Builder() {
         }
@@ -202,8 +232,9 @@ public class CampaignControllerActionEarnRewardCreateRequest extends ComponentEl
             return this;
         }
 
-        public Builder withTags(BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<RewardActionContext, Set<String>>> tags) {
+        public Builder withTags(
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<RewardActionContext, Set<String>>> tags) {
             this.tags = Omissible.of(tags);
             return this;
         }
@@ -213,17 +244,16 @@ public class CampaignControllerActionEarnRewardCreateRequest extends ComponentEl
             return this;
         }
 
-        public Builder withData(Map<String,
-            BuildtimeEvaluatable<ControllerBuildtimeContext,
-                RuntimeEvaluatable<RewardActionContext,
-                    Optional<Object>>>> data) {
+        public Builder withData(
+            Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+                BuildtimeEvaluatable<ControllerBuildtimeContext,
+                    RuntimeEvaluatable<RewardActionContext, Optional<Object>>>> data) {
             this.data = Omissible.of(data);
             return this;
         }
 
         public Builder withValueOfEventBeingRewarded(
-            BuildtimeEvaluatable<
-                ControllerBuildtimeContext,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
                 RuntimeEvaluatable<RewardActionContext, Optional<Object>>> valueOfEventBeingRewarded) {
             this.valueOfEventBeingRewarded = Omissible.of(valueOfEventBeingRewarded);
             return this;
@@ -236,6 +266,14 @@ public class CampaignControllerActionEarnRewardCreateRequest extends ComponentEl
 
         public Builder withRewardActionId(RuntimeEvaluatable<RewardActionContext, Id<?>> rewardActionId) {
             this.rewardActionId = Omissible.of(rewardActionId);
+            return this;
+        }
+
+        public Builder withExtraData(
+            BuildtimeEvaluatable<
+                ControllerBuildtimeContext,
+                RuntimeEvaluatable<RewardActionContext, Map<String, Optional<Object>>>> extraData) {
+            this.extraData = Omissible.of(extraData);
             return this;
         }
 
@@ -262,7 +300,8 @@ public class CampaignControllerActionEarnRewardCreateRequest extends ComponentEl
                 data,
                 valueOfEventBeingRewarded,
                 eventTime,
-                rewardActionId);
+                rewardActionId,
+                extraData);
         }
 
     }

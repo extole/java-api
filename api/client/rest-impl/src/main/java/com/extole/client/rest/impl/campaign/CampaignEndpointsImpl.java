@@ -165,9 +165,11 @@ import com.extole.model.service.campaign.StaleCampaignVersionException;
 import com.extole.model.service.campaign.component.CampaignComponentException;
 import com.extole.model.service.campaign.component.CampaignComponentNameDuplicateException;
 import com.extole.model.service.campaign.component.CampaignComponentTypeValidationException;
+import com.extole.model.service.campaign.component.ComponentAbsoluteNameFinder;
 import com.extole.model.service.campaign.component.OrphanExternalComponentReferenceException;
 import com.extole.model.service.campaign.component.asset.ComponentAssetNotFoundException;
 import com.extole.model.service.campaign.component.asset.ComponentAssetService;
+import com.extole.model.service.campaign.component.facet.CampaignComponentFacetsNotFoundException;
 import com.extole.model.service.campaign.controller.exception.CampaignControllerWithoutMatchingEventTriggerException;
 import com.extole.model.service.campaign.controller.exception.CampaignFrontendControllerMisconfigurationException;
 import com.extole.model.service.campaign.controller.exception.CampaignFrontendControllerNotFoundPageMisconfigurationException;
@@ -184,7 +186,10 @@ import com.extole.model.service.campaign.reward.rule.IncompatibleRewardRuleExcep
 import com.extole.model.service.campaign.setting.ComponentBuildSettingException;
 import com.extole.model.service.campaign.setting.InvalidVariableTranslatableValueException;
 import com.extole.model.service.campaign.setting.SettingValidationException;
+import com.extole.model.service.campaign.setting.SocketFilterInvalidComponentFacetException;
 import com.extole.model.service.campaign.setting.SocketFilterInvalidComponentTypeException;
+import com.extole.model.service.campaign.setting.SocketFilterMissingComponentFacetNameException;
+import com.extole.model.service.campaign.setting.SocketFilterMissingComponentFacetValueException;
 import com.extole.model.service.campaign.setting.SocketFilterMissingComponentTypeException;
 import com.extole.model.service.campaign.step.data.StepDataBuildException;
 import com.extole.model.service.campaign.transition.rule.TransitionRuleAlreadyExistsForActionType;
@@ -223,6 +228,7 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
     private final CreativeArchiveService creativeArchiveService;
     private final CampaignUploader campaignUploader;
     private final BackendAuthorizationProvider backendAuthorizationProvider;
+    private final ComponentAbsoluteNameFinder componentAbsoluteNameFinder;
 
     private static final int BYTES_PER_KB = 1024;
 
@@ -245,7 +251,8 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
         CreativeArchiveService creativeArchiveService,
         CampaignUploader campaignUploader,
         BackendAuthorizationProvider backendAuthorizationProvider,
-        @Qualifier("clientApiObjectMapper") javax.inject.Provider<ObjectMapper> objectMapperProvider) {
+        @Qualifier("clientApiObjectMapper") javax.inject.Provider<ObjectMapper> objectMapperProvider,
+        ComponentAbsoluteNameFinder componentAbsoluteNameFinder) {
         this.campaignService = campaignService;
         this.componentAssetService = componentAssetService;
         this.authorizationProvider = authorizationProvider;
@@ -259,7 +266,8 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
         this.backendAuthorizationProvider = backendAuthorizationProvider;
         this.campaignUploader = campaignUploader;
         this.mapper = objectMapperProvider.get()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+        this.componentAbsoluteNameFinder = componentAbsoluteNameFinder;
     }
 
     @Override
@@ -382,7 +390,7 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
         LOG.warn("Download campaign bundle request received for campaignId: {}, version: {}, uuid: {}", campaignId,
             version, uuid);
 
-        Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
+        ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
 
         LOG.warn("Authorization loaded for campaignId: {}, version: {}, uuid: {}", campaignId, version, uuid);
 
@@ -394,7 +402,11 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
             authorization = getClientBackendAuthorization(campaign.getClientId());
         }
 
-        CampaignConfiguration response = campaignRestMapper.toCampaignConfiguration(authorization, campaign, timeZone);
+        CampaignConfiguration campaignConfiguration =
+            campaignRestMapper.toCampaignConfiguration(authorization, campaign, timeZone);
+        Map<Id<CampaignComponent>, String> componentAbsoluteNames =
+            componentAbsoluteNameFinder.findAbsoluteNameById(campaign.getComponents());
+
         LOG.warn("Campaign configuration done for campaignId: {}, version: {}, uuid: {}", campaignId, version, uuid);
         String campaignName = campaign.getName().toLowerCase().replaceAll("[^a-z0-9]", "-");
 
@@ -404,14 +416,14 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
         try (FileBackedOutputStream fileOutputStream = new FileBackedOutputStream(threshold, true)) {
             try (ZipOutputStream zipOutput = new ZipOutputStream(fileOutputStream)) {
                 zipOutput.putNextEntry(new ZipEntry(campaignName + "/" + CAMPAIGN_JSON_FILENAME));
-                zipOutput.write(mapper.writeValueAsString(response).getBytes());
+                zipOutput.write(mapper.writeValueAsString(campaignConfiguration).getBytes());
 
                 Authorization assetAuthorization =
                     backendAuthorizationProvider.getAuthorizationForBackend(campaign.getClientId());
                 extractActionsCreativesToCampaignArchive(authorization, campaign, campaignName, zipOutput);
                 LOG.warn("Extracted creatives for campaignId: {}, version: {}, uuid: {}", campaignId, version, uuid);
 
-                for (CampaignComponentConfiguration component : response.getComponents()) {
+                for (CampaignComponentConfiguration component : campaignConfiguration.getComponents()) {
                     for (CampaignComponentAssetConfiguration asset : component.getAssets()) {
                         String assetName = asset.getName();
 
@@ -419,7 +431,7 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
                         if (component.getName().equalsIgnoreCase(CampaignComponent.ROOT)) {
                             contentPath = campaignName + "/assets/" + assetName;
                         } else {
-                            String absoluteName = component.getAbsoluteNames().get(0);
+                            String absoluteName = componentAbsoluteNames.get(component.getId().getValue());
                             contentPath = campaignName + absoluteName.replace("/", "/" + COMPONENTS_FOLDER_NAME + "/")
                                 + "/assets/" + assetName;
                         }
@@ -463,7 +475,7 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
         BuildCampaignRestException, CampaignComponentValidationRestException,
         CampaignComponentAssetValidationRestException, CampaignFlowStepMetricValidationRestException,
         CampaignFlowStepAppValidationRestException, CampaignComponentRestException, GlobalCampaignRestException,
-        ComponentTypeRestException, CampaignFrontendControllerValidationRestException {
+        ComponentTypeRestException, CampaignFrontendControllerValidationRestException, CampaignUpdateRestException {
 
         if (inputStream == null || contentDispositionHeader == null) {
             throw RestExceptionBuilder.newBuilder(WebApplicationRestRuntimeException.class)
@@ -494,7 +506,8 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
         BuildCampaignRestException, CampaignComponentValidationRestException,
         CampaignComponentAssetValidationRestException, CampaignFlowStepMetricValidationRestException,
         CampaignFlowStepAppValidationRestException, CampaignComponentRestException, GlobalCampaignRestException,
-        ComponentTypeRestException, CampaignFrontendControllerValidationRestException {
+        ComponentTypeRestException, CampaignFrontendControllerValidationRestException,
+        CampaignUpdateRestException {
 
         if (inputStream == null || contentDispositionHeader == null) {
             throw RestExceptionBuilder.newBuilder(WebApplicationRestRuntimeException.class)
@@ -568,13 +581,15 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
 
     @Override
     public CampaignResponse duplicate(String accessToken, String campaignId, Optional<CampaignDuplicateRequest> request,
-        ZoneId timeZone) throws UserAuthorizationRestException, CampaignRestException, CampaignValidationRestException,
-        CampaignLabelValidationRestException, BuildCampaignRestException,
+        String version, ZoneId timeZone) throws UserAuthorizationRestException, CampaignRestException,
+        CampaignValidationRestException, CampaignLabelValidationRestException, BuildCampaignRestException,
         CampaignComponentValidationRestException, CampaignComponentRestException, SettingValidationRestException {
 
+        CampaignVersion campaignVersion = campaignProvider.getCampaignVersion(Id.valueOf(campaignId), version);
         ClientAuthorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
-            CampaignBuilder campaignBuilder = campaignService.buildDuplicate(authorization, Id.valueOf(campaignId));
+            CampaignBuilder campaignBuilder = campaignService.buildDuplicate(authorization, Id.valueOf(campaignId),
+                campaignVersion);
             if (request.isPresent()) {
                 if (!Strings.isNullOrEmpty(request.get().getProgramLabel())) {
                     campaignBuilder.withProgramLabel(request.get().getProgramLabel());
@@ -664,6 +679,29 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
             throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
                 .withErrorCode(SettingValidationRestException.SOCKET_FILTER_INVALID_COMPONENT_TYPE)
                 .addParameter("component_type", e.getComponentType())
+                .withCause(e)
+                .build();
+        } catch (SocketFilterInvalidComponentFacetException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_INVALID_COMPONENT_FACET)
+                .addParameter("facet_name", e.getComponentFacetName())
+                .addParameter("facet_value", e.getComponentFacetValue())
+                .withCause(e)
+                .build();
+        } catch (SocketFilterMissingComponentFacetNameException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_COMPONENT_FACET_NAME_MISSING)
+                .withCause(e)
+                .build();
+        } catch (SocketFilterMissingComponentFacetValueException e) {
+            throw RestExceptionBuilder.newBuilder(SettingValidationRestException.class)
+                .withErrorCode(SettingValidationRestException.SOCKET_FILTER_COMPONENT_FACET_VALUE_MISSING)
+                .withCause(e)
+                .build();
+        } catch (CampaignComponentFacetsNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(CampaignComponentValidationRestException.class)
+                .withErrorCode(CampaignComponentValidationRestException.COMPONENT_FACETS_NOT_FOUND)
+                .addParameter("facets", e.getFacets())
                 .withCause(e)
                 .build();
         } catch (InvalidVariableTranslatableValueException e) {
@@ -990,6 +1028,8 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
                 .withErrorCode(CampaignComponentValidationRestException.TYPE_VALIDATION_FAILED)
                 .addParameter("validation_result", e.getValidationResult())
                 .addParameter("name", e.getName())
+                .addParameter("component_name", e.getComponentName())
+                .addParameter("component_id", e.getComponentId().toString())
                 .withCause(e)
                 .build();
         } catch (CampaignScheduleException e) {
@@ -1008,7 +1048,7 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
             | TransitionRuleAlreadyExistsForActionType | CampaignFlowStepException | StepDataBuildException
             | CampaignGlobalDeleteException | CampaignGlobalArchiveException | AuthorizationException
             | ComponentTypeNotFoundException | ReferencedExternalElementException | IncompatibleRewardRuleException
-            | CampaignComponentException e) {
+            | CampaignComponentException | CampaignComponentFacetsNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)
@@ -1228,6 +1268,8 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
                 .withErrorCode(CampaignComponentValidationRestException.TYPE_VALIDATION_FAILED)
                 .addParameter("validation_result", e.getValidationResult())
                 .addParameter("name", e.getName())
+                .addParameter("component_name", e.getComponentName())
+                .addParameter("component_id", e.getComponentId().toString())
                 .withCause(e)
                 .build();
         } catch (BuildEventStreamException e) {
@@ -1254,7 +1296,8 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
             | CampaignFlowStepException | StepDataBuildException | CampaignScheduleException
             | CampaignGlobalDeleteException | CampaignGlobalArchiveException | CampaignGlobalStateChangeException
             | AuthorizationException | ComponentTypeNotFoundException | ReferencedExternalElementException
-            | IncompatibleRewardRuleException | CampaignComponentException e) {
+            | IncompatibleRewardRuleException | CampaignComponentException
+            | CampaignComponentFacetsNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)
@@ -2020,7 +2063,7 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
             | ConcurrentCampaignUpdateException | CampaignScheduleException | CampaignGlobalDeleteException
             | CampaignGlobalArchiveException | CampaignGlobalStateChangeException
             | CampaignComponentTypeValidationException | AuthorizationException | ComponentTypeNotFoundException
-            | ReferencedExternalElementException
+            | ReferencedExternalElementException | CampaignComponentFacetsNotFoundException
             | IncompatibleRewardRuleException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
@@ -2151,6 +2194,9 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
             throw RestExceptionBuilder.newBuilder(CampaignComponentValidationRestException.class)
                 .withErrorCode(CampaignComponentValidationRestException.TYPE_VALIDATION_FAILED)
                 .addParameter("validation_result", e.getValidationResult())
+                .addParameter("name", e.getName())
+                .addParameter("component_name", e.getComponentName())
+                .addParameter("component_id", e.getComponentId().toString())
                 .withCause(e)
                 .build();
         } catch (BuildCampaignException e) {
@@ -2161,7 +2207,8 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
             | TransitionRuleAlreadyExistsForActionType | CampaignFlowStepException | StepDataBuildException
             | CampaignScheduleException | CampaignGlobalDeleteException | CampaignGlobalArchiveException
             | CampaignGlobalStateChangeException | AuthorizationException | ComponentTypeNotFoundException
-            | ReferencedExternalElementException | IncompatibleRewardRuleException | CampaignComponentException e) {
+            | ReferencedExternalElementException | IncompatibleRewardRuleException | CampaignComponentException
+            | CampaignComponentFacetsNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)
@@ -2290,7 +2337,7 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
         }
     }
 
-    private Authorization getClientBackendAuthorization(Id<ClientHandle> clientId)
+    private ClientAuthorization getClientBackendAuthorization(Id<ClientHandle> clientId)
         throws UserAuthorizationRestException {
         try {
             return backendAuthorizationProvider.getAuthorizationForBackend(clientId);
@@ -2381,7 +2428,8 @@ public class CampaignEndpointsImpl implements CampaignEndpoints {
             | CampaignComponentNameDuplicateException | TransitionRuleAlreadyExistsForActionType
             | CampaignComponentException | CampaignFlowStepException | StepDataBuildException
             | CampaignHasScheduledSiblingException | AuthorizationException | ComponentTypeNotFoundException
-            | ReferencedExternalElementException | IncompatibleRewardRuleException e) {
+            | ReferencedExternalElementException | IncompatibleRewardRuleException
+            | CampaignComponentFacetsNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)

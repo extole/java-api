@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -100,7 +101,6 @@ import com.extole.person.service.profile.PersonPartnerUserIdAlreadyDefinedExcept
 import com.extole.person.service.profile.PersonPartnerUserIdInvalidLengthException;
 import com.extole.person.service.profile.PersonService;
 import com.extole.person.service.profile.ProfileBlock;
-import com.extole.person.service.profile.journey.Container;
 import com.extole.person.service.profile.key.PersonKey;
 import com.extole.person.service.profile.locale.PersonLocale;
 import com.extole.person.service.profile.referral.PersonReferral;
@@ -115,6 +115,7 @@ import com.extole.person.service.reward.RuntimePersonRewardQueryBuilder;
 import com.extole.person.service.share.PersonShare;
 import com.extole.person.service.share.PersonShareService;
 import com.extole.running.service.partner.PartnerProfileKeyService;
+import com.extole.sandbox.Container;
 
 @Provider
 public class RuntimePersonEndpointsImpl implements RuntimePersonEndpoints {
@@ -322,7 +323,7 @@ public class RuntimePersonEndpointsImpl implements RuntimePersonEndpoints {
                 .withErrorCode(PersonValidationV4RestException.EMAIL_INVALID)
                 .addParameter("email", personRequest.getEmail())
                 .withCause(e).build();
-        } catch (EventProcessorException e) {
+        } catch (EventProcessorException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e).build();
@@ -345,7 +346,8 @@ public class RuntimePersonEndpointsImpl implements RuntimePersonEndpoints {
                 consumerEventSenderService.createConsumerEventSender()
                     .log("Person updated via client /v4/runtime-persons endpoints." + " Person id: " + personId);
             Person updatedPerson = personService.updatePerson(authorization, Id.valueOf(personId),
-                new LockDescription("person-v4-endpoints-update"), (personBuilder, originalPersonProfile) -> {
+                new LockDescription("person-v4-endpoints-update"),
+                (personBuilder, initialPerson) -> {
                     try {
                         if (verifiedEmail != null) {
                             personBuilder.withEmail(verifiedEmail.getEmail());
@@ -473,7 +475,7 @@ public class RuntimePersonEndpointsImpl implements RuntimePersonEndpoints {
 
     @Override
     public List<PersonRelationshipV4Response> getRelationships(String accessToken, String personId, String role,
-        Boolean excludeAnonymous, boolean includeDuplicateIdentities, ZoneId timeZone)
+        Boolean excludeAnonymous, boolean includeDuplicateIdentities, boolean includeSelfReferrals, ZoneId timeZone)
         throws UserAuthorizationRestException, PersonRestException, PersonRelationshipV4RestException {
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
@@ -482,6 +484,9 @@ public class RuntimePersonEndpointsImpl implements RuntimePersonEndpoints {
             List<PersonReferral> relationships = Lists.newArrayList();
             Supplier<List<PersonReferral>> advocatesProvider;
             Supplier<List<PersonReferral>> friendsProvider;
+            Function<PersonReferral.Side, List<PersonReferral>> selfReferralsProvider = includeSelfReferrals
+                ? side -> person.getSelfReferrals(side).collect(Collectors.toUnmodifiableList())
+                : side -> Collections.emptyList();
             if (excludeAnonymous != null && excludeAnonymous.booleanValue()) {
                 advocatesProvider = () -> person.getIdentifiedAdvocates();
                 friendsProvider = () -> person.getIdentifiedFriends();
@@ -493,6 +498,8 @@ public class RuntimePersonEndpointsImpl implements RuntimePersonEndpoints {
             if (Strings.isNullOrEmpty(role)) {
                 relationships.addAll(advocatesProvider.get());
                 relationships.addAll(friendsProvider.get());
+                relationships.addAll(selfReferralsProvider.apply(PersonReferral.Side.FRIEND));
+                relationships.addAll(selfReferralsProvider.apply(PersonReferral.Side.ADVOCATE));
             } else {
                 PersonReferral.Side parsedRole = parseRole(role);
                 if (parsedRole == PersonReferral.Side.FRIEND) {
@@ -500,6 +507,7 @@ public class RuntimePersonEndpointsImpl implements RuntimePersonEndpoints {
                 } else {
                     relationships.addAll(advocatesProvider.get());
                 }
+                relationships.addAll(selfReferralsProvider.apply(parsedRole));
             }
 
             if (!includeDuplicateIdentities) {
@@ -737,7 +745,7 @@ public class RuntimePersonEndpointsImpl implements RuntimePersonEndpoints {
 
         Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
         try {
-            return personService.getPerson(authorization, Id.valueOf(personId)).getRecentRequestContexts()
+            return personService.getPerson(authorization, Id.valueOf(personId)).getRecentLocations()
                 .stream()
                 .map(item -> requestContextResponseMapper.toRequestContextV4Response(item, timeZone))
                 .collect(Collectors.toList());
@@ -1010,7 +1018,7 @@ public class RuntimePersonEndpointsImpl implements RuntimePersonEndpoints {
     }
 
     private void sendEvents(ClientAuthorization authorization, PersonV4Request request, Person person)
-        throws EventProcessorException, AuthorizationException {
+        throws EventProcessorException, AuthorizationException, PersonNotFoundException {
         boolean sendBlockEvent = false;
         boolean sendUnBlockEvent = false;
         if (request.getBlocked() != null) {
@@ -1038,12 +1046,12 @@ public class RuntimePersonEndpointsImpl implements RuntimePersonEndpoints {
     }
 
     private void sendInputEvent(ClientAuthorization authorization, Person person, String eventName)
-        throws EventProcessorException, AuthorizationException {
+        throws EventProcessorException, AuthorizationException, PersonNotFoundException {
         ProcessedRawEvent processedRawEvent = clientRequestContextService.createBuilder(authorization, servletRequest)
             .withEventName(eventName)
             .withHttpRequestBodyCapturing(ClientRequestContextService.HttpRequestBodyCapturingType.LIMITED)
             .build().getProcessedRawEvent();
-        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person).send();
+        consumerEventSenderService.createInputEvent(authorization, processedRawEvent, person.getId()).send();
     }
 
     private void sentProfileBlockClientEvent(Authorization authorization, String eventName, String message,

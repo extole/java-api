@@ -21,8 +21,8 @@ public class CampaignComponentVariableConfiguration extends CampaignComponentSet
     protected static final String JSON_COMPONENT_VARIABLE_SOURCE = "source";
     protected static final String JSON_COMPONENT_VARIABLE_DESCRIPTION = "description";
 
-    private final Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-        RuntimeEvaluatable<Object, Optional<Object>>>> values;
+    private final Map<String,
+        BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values;
     private final VariableSource source;
     private final BuildtimeEvaluatable<VariableDescriptionBuildtimeContext, Optional<String>> description;
 
@@ -30,8 +30,8 @@ public class CampaignComponentVariableConfiguration extends CampaignComponentSet
     public CampaignComponentVariableConfiguration(@JsonProperty(JSON_COMPONENT_SETTING_NAME) String name,
         @JsonProperty(JSON_COMPONENT_SETTING_DISPLAY_NAME) Optional<String> displayName,
         @JsonProperty(JSON_COMPONENT_SETTING_TYPE) SettingType type,
-        @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES) Map<String, BuildtimeEvaluatable<VariableBuildtimeContext,
-            RuntimeEvaluatable<Object, Optional<Object>>>> values,
+        @JsonProperty(JSON_COMPONENT_VARIABLE_VALUES) Map<String,
+            BuildtimeEvaluatable<VariableBuildtimeContext, RuntimeEvaluatable<Object, Optional<Object>>>> values,
         @JsonProperty(JSON_COMPONENT_VARIABLE_SOURCE) VariableSource source,
         @JsonProperty(JSON_COMPONENT_VARIABLE_DESCRIPTION) BuildtimeEvaluatable<VariableDescriptionBuildtimeContext,
             Optional<String>> description,

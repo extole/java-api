@@ -16,8 +16,7 @@ import com.extole.model.entity.campaign.built.BuiltCampaignControllerActionDataI
 
 @Component
 public class BuiltCampaignControllerActionDataIntelligenceResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionDataIntelligence,
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionDataIntelligence,
         BuiltCampaignControllerActionDataIntelligenceResponse> {
 
     @Override
@@ -31,11 +30,11 @@ public class BuiltCampaignControllerActionDataIntelligenceResponseMapper impleme
             action.getEventName(),
             action.getProfileRiskUpdateInterval(),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

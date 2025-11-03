@@ -155,7 +155,7 @@ public class MeShareableV5EndpointsImpl implements MeShareableV5Endpoints {
 
         try {
             Id<?> pollingId = consumerEventSenderService
-                .createInputEvent(authorization, processedRawEvent, authorization.getIdentity())
+                .createInputEvent(authorization, processedRawEvent)
                 .withLockDescription(new LockDescription("me-shareable-endpoints-create"))
                 .executeAndSend((personBuilder, person, inputEventBuilder) -> {
                     ConsumerShareableV5Builder builder = consumerShareableService
@@ -175,7 +175,7 @@ public class MeShareableV5EndpointsImpl implements MeShareableV5Endpoints {
                     return new InputEventLockClosureResult<>(updatedPerson, result.getPollingId());
                 }).getPreEventSendingResult();
             return new CreateMeShareableV5Response(pollingId.getValue());
-        } catch (LockClosureException | AuthorizationException e) {
+        } catch (LockClosureException | AuthorizationException | PersonNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR).withCause(e.getCause()).build();
         }
@@ -206,7 +206,7 @@ public class MeShareableV5EndpointsImpl implements MeShareableV5Endpoints {
             }
 
             InputConsumerEvent inputEvent = consumerEventSenderService
-                .createInputEvent(authorization, requestContext.getProcessedRawEvent(), authorization.getIdentity())
+                .createInputEvent(authorization, requestContext.getProcessedRawEvent())
                 .send();
 
             Authorization backendAuthorization =
@@ -215,10 +215,9 @@ public class MeShareableV5EndpointsImpl implements MeShareableV5Endpoints {
             // ENG-19642 person update is performed using backendAuthorization hence cannot send it from input event
             Id<?> pollingId = personService.updatePerson(backendAuthorization, existingShareable.getPersonId(),
                 new LockDescription("me-shareable-endpoint-update"),
-                (personBuilder, originalPersonProfile) -> {
+                (personBuilder, initialPerson) -> {
                     ConsumerShareableV5Builder builder =
-                        consumerShareableService.editV5(existingShareable,
-                            personBuilder);
+                        consumerShareableService.editV5(existingShareable, personBuilder);
                     if (request.getKey() != null) {
                         builder.withKey(request.getKey());
                     }

@@ -23,6 +23,7 @@ public class BuiltCampaignControllerTriggerEventResponse extends BuiltCampaignCo
         @JsonProperty(TRIGGER_ID) String triggerId,
         @JsonProperty(TRIGGER_PHASE) CampaignControllerTriggerPhase triggerPhase,
         @JsonProperty(TRIGGER_NAME) String name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) Optional<String> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) Optional<String> description,
         @JsonProperty(ENABLED) Boolean enabled,
         @JsonProperty(NEGATED) Boolean negated,
@@ -30,8 +31,16 @@ public class BuiltCampaignControllerTriggerEventResponse extends BuiltCampaignCo
         @JsonProperty(EVENT_TYPE) CampaignControllerTriggerEventType eventType,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.EVENT, triggerPhase, name, description, enabled, negated,
-            componentIds, componentReferences);
+        super(triggerId,
+            CampaignControllerTriggerType.EVENT,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
+            componentIds,
+            componentReferences);
         this.eventNames = eventNames;
         this.eventType = eventType;
     }

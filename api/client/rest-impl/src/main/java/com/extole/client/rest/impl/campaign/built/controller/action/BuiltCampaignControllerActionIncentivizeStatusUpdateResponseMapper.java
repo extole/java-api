@@ -17,8 +17,7 @@ import com.extole.model.entity.campaign.built.BuiltCampaignControllerActionIncen
 
 @Component
 public class BuiltCampaignControllerActionIncentivizeStatusUpdateResponseMapper implements
-    BuiltCampaignControllerActionResponseMapper<
-        BuiltCampaignControllerActionIncentivizeStatusUpdate,
+    BuiltCampaignControllerActionResponseMapper<BuiltCampaignControllerActionIncentivizeStatusUpdate,
         BuiltCampaignControllerActionIncentivizeStatusUpdateResponse> {
 
     @Override
@@ -30,11 +29,11 @@ public class BuiltCampaignControllerActionIncentivizeStatusUpdateResponseMapper 
             action.getId().getValue(),
             CampaignControllerActionQuality.valueOf(action.getQuality().name()),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toUnmodifiableList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))

@@ -2,7 +2,6 @@ package com.extole.client.rest.campaign.component;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
 
@@ -18,7 +17,6 @@ public abstract class ComponentElementRequest {
     private final Omissible<List<ComponentReferenceRequest>> componentReferences;
     private final Omissible<List<Id<ComponentResponse>>> componentIds;
 
-    @JsonCreator
     public ComponentElementRequest(
         @JsonProperty(JSON_COMPONENT_REFERENCES) Omissible<List<ComponentReferenceRequest>> componentReferences,
         @JsonProperty(JSON_COMPONENT_IDS) Omissible<List<Id<ComponentResponse>>> componentIds) {

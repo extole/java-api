@@ -88,8 +88,7 @@ public interface MeEndpoints {
     List<ShareResponse> getShares(@AccessTokenParam(readCookie = false) String accessToken,
         @Nullable @QueryParam("partner_share_id") String partnerShareId,
         @Parameter(
-            description = "A partner id using this format: <name>:<value>")
-        @Nullable @QueryParam("partner_id") String partnerId)
+            description = "A partner id using this format: <name>:<value>") @Nullable @QueryParam("partner_id") String partnerId)
         throws AuthorizationRestException;
 
     @GET

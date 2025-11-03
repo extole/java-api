@@ -10,7 +10,7 @@ public class CampaignControllerActionDataIntelligenceValidationRestException
 
     public static final ErrorCode<CampaignControllerActionDataIntelligenceValidationRestException> INVALID_EVENT_NAME =
         new ErrorCode<>("campaign_controller_action_data_intelligence_event_invalid_event_name",
-            400, "Event name not valid");
+            400, "Event name not valid", "event_name");
 
     public static final ErrorCode<
         CampaignControllerActionDataIntelligenceValidationRestException> EVENT_NAME_LENGTH_OUT_OF_RANGE =

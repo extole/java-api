@@ -1,7 +1,5 @@
 package com.extole.api.person;
 
-import javax.annotation.Nullable;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema
@@ -21,7 +19,6 @@ public interface PersonReferral {
 
     boolean isDisplaced();
 
-    @Nullable
     String getContainer();
 
 }

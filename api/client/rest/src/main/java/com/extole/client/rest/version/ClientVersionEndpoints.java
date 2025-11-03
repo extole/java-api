@@ -23,10 +23,10 @@ public interface ClientVersionEndpoints {
     @Operation(summary = "client version information",
         description = "Returns current client version and whether all instances have received the versions changes")
     ClientVersionResponse get(@UserAccessTokenParam String accessToken,
-        @Parameter(hidden = true, description = "use when client has been deleted")
-        @Nullable @QueryParam("client_id") String clientId,
-        @Parameter(description = "queries pending changes for a specific client version")
-        @Nullable @QueryParam("version") Integer version)
+        @Parameter(hidden = true,
+            description = "use when client has been deleted") @Nullable @QueryParam("client_id") String clientId,
+        @Parameter(
+            description = "queries pending changes for a specific client version") @Nullable @QueryParam("version") Integer version)
         throws UserAuthorizationRestException, ClientVersionRestException;
 
 }

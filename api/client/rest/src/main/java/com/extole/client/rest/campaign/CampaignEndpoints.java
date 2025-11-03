@@ -129,10 +129,11 @@ public interface CampaignEndpoints {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{campaignId}/duplicate")
+    @Path("/{campaignId}{version:(/version/.+)?}/duplicate")
     @Operation(summary = "Duplicates a campaign")
     CampaignResponse duplicate(@UserAccessTokenParam String accessToken, @PathParam("campaignId") String campaignId,
-        Optional<CampaignDuplicateRequest> duplicateRequest, @TimeZoneParam ZoneId timeZone)
+        Optional<CampaignDuplicateRequest> duplicateRequest,
+        @PathParam("version") String version, @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, CampaignRestException, CampaignValidationRestException,
         CampaignLabelValidationRestException, CampaignControllerValidationRestException, BuildCampaignRestException,
         CampaignComponentValidationRestException, CampaignComponentRestException, SettingValidationRestException;

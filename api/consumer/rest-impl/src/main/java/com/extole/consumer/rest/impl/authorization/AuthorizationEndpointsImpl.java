@@ -188,7 +188,7 @@ public class AuthorizationEndpointsImpl implements AuthorizationEndpoints {
 
             if (validatedEmail.isPresent()) {
                 PublicProgram clientDomain = consumerRequestContext.getProcessedRawEvent().getClientDomain();
-                identifyPerson(authorization, validatedEmail.get().getNormalizedAddress(), clientDomain);
+                identifyPerson(authorization, validatedEmail.get(), clientDomain);
             }
             return authorization;
         } catch (AuthorizationRestException e) {

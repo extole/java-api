@@ -22,7 +22,7 @@ import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.common.rest.support.request.resolver.ResolvesPolymorphicType;
 import com.extole.id.Id;
-import com.extole.reporting.entity.report.Report;
+import com.extole.model.entity.report.type.Format;
 import com.extole.reporting.entity.report.audience.list.AudienceList;
 import com.extole.reporting.entity.report.audience.list.AudienceListMappedResponse;
 import com.extole.reporting.entity.report.audience.list.AudienceListState;
@@ -237,7 +237,7 @@ public class AudienceListEndpointsImpl implements AudienceListsEndpoints {
         throws AudienceListRestException, UserAuthorizationRestException {
         try {
             Authorization authorization = authorizationProvider.getClientAuthorization(accessToken);
-            Optional<Report.Format> reportFormat = Optional.empty();
+            Optional<Format> reportFormat = Optional.empty();
             if (format.isPresent() && !Strings.isNullOrEmpty(format.get())) {
                 reportFormat = Optional.of(getFormat(format.get().replace(".", ""), Id.valueOf(audienceId)));
             }
@@ -400,9 +400,9 @@ public class AudienceListEndpointsImpl implements AudienceListsEndpoints {
         }
     }
 
-    private Report.Format getFormat(String format, Id<AudienceList> audienceListId) throws AudienceListRestException {
+    private Format getFormat(String format, Id<AudienceList> audienceListId) throws AudienceListRestException {
         try {
-            return Report.Format.valueOf(format.toUpperCase());
+            return Format.valueOf(format.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw RestExceptionBuilder.newBuilder(AudienceListRestException.class)
                 .withErrorCode(AudienceListRestException.FORMAT_NOT_SUPPORTED)
@@ -413,7 +413,7 @@ public class AudienceListEndpointsImpl implements AudienceListsEndpoints {
         }
     }
 
-    private Response download(Id<AudienceList> audienceListId, Report.Format reportFormat,
+    private Response download(Id<AudienceList> audienceListId, Format reportFormat,
         Optional<Integer> limit, Optional<Integer> offset, Authorization authorization, AudienceListInfo formatInfo)
         throws AudienceListRestException {
 

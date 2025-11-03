@@ -1,5 +1,6 @@
 description = """Client-Zone REST API"""
 
+apply from: rootProject.file("maven_release.gradle")
 
 dependencies {
 
@@ -7,10 +8,8 @@ dependencies {
     api project(':common-lang')
     api project(':common-id')
 
-    libraries.with {
-        implementation javaWs
-        implementation jsr305
-        implementation commonsLang
-    }
+    implementation libs.javaWs
+    implementation libs.jsr305
+    implementation libs.commonsLang
 
 }

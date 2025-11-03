@@ -20,7 +20,6 @@ import com.extole.common.rest.support.authorization.client.ClientAuthorizationPr
 import com.extole.id.Id;
 import com.extole.person.service.CampaignHandle;
 import com.extole.person.service.StepName;
-import com.extole.person.service.profile.journey.Container;
 import com.extole.reporting.rest.report.DimensionStatsEndpoints;
 import com.extole.reporting.rest.report.DimensionStatsGetRequest;
 import com.extole.reporting.rest.report.DimensionStatsResponse;
@@ -29,6 +28,7 @@ import com.extole.reporting.service.report.DimensionStatsQueryBuilder;
 import com.extole.reporting.service.report.DimensionStatsService;
 import com.extole.reporting.service.report.DimensionTimePeriod;
 import com.extole.reporting.service.step_summary.StepSummaryDimensionsQueryBuilder;
+import com.extole.sandbox.Container;
 
 @Provider
 public class DimensionStatsEndpointsImpl implements DimensionStatsEndpoints {

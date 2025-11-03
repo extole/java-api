@@ -17,18 +17,19 @@ public class StaticAudienceListRequest extends AudienceListRequest {
     private final String reportId;
 
     public StaticAudienceListRequest(
-        @Parameter(description = "AudienceList name, max length 255")
-        @JsonProperty(NAME) Omissible<String> name,
-        @Parameter(description = "AudienceList description, max length 1024")
-        @JsonProperty(DESCRIPTION) Omissible<String> description,
-        @Parameter(description = "A list of columns that will be used when dispatching AudienceList")
-        @JsonProperty(EVENT_COLUMNS) Omissible<Set<String>> eventColumns,
-        @Parameter(description = "Data for the AudienceList")
-        @JsonProperty(EVENT_DATA) Omissible<Map<String, String>> eventData,
-        @Parameter(description = "A set of tags for the AudienceList")
-        @JsonProperty(TAGS) Omissible<Set<String>> tags,
-        @Parameter(description = "An existing reportId for the AudienceList")
-        @JsonProperty(REPORT_ID) String reportId) {
+        @Parameter(description = "AudienceList name, max length 255") @JsonProperty(NAME) Omissible<String> name,
+        @Parameter(
+            description = "AudienceList description, max length 1024") @JsonProperty(DESCRIPTION) Omissible<
+                String> description,
+        @Parameter(
+            description = "A list of columns that will be used when dispatching AudienceList") @JsonProperty(EVENT_COLUMNS) Omissible<
+                Set<String>> eventColumns,
+        @Parameter(
+            description = "Data for the AudienceList") @JsonProperty(EVENT_DATA) Omissible<
+                Map<String, String>> eventData,
+        @Parameter(description = "A set of tags for the AudienceList") @JsonProperty(TAGS) Omissible<Set<String>> tags,
+        @Parameter(
+            description = "An existing reportId for the AudienceList") @JsonProperty(REPORT_ID) String reportId) {
         super(AudienceListType.STATIC, name, description, eventColumns, eventData, tags);
         this.reportId = reportId;
     }

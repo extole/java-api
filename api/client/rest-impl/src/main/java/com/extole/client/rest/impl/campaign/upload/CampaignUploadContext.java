@@ -6,6 +6,7 @@ import com.google.common.io.ByteSource;
 
 import com.extole.client.rest.campaign.configuration.CampaignComponentAssetConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentConfiguration;
+import com.extole.client.rest.campaign.configuration.CampaignComponentFacetConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentSettingConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentSocketConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentVariableConfiguration;
@@ -40,6 +41,7 @@ import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerCl
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerDataIntelligenceEventConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerEventConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerExpressionConfiguration;
+import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerGroupConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerHasIdentityConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerHasPriorRewardConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerHasPriorStepConfiguration;
@@ -51,6 +53,8 @@ import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerRe
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerScoreConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerSendRewardEventConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerShareConfiguration;
+import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerStepEventConfiguration;
+import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerTargetingConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignControllerTriggerZoneStateConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignFlowStepAppConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignFlowStepConfiguration;
@@ -66,6 +70,7 @@ import com.extole.client.rest.campaign.configuration.TransitionRuleConfiguration
 import com.extole.client.rest.impl.campaign.component.asset.UploadedAssetId;
 import com.extole.model.service.campaign.component.CampaignComponentBuilder;
 import com.extole.model.service.campaign.component.asset.CampaignComponentAssetBuilder;
+import com.extole.model.service.campaign.component.facet.CampaignComponentFacetBuilder;
 import com.extole.model.service.campaign.controller.CampaignControllerBuilder;
 import com.extole.model.service.campaign.controller.FrontendControllerBuilder;
 import com.extole.model.service.campaign.controller.action.approve.CampaignControllerActionApproveBuilder;
@@ -99,6 +104,7 @@ import com.extole.model.service.campaign.controller.trigger.audience.membership.
 import com.extole.model.service.campaign.controller.trigger.client.domain.CampaignControllerTriggerClientDomainBuilder;
 import com.extole.model.service.campaign.controller.trigger.event.CampaignControllerTriggerEventBuilder;
 import com.extole.model.service.campaign.controller.trigger.expression.CampaignControllerTriggerExpressionBuilder;
+import com.extole.model.service.campaign.controller.trigger.group.CampaignControllerTriggerGroupBuilder;
 import com.extole.model.service.campaign.controller.trigger.has.identity.CampaignControllerTriggerHasIdentityBuilder;
 import com.extole.model.service.campaign.controller.trigger.has.prior.reward.CampaignControllerTriggerHasPriorRewardBuilder;
 import com.extole.model.service.campaign.controller.trigger.has.prior.step.CampaignControllerTriggerHasPriorStepBuilder;
@@ -109,6 +115,8 @@ import com.extole.model.service.campaign.controller.trigger.reward.event.Campaig
 import com.extole.model.service.campaign.controller.trigger.score.CampaignControllerTriggerScoreBuilder;
 import com.extole.model.service.campaign.controller.trigger.send.reward.event.CampaignControllerTriggerSendRewardEventBuilder;
 import com.extole.model.service.campaign.controller.trigger.share.CampaignControllerTriggerShareBuilder;
+import com.extole.model.service.campaign.controller.trigger.step.event.CampaignControllerTriggerStepEventBuilder;
+import com.extole.model.service.campaign.controller.trigger.targeting.CampaignControllerTriggerTargetingBuilder;
 import com.extole.model.service.campaign.controller.trigger.zone.state.CampaignControllerTriggerZoneStateBuilder;
 import com.extole.model.service.campaign.flow.step.CampaignFlowStepBuilder;
 import com.extole.model.service.campaign.flow.step.app.CampaignFlowStepAppBuilder;
@@ -137,6 +145,9 @@ public interface CampaignUploadContext {
 
     CampaignComponentAssetBuilder get(CampaignComponentConfiguration component,
         CampaignComponentAssetConfiguration asset);
+
+    CampaignComponentFacetBuilder get(CampaignComponentConfiguration component,
+        CampaignComponentFacetConfiguration facet);
 
     CampaignControllerBuilder get(CampaignControllerConfiguration controller);
 
@@ -215,6 +226,15 @@ public interface CampaignUploadContext {
 
     CampaignControllerTriggerAudienceMembershipBuilder
         get(CampaignStepConfiguration step, CampaignControllerTriggerAudienceMembershipConfiguration trigger);
+
+    CampaignControllerTriggerGroupBuilder
+        get(CampaignStepConfiguration step, CampaignControllerTriggerGroupConfiguration trigger);
+
+    CampaignControllerTriggerStepEventBuilder get(CampaignStepConfiguration step,
+        CampaignControllerTriggerStepEventConfiguration trigger);
+
+    CampaignControllerTriggerTargetingBuilder get(CampaignStepConfiguration step,
+        CampaignControllerTriggerTargetingConfiguration trigger);
 
     CampaignControllerActionIncentivizeStatusUpdateBuilder get(CampaignStepConfiguration step,
         CampaignControllerActionIncentivizeStatusUpdateConfiguration action);

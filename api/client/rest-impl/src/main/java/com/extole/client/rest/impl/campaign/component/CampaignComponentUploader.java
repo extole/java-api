@@ -4,7 +4,6 @@ import static com.extole.model.entity.campaign.CampaignComponent.ROOT_REFERENCE;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import com.google.common.io.ByteSource;
 import org.apache.commons.collections4.ListUtils;
@@ -14,11 +13,11 @@ import org.springframework.stereotype.Component;
 import com.extole.client.rest.campaign.component.CampaignComponentValidationRestException;
 import com.extole.client.rest.campaign.configuration.CampaignComponentAssetConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentConfiguration;
+import com.extole.client.rest.campaign.configuration.CampaignComponentFacetConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentReferenceConfiguration;
 import com.extole.client.rest.campaign.configuration.CampaignComponentSettingConfiguration;
 import com.extole.client.rest.impl.campaign.component.asset.UploadedAssetId;
-import com.extole.client.rest.impl.campaign.component.setting.DefaultSettingUploader;
-import com.extole.client.rest.impl.campaign.component.setting.SettingUploader;
+import com.extole.client.rest.impl.campaign.component.setting.SettingUploaderRegistry;
 import com.extole.client.rest.impl.campaign.upload.CampaignUploadContext;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.model.entity.campaign.CampaignComponent;
@@ -37,6 +36,7 @@ import com.extole.model.service.campaign.component.asset.CampaignComponentAssetF
 import com.extole.model.service.campaign.component.asset.CampaignComponentAssetFilenameLengthException;
 import com.extole.model.service.campaign.component.asset.CampaignComponentAssetNameInvalidException;
 import com.extole.model.service.campaign.component.asset.CampaignComponentAssetNameLengthException;
+import com.extole.model.service.campaign.component.facet.CampaignComponentFacetBuilder;
 import com.extole.model.service.campaign.component.reference.CampaignComponentReferenceBuilder;
 import com.extole.model.service.campaign.setting.SettingDisplayNameLengthException;
 import com.extole.model.service.campaign.setting.SettingIllegalCharacterInDisplayNameException;
@@ -49,16 +49,13 @@ import com.extole.model.service.component.type.ComponentTypeNotFoundException;
 @Component
 public class CampaignComponentUploader {
 
-    @SuppressWarnings({"unchecked"})
-    private final List<SettingUploader> settingUploaders;
-    private final DefaultSettingUploader defaultSettingUploader;
+    private final SettingUploaderRegistry settingUploaderRegistry;
 
-    public CampaignComponentUploader(List<SettingUploader> settingUploaders,
-        DefaultSettingUploader defaultSettingUploader) {
-        this.settingUploaders = settingUploaders;
-        this.defaultSettingUploader = defaultSettingUploader;
+    public CampaignComponentUploader(SettingUploaderRegistry settingUploaderRegistry) {
+        this.settingUploaderRegistry = settingUploaderRegistry;
     }
 
+    @SuppressWarnings("unchecked")
     public void uploadComponent(CampaignUploadContext context, CampaignComponentConfiguration component)
         throws CampaignComponentIllegalCharacterInNameException, CampaignComponentNameLengthException,
         CampaignComponentDescriptionLengthException, SettingNameLengthException, SettingInvalidNameException,
@@ -81,7 +78,11 @@ public class CampaignComponentUploader {
         }
 
         if (component.getType().isPresent()) {
-            campaignComponentBuilder.withType(component.getType().get());
+            campaignComponentBuilder.withTypes(List.of(component.getType().get()));
+        }
+
+        if (!component.getTypes().isEmpty()) {
+            campaignComponentBuilder.withTypes(component.getTypes());
         }
 
         if (component.getDescription() != null) {
@@ -105,17 +106,15 @@ public class CampaignComponentUploader {
         }
         if (component.getSettings() != null) {
             for (CampaignComponentSettingConfiguration variable : component.getSettings().stream()
-                .filter(variableRequest -> Objects.nonNull(variableRequest)).collect(Collectors.toList())) {
-                settingUploaders.stream()
-                    .filter(settingUploader -> settingUploader.getSettingType().equals(variable.getType()))
-                    .findFirst()
-                    .orElse(defaultSettingUploader)
-                    .upload(context, component, variable);
+                .filter(variableRequest -> Objects.nonNull(variableRequest)).toList()) {
+                settingUploaderRegistry.getUploader(variable.getType())
+                    .orElse(settingUploaderRegistry.getDefaultUploader())
+                    .upload(settingUploaderRegistry, context, component, variable);
             }
         }
 
-        if (component.getComponentVersion() != null) {
-            campaignComponentBuilder.withComponentVersion(component.getComponentVersion());
+        if (component.getUploadVersion().isPresent()) {
+            campaignComponentBuilder.withUploadVersion(component.getUploadVersion().get());
         }
 
         campaignComponentBuilder.clearComponentReferences();
@@ -131,9 +130,20 @@ public class CampaignComponentUploader {
             componentReferenceBuilder.withSocketNames(ListUtils.emptyIfNull(componentReference.getSocketNames()));
         }
 
+        if (component.getFacets() != null) {
+            for (CampaignComponentFacetConfiguration facet : component.getFacets()
+                .stream()
+                .filter(facet -> Objects.nonNull(facet))
+                .toList()) {
+                CampaignComponentFacetBuilder facetBuilder = context.get(component, facet);
+                facetBuilder.withName(facet.getName());
+                facetBuilder.withValue(facet.getValue());
+            }
+        }
+
         if (component.getAssets() != null) {
             for (CampaignComponentAssetConfiguration asset : component.getAssets().stream()
-                .filter(asset -> Objects.nonNull(asset)).collect(Collectors.toList())) {
+                .filter(asset -> Objects.nonNull(asset)).toList()) {
                 CampaignComponentAssetBuilder assetBuilder = context.get(component, asset);
 
                 if (asset.getName() != null) {

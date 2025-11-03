@@ -55,6 +55,8 @@ public class CampaignControllerTriggerHasPriorStepUploader
             .ifDefined(
                 (value) -> triggerBuilder.withTriggerPhase(Evaluatables.remapEnum(value, new TypeReference<>() {})));
         trigger.getName().ifDefined((value) -> triggerBuilder.withName(value));
+        trigger.getParentTriggerGroupName()
+            .ifDefined((value) -> triggerBuilder.withParentTriggerGroupName(value));
         trigger.getEnabled().ifDefined((value) -> triggerBuilder.withEnabled(value));
         trigger.getFilterNames().ifDefined((value) -> triggerBuilder.withFilterNames(value));
         trigger.getFilterScope()
@@ -168,6 +170,7 @@ public class CampaignControllerTriggerHasPriorStepUploader
         trigger.getCountMax().ifDefined((value) -> triggerBuilder.withCountMax(value));
         trigger.getCountMatches().ifDefined((value) -> triggerBuilder.withCountMatches(value));
         trigger.getPersonId().ifDefined((value) -> triggerBuilder.withPersonId(value));
+        trigger.getHavingAllNames().ifDefined((value) -> triggerBuilder.withHavingAllNames(value));
         triggerBuilder.clearComponentReferences();
         for (CampaignComponentReferenceConfiguration componentReference : trigger.getComponentReferences()) {
             if (componentReference.getAbsoluteName() == null) {

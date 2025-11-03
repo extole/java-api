@@ -35,14 +35,17 @@ public final class BatchJobCreateRequest {
     BatchJobCreateRequest(
         @Parameter(description = "BatchJob name") @JsonProperty(JSON_NAME) Omissible<String> name,
         @Parameter(description = "Optional event name") @JsonProperty(JSON_EVENT_NAME) Omissible<String> eventName,
-        @Parameter(description = "Optional default event name")
-        @JsonProperty(JSON_DEFAULT_EVENT_NAME) Omissible<String> defaultEventName,
+        @Parameter(
+            description = "Optional default event name") @JsonProperty(JSON_DEFAULT_EVENT_NAME) Omissible<
+                String> defaultEventName,
         @Parameter(description = "A set of tags") @JsonProperty(JSON_TAGS) Omissible<Set<String>> tags,
         @Parameter(description = "A set of scopes") @JsonProperty(JSON_SCOPES) Omissible<Set<BatchJobScope>> scopes,
-        @Parameter(description = "Event columns that are using when dispatching BatchJob")
-        @JsonProperty(JSON_EVENT_COLUMNS) Omissible<Set<String>> eventColumns,
-        @Parameter(description = "Columns that are used when validating BatchJob")
-        @JsonProperty(JSON_COLUMNS) Omissible<Set<BatchJobColumnRequest>> columns,
+        @Parameter(
+            description = "Event columns that are using when dispatching BatchJob") @JsonProperty(JSON_EVENT_COLUMNS) Omissible<
+                Set<String>> eventColumns,
+        @Parameter(
+            description = "Columns that are used when validating BatchJob") @JsonProperty(JSON_COLUMNS) Omissible<
+                Set<BatchJobColumnRequest>> columns,
         @Parameter(description = "Event data") @JsonProperty(JSON_EVENT_DATA) Omissible<Map<String, String>> eventData,
         @Parameter(description = "Data source") @JsonProperty(JSON_DATA_SOURCE) BatchJobDataSourceRequest dataSource) {
         this.name = name;

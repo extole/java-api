@@ -194,8 +194,9 @@ public abstract class ClientKeyUpdateRequest extends ComponentElementRequest {
         return ToString.create(this);
     }
 
-    public abstract static class Builder<REQUEST extends ClientKeyUpdateRequest,
-        BUILDER extends Builder<REQUEST, BUILDER>> extends ComponentElementRequest.Builder<BUILDER> {
+    public abstract static class Builder<REQUEST extends ClientKeyUpdateRequest, BUILDER extends Builder<REQUEST,
+        BUILDER>>
+        extends ComponentElementRequest.Builder<BUILDER> {
 
         protected Omissible<BuildtimeEvaluatable<ClientKeyBuildtimeContext, String>> name = Omissible.omitted();
         protected Omissible<BuildtimeEvaluatable<ClientKeyBuildtimeContext, Optional<String>>> description =

@@ -3,8 +3,8 @@ package com.extole.reporting.rest.impl.report.type.uploaders;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.extole.reporting.entity.report.ReportParameterType;
-import com.extole.reporting.entity.report.ReportTypeParameterDetails;
+import com.extole.model.entity.report.type.ReportParameterType;
+import com.extole.model.entity.report.type.ReportTypeParameterDetails;
 
 public final class ReportTypeParameterDetailsImpl implements ReportTypeParameterDetails {
     private final String name;

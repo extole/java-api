@@ -7,8 +7,7 @@ import com.extole.reporting.entity.report.audience.operation.AudienceOperationDe
 import com.extole.reporting.rest.audience.operation.AudienceOperationStateDebugResponse;
 import com.extole.reporting.rest.audience.operation.AudienceOperationStateResponse;
 
-public interface AudienceOperationStateResponseMapper<RESPONSE extends AudienceOperationStateResponse,
-    DEBUG_RESPONSE extends AudienceOperationStateDebugResponse> {
+public interface AudienceOperationStateResponseMapper<RESPONSE extends AudienceOperationStateResponse, DEBUG_RESPONSE extends AudienceOperationStateDebugResponse> {
 
     RESPONSE toResponse(AudienceOperation audienceOperation, ZoneId timeZone);
 

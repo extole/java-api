@@ -19,10 +19,7 @@ import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.model.entity.campaign.CampaignControllerActionQuality;
 import com.extole.model.service.campaign.component.reference.CampaignComponentReferenceBuilder;
 import com.extole.model.service.campaign.controller.action.earn.reward.CampaignControllerActionEarnRewardBuilder;
-import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardInvalidDataAttributeNameException;
 import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardInvalidDataAttributeValueException;
-import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardMissingDataAttributeNameException;
-import com.extole.model.service.campaign.controller.action.earn.reward.exception.CampaignControllerActionEarnRewardMissingDataAttributeValueException;
 
 @Component
 public class CampaignControllerActionEarnRewardUploader
@@ -66,29 +63,11 @@ public class CampaignControllerActionEarnRewardUploader
             }
 
             action.getRewardActionId().ifDefined((value) -> actionBuilder.withRewardActionId(value));
-        } catch (CampaignControllerActionEarnRewardMissingDataAttributeNameException e) {
-            throw RestExceptionBuilder.newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
-                .withErrorCode(CampaignControllerActionEarnRewardValidationRestException.DATA_ATTRIBUTE_NAME_INVALID)
-                .addParameter("name", e.getAttributeName())
-                .withCause(e)
-                .build();
-        } catch (CampaignControllerActionEarnRewardInvalidDataAttributeNameException e) {
-            throw RestExceptionBuilder.newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
-                .withErrorCode(
-                    CampaignControllerActionEarnRewardValidationRestException.DATA_ATTRIBUTE_NAME_LENGTH_OUT_OF_RANGE)
-                .addParameter("name", e.getAttributeName())
-                .withCause(e)
-                .build();
+            action.getExtraData().ifDefined(value -> actionBuilder.withExtraData(value));
         } catch (CampaignControllerActionEarnRewardInvalidDataAttributeValueException e) {
             throw RestExceptionBuilder.newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
                 .withErrorCode(
                     CampaignControllerActionEarnRewardValidationRestException.DATA_ATTRIBUTE_VALUE_LENGTH_OUT_OF_RANGE)
-                .addParameter("name", e.getAttributeName())
-                .withCause(e)
-                .build();
-        } catch (CampaignControllerActionEarnRewardMissingDataAttributeValueException e) {
-            throw RestExceptionBuilder.newBuilder(CampaignControllerActionEarnRewardValidationRestException.class)
-                .withErrorCode(CampaignControllerActionEarnRewardValidationRestException.DATA_ATTRIBUTE_VALUE_INVALID)
                 .addParameter("name", e.getAttributeName())
                 .withCause(e)
                 .build();

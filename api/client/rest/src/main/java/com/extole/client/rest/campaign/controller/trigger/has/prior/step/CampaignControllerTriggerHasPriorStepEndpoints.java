@@ -12,6 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.extole.client.rest.campaign.BuildCampaignControllerRestException;
 import com.extole.client.rest.campaign.BuildCampaignRestException;
 import com.extole.client.rest.campaign.CampaignRestException;
 import com.extole.client.rest.campaign.CampaignUpdateRestException;
@@ -48,7 +49,8 @@ public interface CampaignControllerTriggerHasPriorStepEndpoints {
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
         CampaignControllerTriggerHasPriorStepValidationRestException, CampaignControllerTriggerValidationRestException,
-        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException;
+        CampaignComponentValidationRestException, BuildCampaignRestException, CampaignUpdateRestException,
+        BuildCampaignControllerRestException;
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
@@ -64,7 +66,7 @@ public interface CampaignControllerTriggerHasPriorStepEndpoints {
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
         CampaignControllerTriggerHasPriorStepValidationRestException, CampaignControllerTriggerValidationRestException,
         CampaignComponentValidationRestException, BuildCampaignRestException, OmissibleRestException,
-        CampaignUpdateRestException;
+        CampaignUpdateRestException, BuildCampaignControllerRestException;
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
@@ -76,6 +78,6 @@ public interface CampaignControllerTriggerHasPriorStepEndpoints {
         @PathParam("triggerId") String triggerId,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
-        BuildCampaignRestException, CampaignUpdateRestException;
+        BuildCampaignRestException, CampaignUpdateRestException, BuildCampaignControllerRestException;
 
 }

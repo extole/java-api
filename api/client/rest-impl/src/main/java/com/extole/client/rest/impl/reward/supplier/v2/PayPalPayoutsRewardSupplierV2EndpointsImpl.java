@@ -274,6 +274,7 @@ public class PayPalPayoutsRewardSupplierV2EndpointsImpl implements PayPalPayouts
             rewardSupplierService.create(authorization, RewardSupplierType.PAYPAL_PAYOUTS,
                 rewardSupplierRestMapper.toFaceValueType(creationRequest.getFaceValueType()));
         rewardSupplierBuilder
+            .withDisplayName(creationRequest.getDisplayName())
             .withName(creationRequest.getName())
             .withMerchantToken(creationRequest.getMerchantToken())
             .withFaceValue(creationRequest.getFaceValue());
@@ -410,6 +411,8 @@ public class PayPalPayoutsRewardSupplierV2EndpointsImpl implements PayPalPayouts
 
         updateRequest.getName()
             .ifPresent(name -> rewardSupplierBuilder.withName(name));
+        updateRequest.getDisplayName()
+            .ifPresent(displayName -> rewardSupplierBuilder.withDisplayName(displayName));
         updateRequest.getFaceValue()
             .ifPresent(faceValue -> rewardSupplierBuilder.withFaceValue(faceValue));
         updateRequest.getFaceValueAlgorithmType()

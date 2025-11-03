@@ -71,6 +71,7 @@ import com.extole.model.service.campaign.component.asset.CampaignComponentAssetN
 import com.extole.model.service.campaign.component.asset.CampaignComponentAssetNameMissingException;
 import com.extole.model.service.campaign.component.asset.ComponentAssetNotFoundException;
 import com.extole.model.service.campaign.component.asset.ComponentAssetService;
+import com.extole.model.service.campaign.component.facet.CampaignComponentFacetsNotFoundException;
 import com.extole.model.service.component.type.ComponentTypeNotFoundException;
 import com.extole.model.service.creative.exception.CreativeArchiveIncompatibleApiVersionException;
 import com.extole.security.backend.BackendAuthorizationProvider;
@@ -444,7 +445,8 @@ public class CampaignComponentAssetEndpointsImpl implements CampaignComponentAss
             throw BuildCampaignRestExceptionMapper.getInstance().map(e);
         } catch (CampaignComponentNameDuplicateException | InvalidComponentReferenceException
             | CampaignComponentException | CreativeArchiveIncompatibleApiVersionException
-            | CampaignComponentTypeValidationException | AuthorizationException | ComponentTypeNotFoundException e) {
+            | CampaignComponentTypeValidationException | AuthorizationException | ComponentTypeNotFoundException
+            | CampaignComponentFacetsNotFoundException e) {
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e)

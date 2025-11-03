@@ -5,91 +5,56 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ImmutableList;
 
 import com.extole.api.campaign.ControllerBuildtimeContext;
-import com.extole.client.rest.campaign.component.ComponentElementRequest;
 import com.extole.client.rest.campaign.component.ComponentReferenceRequest;
 import com.extole.client.rest.campaign.component.ComponentResponse;
 import com.extole.client.rest.campaign.controller.trigger.CampaignControllerTriggerPhase;
+import com.extole.client.rest.campaign.controller.trigger.CampaignControllerTriggerRequest;
 import com.extole.common.rest.omissible.Omissible;
 import com.extole.evaluateable.BuildtimeEvaluatable;
 import com.extole.evaluateable.provided.Provided;
 import com.extole.id.Id;
 
-public class CampaignControllerTriggerEventUpdateRequest extends ComponentElementRequest {
-    private static final String TRIGGER_PHASE = "trigger_phase";
-    private static final String TRIGGER_NAME = "trigger_name";
-    private static final String TRIGGER_DESCRIPTION = "trigger_description";
-    private static final String ENABLED = "enabled";
-    private static final String NEGATED = "negated";
+public class CampaignControllerTriggerEventUpdateRequest extends CampaignControllerTriggerRequest {
+
     private static final String EVENT_NAMES = "event_names";
     private static final String EVENT_TYPE = "event_type";
 
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        CampaignControllerTriggerPhase>> triggerPhase;
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> name;
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>>> description;
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled;
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> negated;
-    private final BuildtimeEvaluatable<ControllerBuildtimeContext, List<String>> eventNames;
-    private final BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerEventType> eventType;
+    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, List<String>>> eventNames;
+    private final Omissible<
+        BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerEventType>> eventType;
 
     public CampaignControllerTriggerEventUpdateRequest(
         @JsonProperty(TRIGGER_PHASE) Omissible<
             BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerPhase>> triggerPhase,
         @JsonProperty(TRIGGER_NAME) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> name,
-        @JsonProperty(TRIGGER_DESCRIPTION) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            Optional<String>>> description,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>>> parentTriggerGroupName,
+        @JsonProperty(TRIGGER_DESCRIPTION) Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>>> description,
         @JsonProperty(ENABLED) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled,
         @JsonProperty(NEGATED) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> negated,
-        @JsonProperty(EVENT_NAMES) BuildtimeEvaluatable<ControllerBuildtimeContext, List<String>> eventNames,
-        @JsonProperty(EVENT_TYPE) BuildtimeEvaluatable<ControllerBuildtimeContext,
-            CampaignControllerTriggerEventType> eventType,
+        @JsonProperty(EVENT_NAMES) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, List<String>>> eventNames,
+        @JsonProperty(EVENT_TYPE) Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerEventType>> eventType,
         @JsonProperty(JSON_COMPONENT_IDS) Omissible<List<Id<ComponentResponse>>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) Omissible<List<ComponentReferenceRequest>> componentReferences) {
-        super(componentReferences, componentIds);
-        this.triggerPhase = triggerPhase;
-        this.name = name;
-        this.description = description;
-        this.enabled = enabled;
-        this.negated = negated;
+        super(triggerPhase, name, parentTriggerGroupName, description, enabled, negated, componentIds,
+            componentReferences);
         this.eventNames = eventNames;
         this.eventType = eventType;
     }
 
-    @JsonProperty(TRIGGER_PHASE)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerPhase>>
-        getTriggerPhase() {
-        return triggerPhase;
-    }
-
     @JsonProperty(EVENT_NAMES)
-    public BuildtimeEvaluatable<ControllerBuildtimeContext, List<String>> getEventNames() {
+    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, List<String>>> getEventNames() {
         return eventNames;
     }
 
-    @JsonProperty(TRIGGER_NAME)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> getName() {
-        return name;
-    }
-
-    @JsonProperty(TRIGGER_DESCRIPTION)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>>> getDescription() {
-        return description;
-    }
-
-    @JsonProperty(ENABLED)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> getEnabled() {
-        return enabled;
-    }
-
-    @JsonProperty(NEGATED)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> getNegated() {
-        return negated;
-    }
-
     @JsonProperty(EVENT_TYPE)
-    public BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerEventType> getEventType() {
+    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerEventType>>
+        getEventType() {
         return eventType;
     }
 
@@ -97,62 +62,44 @@ public class CampaignControllerTriggerEventUpdateRequest extends ComponentElemen
         return new Builder();
     }
 
-    public static final class Builder extends ComponentElementRequest.Builder<Builder> {
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            CampaignControllerTriggerPhase>> triggerPhase = Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, String>> name = Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>>> description =
+    public static final class Builder extends CampaignControllerTriggerRequest.Builder<Builder> {
+
+        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, List<String>>> eventNames =
             Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled = Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> negated = Omissible.omitted();
-        private BuildtimeEvaluatable<ControllerBuildtimeContext, List<String>> eventNames;
-        private BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerEventType> eventType;
+        private Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerEventType>> eventType =
+                Omissible.omitted();
 
         private Builder() {
         }
 
-        public Builder withTriggerPhase(
-            BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerPhase> triggerPhase) {
-            this.triggerPhase = Omissible.of(triggerPhase);
-            return this;
-        }
-
-        public Builder withName(BuildtimeEvaluatable<ControllerBuildtimeContext, String> name) {
-            this.name = Omissible.of(name);
-            return this;
-        }
-
-        public Builder withDescription(BuildtimeEvaluatable<ControllerBuildtimeContext, Optional<String>> description) {
-            this.description = Omissible.of(description);
-            return this;
-        }
-
-        public Builder withEnabled(BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled) {
-            this.enabled = Omissible.of(enabled);
-            return this;
-        }
-
-        public Builder withNegated(BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> negated) {
-            this.negated = Omissible.of(negated);
-            return this;
-        }
-
         public Builder withEventNames(BuildtimeEvaluatable<ControllerBuildtimeContext, List<String>> eventNames) {
-            this.eventNames = eventNames;
+            this.eventNames = Omissible.of(eventNames);
+            return this;
+        }
+
+        public Builder withEventNames(List<String> eventNames) {
+            this.eventNames = Omissible.of(Provided.of(ImmutableList.copyOf(eventNames)));
+            return this;
+        }
+
+        public Builder withEventName(String eventName) {
+            this.eventNames = Omissible.of(Provided.of(ImmutableList.of(eventName)));
             return this;
         }
 
         public Builder withEventType(CampaignControllerTriggerEventType eventType) {
-            this.eventType = Provided.of(eventType);
+            this.eventType = Omissible.of(Provided.of(eventType));
             return this;
         }
 
         public Builder withEventType(
             BuildtimeEvaluatable<ControllerBuildtimeContext, CampaignControllerTriggerEventType> eventType) {
-            this.eventType = eventType;
+            this.eventType = Omissible.of(eventType);
             return this;
         }
 
+        @Override
         public CampaignControllerTriggerEventUpdateRequest build() {
             Omissible<List<ComponentReferenceRequest>> componentReferences;
             if (componentReferenceBuilders.isEmpty()) {
@@ -163,8 +110,10 @@ public class CampaignControllerTriggerEventUpdateRequest extends ComponentElemen
                     .collect(Collectors.toList()));
             }
 
-            return new CampaignControllerTriggerEventUpdateRequest(triggerPhase,
+            return new CampaignControllerTriggerEventUpdateRequest(
+                triggerPhase,
                 name,
+                parentTriggerGroupName,
                 description,
                 enabled,
                 negated,
@@ -173,5 +122,7 @@ public class CampaignControllerTriggerEventUpdateRequest extends ComponentElemen
                 componentIds,
                 componentReferences);
         }
+
     }
+
 }

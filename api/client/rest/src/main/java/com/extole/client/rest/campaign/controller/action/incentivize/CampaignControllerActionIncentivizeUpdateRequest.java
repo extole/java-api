@@ -31,8 +31,8 @@ public class CampaignControllerActionIncentivizeUpdateRequest extends ComponentE
 
     private final Omissible<CampaignControllerActionQuality> quality;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled;
-    private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        IncentivizeActionType>> incentivizeActionType;
+    private final Omissible<
+        BuildtimeEvaluatable<ControllerBuildtimeContext, IncentivizeActionType>> incentivizeActionType;
     private final Omissible<Map<IncentivizeActionOverrideType, String>> overrides;
     private final Omissible<Optional<String>> actionName;
     private final Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
@@ -48,8 +48,9 @@ public class CampaignControllerActionIncentivizeUpdateRequest extends ComponentE
             BuildtimeEvaluatable<ControllerBuildtimeContext, IncentivizeActionType>> incentivizeActionType,
         @JsonProperty(JSON_OVERRIDES) Omissible<Map<IncentivizeActionOverrideType, String>> overrides,
         @JsonProperty(JSON_ACTION_NAME) Omissible<Optional<String>> actionName,
-        @JsonProperty(JSON_DATA) Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<IncentivizeActionContext, Optional<Object>>>>> data,
+        @JsonProperty(JSON_DATA) Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeActionContext, Optional<Object>>>>> data,
         @JsonProperty(JSON_REVIEW_STATUS) Omissible<
             BuildtimeEvaluatable<ControllerBuildtimeContext, ReviewStatus>> reviewStatus) {
         super(componentReferences, componentIds);
@@ -89,8 +90,11 @@ public class CampaignControllerActionIncentivizeUpdateRequest extends ComponentE
     }
 
     @JsonProperty(JSON_DATA)
-    public Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<IncentivizeActionContext, Optional<Object>>>>> getData() {
+    public
+        Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeActionContext, Optional<Object>>>>>
+        getData() {
         return data;
     }
 
@@ -111,12 +115,15 @@ public class CampaignControllerActionIncentivizeUpdateRequest extends ComponentE
     public static final class Builder extends ComponentElementRequest.Builder<Builder> {
         private Omissible<CampaignControllerActionQuality> quality = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled = Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            IncentivizeActionType>> incentivizeActionType = Omissible.omitted();
+        private Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, IncentivizeActionType>> incentivizeActionType =
+                Omissible.omitted();
         private Omissible<Map<IncentivizeActionOverrideType, String>> overrides = Omissible.omitted();
         private Omissible<Optional<String>> actionName = Omissible.omitted();
-        private Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<IncentivizeActionContext, Optional<Object>>>>> data = Omissible.omitted();
+        private Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeActionContext, Optional<Object>>>>> data =
+                    Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, ReviewStatus>> reviewStatus =
             Omissible.omitted();
 
@@ -149,8 +156,9 @@ public class CampaignControllerActionIncentivizeUpdateRequest extends ComponentE
             return this;
         }
 
-        public Builder withData(Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<IncentivizeActionContext, Optional<Object>>>> data) {
+        public Builder withData(
+            Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<IncentivizeActionContext, Optional<Object>>>> data) {
             this.data = Omissible.of(data);
             return this;
         }

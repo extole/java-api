@@ -11,8 +11,8 @@ import com.extole.reporting.rest.audience.list.UploadedAudienceListValidationRes
 import com.extole.reporting.rest.audience.list.request.AudienceListRequest;
 import com.extole.reporting.service.audience.list.AudienceListBuilder;
 
-public interface AudienceListRequestHandler<REQUEST extends AudienceListRequest,
-    BUILDER extends AudienceListBuilder<? extends AudienceList>> {
+public interface AudienceListRequestHandler<REQUEST extends AudienceListRequest, BUILDER extends AudienceListBuilder<
+    ? extends AudienceList>> {
 
     AudienceListMappedResponse upload(Authorization authorization, REQUEST request, BUILDER builder)
         throws AudienceListValidationRestException, DynamicAudienceListValidationRestException,

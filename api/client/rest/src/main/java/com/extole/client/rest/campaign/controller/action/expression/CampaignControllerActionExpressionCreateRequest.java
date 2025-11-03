@@ -31,8 +31,8 @@ public class CampaignControllerActionExpressionCreateRequest extends ComponentEl
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
         RuntimeEvaluatable<ExpressionActionCommandContext, Void>>> expression;
-    private final Omissible<Map<String, BuildtimeEvaluatable<
-        ControllerBuildtimeContext, RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>>> data;
+    private final Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+        RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>>> data;
 
     @JsonCreator
     public CampaignControllerActionExpressionCreateRequest(
@@ -42,8 +42,8 @@ public class CampaignControllerActionExpressionCreateRequest extends ComponentEl
         @JsonProperty(JSON_COMPONENT_REFERENCES) Omissible<List<ComponentReferenceRequest>> componentReferences,
         @JsonProperty(JSON_EXPRESSION) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
             RuntimeEvaluatable<ExpressionActionCommandContext, Void>>> expression,
-        @JsonProperty(JSON_DATA) Omissible<Map<String, BuildtimeEvaluatable<
-            ControllerBuildtimeContext, RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>>> data) {
+        @JsonProperty(JSON_DATA) Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+            RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>>> data) {
         super(componentReferences, componentIds);
         this.quality = quality;
         this.enabled = enabled;
@@ -62,14 +62,19 @@ public class CampaignControllerActionExpressionCreateRequest extends ComponentEl
     }
 
     @JsonProperty(JSON_EXPRESSION)
-    public Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<ExpressionActionCommandContext, Void>>> getExpression() {
+    public
+        Omissible<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, RuntimeEvaluatable<ExpressionActionCommandContext, Void>>>
+        getExpression() {
         return expression;
     }
 
     @JsonProperty(JSON_DATA)
-    public Omissible<Map<String, BuildtimeEvaluatable<
-        ControllerBuildtimeContext, RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>>> getData() {
+    public
+        Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>>>
+        getData() {
         return data;
     }
 
@@ -82,10 +87,12 @@ public class CampaignControllerActionExpressionCreateRequest extends ComponentEl
         private Omissible<CampaignControllerActionQuality> quality = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<ExpressionActionCommandContext, Void>>> expression = Omissible.omitted();
-        private Omissible<Map<String, BuildtimeEvaluatable<
-            ControllerBuildtimeContext, RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>>> data =
+            RuntimeEvaluatable<ExpressionActionCommandContext, Void>>> expression =
                 Omissible.omitted();
+        private Omissible<Map<String,
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>>> data =
+                    Omissible.omitted();
 
         private Builder() {
         }
@@ -100,14 +107,16 @@ public class CampaignControllerActionExpressionCreateRequest extends ComponentEl
             return this;
         }
 
-        public Builder withExpression(BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<ExpressionActionCommandContext, Void>> expression) {
+        public Builder withExpression(
+            BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<ExpressionActionCommandContext, Void>> expression) {
             this.expression = Omissible.of(expression);
             return this;
         }
 
-        public Builder withData(Map<String, BuildtimeEvaluatable<
-            ControllerBuildtimeContext, RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>> data) {
+        public Builder withData(
+            Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
+                RuntimeEvaluatable<ExpressionActionContext, Optional<Object>>>> data) {
             this.data = Omissible.of(data);
             return this;
         }

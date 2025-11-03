@@ -13,7 +13,7 @@ public class PersonDataRestException extends ExtoleRestException {
         new ErrorCode<>("data_already_exists", 400, "Data already exists", "name");
 
     public static final ErrorCode<PersonDataRestException> DATA_NAME_READONLY =
-            new ErrorCode<>("read_only_name", 400, "One or more names supplied are read only", "name");
+        new ErrorCode<>("read_only_name", 400, "One or more names supplied are read only", "name");
 
     public PersonDataRestException(String uniqueId, ErrorCode<?> errorCode, Map<String, Object> parameters,
         Throwable cause) {

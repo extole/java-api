@@ -7,13 +7,13 @@ import com.extole.api.batch.column.BatchJobColumn;
 
 public interface BatchJobBuilder {
 
-    BatchJobBuilder withName(String name) throws BatchJobBuildException;
+    BatchJobBuilder withName(String name) throws BatchJobServiceException;
 
-    BatchJobBuilder withEventName(String eventName) throws BatchJobBuildException;
+    BatchJobBuilder withEventName(String eventName) throws BatchJobServiceException;
 
-    BatchJobBuilder withDefaultEventName(String defaultEventName) throws BatchJobBuildException;
+    BatchJobBuilder withDefaultEventName(String defaultEventName) throws BatchJobServiceException;
 
-    BatchJobBuilder withTags(String[] tags) throws BatchJobBuildException;
+    BatchJobBuilder withTags(String[] tags) throws BatchJobServiceException;
 
     BatchJobBuilder withEventData(Map<String, String> eventData);
 
@@ -21,5 +21,5 @@ public interface BatchJobBuilder {
 
     BatchJobBuilder withColumns(BatchJobColumn[] columns);
 
-    BatchJob save() throws BatchJobBuildException;
+    BatchJob save() throws BatchJobServiceException;
 }

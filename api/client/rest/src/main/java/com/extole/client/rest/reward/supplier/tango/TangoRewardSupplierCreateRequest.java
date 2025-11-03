@@ -50,6 +50,8 @@ public class TangoRewardSupplierCreateRequest extends RewardSupplierCreateReques
         @JsonProperty(PARTNER_REWARD_KEY_TYPE) Omissible<PartnerRewardKeyType> partnerRewardKeyType,
         @JsonProperty(DISPLAY_TYPE) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> displayType,
         @JsonProperty(NAME) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> name,
+        @JsonProperty(DISPLAY_NAME) Omissible<
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>>> displayName,
         @JsonProperty(DESCRIPTION) Omissible<
             BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>>> description,
         @JsonProperty(LIMIT_PER_DAY) Omissible<
@@ -61,9 +63,9 @@ public class TangoRewardSupplierCreateRequest extends RewardSupplierCreateReques
         @JsonProperty(TAGS) Omissible<Set<String>> tags,
         @JsonProperty(DATA) Omissible<Map<String, BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>>> data,
         @JsonProperty(ENABLED) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean>> enabled) {
-        super(RewardSupplierType.TANGO_V2, name, faceValueAlgorithmType, faceValue, cashBackPercentage, minCashBack,
-            maxCashBack, faceValueType, partnerRewardSupplierId, partnerRewardKeyType, displayType, description,
-            limitPerDay, limitPerHour, componentIds, componentReferences, tags, data, enabled);
+        super(RewardSupplierType.TANGO_V2, name, displayName, faceValueAlgorithmType, faceValue, cashBackPercentage,
+            minCashBack, maxCashBack, faceValueType, partnerRewardSupplierId, partnerRewardKeyType, displayType,
+            description, limitPerDay, limitPerHour, componentIds, componentReferences, tags, data, enabled);
         this.utid = utid;
         this.accountId = accountId;
     }
@@ -123,6 +125,7 @@ public class TangoRewardSupplierCreateRequest extends RewardSupplierCreateReques
                 partnerRewardKeyType,
                 displayType,
                 name,
+                displayName,
                 description,
                 limitPerDay,
                 limitPerHour,

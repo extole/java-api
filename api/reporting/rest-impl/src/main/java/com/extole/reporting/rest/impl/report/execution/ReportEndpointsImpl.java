@@ -42,10 +42,16 @@ import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
 import com.extole.id.Id;
+import com.extole.model.entity.report.type.Format;
+import com.extole.model.entity.report.type.ReportInvalidParametersException;
+import com.extole.model.entity.report.type.ReportType.Scope;
 import com.extole.model.service.client.sftp.SftpDestinationNotFoundException;
+import com.extole.model.service.report.ReportMissingParametersException;
+import com.extole.model.service.report.type.ReportTypeNameMissingException;
+import com.extole.model.service.report.type.ReportTypeNotFoundException;
 import com.extole.reporting.entity.report.Report;
 import com.extole.reporting.entity.report.ReportResult;
-import com.extole.reporting.entity.report.ReportType.Scope;
+import com.extole.reporting.rest.impl.report.ReportInvalidParametersRestExceptionMapper;
 import com.extole.reporting.rest.impl.report.ReportResponseMapper;
 import com.extole.reporting.rest.report.ReportOrderBy;
 import com.extole.reporting.rest.report.ReportOrderDirection;
@@ -67,12 +73,9 @@ import com.extole.reporting.rest.report.execution.ReportStatus;
 import com.extole.reporting.rest.report.execution.ReportTypeNotFoundRestException;
 import com.extole.reporting.rest.report.execution.ReportValidationRestException;
 import com.extole.reporting.rest.report.execution.UpdateReportRequest;
-import com.extole.reporting.service.ReportInvalidParametersException;
 import com.extole.reporting.service.ReportInvalidScopesException;
 import com.extole.reporting.service.ReportInvalidStateException;
-import com.extole.reporting.service.ReportMissingParametersException;
 import com.extole.reporting.service.ReportNotFoundException;
-import com.extole.reporting.service.ReportTypeNotFoundException;
 import com.extole.reporting.service.report.LatestReportQueryBuilder;
 import com.extole.reporting.service.report.ReportBuilder;
 import com.extole.reporting.service.report.ReportContentDownloadException;
@@ -89,7 +92,6 @@ import com.extole.reporting.service.report.ReportListQueryBuilder;
 import com.extole.reporting.service.report.ReportMissingFilterException;
 import com.extole.reporting.service.report.ReportService;
 import com.extole.reporting.service.report.TagsTooLongException;
-import com.extole.reporting.service.report.type.ReportTypeNameMissingException;
 
 @Provider
 public class ReportEndpointsImpl implements ReportEndpoints {
@@ -130,11 +132,11 @@ public class ReportEndpointsImpl implements ReportEndpoints {
         try {
             ReportBuilder builder = reportService.createReport(authorization, request.getReportType());
             if (request.getFormat() != null) {
-                builder.withFormats(Collections.singleton(Report.Format.valueOf(request.getFormat().name())));
+                builder.withFormats(Collections.singleton(Format.valueOf(request.getFormat().name())));
             }
             if (request.getFormats() != null && !request.getFormats().isEmpty()) {
                 builder.withFormats(
-                    request.getFormats().stream().map(reportFormat -> Report.Format.valueOf(reportFormat.name()))
+                    request.getFormats().stream().map(reportFormat -> Format.valueOf(reportFormat.name()))
                         .collect(Collectors.toCollection(LinkedHashSet::new)));
             }
             builder.withParameters(request.getParameters());
@@ -201,10 +203,7 @@ public class ReportEndpointsImpl implements ReportEndpoints {
                 .addParameter("parameters", e.getMissingParameters())
                 .withCause(e).build();
         } catch (ReportInvalidParametersException e) {
-            throw RestExceptionBuilder.newBuilder(ReportValidationRestException.class)
-                .withErrorCode(ReportValidationRestException.REPORT_INVALID_PARAMETER)
-                .addParameter("parameters", e.getParameterNames())
-                .withCause(e).build();
+            throw ReportInvalidParametersRestExceptionMapper.getInstance().map(e);
         } catch (ReportFormatNotSupportedException e) {
             throw RestExceptionBuilder.newBuilder(ReportValidationRestException.class)
                 .withErrorCode(ReportValidationRestException.REPORT_INVALID_FORMATS)
@@ -412,7 +411,7 @@ public class ReportEndpointsImpl implements ReportEndpoints {
         throws UserAuthorizationRestException, ReportRestException, ReportNotFoundRestException {
         Authorization authorization = combinedAuthorizationProvider.getAuthorization(accessToken);
         Id<Report> reportId = Id.valueOf(reportIdValue);
-        Report.Format reportFormat = getFormat(format, reportId);
+        Format reportFormat = getFormat(format, reportId);
         try {
             ReportFormatInfo reportFormatInfo = reportService.getReportInfo(authorization, reportId, reportFormat);
             return toReportInfoResponse(reportFormatInfo);
@@ -548,10 +547,11 @@ public class ReportEndpointsImpl implements ReportEndpoints {
                 parseOffset(request.getOffset().orElse(BigDecimal.ZERO.toString()), BigDecimal.ZERO.intValue()));
             listFilterBuilder
                 .withLimit(parseLimit(request.getLimit().orElse(String.valueOf(DEFAULT_LIMIT)), DEFAULT_LIMIT));
-            request.getOrderBy().map(ReportOrderBy::name).map(com.extole.reporting.entity.report.ReportOrderBy::valueOf)
+            request.getOrderBy().map(ReportOrderBy::name).map(
+                com.extole.model.entity.report.type.ReportOrderBy::valueOf)
                 .ifPresent(listFilterBuilder::withOrderBy);
             request.getOrder().map(ReportOrderDirection::name)
-                .map(com.extole.reporting.entity.report.ReportOrderDirection::valueOf)
+                .map(com.extole.model.entity.report.type.ReportOrderDirection::valueOf)
                 .ifPresent(listFilterBuilder::withOrder);
 
             List<Report> reports = listFilterBuilder.execute();
@@ -599,11 +599,11 @@ public class ReportEndpointsImpl implements ReportEndpoints {
                 .ifPresent(queryBuilder::withExcludeHavingAllTags);
 
             request.getOrderBy()
-                .map(value -> com.extole.reporting.entity.report.ReportOrderBy.valueOf(value.name()))
+                .map(value -> com.extole.model.entity.report.type.ReportOrderBy.valueOf(value.name()))
                 .ifPresent(queryBuilder::withOrderBy);
 
             request.getOrder()
-                .map(value -> com.extole.reporting.entity.report.ReportOrderDirection.valueOf(value.name()))
+                .map(value -> com.extole.model.entity.report.type.ReportOrderDirection.valueOf(value.name()))
                 .ifPresent(queryBuilder::withOrder);
 
             Optional<Report> report = queryBuilder.execute();
@@ -659,11 +659,11 @@ public class ReportEndpointsImpl implements ReportEndpoints {
                 .ifPresent(queryBuilder::withExcludeHavingAllTags);
 
             request.getOrderBy()
-                .map(value -> com.extole.reporting.entity.report.ReportOrderBy.valueOf(value.name()))
+                .map(value -> com.extole.model.entity.report.type.ReportOrderBy.valueOf(value.name()))
                 .ifPresent(queryBuilder::withOrderBy);
 
             request.getOrder()
-                .map(value -> com.extole.reporting.entity.report.ReportOrderDirection.valueOf(value.name()))
+                .map(value -> com.extole.model.entity.report.type.ReportOrderDirection.valueOf(value.name()))
                 .ifPresent(queryBuilder::withOrder);
 
             Optional<Report> report = queryBuilder.execute();
@@ -788,13 +788,13 @@ public class ReportEndpointsImpl implements ReportEndpoints {
         }
     }
 
-    private Report.Format getFormat(Optional<String> format, Optional<String> contentType, Report report)
+    private Format getFormat(Optional<String> format, Optional<String> contentType, Report report)
         throws ReportRestException {
         if (format.isPresent() && !format.get().isEmpty()) {
             return getFormat(format.get().split("\\.")[1], report.getId());
         } else if (contentType.isPresent() && !contentType.get().isEmpty()) {
             try {
-                return Report.Format.valueOfMimeType(contentType.get());
+                return Format.valueOfMimeType(contentType.get());
             } catch (IllegalArgumentException e) {
                 throw RestExceptionBuilder.newBuilder(ReportRestException.class)
                     .withErrorCode(ReportRestException.REPORT_CONTENT_TYPE_NOT_SUPPORTED)
@@ -808,9 +808,9 @@ public class ReportEndpointsImpl implements ReportEndpoints {
         }
     }
 
-    private Report.Format getFormat(String format, Id<Report> reportId) throws ReportRestException {
+    private Format getFormat(String format, Id<Report> reportId) throws ReportRestException {
         try {
-            return Report.Format.valueOf(format.toUpperCase());
+            return Format.valueOf(format.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw RestExceptionBuilder.newBuilder(ReportRestException.class)
                 .withErrorCode(ReportRestException.REPORT_FORMAT_NOT_SUPPORTED)
@@ -845,7 +845,7 @@ public class ReportEndpointsImpl implements ReportEndpoints {
         Report report)
         throws ReportRestException, AuthorizationException, ReportNotFoundException, ReportContentNotFoundException,
         ReportContentFormatNotFoundException, QueryLimitsRestException, ReportDownloadRestException {
-        Report.Format reportFormat = getFormat(format, contentType, report);
+        Format reportFormat = getFormat(format, contentType, report);
         ReportFormatInfo downloadInfo = reportService.getReportInfo(authorization, report.getId(), reportFormat);
 
         boolean paginate = limit.isPresent() || offset.isPresent();

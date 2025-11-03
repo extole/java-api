@@ -24,9 +24,8 @@ public final class JacksonExceptionRestTranslator {
     private static final Map<Class<? extends JacksonException>,
         BiConsumer<? super JacksonException, RestExceptionBuilder<WebApplicationRestRuntimeException>>> TRANSLATORS =
             ImmutableMap
-                .<Class<? extends JacksonException>,
-                    BiConsumer<? super JacksonException,
-                        RestExceptionBuilder<WebApplicationRestRuntimeException>>>builder()
+                .<Class<? extends JacksonException>, BiConsumer<? super JacksonException,
+                    RestExceptionBuilder<WebApplicationRestRuntimeException>>>builder()
                 .put(JsonParseException.class, JacksonExceptionRestTranslator::toJsonParseRestException)
                 .put(InvalidFormatException.class, JacksonExceptionRestTranslator::toJsonMalformedRestException)
                 .put(InvalidTypeIdException.class, JacksonExceptionRestTranslator::toJsonInvalidTypeIdRestException)

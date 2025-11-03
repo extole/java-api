@@ -13,8 +13,6 @@ import com.extole.consumer.rest.response.DropsAccessTokenCookie;
 public interface LinkFollowingEndpoint {
 
     @GET
-    Response fetch(@AccessTokenParam String accessToken, @HeaderParam("X-Extole-Incoming-Url") String incomingUrl,
-                   @HeaderParam("host") String incomingHost,
-                   @HeaderParam("x-envoy-original-path") String incomingPath)
+    Response fetch(@AccessTokenParam String accessToken, @HeaderParam("X-Extole-Incoming-Url") String incomingUrl)
         throws LinkFollowingRestException;
 }

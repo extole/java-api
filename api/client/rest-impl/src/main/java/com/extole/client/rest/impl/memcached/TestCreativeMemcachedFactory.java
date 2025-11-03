@@ -21,8 +21,7 @@ public class TestCreativeMemcachedFactory {
 
     @Autowired
     public TestCreativeMemcachedFactory(
-        @Value("${assembled.archive.memcached.servers:memcached-creative.${extole.environment:lo}.intole.net:11211}")
-        String memcachedServers,
+        @Value("${assembled.archive.memcached.servers:memcached-creative.${extole.environment:lo}.intole.net:11211}") String memcachedServers,
         @Value("${assembled.archive.memcached.itemMaxSize:3145728}") int itemMaxSize,
         @Value("${assembled.archive.memcached.expiration.days:7}") int expirationInDays,
         ExtoleMemcachedFactory extoleMemcachedFactory,

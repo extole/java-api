@@ -18,10 +18,28 @@ import com.extole.common.rest.exception.FatalRestRuntimeException;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
-import com.extole.reporting.entity.report.ReportType;
-import com.extole.reporting.entity.report.ReportTypeParameterDetails;
-import com.extole.reporting.entity.report.type.SqlReportType;
-import com.extole.reporting.entity.report.type.SqlReportType.Database;
+import com.extole.model.entity.report.type.ReportType;
+import com.extole.model.entity.report.type.ReportTypeParameterDetails;
+import com.extole.model.entity.report.type.SqlReportType;
+import com.extole.model.entity.report.type.SqlReportType.Database;
+import com.extole.model.service.report.sql.SqlReportTypeMissingDatabaseException;
+import com.extole.model.service.report.sql.SqlReportTypeMissingQueryException;
+import com.extole.model.service.report.sql.SqlReportTypeQueryTooLongException;
+import com.extole.model.service.report.sql.SqlReportTypeService;
+import com.extole.model.service.report.type.ReportTypeDescriptionInvalidLinkException;
+import com.extole.model.service.report.type.ReportTypeDescriptionTooLongException;
+import com.extole.model.service.report.type.ReportTypeDisplayNameInvalidException;
+import com.extole.model.service.report.type.ReportTypeDisplayNameTooLongException;
+import com.extole.model.service.report.type.ReportTypeEmptyTagNameException;
+import com.extole.model.service.report.type.ReportTypeInvalidAllowedScopesException;
+import com.extole.model.service.report.type.ReportTypeInvalidNameException;
+import com.extole.model.service.report.type.ReportTypeIsReferencedDeleteException;
+import com.extole.model.service.report.type.ReportTypeNameDuplicationException;
+import com.extole.model.service.report.type.ReportTypeNameTooLongException;
+import com.extole.model.service.report.type.ReportTypeNotFoundException;
+import com.extole.model.service.report.type.ReportTypeUpdateManagedByGitException;
+import com.extole.model.service.report.type.ReportTypeVisibilityException;
+import com.extole.model.service.report.type.SqlReportTypeBuilder;
 import com.extole.reporting.rest.report.ParameterValueType;
 import com.extole.reporting.rest.report.ReportParameterTypeName;
 import com.extole.reporting.rest.report.ReportParameterTypeResponse;
@@ -35,24 +53,6 @@ import com.extole.reporting.rest.report.sql.SqlReportTypeV4Endpoints;
 import com.extole.reporting.rest.report.sql.SqlReportTypeV4Response;
 import com.extole.reporting.rest.report.sql.SqlReportTypeValidationRestException;
 import com.extole.reporting.rest.report.sql.SqlUpdateReportTypeV4Request;
-import com.extole.reporting.service.ReportTypeNotFoundException;
-import com.extole.reporting.service.report.ReportDisplayNameInvalidException;
-import com.extole.reporting.service.report.sql.SqlReportTypeMissingDatabaseException;
-import com.extole.reporting.service.report.sql.SqlReportTypeMissingQueryException;
-import com.extole.reporting.service.report.sql.SqlReportTypeQueryTooLongException;
-import com.extole.reporting.service.report.sql.SqlReportTypeService;
-import com.extole.reporting.service.report.type.ReportTypeDescriptionInvalidLinkException;
-import com.extole.reporting.service.report.type.ReportTypeDescriptionTooLongException;
-import com.extole.reporting.service.report.type.ReportTypeDisplayNameTooLongException;
-import com.extole.reporting.service.report.type.ReportTypeEmptyTagNameException;
-import com.extole.reporting.service.report.type.ReportTypeInvalidAllowedScopesException;
-import com.extole.reporting.service.report.type.ReportTypeInvalidNameException;
-import com.extole.reporting.service.report.type.ReportTypeIsReferencedDeleteException;
-import com.extole.reporting.service.report.type.ReportTypeNameDuplicationException;
-import com.extole.reporting.service.report.type.ReportTypeNameTooLongException;
-import com.extole.reporting.service.report.type.ReportTypeUpdateManagedByGitException;
-import com.extole.reporting.service.report.type.ReportTypeVisibilityException;
-import com.extole.reporting.service.report.type.SqlReportTypeBuilder;
 
 @Provider
 public class SqlReportTypeV4EndpointsImpl implements SqlReportTypeV4Endpoints {
@@ -124,7 +124,7 @@ public class SqlReportTypeV4EndpointsImpl implements SqlReportTypeV4Endpoints {
             }
             if (request.getVisibility() != null) {
                 builder.withVisibility(
-                    com.extole.reporting.entity.report.ReportTypeVisibility.valueOf(request.getVisibility().name()));
+                    com.extole.model.entity.report.type.ReportTypeVisibility.valueOf(request.getVisibility().name()));
             }
             if (request.getAllowedScopes() != null) {
                 builder.withAllowedScopes(toReportTypeScopes(request.getAllowedScopes()));
@@ -184,7 +184,7 @@ public class SqlReportTypeV4EndpointsImpl implements SqlReportTypeV4Endpoints {
                 .withErrorCode(SqlReportTypeValidationRestException.INVALID_DESCRIPTION_LINK)
                 .withCause(e)
                 .build();
-        } catch (ReportDisplayNameInvalidException e) {
+        } catch (ReportTypeDisplayNameInvalidException e) {
             throw RestExceptionBuilder.newBuilder(SqlReportTypeValidationRestException.class)
                 .withErrorCode(SqlReportTypeValidationRestException.DISPLAY_NAME_ILLEGAL_CHARACTER)
                 .withCause(e)
@@ -223,7 +223,7 @@ public class SqlReportTypeV4EndpointsImpl implements SqlReportTypeV4Endpoints {
             }
             if (request.getVisibility() != null) {
                 builder.withVisibility(
-                    com.extole.reporting.entity.report.ReportTypeVisibility.valueOf(request.getVisibility().name()));
+                    com.extole.model.entity.report.type.ReportTypeVisibility.valueOf(request.getVisibility().name()));
             }
             if (request.getAllowedScopes() != null) {
                 builder.withAllowedScopes(toReportTypeScopes(request.getAllowedScopes()));
@@ -279,7 +279,7 @@ public class SqlReportTypeV4EndpointsImpl implements SqlReportTypeV4Endpoints {
                 .withErrorCode(SqlReportTypeValidationRestException.INVALID_DESCRIPTION_LINK)
                 .withCause(e)
                 .build();
-        } catch (ReportDisplayNameInvalidException e) {
+        } catch (ReportTypeDisplayNameInvalidException e) {
             throw RestExceptionBuilder.newBuilder(SqlReportTypeValidationRestException.class)
                 .withErrorCode(SqlReportTypeValidationRestException.DISPLAY_NAME_ILLEGAL_CHARACTER)
                 .withCause(e)

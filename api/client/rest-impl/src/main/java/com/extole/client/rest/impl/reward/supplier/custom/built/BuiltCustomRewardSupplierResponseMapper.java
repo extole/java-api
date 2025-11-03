@@ -28,6 +28,7 @@ public class BuiltCustomRewardSupplierResponseMapper
         BuiltCustomRewardSupplier rewardSupplier, ZoneId timeZone) {
         return new BuiltCustomRewardSupplierResponse(rewardSupplier.getId().getValue(),
             rewardSupplier.getName(),
+            rewardSupplier.getDisplayName(),
             com.extole.client.rest.reward.supplier.FaceValueAlgorithmType
                 .valueOf(rewardSupplier.getFaceValueAlgorithmType().name()),
             rewardSupplier.getFaceValue(),

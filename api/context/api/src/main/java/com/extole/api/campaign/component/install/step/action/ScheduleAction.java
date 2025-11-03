@@ -8,7 +8,7 @@ import com.extole.evaluateable.RuntimeEvaluatable;
 
 public interface ScheduleAction extends Action {
 
-    String getScheduleName();
+    RuntimeEvaluatable<ScheduleActionContext, String> getScheduleName();
 
     Map<String, RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>> getData();
 

@@ -23,8 +23,10 @@ public class ExpressionRewardWebhookFilterUpdateRequest {
     }
 
     @JsonProperty(EXPRESSION)
-    public Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
-        RuntimeEvaluatable<RewardWebhookFilterRuntimeContext, Boolean>>> getExpression() {
+    public
+        Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
+            RuntimeEvaluatable<RewardWebhookFilterRuntimeContext, Boolean>>>
+        getExpression() {
         return expression;
     }
 
@@ -40,14 +42,16 @@ public class ExpressionRewardWebhookFilterUpdateRequest {
     public static final class Builder {
 
         private Omissible<BuildtimeEvaluatable<WebhookBuildtimeContext,
-            RuntimeEvaluatable<RewardWebhookFilterRuntimeContext, Boolean>>> expression = Omissible.omitted();
+            RuntimeEvaluatable<RewardWebhookFilterRuntimeContext, Boolean>>> expression =
+                Omissible.omitted();
 
         private Builder() {
 
         }
 
-        public Builder withExpression(BuildtimeEvaluatable<WebhookBuildtimeContext,
-            RuntimeEvaluatable<RewardWebhookFilterRuntimeContext, Boolean>> expression) {
+        public Builder withExpression(
+            BuildtimeEvaluatable<WebhookBuildtimeContext,
+                RuntimeEvaluatable<RewardWebhookFilterRuntimeContext, Boolean>> expression) {
             this.expression = Omissible.of(expression);
             return this;
         }

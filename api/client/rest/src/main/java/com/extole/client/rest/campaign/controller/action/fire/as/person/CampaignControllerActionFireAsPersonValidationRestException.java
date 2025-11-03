@@ -31,17 +31,15 @@ public class CampaignControllerActionFireAsPersonValidationRestException extends
         new ErrorCode<>("campaign_controller_action_fire_as_person_data_value_invalid",
             400, "A data value is invalid.", "data_name");
 
-    public static final ErrorCode<CampaignControllerActionFireAsPersonValidationRestException> DATA_VALUE_OUT_OF_RANGE =
-        new ErrorCode<>("campaign_controller_action_fire_as_person_data_value_out_of_range",
-            400, "A data value is out of range. Maximum length is 2000 characters.", "data_name");
-
     public static final ErrorCode<CampaignControllerActionFireAsPersonValidationRestException> DATA_NAME_OUT_OF_RANGE =
         new ErrorCode<>("campaign_controller_action_fire_as_person_data_name_out_of_range",
             400, "A data name is out of range. Maximum length is 200 characters.", "data_name");
 
-    public static final ErrorCode<CampaignControllerActionFireAsPersonValidationRestException> DATA_NAME_INVALID =
-        new ErrorCode<>("campaign_controller_action_fire_as_person_data_name_invalid",
-            400, "A data name is invalid.");
+    public static final ErrorCode<
+        CampaignControllerActionFireAsPersonValidationRestException> DUPLICATE_DATA_ENTRY_NAME =
+            new ErrorCode<>("campaign_controller_action_fire_as_person_duplicate_data_entry_name",
+                400, "Two data entry names evaluated to the same value", "evaluated_data_entry_name",
+                "first_data_entry_name_evaluatable", "second_data_entry_name_evaluatable");
 
     public static final ErrorCode<CampaignControllerActionFireAsPersonValidationRestException> MISSING_EVENT_NAME =
         new ErrorCode<>("campaign_controller_action_fire_as_person_missing_event_name",
@@ -77,6 +75,11 @@ public class CampaignControllerActionFireAsPersonValidationRestException extends
         CampaignControllerActionFireAsPersonValidationRestException> JOURNEY_MISSING_REFERRAL_DATA =
             new ErrorCode<>("campaign_controller_action_fire_as_person_journey_missing_referral_data",
                 400, "Journey data is missing for referral reason.", "data_name");
+
+    public static final ErrorCode<
+        CampaignControllerActionFireAsPersonValidationRestException> DOUBLE_PERSON_IDENTIFICATION =
+            new ErrorCode<>("campaign_controller_action_fire_as_person_double_person_identification", 400,
+                "Please provide just one form of person identification.");
 
     public CampaignControllerActionFireAsPersonValidationRestException(String uniqueId,
         ErrorCode<CampaignControllerActionFireAsPersonValidationRestException> code, Map<String, Object> attributes,

@@ -23,6 +23,9 @@ public enum CampaignControllerTriggerType {
     AUDIENCE_MEMBERSHIP,
     HAS_IDENTITY,
     CLIENT_DOMAIN,
-    LEGACY_LABEL_TARGETING
+    LEGACY_LABEL_TARGETING,
+    STEP_EVENT,
+    TARGETING,
+    GROUP
 
 }

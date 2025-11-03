@@ -40,8 +40,8 @@ public class SalesforceCouponRewardSupplierUpdateV2Request extends ComponentElem
     private static final String ENABLED = "enabled";
 
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueType>> faceValueType;
-    private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
-        FaceValueAlgorithmType>> faceValueAlgorithmType;
+    private final Omissible<
+        BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> faceValue;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> cashBackPercentage;
     private final Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> minCashBack;
@@ -187,8 +187,9 @@ public class SalesforceCouponRewardSupplierUpdateV2Request extends ComponentElem
     public static final class Builder extends ComponentElementRequest.Builder<Builder> {
         private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueType>> faceValueType =
             Omissible.omitted();
-        private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext,
-            FaceValueAlgorithmType>> faceValueAlgorithmType = Omissible.omitted();
+        private Omissible<
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, FaceValueAlgorithmType>> faceValueAlgorithmType =
+                Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> faceValue =
             Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, BigDecimal>> cashBackPercentage =

@@ -28,6 +28,8 @@ public class CampaignControllerTriggerAudienceMembershipConfiguration
         @JsonProperty(TRIGGER_PHASE) BuildtimeEvaluatable<ControllerBuildtimeContext,
             CampaignControllerTriggerPhase> triggerPhase,
         @JsonProperty(TRIGGER_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext, String> name,
+        @JsonProperty(PARENT_TRIGGER_GROUP_NAME) BuildtimeEvaluatable<ControllerBuildtimeContext,
+            Optional<String>> parentTriggerGroupName,
         @JsonProperty(TRIGGER_DESCRIPTION) BuildtimeEvaluatable<ControllerBuildtimeContext,
             Optional<String>> description,
         @JsonProperty(ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
@@ -36,8 +38,15 @@ public class CampaignControllerTriggerAudienceMembershipConfiguration
             Set<Id<?>>> havingAnyAudienceId,
         @JsonProperty(PERSON_ID) RuntimeEvaluatable<AudienceMembershipTriggerContext, Optional<Id<Person>>> personId,
         @JsonProperty(COMPONENT_REFERENCES) List<CampaignComponentReferenceConfiguration> componentReferences) {
-        super(triggerId, CampaignControllerTriggerType.AUDIENCE_MEMBERSHIP, triggerPhase, name, description,
-            enabled, negated, componentReferences);
+        super(triggerId,
+            CampaignControllerTriggerType.AUDIENCE_MEMBERSHIP,
+            triggerPhase,
+            name,
+            parentTriggerGroupName,
+            description,
+            enabled,
+            negated,
+            componentReferences);
         this.havingAnyAudienceId = havingAnyAudienceId;
         this.personId = personId;
     }

@@ -14,6 +14,11 @@ public interface PersonReward {
     @Nullable
     String getName();
 
+    @Nullable
+    JourneyKey getJourneyKey();
+
+    String getJourneyName();
+
     String[] getRewardSlots();
 
     String getPersonRole();

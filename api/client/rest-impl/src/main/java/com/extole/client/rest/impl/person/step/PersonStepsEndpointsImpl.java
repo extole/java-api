@@ -26,6 +26,7 @@ import com.extole.client.rest.person.StepScope;
 import com.extole.client.rest.person.step.PersonStepResponse;
 import com.extole.client.rest.person.step.PersonStepsEndpoints;
 import com.extole.client.rest.person.step.PersonStepsListRequest;
+import com.extole.common.journey.JourneyName;
 import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.support.authorization.client.ClientAuthorizationProvider;
@@ -36,10 +37,9 @@ import com.extole.person.service.profile.FullPersonService;
 import com.extole.person.service.profile.InvalidFlowPersonStepQueryException;
 import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.person.service.profile.StepQueryBuilder;
-import com.extole.person.service.profile.journey.Container;
-import com.extole.person.service.profile.journey.JourneyName;
 import com.extole.person.service.profile.step.PersonStep;
 import com.extole.person.service.profile.step.PersonStepData;
+import com.extole.sandbox.Container;
 
 @Provider
 public class PersonStepsEndpointsImpl implements PersonStepsEndpoints {

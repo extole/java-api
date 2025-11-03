@@ -43,6 +43,7 @@ import com.extole.id.Id;
 import com.extole.model.entity.program.PublicProgram;
 import com.extole.model.service.program.ProgramNotFoundException;
 import com.extole.model.shared.program.ProgramDomainCache;
+import com.extole.person.service.profile.PersonNotFoundException;
 import com.extole.zone.targeter.service.ZoneTargeterBuilder;
 import com.extole.zone.targeter.service.ZoneTargeterService;
 
@@ -137,11 +138,17 @@ public class ClientConsumerEventV4EndpointsImpl implements ClientConsumerEventV4
             throw RestExceptionBuilder.newBuilder(FatalRestRuntimeException.class)
                 .withErrorCode(FatalRestRuntimeException.SOFTWARE_ERROR)
                 .withCause(e).build();
+        } catch (PersonNotFoundException e) {
+            throw RestExceptionBuilder.newBuilder(ClientConsumerEventV4RestException.class)
+                .withErrorCode(ClientConsumerEventV4RestException.PERSON_NOT_FOUND)
+                .addParameter("client_id", clientId.getValue())
+                .addParameter("person_id", personId)
+                .withCause(e).build();
         }
     }
 
     private Id<? extends ConsumerEvent> sendInputEvent(ClientRequestContext requestContext, @Nullable Instant eventTime)
-        throws AuthorizationException {
+        throws AuthorizationException, PersonNotFoundException {
         ZoneTargeterBuilder zoneTargeterBuilder =
             zoneTargeterService.createBuilder(requestContext.getAuthorization(), requestContext.getPerson().get(),
                 requestContext.getProcessedRawEvent(), ExecutionLoggerFactory.newInstance());

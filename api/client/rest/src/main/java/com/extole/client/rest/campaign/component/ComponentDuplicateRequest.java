@@ -30,6 +30,7 @@ public class ComponentDuplicateRequest extends ComponentElementRequest {
     private static final String COMPONENT_VARIABLES = "variables";
     private static final String ANCHORS = "anchors";
     private static final String TYPE = "type";
+    private static final String TYPES = "types";
 
     private final Omissible<String> targetCampaignId;
     private final Omissible<String> targetComponentAbsoluteName;
@@ -41,6 +42,7 @@ public class ComponentDuplicateRequest extends ComponentElementRequest {
     private final Omissible<List<CampaignComponentSettingRequest>> settings;
     private final Omissible<List<AnchorRequest>> anchors;
     private final Omissible<Optional<String>> type;
+    private final Omissible<List<String>> types;
 
     public ComponentDuplicateRequest(@JsonProperty(TARGET_CAMPAIGN_ID) Omissible<String> targetCampaignId,
         @JsonProperty(TARGET_COMPONENT_ABSOLUTE_NAME) Omissible<String> targetComponentAbsoluteName,
@@ -53,7 +55,8 @@ public class ComponentDuplicateRequest extends ComponentElementRequest {
         @JsonProperty(ANCHORS) Omissible<List<AnchorRequest>> anchors,
         @JsonProperty(JSON_COMPONENT_IDS) Omissible<List<Id<ComponentResponse>>> componentIds,
         @JsonProperty(JSON_COMPONENT_REFERENCES) Omissible<List<ComponentReferenceRequest>> componentReferences,
-        @JsonProperty(TYPE) Omissible<Optional<String>> type) {
+        @JsonProperty(TYPE) Omissible<Optional<String>> type,
+        @JsonProperty(TYPES) Omissible<List<String>> types) {
         super(componentReferences, componentIds);
         this.targetCampaignId = targetCampaignId;
         this.targetComponentAbsoluteName = targetComponentAbsoluteName;
@@ -65,6 +68,7 @@ public class ComponentDuplicateRequest extends ComponentElementRequest {
         this.settings = settings;
         this.anchors = anchors;
         this.type = type;
+        this.types = types;
     }
 
     @JsonProperty(TARGET_CAMPAIGN_ID)
@@ -118,6 +122,11 @@ public class ComponentDuplicateRequest extends ComponentElementRequest {
         return type;
     }
 
+    @JsonProperty(TYPES)
+    public Omissible<List<String>> getTypes() {
+        return types;
+    }
+
     @Override
     public String toString() {
         return ToString.create(this);
@@ -141,6 +150,7 @@ public class ComponentDuplicateRequest extends ComponentElementRequest {
         private final Omissible<List<AnchorRequest>> anchors = Omissible.omitted();
         private List<AnchorRequest.Builder> anchorBuilders;
         private Omissible<Optional<String>> type = Omissible.omitted();
+        private Omissible<List<String>> types = Omissible.omitted();
 
         private Builder() {
 
@@ -244,7 +254,8 @@ public class ComponentDuplicateRequest extends ComponentElementRequest {
                         .collect(toUnmodifiableList())),
                 componentIds,
                 componentReferences,
-                type);
+                type,
+                types);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.extole.api.step.action.display;
 
 import java.util.Map;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -47,4 +48,17 @@ public class ApiResponseImpl implements ApiResponse {
         return ToString.create(this);
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof ApiResponseImpl that)) {
+            return false;
+        }
+        return getStatusCode() == that.getStatusCode() && Objects.equals(getBody(), that.getBody())
+            && Objects.equals(getHeaders(), that.getHeaders());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBody(), getHeaders(), getStatusCode());
+    }
 }

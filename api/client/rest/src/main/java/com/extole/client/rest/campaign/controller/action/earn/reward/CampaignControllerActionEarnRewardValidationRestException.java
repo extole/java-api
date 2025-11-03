@@ -55,19 +55,21 @@ public class CampaignControllerActionEarnRewardValidationRestException extends C
                 "Data attribute name should not exceed 200 characters", "name");
 
     public static final ErrorCode<
-        CampaignControllerActionEarnRewardValidationRestException> DATA_ATTRIBUTE_VALUE_INVALID =
-            new ErrorCode<>("campaign_controller_action_earn_reward_data_attribute_value_invalid", 400,
-                "Data attribute value is invalid", "name");
-
-    public static final ErrorCode<
         CampaignControllerActionEarnRewardValidationRestException> DATA_ATTRIBUTE_VALUE_LENGTH_OUT_OF_RANGE =
             new ErrorCode<>(
                 "campaign_controller_action_earn_reward_data_attribute_value_too_long", 400,
                 "Data attribute value should not exceed 2048 characters", "name");
+
+    public static final ErrorCode<
+        CampaignControllerActionEarnRewardValidationRestException> DUPLICATE_DATA_ENTRY_NAME =
+            new ErrorCode<>("campaign_controller_action_earn_reward_duplicate_data_entry_name",
+                400, "Two data entry names evaluated to the same value", "evaluated_data_entry_name",
+                "first_data_entry_name_evaluatable", "second_data_entry_name_evaluatable");
 
     public CampaignControllerActionEarnRewardValidationRestException(String uniqueId,
         ErrorCode<CampaignControllerActionEarnRewardValidationRestException> code, Map<String, Object> attributes,
         Throwable cause) {
         super(uniqueId, code, attributes, cause);
     }
+
 }

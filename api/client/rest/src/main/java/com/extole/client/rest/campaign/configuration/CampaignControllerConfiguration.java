@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.extole.api.campaign.CampaignBuildtimeContext;
+import com.extole.client.rest.campaign.controller.SendPolicy;
 import com.extole.client.rest.campaign.controller.StepType;
 import com.extole.common.lang.ToString;
 import com.extole.common.rest.omissible.Omissible;
@@ -27,6 +28,7 @@ public final class CampaignControllerConfiguration extends CampaignStepConfigura
     private static final String JSON_ACTIONS = "actions";
     private static final String JSON_ALIASES = "aliases";
     private static final String JSON_JOURNEY_NAMES = "journey_names";
+    private static final String JSON_SEND_POLICY = "send_policy";
 
     private final BuildtimeEvaluatable<CampaignBuildtimeContext, String> name;
     private final BuildtimeEvaluatable<CampaignBuildtimeContext, StepScope> scope;
@@ -35,6 +37,7 @@ public final class CampaignControllerConfiguration extends CampaignStepConfigura
     private final List<CampaignControllerActionConfiguration> actions;
     private final BuildtimeEvaluatable<CampaignBuildtimeContext, Set<String>> aliases;
     private final BuildtimeEvaluatable<CampaignBuildtimeContext, Set<String>> journeyNames;
+    private final BuildtimeEvaluatable<CampaignBuildtimeContext, SendPolicy> sendPolicy;
 
     @JsonCreator
     public CampaignControllerConfiguration(
@@ -51,7 +54,8 @@ public final class CampaignControllerConfiguration extends CampaignStepConfigura
         @JsonProperty(JSON_ACTIONS) List<CampaignControllerActionConfiguration> actions,
         @JsonProperty(JSON_ALIASES) BuildtimeEvaluatable<CampaignBuildtimeContext, Set<String>> aliases,
         @JsonProperty(JSON_DATA) List<StepDataConfiguration> data,
-        @JsonProperty(JSON_JOURNEY_NAMES) BuildtimeEvaluatable<CampaignBuildtimeContext, Set<String>> journeyNames) {
+        @JsonProperty(JSON_JOURNEY_NAMES) BuildtimeEvaluatable<CampaignBuildtimeContext, Set<String>> journeyNames,
+        @JsonProperty(JSON_SEND_POLICY) BuildtimeEvaluatable<CampaignBuildtimeContext, SendPolicy> sendPolicy) {
         super(id, enabled, triggers, componentReferences, data);
         this.name = name;
         this.scope = scope;
@@ -60,6 +64,7 @@ public final class CampaignControllerConfiguration extends CampaignStepConfigura
         this.actions = actions != null ? unmodifiableList(actions) : Collections.emptyList();
         this.aliases = aliases;
         this.journeyNames = journeyNames;
+        this.sendPolicy = sendPolicy;
     }
 
     @Override
@@ -101,6 +106,11 @@ public final class CampaignControllerConfiguration extends CampaignStepConfigura
     @JsonProperty(JSON_JOURNEY_NAMES)
     public BuildtimeEvaluatable<CampaignBuildtimeContext, Set<String>> getJourneyNames() {
         return journeyNames;
+    }
+
+    @JsonProperty(JSON_SEND_POLICY)
+    public BuildtimeEvaluatable<CampaignBuildtimeContext, SendPolicy> getSendPolicy() {
+        return sendPolicy;
     }
 
     @Override

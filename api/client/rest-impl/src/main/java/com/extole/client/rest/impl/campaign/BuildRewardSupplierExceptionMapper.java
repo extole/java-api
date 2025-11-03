@@ -8,6 +8,7 @@ import com.extole.common.rest.exception.RestExceptionBuilder;
 import com.extole.model.service.reward.supplier.built.BuildRewardSupplierException;
 import com.extole.model.service.reward.supplier.built.RewardSupplierCouponPoolIdMissingException;
 import com.extole.model.service.reward.supplier.built.RewardSupplierDescriptionTooLongException;
+import com.extole.model.service.reward.supplier.built.RewardSupplierDisplayNameTooLongException;
 import com.extole.model.service.reward.supplier.built.RewardSupplierFaceValueMissingException;
 import com.extole.model.service.reward.supplier.built.RewardSupplierFaceValueOutOfRangeException;
 import com.extole.model.service.reward.supplier.built.RewardSupplierFaceValueTypeMissingException;
@@ -33,161 +34,143 @@ public final class BuildRewardSupplierExceptionMapper {
     private BuildRewardSupplierExceptionMapper() {
     }
 
-    public BuildRewardSupplierRestException map(BuildRewardSupplierException e) {
-        return internalMapAsValidationException(e)
+    public BuildRewardSupplierRestException map(BuildRewardSupplierException exception) {
+        return internalMapAsValidationException(exception)
             .orElseGet(() -> RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.REWARD_SUPPLIER_BUILD_FAILED)
-                .addParameter("reward_supplier_id", e.getRewardSupplierId())
-                .addParameter("evaluatable_name", e.getEvaluatableName())
-                .addParameter("evaluatable", e.getEvaluatable())
-                .withCause(e)
+                .addParameter("reward_supplier_id", exception.getRewardSupplierId())
+                .addParameter("evaluatable_name", exception.getEvaluatableName())
+                .addParameter("evaluatable", exception.getEvaluatable())
+                .withCause(exception)
                 .build());
     }
 
     private Optional<BuildRewardSupplierRestException>
-        internalMapAsValidationException(BuildRewardSupplierException e) {
+        internalMapAsValidationException(BuildRewardSupplierException exception) {
         BuildRewardSupplierRestException result = null;
 
-        if (e instanceof RewardSupplierCouponPoolIdMissingException) {
-            RewardSupplierCouponPoolIdMissingException ex = (RewardSupplierCouponPoolIdMissingException) e;
+        if (exception instanceof RewardSupplierCouponPoolIdMissingException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.COUPON_POOL_ID_MISSING)
-                .withCause(ex)
+                .withCause(castedException)
                 .build();
         }
-        if (e instanceof RewardSupplierDescriptionTooLongException) {
-            RewardSupplierDescriptionTooLongException ex = (RewardSupplierDescriptionTooLongException) e;
+        if (exception instanceof RewardSupplierDescriptionTooLongException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.DESCRIPTION_TOO_LONG)
-                .addParameter("description", ex.getDescription())
-                .addParameter("max_description_length", Integer.valueOf(ex.getMaxDescriptionLength()))
-                .withCause(e)
+                .addParameter("description", castedException.getDescription())
+                .addParameter("max_description_length", Integer.valueOf(castedException.getMaxDescriptionLength()))
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof RewardSupplierFaceValueOutOfRangeException) {
-            RewardSupplierFaceValueOutOfRangeException ex = (RewardSupplierFaceValueOutOfRangeException) e;
+        if (exception instanceof RewardSupplierFaceValueOutOfRangeException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.FACE_VALUE_OUT_OF_RANGE)
-                .addParameter("face_value", ex.getFaceValue())
-                .addParameter("min_value", ex.getMinValue())
-                .addParameter("max_value", ex.getMaxValue())
-                .withCause(e)
+                .addParameter("face_value", castedException.getFaceValue())
+                .addParameter("min_value", castedException.getMinValue())
+                .addParameter("max_value", castedException.getMaxValue())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof RewardSupplierIllegalCashBackMinMaxLimitsException) {
-            RewardSupplierIllegalCashBackMinMaxLimitsException ex =
-                (RewardSupplierIllegalCashBackMinMaxLimitsException) e;
+        if (exception instanceof RewardSupplierIllegalCashBackMinMaxLimitsException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.INVALID_CASH_BACK_LIMITS)
-                .addParameter("min_cash_back", ex.getMinCashBack())
-                .addParameter("max_cash_back", ex.getMaxCashBack())
-                .withCause(e)
+                .addParameter("min_cash_back", castedException.getMinCashBack())
+                .addParameter("max_cash_back", castedException.getMaxCashBack())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof RewardSupplierIllegalCharacterInDescriptionException) {
-            RewardSupplierIllegalCharacterInDescriptionException ex =
-                (RewardSupplierIllegalCharacterInDescriptionException) e;
+        if (exception instanceof RewardSupplierIllegalCharacterInDescriptionException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.ILLEGAL_CHARACTER_IN_DESCRIPTION)
-                .addParameter("description", ex.getDescription())
-                .withCause(e)
+                .addParameter("description", castedException.getDescription())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof RewardSupplierIllegalCharacterInNameException) {
-            RewardSupplierIllegalCharacterInNameException ex =
-                (RewardSupplierIllegalCharacterInNameException) e;
+        if (exception instanceof RewardSupplierIllegalCharacterInNameException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.ILLEGAL_CHARACTER_IN_NAME)
-                .addParameter("name", ex.getName())
-                .withCause(e)
+                .addParameter("name", castedException.getName())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof RewardSupplierIllegalRateLimitsException) {
-            RewardSupplierIllegalRateLimitsException ex =
-                (RewardSupplierIllegalRateLimitsException) e;
+        if (exception instanceof RewardSupplierIllegalRateLimitsException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.INVALID_LIMITS)
-                .addParameter("limit_per_day", ex.getLimitPerDay())
-                .addParameter("limit_per_hour", ex.getLimitPerHour())
-                .withCause(e)
+                .addParameter("limit_per_day", castedException.getLimitPerDay())
+                .addParameter("limit_per_hour", castedException.getLimitPerHour())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof RewardSupplierNameDuplicateException) {
-            RewardSupplierNameDuplicateException ex =
-                (RewardSupplierNameDuplicateException) e;
+        if (exception instanceof RewardSupplierNameDuplicateException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.DUPLICATED_NAME)
-                .addParameter("name", ex.getName())
-                .withCause(e)
+                .addParameter("name", castedException.getName())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof RewardSupplierNameTooLongException) {
-            RewardSupplierNameTooLongException ex =
-                (RewardSupplierNameTooLongException) e;
+        if (exception instanceof RewardSupplierDisplayNameTooLongException castedException) {
+            result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
+                .withErrorCode(BuildRewardSupplierRestException.DISPLAY_NAME_TOO_LONG)
+                .addParameter("display_name", castedException.getDisplayName())
+                .addParameter("max_length", Integer.valueOf(castedException.getMaxLength()))
+                .withCause(exception)
+                .build();
+        }
+        if (exception instanceof RewardSupplierNameTooLongException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.NAME_TOO_LONG)
-                .addParameter("name", ex.getName())
-                .addParameter("max_name_length", Integer.valueOf(ex.getMaxNameLength()))
-                .withCause(e)
+                .addParameter("name", castedException.getName())
+                .addParameter("max_name_length", Integer.valueOf(castedException.getMaxNameLength()))
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof RewardSupplierNegativeCashBackPercentageException) {
-            RewardSupplierNegativeCashBackPercentageException ex =
-                (RewardSupplierNegativeCashBackPercentageException) e;
+        if (exception instanceof RewardSupplierNegativeCashBackPercentageException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.NEGATIVE_CASH_BACK_PERCENTAGE)
-                .addParameter("cash_back_percentage", ex.getCashBackPercentage())
-                .withCause(e)
+                .addParameter("cash_back_percentage", castedException.getCashBackPercentage())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof RewardSupplierNegativeMaxCashBackException) {
-            RewardSupplierNegativeMaxCashBackException ex =
-                (RewardSupplierNegativeMaxCashBackException) e;
+        if (exception instanceof RewardSupplierNegativeMaxCashBackException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.NEGATIVE_MAX_CASH_BACK)
-                .addParameter("max_cash_back", ex.getMaxCashBack())
-                .withCause(e)
+                .addParameter("max_cash_back", castedException.getMaxCashBack())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof RewardSupplierNegativeMinCashBackException) {
-            RewardSupplierNegativeMinCashBackException ex =
-                (RewardSupplierNegativeMinCashBackException) e;
+        if (exception instanceof RewardSupplierNegativeMinCashBackException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.NEGATIVE_MIN_CASH_BACK)
-                .addParameter("min_cash_back", ex.getMinCashBack())
-                .withCause(e)
+                .addParameter("min_cash_back", castedException.getMinCashBack())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof RewardSupplierRateLimitOutOfRangeException) {
-            RewardSupplierRateLimitOutOfRangeException ex =
-                (RewardSupplierRateLimitOutOfRangeException) e;
+        if (exception instanceof RewardSupplierRateLimitOutOfRangeException castedException) {
             result = RestExceptionBuilder.newBuilder(BuildRewardSupplierRestException.class)
                 .withErrorCode(BuildRewardSupplierRestException.LIMIT_OUT_OF_RANGE)
-                .addParameter("limit", ex.getLimit())
-                .addParameter("min_value", ex.getMinLimit())
-                .addParameter("max_value", ex.getMaxLimit())
-                .withCause(e)
+                .addParameter("limit", castedException.getLimit())
+                .addParameter("min_value", castedException.getMinLimit())
+                .addParameter("max_value", castedException.getMaxLimit())
+                .withCause(exception)
                 .build();
         }
-        if (e instanceof RewardSupplierFaceValueMissingException) {
-            RewardSupplierFaceValueMissingException ex = (RewardSupplierFaceValueMissingException) e;
+        if (exception instanceof RewardSupplierFaceValueMissingException castedException) {
             result = RestExceptionBuilder.newBuilder(RewardSupplierCreationRestException.class)
                 .withErrorCode(RewardSupplierCreationRestException.FACE_VALUE_MISSING)
-                .withCause(ex)
+                .withCause(castedException)
                 .build();
         }
-        if (e instanceof RewardSupplierFaceValueTypeMissingException) {
-            RewardSupplierFaceValueTypeMissingException ex = (RewardSupplierFaceValueTypeMissingException) e;
+        if (exception instanceof RewardSupplierFaceValueTypeMissingException castedException) {
             result = RestExceptionBuilder.newBuilder(RewardSupplierCreationRestException.class)
                 .withErrorCode(RewardSupplierCreationRestException.FACE_VALUE_TYPE_MISSING)
-                .withCause(ex)
+                .withCause(castedException)
                 .build();
         }
-        if (e instanceof RewardSupplierNameMissingException) {
-            RewardSupplierNameMissingException ex = (RewardSupplierNameMissingException) e;
+        if (exception instanceof RewardSupplierNameMissingException castedException) {
             result = RestExceptionBuilder.newBuilder(RewardSupplierCreationRestException.class)
                 .withErrorCode(RewardSupplierCreationRestException.NAME_MISSING)
-                .withCause(ex)
+                .withCause(castedException)
                 .build();
         }
         return Optional.ofNullable(result);

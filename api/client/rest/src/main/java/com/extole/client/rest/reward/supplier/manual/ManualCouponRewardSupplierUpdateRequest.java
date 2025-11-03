@@ -51,6 +51,8 @@ public class ManualCouponRewardSupplierUpdateRequest extends RewardSupplierUpdat
         @JsonProperty(PARTNER_REWARD_KEY_TYPE) Omissible<PartnerRewardKeyType> partnerRewardKeyType,
         @JsonProperty(DISPLAY_TYPE) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> displayType,
         @JsonProperty(NAME) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>> name,
+        @JsonProperty(DISPLAY_NAME) Omissible<
+            BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Optional<String>>> displayName,
         @JsonProperty(COUPON_COUNT_WARN_LIMIT) Omissible<Integer> couponCountWarnLimit,
         @JsonProperty(MINIMUM_COUPON_LIFETIME) Omissible<Long> minimumCouponLifetime,
         @JsonProperty(DEFAULT_COUPON_EXPIRY_DATE) Omissible<ZonedDateTime> defaultCouponExpiryDate,
@@ -65,7 +67,8 @@ public class ManualCouponRewardSupplierUpdateRequest extends RewardSupplierUpdat
         @JsonProperty(TAGS) Omissible<Set<String>> tags,
         @JsonProperty(DATA) Omissible<Map<String, BuildtimeEvaluatable<RewardSupplierBuildtimeContext, String>>> data,
         @JsonProperty(ENABLED) Omissible<BuildtimeEvaluatable<RewardSupplierBuildtimeContext, Boolean>> enabled) {
-        super(RewardSupplierType.MANUAL_COUPON, name, faceValueAlgorithmType, faceValue, cashBackPercentage,
+        super(RewardSupplierType.MANUAL_COUPON, name, displayName, faceValueAlgorithmType, faceValue,
+            cashBackPercentage,
             minCashBack, maxCashBack, faceValueType, partnerRewardSupplierId, partnerRewardKeyType, displayType,
             description, limitPerDay, limitPerHour, componentIds, componentReferences, tags, data, enabled);
         this.couponCountWarnLimit = couponCountWarnLimit;
@@ -137,6 +140,7 @@ public class ManualCouponRewardSupplierUpdateRequest extends RewardSupplierUpdat
                 partnerRewardKeyType,
                 displayType,
                 name,
+                displayName,
                 couponCountWarnLimit,
                 minimumCouponLifetime,
                 defaultCouponExpiryDate,

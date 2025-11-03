@@ -31,12 +31,11 @@ public interface PersonSharesEndpoints {
         description = "Returns share for a person identified by id.")
     PersonShareResponse get(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
-        @Parameter(description = "Share id parameter")
-        @PathParam("share_id") String shareId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
+        @Parameter(description = "Share id parameter") @PathParam("share_id") String shareId,
         @TimeZoneParam ZoneId timeZone)
-            throws UserAuthorizationRestException, PersonRestException, PersonShareRestException;
+        throws UserAuthorizationRestException, PersonRestException, PersonShareRestException;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -44,9 +43,9 @@ public interface PersonSharesEndpoints {
         description = "Returns shares for a person, sorted by created date in descending order.")
     List<PersonShareResponse> list(
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
-        @Parameter(description = "The Extole unique profile identifier of this user at Extole.")
-        @PathParam("person_id") String personId,
+        @Parameter(
+            description = "The Extole unique profile identifier of this user at Extole.") @PathParam("person_id") String personId,
         @BeanParam PersonSharesListRequest sharesListRequest,
         @TimeZoneParam ZoneId timeZone)
-            throws UserAuthorizationRestException, PersonRestException, PersonSharesListRestException;
+        throws UserAuthorizationRestException, PersonRestException, PersonSharesListRestException;
 }

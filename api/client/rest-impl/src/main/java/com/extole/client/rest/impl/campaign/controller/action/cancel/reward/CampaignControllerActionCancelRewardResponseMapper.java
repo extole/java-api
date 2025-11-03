@@ -22,10 +22,8 @@ import com.extole.model.entity.campaign.CampaignControllerActionType;
 
 @Component
 public class CampaignControllerActionCancelRewardResponseMapper implements
-    CampaignControllerActionResponseMapper<
-        CampaignControllerActionCancelReward,
-        CampaignControllerActionCancelRewardResponse,
-        CampaignControllerActionCancelRewardConfiguration> {
+    CampaignControllerActionResponseMapper<CampaignControllerActionCancelReward,
+        CampaignControllerActionCancelRewardResponse, CampaignControllerActionCancelRewardConfiguration> {
 
     private final CampaignComponentRestMapper campaignComponentRestMapper;
 
@@ -41,11 +39,11 @@ public class CampaignControllerActionCancelRewardResponseMapper implements
             action.getId().getValue(),
             CampaignControllerActionQuality.valueOf(action.getQuality().name()),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> Id.<ComponentResponse>valueOf(reference.getComponentId().getValue()))
                 .collect(Collectors.toList()),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(reference -> new ComponentReferenceResponse(Id.valueOf(reference.getComponentId().getValue()),
                     reference.getSocketNames()))
@@ -63,7 +61,7 @@ public class CampaignControllerActionCancelRewardResponseMapper implements
             com.extole.client.rest.campaign.configuration.CampaignControllerActionQuality
                 .valueOf(action.getQuality().name()),
             action.getEnabled(),
-            action.getCampaignComponentReferences()
+            action.getComponentReferences()
                 .stream()
                 .map(componentReference -> campaignComponentRestMapper.toComponentReferenceConfiguration(
                     componentReference,

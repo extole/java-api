@@ -57,20 +57,14 @@ public interface ReportRunnerEndpoints {
         "Results are sorted by schedule date in descending order.")
     List<BaseReportRunnerReportResponse> getReports(
         @UserAccessTokenParam String accessToken,
-        @Parameter(description = "The Extole unique report runner identifier.") @PathParam("reportRunnerId")
-        String reportRunnerId,
+        @Parameter(
+            description = "The Extole unique report runner identifier.") @PathParam("reportRunnerId") String reportRunnerId,
         @Parameter(description = "Optional filter for types, " +
             "will return reports that have one of the specified values. " +
-            "Valid values: EXECUTED, NOT_EXECUTED, ROLLING, INDIVIDUAL, EMPTY_SLOT, ACCUMULATING")
-        @Nullable
-        @QueryParam("types")
-        String types,
+            "Valid values: EXECUTED, NOT_EXECUTED, ROLLING, INDIVIDUAL, EMPTY_SLOT, ACCUMULATING") @Nullable @QueryParam("types") String types,
         @Parameter(description = "Optional filter for statuses, " +
             "will return reports that have one of the specified values. " +
-            "Valid values: PENDING, IN_PROGRESS, DONE, FAILED, CANCELED, SFTP_DELIVERY_FAILED, EXPIRED")
-        @Nullable
-        @QueryParam("statuses")
-        String statuses,
+            "Valid values: PENDING, IN_PROGRESS, DONE, FAILED, CANCELED, SFTP_DELIVERY_FAILED, EXPIRED") @Nullable @QueryParam("statuses") String statuses,
         @Parameter(
             description = "Optional filter for offset, defaults to 0.") @Nullable @QueryParam("offset") String offset,
         @Parameter(
@@ -95,8 +89,8 @@ public interface ReportRunnerEndpoints {
     @Operation(summary = "Get report runner for the specified id.")
     ReportRunnerResponse getReportRunner(
         @UserAccessTokenParam String accessToken,
-        @Parameter(description = "The Extole unique report runner identifier.") @PathParam("reportRunnerId")
-        String reportRunnerId,
+        @Parameter(
+            description = "The Extole unique report runner identifier.") @PathParam("reportRunnerId") String reportRunnerId,
         @Parameter(description = "Time zone to be used when representing dates.") @TimeZoneParam ZoneId timezone)
         throws UserAuthorizationRestException, ReportRunnerRestException;
 
@@ -107,9 +101,8 @@ public interface ReportRunnerEndpoints {
     @Operation(summary = "Update report runner for the specified id.")
     ReportRunnerResponse updateReportRunner(
         @UserAccessTokenParam String accessToken,
-        @Parameter(description = "The Extole unique report runner identifier.")
-        @PathParam(REPORT_RUNNER_ID_PATH_PARAM_NAME)
-        String reportRunnerId,
+        @Parameter(
+            description = "The Extole unique report runner identifier.") @PathParam(REPORT_RUNNER_ID_PATH_PARAM_NAME) String reportRunnerId,
         ReportRunnerUpdateRequest request,
         @Parameter(description = "Time zone to be used when representing dates.") @TimeZoneParam ZoneId timezone)
         throws UserAuthorizationRestException, ReportRunnerRestException, ReportRunnerValidationRestException;
@@ -120,9 +113,8 @@ public interface ReportRunnerEndpoints {
     @Operation(summary = "Delete report runner for the specified id.")
     ReportRunnerResponse deleteReportRunner(
         @UserAccessTokenParam String accessToken,
-        @Parameter(description = "The Extole unique report runner identifier.")
-        @PathParam("reportRunnerId")
-        String reportRunnerId,
+        @Parameter(
+            description = "The Extole unique report runner identifier.") @PathParam("reportRunnerId") String reportRunnerId,
         @Parameter(description = "Time zone to be used when representing dates.") @TimeZoneParam ZoneId timezone)
         throws UserAuthorizationRestException, ReportRunnerRestException, ReportRunnerValidationRestException;
 
@@ -134,8 +126,8 @@ public interface ReportRunnerEndpoints {
         "Will return existing report if there is any currently in progress or generate a new one otherwise.")
     BaseReportRunnerReportResponse run(
         @UserAccessTokenParam String accessToken,
-        @Parameter(description = "The Extole unique report runner identifier.") @PathParam("reportRunnerId")
-        String reportRunnerId,
+        @Parameter(
+            description = "The Extole unique report runner identifier.") @PathParam("reportRunnerId") String reportRunnerId,
         Optional<ReportRunnerSlotsRequest> request,
         @Parameter(description = "Time zone to be used when representing dates.") @TimeZoneParam ZoneId timezone)
         throws UserAuthorizationRestException, ReportRunnerRestException, ReportValidationRestException,
@@ -160,29 +152,6 @@ public interface ReportRunnerEndpoints {
         ReportRunnerUpdateRequest duplicateRequest,
         @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, ReportRunnerRestException, ReportRunnerValidationRestException;
-
-    @GET
-    @Path("/{reportRunnerId}/rolling-reports")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Gets a list of rolling reports")
-    List<ReportResponse> getRollingReports(
-        @UserAccessTokenParam String accessToken,
-        @Parameter(
-            description = "The Extole unique report runner identifier.")
-        @PathParam("reportRunnerId")
-        String reportRunnerId,
-        @Parameter(description = "Optional filter for statuses, " +
-            "will return reports that have one of the specified values. " +
-            "Valid values: PENDING, IN_PROGRESS, DONE, FAILED, CANCELED, SFTP_DELIVERY_FAILED, EXPIRED")
-        @Nullable
-        @QueryParam("statuses")
-        String statuses,
-        @Parameter(
-            description = "Optional filter for offset, defaults to 0.") @Nullable @QueryParam("offset") String offset,
-        @Parameter(
-            description = "Optional filter for limit, defaults to 100.") @Nullable @QueryParam("limit") String limit,
-        @Parameter(description = "Time zone to be used when representing dates.") @TimeZoneParam ZoneId timezone)
-        throws UserAuthorizationRestException, QueryLimitsRestException, ReportRunnerQueryRestException;
 
     @GET
     @Path("/{reportRunnerId}/latest")
@@ -210,14 +179,11 @@ public interface ReportRunnerEndpoints {
     @Operation(summary = "Gets a list of accumulating reports")
     List<ReportResponse> getAccumulatingReports(
         @UserAccessTokenParam String accessToken,
-        @Parameter(description = "The Extole unique report runner identifier.") @PathParam("reportRunnerId")
-        String reportRunnerId,
+        @Parameter(
+            description = "The Extole unique report runner identifier.") @PathParam("reportRunnerId") String reportRunnerId,
         @Parameter(description = "Optional filter for statuses, " +
             "will return reports that have one of the specified values. " +
-            "Valid values: PENDING, IN_PROGRESS, DONE, FAILED, CANCELED, SFTP_DELIVERY_FAILED, EXPIRED")
-        @Nullable
-        @QueryParam("statuses")
-        String statuses,
+            "Valid values: PENDING, IN_PROGRESS, DONE, FAILED, CANCELED, SFTP_DELIVERY_FAILED, EXPIRED") @Nullable @QueryParam("statuses") String statuses,
         @Parameter(
             description = "Optional filter for offset, defaults to 0.") @Nullable @QueryParam("offset") String offset,
         @Parameter(
