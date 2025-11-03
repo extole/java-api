@@ -53,6 +53,9 @@ fi
 (
     cd $code_base
     git ls-files 'context/api/*' '*/rest/*' | while read -r file; do
+        if [[ "$file" == *.lockfile ]]; then
+            continue
+        fi
         mkdir -p "$api/$(dirname "$file")"
         cp "$file" "$api/$file"
     done
