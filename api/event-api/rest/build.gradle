@@ -1,7 +1,5 @@
 description = """Event-Dispatcher REST API"""
 
-apply from: rootProject.file("maven_release.gradle")
-
 dependencies {
     implementation project(':common-rest')
     api project(':common-lang')

@@ -1,0 +1,45 @@
+[versions]
+jackson = "2.15.0"
+jersey = "2.40"
+jaxrs = "2.1.1"
+javaWs = "1.1"
+servlet = "4.0.1"
+slf4j = "1.7.36"
+guava = "31.1-jre"
+owaspEncoder = "1.2.3"
+swaggercore = "2.2.8"
+swaggerjaxrs2 = "2.2.8"
+jsr305 = "3.0.2"
+spring = "5.3.23"
+commonsLang = "3.12.0"
+junit = "4.13.2"
+assertj = "3.23.1"
+junitJupiter = "5.9.2"
+
+[libraries]
+jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jacksonCSV = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-csv", version.ref = "jackson" }
+javaWs = { module = "javax.jws:javax.jws-api", version.ref = "javaWs" }
+jaxrs = { module = "javax.ws.rs:javax.ws.rs-api", version.ref = "jaxrs" }
+jersey = { module = "org.glassfish.jersey.core:jersey-client", version.ref = "jersey" }
+servlet = { module = "javax.servlet:javax.servlet-api", version.ref = "servlet" }
+slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+owaspEncoder = { module = "org.owasp.encoder:encoder", version.ref = "owaspEncoder" }
+swaggercore = { module = "io.swagger.core.v3:swagger-core", version.ref = "swaggercore" }
+swaggerjaxrs2 = { module = "io.swagger.core.v3:swagger-jaxrs2", version.ref = "swaggerjaxrs2" }
+jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
+spring = { module = "org.springframework:spring-core", version.ref = "spring" }
+commonsLang = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang" }
+junit = { module = "junit:junit", version.ref = "junit" }
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+junitJupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiter" }
+
+[bundles]
+jackson = ["jackson-core", "jackson-databind"]
+jersey = ["jersey", "jaxrs"]
+spring = ["spring"]
+slf4j = ["slf4j"]
+junit = ["junit", "junitJupiter"]
+

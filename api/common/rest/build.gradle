@@ -1,7 +1,5 @@
 description = """Common REST components"""
 
-apply from: rootProject.file("maven_release.gradle")
-
 dependencies {
     implementation project(':common-evaluatable')
     api project(':common-lang')

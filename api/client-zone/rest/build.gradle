@@ -1,7 +1,5 @@
 description = """Client-Zone REST API"""
 
-apply from: rootProject.file("maven_release.gradle")
-
 dependencies {
 
     implementation project(':common-rest')
