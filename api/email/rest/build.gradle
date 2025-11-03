@@ -1,5 +1,6 @@
 description = """Email Rest"""
 
+
 dependencies {
     implementation project(':common-rest')
     api project(':common-lang')

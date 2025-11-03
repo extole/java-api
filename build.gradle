@@ -1,0 +1,31 @@
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+}
+
+ext.libraries = [
+    jackson: 'com.fasterxml.jackson.core:jackson-core:2.15.0',
+    jacksonDatabind: 'com.fasterxml.jackson.core:jackson-databind:2.15.0',
+    jacksonCSV: 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.15.0',
+    javaWs: 'javax.jws:javax.jws-api:1.1',
+    jaxrs: 'javax.ws.rs:javax.ws.rs-api:2.1.1',
+    jersey: 'org.glassfish.jersey.core:jersey-client:2.40',
+    servlet: 'javax.servlet:javax.servlet-api:4.0.1',
+    slf4j: 'org.slf4j:slf4j-api:1.7.36',
+    guava: 'com.google.guava:guava:31.1-jre',
+    owaspEncoder: 'org.owasp.encoder:encoder:1.2.3',
+    swaggercore: 'io.swagger.core.v3:swagger-core:2.2.8',
+    swaggerjaxrs2: 'io.swagger.core.v3:swagger-jaxrs2:2.2.8',
+    jsr305: 'com.google.code.findbugs:jsr305:3.0.2',
+    spring: 'org.springframework:spring-core:5.3.23',
+    commonsLang: 'org.apache.commons:commons-lang3:3.12.0',
+    junit: 'junit:junit:4.13.2',
+    assertj: 'org.assertj:assertj-core:3.23.1',
+    junitJupiter: 'org.junit.jupiter:junit-jupiter:5.9.2'
+]
+

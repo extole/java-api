@@ -1,0 +1,68 @@
+rootProject.name = 'java-api'
+
+include 'api'
+project(':api').projectDir = file('api')
+
+include 'common-rest'
+project(':common-rest').projectDir = file('api/common/rest')
+
+include 'context-api'
+project(':context-api').projectDir = file('api/context/api')
+
+include 'client-rest'
+project(':client-rest').projectDir = file('api/client/rest')
+
+include 'client-topic-rest'
+project(':client-topic-rest').projectDir = file('api/client-topic/rest')
+
+include 'client-zone-rest'
+project(':client-zone-rest').projectDir = file('api/client-zone/rest')
+
+include 'consumer-rest'
+project(':consumer-rest').projectDir = file('api/consumer/rest')
+
+include 'email-rest'
+project(':email-rest').projectDir = file('api/email/rest')
+
+include 'event-api-rest'
+project(':event-api-rest').projectDir = file('api/event-api/rest')
+
+include 'optout-rest'
+project(':optout-rest').projectDir = file('api/optout/rest')
+
+include 'reporting-rest'
+project(':reporting-rest').projectDir = file('api/reporting/rest')
+
+include 'webhook-dispatcher-rest'
+project(':webhook-dispatcher-rest').projectDir = file('api/webhook-dispatcher/rest')
+
+include 'common-lang'
+project(':common-lang').projectDir = file('api/stubs/common-lang')
+
+include 'common-evaluatable'
+project(':common-evaluatable').projectDir = file('api/stubs/common-evaluatable')
+
+include 'common-id'
+project(':common-id').projectDir = file('api/stubs/common-id')
+
+include 'common-dewey-decimal'
+project(':common-dewey-decimal').projectDir = file('api/stubs/common-dewey-decimal')
+
+include 'common-identity-key'
+project(':common-identity-key').projectDir = file('api/stubs/common-identity-key')
+
+include 'common-url-template'
+project(':common-url-template').projectDir = file('api/stubs/common-url-template')
+
+include 'common-log'
+project(':common-log').projectDir = file('api/stubs/common-log')
+
+include 'common-rest-client'
+project(':common-rest-client').projectDir = file('api/stubs/common-rest-client')
+
+include 'common-rest-support'
+project(':common-rest-support').projectDir = file('api/stubs/common-rest-support')
+
+include 'optout-service'
+project(':optout-service').projectDir = file('api/stubs/optout-service')
+

@@ -1,6 +1,5 @@
 description = """Client REST API"""
 
-apply from: rootProject.file("maven_release.gradle")
 
 dependencies {
 

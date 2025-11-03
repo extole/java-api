@@ -1,6 +1,5 @@
 description = """Context API"""
 
-apply from: rootProject.file("maven_release.gradle")
 
 dependencies {
     api project(':common-lang')
