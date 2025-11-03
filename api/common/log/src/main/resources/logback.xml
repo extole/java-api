@@ -1,0 +1,135 @@
+<configuration scan="true" scanPeriod="60 seconds" debug="true">
+    <include resource="webapp-properties-logback.xml"/>
+    <if condition='property("extole.environment").equals("pr")'>
+        <then>
+            <property name="LOG_LEVEL" value="WARN"/>
+        </then>
+    </if>
+    <if condition='property("extole.environment").equals("lo")'>
+        <then>
+            <property name="LOG_LEVEL" value="DEBUG"/>
+        </then>
+    </if>
+
+    <appender name="errorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/error/${log.filename:-error.log}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/logs/error/%d{"yyyy-MM-dd", UTC}/${log.filename:-error.log}.%i.gz</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{"yyyy-MM-dd'T'HH:mm:ss,SSS", UTC} [%thread] %level %logger{36} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="errorLogJSON" class="com.extole.common.webapp.healthcheck.LoggingInterceptorAppender">
+        <file>${catalina.base}/logs/error/${log.json.filename:-error.json}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/logs/error/%d{"yyyy-MM-dd", UTC}/${log.json.filename:-error.json}.%i.gz</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <findAndRegisterJacksonModules>false</findAndRegisterJacksonModules>
+            <prefix class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <layout class="ch.qos.logback.classic.PatternLayout">
+                    <pattern>@cee:%mdc{somethingNonExistent}</pattern>
+                </layout>
+            </prefix>
+            <providers>
+                <stackTrace>
+                    <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <maxLength>30000</maxLength>
+                    </throwableConverter>
+                </stackTrace>
+                <globalCustomFields>
+                    <customFields>{"hostname":"${extole.instance.name}"}</customFields>
+                </globalCustomFields>
+                <pattern>
+                    <pattern>
+                        {
+                        "message": "%message",
+                        "level": "%level",
+                        "logger_name": "%logger",
+                        "thread_name": "%thread",
+                        "@timestamp": "%d{\"yyyy-MM-dd'T'HH:mm:ss.SSS\", UTC}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <appender name="stdout" class="com.extole.common.webapp.healthcheck.ConsoleLoggingInterceptorAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <findAndRegisterJacksonModules>false</findAndRegisterJacksonModules>
+            <prefix class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <layout class="ch.qos.logback.classic.PatternLayout">
+                    <pattern>%mdc{somethingNonExistent}</pattern>
+                </layout>
+            </prefix>
+            <providers>
+                <stackTrace>
+                    <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <maxLength>30000</maxLength>
+                    </throwableConverter>
+                </stackTrace>
+                <pattern>
+                    <pattern>
+                        {
+                        "trace_id": "%X{trace_id}",
+                        "message": "%message",
+                        "level": "%level",
+                        "logger_name": "%logger",
+                        "thread_name": "%thread",
+                        "timestamp": "%d{\"yyyy-MM-dd'T'HH:mm:ss.SSS\", UTC}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <logger name="com.extole" level="${LOG_LEVEL:-WARN}" additivity="false">
+        <if condition='property("extole.environment").equals("lo")'>
+            <then>
+                <appender-ref ref="stdout"/>
+            </then>
+            <else>
+                <appender-ref ref="errorLog" />
+                <appender-ref ref="errorLogJSON" />
+            </else>
+        </if>
+    </logger>
+
+    <logger name="com.codahale.metrics" level="WARN" additivity="false">
+        <if condition='property("extole.environment").equals("lo")'>
+            <then>
+                <appender-ref ref="stdout"/>
+            </then>
+            <else>
+                <appender-ref ref="errorLog" />
+                <appender-ref ref="errorLogJSON" />
+            </else>
+        </if>
+    </logger>
+
+    <root level="ERROR">
+        <if condition='property("extole.environment").equals("lo")'>
+            <then>
+                <appender-ref ref="stdout"/>
+            </then>
+            <else>
+                <appender-ref ref="errorLog" />
+                <appender-ref ref="errorLogJSON" />
+            </else>
+        </if>
+    </root>
+    <include optional="true" resource="event-logback.xml"/>
+    <include optional="true" resource="webapp-logback.xml"/>
+    <include optional="true" resource="memcached-logback.xml"/>
+</configuration>

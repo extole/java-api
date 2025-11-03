@@ -1,0 +1,8 @@
+<included>
+    <turboFilter class="com.extole.common.log.filter.FolsomFilter">
+        <logger>com.spotify.folsom.client.DefaultRawMemcacheClient</logger>
+        <format>Connection timeout: {} {}</format>
+        <format>Unexpected error, closing connection</format>
+        <onMatch>DENY</onMatch>
+    </turboFilter>
+</included>

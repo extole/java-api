@@ -1,0 +1,3 @@
+name,status,spel1,js1,js2,spel2
+name1,1,"spel@buildtime:""spel@runtime:'123A'""","javascript@buildtime:""javascript@runtime:'123A'""",,
+name2,2,,,"javascript@buildtime:""javascript@runtime:'123A'""","spel@buildtime:""spel@runtime:'123A'"""

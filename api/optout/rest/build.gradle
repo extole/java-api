@@ -1,9 +1,0 @@
-description = """Optout REST API"""
-
-dependencies {
-    implementation project(':common-rest')
-    implementation project(':optout-service')
-
-    implementation libs.bundles.jackson
-    compileOnly libs.javaWs
-}
