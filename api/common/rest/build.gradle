@@ -5,6 +5,7 @@ dependencies {
     api project(':common-lang')
     implementation libs.bundles.jackson, libs.jacksonCSV
     implementation libs.javaWs
+    implementation libs.jaxrs
     implementation libs.bundles.slf4j
     implementation libs.guava
     implementation libs.servlet
