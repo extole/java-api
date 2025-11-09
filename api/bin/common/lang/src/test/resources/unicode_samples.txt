@@ -1,0 +1,10 @@
+# native2ascii -encoding utf8 unicode_samples.txt unicode_samples_java.txt
+
+russian=Пентагон беспокойства не проявил.
+turkish=Dört taraf hep düşman imiş.
+japanese=生むぎ　生ごめ　生たまご
+chinese=久有归天愿
+korean=극지탐험　협회결성　체계적　연구
+hebrew=שרה שרה שיר שמח
+armenian=Աեցեհի իմ լավ ?ւղիե լավարար
+greek=Μια παπια μα πια παπια?

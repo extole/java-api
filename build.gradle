@@ -11,6 +11,7 @@ subprojects {
 ext.libraries = [
     jackson: 'com.fasterxml.jackson.core:jackson-core:2.15.0',
     jacksonDatabind: 'com.fasterxml.jackson.core:jackson-databind:2.15.0',
+    jacksonAnnotations: 'com.fasterxml.jackson.core:jackson-annotations:2.15.0',
     jacksonCSV: 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.15.0',
     javaWs: 'javax.jws:javax.jws-api:1.1',
     jaxrs: 'javax.ws.rs:javax.ws.rs-api:2.1.1',

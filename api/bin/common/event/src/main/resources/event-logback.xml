@@ -1,0 +1,13 @@
+<included>
+    <logger name="com.extole.common.event" level="${LOG_LEVEL:-INFO}" additivity="false">
+        <if condition='property("extole.environment").equals("lo")'>
+            <then>
+                <appender-ref ref="stdout"/>
+            </then>
+            <else>
+                <appender-ref ref="errorLog" />
+                <appender-ref ref="errorLogJSON" />
+            </else>
+        </if>
+    </logger>
+</included>

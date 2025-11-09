@@ -1,0 +1,12 @@
+dependencies {
+    libraries.with {
+        implementation jackson
+        implementation jacksonDatabind
+        implementation jacksonAnnotations
+        implementation guava
+        implementation commonsLang
+        implementation slf4j
+        implementation owaspEncoder
+    }
+    implementation project(':common-lang')
+}

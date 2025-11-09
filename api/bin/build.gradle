@@ -1,0 +1,10 @@
+description = "Java API Project"
+
+dependencies {
+    libraries.with {
+        implementation jackson
+        implementation jersey
+        implementation jsr305
+        implementation javaWs
+    }
+}
