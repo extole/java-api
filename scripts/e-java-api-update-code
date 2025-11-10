@@ -51,27 +51,20 @@ fi
 
 (
     cd $code_base
+    find . -type f -name '*.java' \
+        \( -path './context/api/*' -o \
+           -path '*/rest/*' -o \
+           -path './common/*' \) \
+        -path '*/src/main/*' \
+        ! -path '*/src/test/*' \
+        ! -path '*/rest-impl/*' \
+        ! -path '*/common/rest-support/*' | \
     rsync -av \
-        --include='context/api/' \
-        --include='context/api/**/src/main/' \
-        --include='context/api/**/src/main/**/*.java' \
-        --include='*/rest/' \
-        --include='*/rest/**/src/main/' \
-        --include='*/rest/**/src/main/**/*.java' \
-        --include='common/' \
-        --include='common/**/src/main/' \
-        --include='common/**/src/main/**/*.java' \
+        --files-from=- \
         --exclude='*.lockfile' \
         --exclude='.classpath' \
         --exclude='.project' \
         --exclude='.settings/' \
-        --exclude='*/src/test/' \
-        --exclude='*/src/test/**' \
-        --exclude='*/rest-impl/' \
-        --exclude='*/rest-impl/**' \
-        --exclude='common/rest-support/' \
-        --exclude='common/rest-support/**' \
         --exclude='build.gradle' \
-        --exclude='*' \
         . "$api/"
 )
