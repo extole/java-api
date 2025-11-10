@@ -62,6 +62,9 @@ fi
         if [[ "$file" == */src/test/* ]]; then
             continue
         fi
+        if [[ "$file" == */rest-impl/* ]]; then
+            continue
+        fi
         mkdir -p "$api/$(dirname "$file")"
         cp "$file" "$api/$file"
     done
