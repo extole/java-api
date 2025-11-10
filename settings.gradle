@@ -39,8 +39,11 @@ project(':webhook-dispatcher-rest').projectDir = file('api/webhook-dispatcher/re
 include 'common-lang'
 project(':common-lang').projectDir = file('api/common/lang')
 
+include 'common-encoder'
+project(':common-encoder').projectDir = file('api/common/encoder')
+
 include 'common-evaluatable'
-project(':common-evaluatable').projectDir = file('api/stubs/common-evaluatable')
+project(':common-evaluatable').projectDir = file('api/common/evaluatable')
 
 include 'common-id'
 project(':common-id').projectDir = file('api/stubs/common-id')

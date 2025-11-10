@@ -1,0 +1,7 @@
+dependencies {
+    libraries.with {
+        implementation owaspEncoder
+        implementation commonsLang
+    }
+}
+

@@ -1,0 +1,18 @@
+dependencies {
+    libraries.with {
+        implementation jackson
+        implementation jacksonDatabind
+        implementation jacksonAnnotations
+        implementation swaggercore
+        implementation guava
+        implementation spring
+        implementation springExpression
+        implementation handlebars
+        implementation closureCompiler
+        implementation graalvmPolyglot
+        implementation opentelemetryInstrumentationAnnotations
+    }
+    implementation project(':common-lang')
+    implementation project(':common-encoder')
+}
+
