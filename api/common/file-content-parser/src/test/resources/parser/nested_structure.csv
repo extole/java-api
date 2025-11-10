@@ -1,3 +1,0 @@
-name,status,val1,val2
-"""name1,_,.q""",1,"{""inner_val1"":{""inner_inner_val1"":22,""inner_inner_val2"":""test"",""inner_val2"":""A32""}}",
-"""name2_?|!@#$%%""",2,,"{""inner_val1"":{""inner_inner_val1"":220,""inner_inner_val2"":""test1"",""inner_val2"":""A321""}}"

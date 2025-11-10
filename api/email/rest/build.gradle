@@ -10,5 +10,6 @@ dependencies {
     }
     implementation project(':common-rest')
     implementation project(':common-lang')
+    implementation project(':common-id')
 }
 

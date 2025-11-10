@@ -8,7 +8,9 @@ dependencies {
         implementation servlet
         implementation spring
     }
+    implementation 'org.glassfish.jersey.media:jersey-media-multipart:2.40'
     implementation project(':common-rest')
     implementation project(':common-lang')
+    implementation project(':common-id')
 }
 

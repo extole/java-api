@@ -11,11 +11,12 @@ import javax.ws.rs.core.MediaType;
 
 import com.extole.common.rest.authorization.UserAccessTokenParam;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
-import com.extole.common.rest.support.producer.CSVMessageBodyWriter;
 
 @Deprecated // TODO cleanup QueryEndpoints ENG-10088
 @Path("/v2/queries")
 public interface QueryEndpoints {
+
+    String CSV_MEDIA_TYPE = "text/csv;qs=.5";
 
     /**
      * Executes the query with the given name. HTTP query parameters are passed as named parameters to the query.
@@ -26,7 +27,7 @@ public interface QueryEndpoints {
      */
     @GET
     @Path("/{name}{parameter: (.csv)?}")
-    @Produces({MediaType.APPLICATION_JSON, CSVMessageBodyWriter.CSV_MEDIA_TYPE})
+    @Produces({MediaType.APPLICATION_JSON, CSV_MEDIA_TYPE})
     List<Map<String, Object>> query(@UserAccessTokenParam String accessToken, @PathParam("name") String name)
         throws UserAuthorizationRestException, QueryRestException;
 }

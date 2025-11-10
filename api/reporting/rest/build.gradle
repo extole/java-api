@@ -10,5 +10,8 @@ dependencies {
     }
     implementation project(':common-rest')
     implementation project(':common-lang')
+    implementation project(':common-evaluatable')
+    implementation project(':common-id')
+    implementation project(':context-api')
 }
 
