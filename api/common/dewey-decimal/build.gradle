@@ -1,0 +1,8 @@
+dependencies {
+    implementation libs.bundles.jackson
+    implementation libs.swaggercore
+    implementation libs.guava
+    implementation "org.apache.ant:ant:1.10.12"
+    implementation project(':common-lang')
+}
+

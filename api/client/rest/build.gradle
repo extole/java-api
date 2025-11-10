@@ -1,0 +1,20 @@
+dependencies {
+    implementation libs.bundles.jackson
+    implementation libs.swaggercore
+    implementation libs.annotation
+    implementation libs.guava
+    implementation libs.jaxrs
+    implementation libs.servlet
+    implementation libs.jersey
+    implementation libs.spring
+    implementation "org.glassfish.jersey.media:jersey-media-multipart:${libs.versions.jersey.get()}"
+    implementation project(':common-rest')
+    implementation project(':common-lang')
+    implementation project(':context-api')
+    implementation project(':common-evaluatable')
+    implementation project(':common-id')
+    implementation project(':common-dewey-decimal')
+    implementation project(':common-identity-key')
+    implementation project(':common-url-template')
+}
+

@@ -65,9 +65,6 @@ fi
         if [[ "$file" == */rest-impl/* ]]; then
             continue
         fi
-        if [[ "$file" == common/rest/* ]]; then
-            continue
-        fi
         if [[ "$file" == common/rest-support/* ]]; then
             continue
         fi

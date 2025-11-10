@@ -1,0 +1,6 @@
+dependencies {
+    implementation libs.bundles.jackson
+    implementation libs.jersey
+    implementation project(':common-lang')
+}
+

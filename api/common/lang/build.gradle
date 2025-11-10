@@ -1,0 +1,12 @@
+dependencies {
+    implementation libs.bundles.jackson
+    implementation libs.annotation
+    implementation libs.guava
+    implementation libs.slf4j
+    implementation libs.commonsLang
+    implementation libs.guessencoding
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-guava:${libs.versions.jackson.get()}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${libs.versions.jackson.get()}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${libs.versions.jackson.get()}"
+    implementation "com.github.wnameless.json:json-flattener:0.15.1"
+}

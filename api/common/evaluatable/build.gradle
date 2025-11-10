@@ -1,0 +1,14 @@
+dependencies {
+    implementation libs.bundles.jackson
+    implementation libs.swaggercore
+    implementation libs.guava
+    implementation libs.commonsLang
+    implementation "org.graalvm.polyglot:polyglot:23.1.1"
+    implementation "com.google.javascript:closure-compiler:v20220803"
+    implementation libs.opentelemetryInstrumentationAnnotations
+    implementation libs.springExpression
+    implementation libs.handlebars
+    implementation project(':common-lang')
+    implementation project(':common-encoder')
+}
+

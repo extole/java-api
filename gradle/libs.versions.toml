@@ -13,15 +13,20 @@ swaggercore = "2.2.8"
 swaggerjaxrs2 = "2.2.8"
 jsr305 = "3.0.2"
 spring = "5.3.39"
+springExpression = "5.3.39"
 commonsLang = "3.12.0"
+handlebars = "4.3.1"
 junit = "4.13.2"
 assertj = "3.23.1"
 junitJupiter = "5.9.2"
 guessencoding = "1.4"
+graalvmPolyglot = "23.1.1"
+opentelemetryInstrumentationAnnotations = "1.32.0"
 
 [libraries]
 jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
 jacksonCSV = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-csv", version.ref = "jackson" }
 javaWs = { module = "javax.jws:javax.jws-api", version.ref = "javaWs" }
 jaxrs = { module = "javax.ws.rs:javax.ws.rs-api", version.ref = "jaxrs" }
@@ -36,14 +41,18 @@ swaggercore = { module = "io.swagger.core.v3:swagger-core", version.ref = "swagg
 swaggerjaxrs2 = { module = "io.swagger.core.v3:swagger-jaxrs2", version.ref = "swaggerjaxrs2" }
 jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
 spring = { module = "org.springframework:spring-core", version.ref = "spring" }
+springExpression = { module = "org.springframework:spring-expression", version.ref = "springExpression" }
 commonsLang = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang" }
+handlebars = { module = "com.github.jknack:handlebars", version.ref = "handlebars" }
 junit = { module = "junit:junit", version.ref = "junit" }
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 junitJupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiter" }
 guessencoding = { module = "org.codehaus.guessencoding:guessencoding", version.ref = "guessencoding" }
+graalvmPolyglot = { module = "org.graalvm.polyglot:polyglot", version.ref = "graalvmPolyglot" }
+opentelemetryInstrumentationAnnotations = { module = "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations", version.ref = "opentelemetryInstrumentationAnnotations" }
 
 [bundles]
-jackson = ["jackson-core", "jackson-databind"]
+jackson = ["jackson-core", "jackson-databind", "jackson-annotations"]
 jersey = ["jersey", "jaxrs"]
 spring = ["spring"]
 slf4j = ["slf4j"]

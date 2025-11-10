@@ -1,0 +1,7 @@
+dependencies {
+    implementation libs.bundles.jackson
+    implementation libs.guava
+    implementation "commons-codec:commons-codec:1.15"
+    implementation project(':common-lang')
+}
+

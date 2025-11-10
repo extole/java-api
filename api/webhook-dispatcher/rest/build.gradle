@@ -1,0 +1,9 @@
+dependencies {
+    implementation libs.bundles.jackson
+    implementation libs.swaggercore
+    implementation libs.guava
+    implementation libs.jaxrs
+    implementation project(':common-rest')
+    implementation project(':common-lang')
+}
+

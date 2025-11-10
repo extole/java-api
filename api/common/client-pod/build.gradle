@@ -1,0 +1,9 @@
+dependencies {
+    implementation libs.bundles.jackson
+    implementation libs.guava
+    implementation libs.commonsLang
+    implementation libs.spring
+    implementation "org.springframework:spring-beans:${libs.versions.spring.get()}"
+    implementation "org.springframework:spring-context:${libs.versions.spring.get()}"
+    implementation project(':common-lang')
+}

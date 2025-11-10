@@ -1,0 +1,6 @@
+dependencies {
+    implementation libs.commonsLang
+    implementation libs.owaspEncoder
+    implementation project(':common-lang')
+}
+

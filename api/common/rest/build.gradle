@@ -1,0 +1,13 @@
+dependencies {
+    implementation libs.bundles.jackson
+    implementation libs.jaxrs
+    implementation libs.servlet
+    implementation libs.swaggercore
+    implementation libs.owaspEncoder
+    implementation libs.commonsLang
+    implementation libs.guava
+    implementation libs.slf4j
+    implementation project(':common-lang')
+    implementation project(':common-evaluatable')
+}
+

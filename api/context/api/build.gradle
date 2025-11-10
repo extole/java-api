@@ -1,0 +1,9 @@
+dependencies {
+    implementation libs.annotation
+    implementation libs.swaggercore
+    implementation libs.guava
+    implementation project(':common-lang')
+    implementation project(':common-evaluatable')
+    implementation project(':common-dewey-decimal')
+}
+
