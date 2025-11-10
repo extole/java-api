@@ -1,0 +1,7 @@
+dependencies {
+    implementation libs.bundles.jackson
+    implementation libs.guava
+    implementation libs.slf4j
+    implementation project(':common-lang')
+}
+

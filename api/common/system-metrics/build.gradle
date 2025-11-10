@@ -1,0 +1,6 @@
+dependencies {
+    implementation libs.guava
+    implementation libs.codahaleMetrics
+    implementation libs.slf4j
+}
+

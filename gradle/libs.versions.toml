@@ -22,6 +22,12 @@ junitJupiter = "5.9.2"
 guessencoding = "1.4"
 graalvmPolyglot = "23.1.1"
 opentelemetryInstrumentationAnnotations = "1.32.0"
+reflections = "0.10.2"
+json = "20231013"
+commonsValidator = "1.8.0"
+commonsIo = "2.15.1"
+logstashLogbackEncoder = "7.4"
+codahaleMetrics = "4.2.21"
 
 [libraries]
 jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
@@ -50,11 +56,21 @@ junitJupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "juni
 guessencoding = { module = "org.codehaus.guessencoding:guessencoding", version.ref = "guessencoding" }
 graalvmPolyglot = { module = "org.graalvm.polyglot:polyglot", version.ref = "graalvmPolyglot" }
 opentelemetryInstrumentationAnnotations = { module = "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations", version.ref = "opentelemetryInstrumentationAnnotations" }
+reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
+json = { module = "org.json:json", version.ref = "json" }
+commonsValidator = { module = "commons-validator:commons-validator", version.ref = "commonsValidator" }
+commonsIo = { module = "commons-io:commons-io", version.ref = "commonsIo" }
+logstashLogbackEncoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstashLogbackEncoder" }
+codahaleMetrics = { module = "io.dropwizard.metrics:metrics-core", version.ref = "codahaleMetrics" }
+springWeb = { module = "org.springframework:spring-web", version.ref = "spring" }
+springContext = { module = "org.springframework:spring-context", version.ref = "spring" }
+jerseyMultipart = { module = "org.glassfish.jersey.media:jersey-media-multipart", version.ref = "jersey" }
+jacksonDatatypeJdk8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8", version.ref = "jackson" }
 
 [bundles]
 jackson = ["jackson-core", "jackson-databind", "jackson-annotations"]
 jersey = ["jersey", "jaxrs"]
-spring = ["spring"]
+spring = ["spring", "springWeb", "springContext"]
 slf4j = ["slf4j"]
 junit = ["junit", "junitJupiter"]
 

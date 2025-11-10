@@ -1,6 +1,0 @@
-dependencies {
-    implementation libs.bundles.jackson
-    implementation libs.jaxrs
-    implementation project(':common-rest')
-    implementation project(':common-lang')
-}

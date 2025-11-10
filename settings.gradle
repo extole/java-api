@@ -48,6 +48,12 @@ project(':common-evaluatable').projectDir = file('api/common/evaluatable')
 include 'common-id'
 project(':common-id').projectDir = file('api/common/id')
 
+include 'common-ip'
+project(':common-ip').projectDir = file('api/common/ip')
+
+include 'common-system-metrics'
+project(':common-system-metrics').projectDir = file('api/common/system-metrics')
+
 include 'common-dewey-decimal'
 project(':common-dewey-decimal').projectDir = file('api/common/dewey-decimal')
 

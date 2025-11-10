@@ -61,10 +61,5 @@ fi
         ! -path '*/common/rest-support/*' | \
     rsync -av \
         --files-from=- \
-        --exclude='*.lockfile' \
-        --exclude='.classpath' \
-        --exclude='.project' \
-        --exclude='.settings/' \
-        --exclude='build.gradle' \
         . "$api/"
 )
