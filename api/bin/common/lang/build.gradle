@@ -11,7 +11,14 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-guava:2.15.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0'
-    implementation 'com.github.wnameless:json-flattener:0.11.1'
-    implementation 'com.glaforge:glaforge-i18n:1.0'
+    implementation 'com.github.wnameless:json-flattener:0.7.1'
+    implementation 'com.github.wnameless.json:json-base:1.0.0'
+    implementation libs.guessencoding
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'com.github.wnameless.json:json-base:1.0.0'
+    }
 }
 

@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.wnameless.json.base.JacksonJsonValue;
+import com.github.wnameless.json.JacksonJsonValue;
 import com.github.wnameless.json.flattener.JsonFlattener;
 
 public final class JsonMap implements Map<String, Object> {
@@ -23,7 +23,6 @@ public final class JsonMap implements Map<String, Object> {
         } else {
             Map<String, Object> flattenedMap =
                 new JsonFlattener(new JacksonJsonValue(OBJECT_MAPPER.valueToTree(map)))
-                    .ignoreReservedCharacters()
                     .flattenAsMap();
             this.keyCaseInsensitiveFlattenedMap = KeyCaseInsensitiveMap.create(flattenedMap);
         }

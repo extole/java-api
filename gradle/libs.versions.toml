@@ -17,6 +17,7 @@ commonsLang = "3.12.0"
 junit = "4.13.2"
 assertj = "3.23.1"
 junitJupiter = "5.9.2"
+guessencoding = "1.4"
 
 [libraries]
 jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
@@ -39,6 +40,7 @@ commonsLang = { module = "org.apache.commons:commons-lang3", version.ref = "comm
 junit = { module = "junit:junit", version.ref = "junit" }
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 junitJupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiter" }
+guessencoding = { module = "org.codehaus.guessencoding:guessencoding", version.ref = "guessencoding" }
 
 [bundles]
 jackson = ["jackson-core", "jackson-databind"]
