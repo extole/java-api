@@ -7,6 +7,7 @@ public enum RequestContextAttributeName {
     CLIENT_SHORT_NAME("client_short_name"),
     @Deprecated // TODO Remove after 2026-09 once access_token cookie is not supported - ENG-23277
     DEPRECATED_ACCESS_TOKEN_COOKIE_ALLOWED("deprecated_access_token_cookie_allowed"),
+    PREFER_ROOT_DOMAIN_COOKIE("prefer_root_domain_cookie"),
     REQUEST_TIME_ZONE("request_time_zone");
 
     private final String attributeName;

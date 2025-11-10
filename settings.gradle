@@ -57,6 +57,9 @@ project(':common-identity-key').projectDir = file('api/common/identity-key')
 include 'common-url-template'
 project(':common-url-template').projectDir = file('api/common/url-template')
 
+include 'common-client-pod'
+project(':common-client-pod').projectDir = file('api/common/client-pod')
+
 include 'common-log'
 project(':common-log').projectDir = file('api/stubs/common-log')
 
@@ -64,7 +67,7 @@ include 'common-rest-client'
 project(':common-rest-client').projectDir = file('api/stubs/common-rest-client')
 
 include 'common-rest-support'
-project(':common-rest-support').projectDir = file('api/stubs/common-rest-support')
+project(':common-rest-support').projectDir = file('api/common/rest-support')
 
 include 'optout-service'
 project(':optout-service').projectDir = file('api/stubs/optout-service')

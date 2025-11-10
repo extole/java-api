@@ -2,6 +2,7 @@ package com.extole.common.rest.support.authorization.extractor;
 
 import static com.extole.common.rest.support.authorization.IgnoreAccessTokenCookieDynamicFeature.IGNORE_ACCESS_TOKEN_COOKIE_PROPERTY;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ws.rs.container.ContainerRequestContext;
@@ -25,13 +26,20 @@ public final class CookieAccessTokenExtractor implements AccessTokenExtractor {
         if (accessToken.isPresent()) {
             return accessToken;
         }
-        accessToken = getCookieValueFromContext(requestContext, ExtoleCookieType.ACCESS_TOKEN);
 
-        if (accessToken.isEmpty() && shouldFallback(requestContext)) {
-            accessToken = getCookieValueFromContext(requestContext, ExtoleCookieType.DEPRECATED_ACCESS_TOKEN);
-        }
+        boolean preferRootDomain = Boolean.TRUE.equals(requestContext.getProperty(
+            RequestContextAttributeName.PREFER_ROOT_DOMAIN_COOKIE.getAttributeName()));
 
-        return accessToken;
+        ExtoleCookieType primaryCookie =
+            preferRootDomain ? ExtoleCookieType.DOMAIN_TOKEN : ExtoleCookieType.ACCESS_TOKEN;
+        ExtoleCookieType secondaryCookie =
+            preferRootDomain ? ExtoleCookieType.ACCESS_TOKEN : ExtoleCookieType.DOMAIN_TOKEN;
+
+        return getCookieValueFromContext(requestContext, primaryCookie)
+            .or(() -> getCookieValueFromContext(requestContext, secondaryCookie))
+            .or(() -> shouldFallback(requestContext)
+                ? getCookieValueFromContext(requestContext, ExtoleCookieType.DEPRECATED_ACCESS_TOKEN)
+                : Optional.empty());
     }
 
     private static boolean shouldFallback(ContainerRequestContext requestContext) {
@@ -41,11 +49,15 @@ public final class CookieAccessTokenExtractor implements AccessTokenExtractor {
 
     private Optional<String> getCookieValueFromContext(ContainerRequestContext requestContext,
         ExtoleCookieType cookieType) {
-        Cookie cookie = requestContext.getCookies().get(cookieType.getCookieName());
+
+        Map<String, Cookie> cookies = requestContext.getCookies();
+        Cookie cookie = cookies.get(cookieType.getCookieName());
+
         if (cookie != null) {
             String value = StringUtils.trimToNull(cookie.getValue());
             return Optional.ofNullable(value);
         }
+
         return Optional.empty();
     }
 }

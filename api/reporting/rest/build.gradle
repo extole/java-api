@@ -9,6 +9,7 @@ dependencies {
         implementation spring
     }
     implementation project(':common-rest')
+    implementation project(':common-rest-support')
     implementation project(':common-lang')
     implementation project(':common-evaluatable')
     implementation project(':common-id')

@@ -1,4 +1,4 @@
-package com.extole.client.rest.component.sharing.subscription;
+package com.extole.client.rest.component.sharing.subscription.built;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -12,7 +12,7 @@ import com.extole.client.rest.campaign.component.ComponentResponse;
 import com.extole.common.lang.ToString;
 import com.extole.id.Id;
 
-public class ComponentSubscriberResponse extends ComponentElementResponse {
+public class BuiltComponentSubscriptionResponse extends ComponentElementResponse {
 
     private static final String SUBSCRIPTION_ID = "subscription_id";
     private static final String CLIENT_ID = "client_id";
@@ -23,7 +23,7 @@ public class ComponentSubscriberResponse extends ComponentElementResponse {
     private final ZonedDateTime subscribedDate;
 
     @JsonCreator
-    public ComponentSubscriberResponse(
+    public BuiltComponentSubscriptionResponse(
         @JsonProperty(SUBSCRIPTION_ID) String subscriptionId,
         @JsonProperty(CLIENT_ID) String clientId,
         @JsonProperty(SUBSCRIBED_DATE) ZonedDateTime subscribedDate,

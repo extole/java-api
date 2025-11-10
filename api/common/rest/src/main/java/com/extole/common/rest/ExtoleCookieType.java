@@ -2,11 +2,13 @@ package com.extole.common.rest;
 
 public enum ExtoleCookieType {
     ACCESS_TOKEN("extole_token"),
+    DOMAIN_TOKEN("extole_domain_token"),
     @Deprecated // TODO Remove after 2026-09 once access_token cookie is not supported - ENG-23277
     DEPRECATED_ACCESS_TOKEN("access_token"),
     ADMIN_TOKEN("admin_token"),
     CONTAINER("container"),
-    BROWSER_ID("xtl_bid");
+    BROWSER_ID("xtl_bid"),
+    CLIENT_SHORT_NAME("extole_client_short_name");
 
     private String cookieName;
 

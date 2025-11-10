@@ -461,7 +461,7 @@ public class LibrariesForLibsInPluginsBlock extends AbstractExternalDependencyFa
             public Provider<String> getSlf4j() { return getVersion("slf4j"); }
 
             /**
-             * Returns the version associated to this alias: spring (5.3.23)
+             * Returns the version associated to this alias: spring (5.3.39)
              * If the version is a rich version and that its not expressible as a
              * single version string, then an empty string is returned.
              * This version was declared in catalog libs.versions.toml
