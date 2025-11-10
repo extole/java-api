@@ -1,6 +1,0 @@
-dependencies {
-    libraries.with {
-        implementation jacksonAnnotations
-    }
-}
-

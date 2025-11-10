@@ -1,8 +1,0 @@
-dependencies {
-    libraries.with {
-        implementation jacksonAnnotations
-        implementation guava
-    }
-    implementation 'commons-codec:commons-codec:1.15'
-}
-

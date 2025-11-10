@@ -1,8 +1,0 @@
-dependencies {
-    libraries.with {
-        implementation jacksonAnnotations
-        implementation jacksonDatabind
-        implementation commonsLang
-    }
-}
-

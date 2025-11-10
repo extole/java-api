@@ -1,8 +1,0 @@
-dependencies {
-    libraries.with {
-        implementation jacksonAnnotations
-        implementation swaggercore
-    }
-    implementation project(':common-rest')
-    implementation project(':common-lang')
-}
