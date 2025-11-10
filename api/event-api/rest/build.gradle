@@ -1,0 +1,12 @@
+dependencies {
+    libraries.with {
+        implementation jacksonAnnotations
+        implementation swaggercore
+        implementation jaxrs
+        implementation annotation
+        implementation guava
+    }
+    implementation project(':common-rest')
+    implementation project(':common-lang')
+}
+

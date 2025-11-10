@@ -5,11 +5,16 @@ dependencies {
         implementation jaxrs
         implementation annotation
         implementation guava
+        implementation servlet
+        implementation spring
     }
+    implementation 'org.glassfish.jersey.media:jersey-media-multipart:2.40'
     implementation project(':common-rest')
     implementation project(':common-lang')
     implementation project(':common-evaluatable')
     implementation project(':common-id')
     implementation project(':common-url-template')
+    implementation project(':common-dewey-decimal')
+    implementation project(':common-identity-key')
     implementation project(':context-api')
 }

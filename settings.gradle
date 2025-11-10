@@ -46,16 +46,16 @@ include 'common-evaluatable'
 project(':common-evaluatable').projectDir = file('api/common/evaluatable')
 
 include 'common-id'
-project(':common-id').projectDir = file('api/stubs/common-id')
+project(':common-id').projectDir = file('api/common/id')
 
 include 'common-dewey-decimal'
-project(':common-dewey-decimal').projectDir = file('api/stubs/common-dewey-decimal')
+project(':common-dewey-decimal').projectDir = file('api/common/dewey-decimal')
 
 include 'common-identity-key'
-project(':common-identity-key').projectDir = file('api/stubs/common-identity-key')
+project(':common-identity-key').projectDir = file('api/common/identity-key')
 
 include 'common-url-template'
-project(':common-url-template').projectDir = file('api/stubs/common-url-template')
+project(':common-url-template').projectDir = file('api/common/url-template')
 
 include 'common-log'
 project(':common-log').projectDir = file('api/stubs/common-log')
