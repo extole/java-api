@@ -1,3 +1,7 @@
-/build
+build/
+bin/
+target/
+out/
+.gradle/
 *.swp
 /flake.lock
