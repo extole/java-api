@@ -8,7 +8,6 @@ slf4j = "1.7.36"
 guava = "31.1-jre"
 owaspEncoder = "1.2.3"
 swaggercore = "2.2.8"
-swaggerjaxrs2 = "2.2.8"
 jsr305 = "3.0.2"
 spring = "5.3.39"
 springExpression = "5.3.39"
@@ -16,18 +15,12 @@ commonsLang = "3.12.0"
 handlebars = "4.3.1"
 guessencoding = "1.4"
 opentelemetryInstrumentationAnnotations = "1.32.0"
-reflections = "0.10.2"
-json = "20231013"
-commonsValidator = "1.8.0"
-commonsIo = "2.15.1"
-logstashLogbackEncoder = "7.4"
 codahaleMetrics = "4.2.21"
 
 [libraries]
 jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
-jacksonCSV = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-csv", version.ref = "jackson" }
 jaxrs = { module = "javax.ws.rs:javax.ws.rs-api", version.ref = "jaxrs" }
 jersey = { module = "org.glassfish.jersey.core:jersey-client", version.ref = "jersey" }
 servlet = { module = "javax.servlet:javax.servlet-api", version.ref = "servlet" }
@@ -36,7 +29,6 @@ slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 owaspEncoder = { module = "org.owasp.encoder:encoder", version.ref = "owaspEncoder" }
 swaggercore = { module = "io.swagger.core.v3:swagger-core", version.ref = "swaggercore" }
-swaggerjaxrs2 = { module = "io.swagger.core.v3:swagger-jaxrs2", version.ref = "swaggerjaxrs2" }
 jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
 spring = { module = "org.springframework:spring-core", version.ref = "spring" }
 springExpression = { module = "org.springframework:spring-expression", version.ref = "springExpression" }
@@ -44,16 +36,9 @@ commonsLang = { module = "org.apache.commons:commons-lang3", version.ref = "comm
 handlebars = { module = "com.github.jknack:handlebars", version.ref = "handlebars" }
 guessencoding = { module = "org.codehaus.guessencoding:guessencoding", version.ref = "guessencoding" }
 opentelemetryInstrumentationAnnotations = { module = "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations", version.ref = "opentelemetryInstrumentationAnnotations" }
-reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
-json = { module = "org.json:json", version.ref = "json" }
-commonsValidator = { module = "commons-validator:commons-validator", version.ref = "commonsValidator" }
-commonsIo = { module = "commons-io:commons-io", version.ref = "commonsIo" }
-logstashLogbackEncoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstashLogbackEncoder" }
 codahaleMetrics = { module = "io.dropwizard.metrics:metrics-core", version.ref = "codahaleMetrics" }
 springWeb = { module = "org.springframework:spring-web", version.ref = "spring" }
 springContext = { module = "org.springframework:spring-context", version.ref = "spring" }
-jerseyMultipart = { module = "org.glassfish.jersey.media:jersey-media-multipart", version.ref = "jersey" }
-jacksonDatatypeJdk8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8", version.ref = "jackson" }
 
 [bundles]
 jackson = ["jackson-core", "jackson-databind", "jackson-annotations"]
