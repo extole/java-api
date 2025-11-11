@@ -27,14 +27,21 @@ public class CampaignControllerActionScheduleResponse extends CampaignController
     private static final String JSON_DATES = "dates";
     private static final String JSON_FORCE = "force";
     private static final String JSON_DATA = "data";
+    private static final String JSON_EXTRA_DATA = "extra_data";
 
     private final BuildtimeEvaluatable<ControllerBuildtimeContext,
         RuntimeEvaluatable<ScheduleActionContext, String>> scheduleName;
     private final BuildtimeEvaluatable<ControllerBuildtimeContext, List<Duration>> delays;
     private final List<ZonedDateTime> dates;
     private final boolean force;
-    private final Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>> data;
+    private final Map<
+        BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+        BuildtimeEvaluatable<
+            ControllerBuildtimeContext,
+            RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>> data;
+    private final BuildtimeEvaluatable<
+        ControllerBuildtimeContext,
+        RuntimeEvaluatable<ScheduleActionContext, Map<String, Optional<Object>>>> extraData;
 
     public CampaignControllerActionScheduleResponse(
         @JsonProperty(JSON_ACTION_ID) String actionId,
@@ -44,18 +51,24 @@ public class CampaignControllerActionScheduleResponse extends CampaignController
         @JsonProperty(JSON_DELAYS) BuildtimeEvaluatable<ControllerBuildtimeContext, List<Duration>> delays,
         @JsonProperty(JSON_DATES) List<ZonedDateTime> dates,
         @JsonProperty(JSON_FORCE) boolean force,
-        @JsonProperty(JSON_DATA) Map<String,
-            BuildtimeEvaluatable<ControllerBuildtimeContext,
+        @JsonProperty(JSON_DATA) Map<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+            BuildtimeEvaluatable<
+                ControllerBuildtimeContext,
                 RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>> data,
         @JsonProperty(JSON_ENABLED) BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean> enabled,
         @JsonProperty(JSON_COMPONENT_IDS) List<Id<ComponentResponse>> componentIds,
-        @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences) {
+        @JsonProperty(JSON_COMPONENT_REFERENCES) List<ComponentReferenceResponse> componentReferences,
+        @JsonProperty(JSON_EXTRA_DATA) BuildtimeEvaluatable<
+            ControllerBuildtimeContext,
+            RuntimeEvaluatable<ScheduleActionContext, Map<String, Optional<Object>>>> extraData) {
         super(actionId, CampaignControllerActionType.SCHEDULE, quality, enabled, componentIds, componentReferences);
         this.scheduleName = scheduleName;
         this.force = force;
         this.delays = delays;
         this.dates = dates;
         this.data = data;
+        this.extraData = extraData;
     }
 
     @JsonProperty(JSON_SCHEDULE_NAME)
@@ -82,11 +95,20 @@ public class CampaignControllerActionScheduleResponse extends CampaignController
 
     @JsonProperty(JSON_DATA)
     public
-        Map<String,
-            BuildtimeEvaluatable<ControllerBuildtimeContext,
+        Map<BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+            BuildtimeEvaluatable<
+                ControllerBuildtimeContext,
                 RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>>
         getData() {
         return data;
+    }
+
+    @JsonProperty(JSON_EXTRA_DATA)
+    public BuildtimeEvaluatable<
+        ControllerBuildtimeContext,
+        RuntimeEvaluatable<ScheduleActionContext, Map<String, Optional<Object>>>>
+        getExtraData() {
+        return extraData;
     }
 
 }

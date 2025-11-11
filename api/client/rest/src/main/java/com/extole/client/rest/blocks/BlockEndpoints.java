@@ -19,10 +19,11 @@ import com.extole.common.rest.exception.QueryLimitsRestException;
 import com.extole.common.rest.exception.UserAuthorizationRestException;
 import com.extole.common.rest.time.TimeZoneParam;
 
-@Path("/v2/blocks")
+@Path("/v2")
 public interface BlockEndpoints {
 
     @POST
+    @Path("/blocks")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     BlockResponse create(@UserAccessTokenParam String accessToken,
@@ -31,19 +32,26 @@ public interface BlockEndpoints {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{blockId}")
+    @Path("/blocks/{blockId}")
     BlockResponse getBlockById(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
         @PathParam("blockId") String blockId, @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, BlockRestException;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/blocks")
     List<BlockResponse> getBlocks(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
+        @BeanParam BlockListRequest blockListRequest) throws UserAuthorizationRestException, QueryLimitsRestException;
+
+    @GET
+    @Path("/blocks/global")
+    @Produces(MediaType.APPLICATION_JSON)
+    List<BlockResponse> getGlobalBlocks(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
         @BeanParam BlockListRequest blockListRequest) throws UserAuthorizationRestException, QueryLimitsRestException;
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{blockId}")
+    @Path("/blocks/{blockId}")
     BlockResponse delete(@UserAccessTokenParam String accessToken,
         @PathParam("blockId") String blockId, @TimeZoneParam ZoneId timeZone)
         throws UserAuthorizationRestException, BlockRestException;
@@ -51,7 +59,7 @@ public interface BlockEndpoints {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/test")
+    @Path("/blocks/test")
     BlockCheckResponse test(@UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
         BlockCheckRequest blockCheckRequest)
         throws UserAuthorizationRestException, BlockRestException;

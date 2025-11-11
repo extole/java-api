@@ -107,8 +107,7 @@ public interface CampaignControllerEndpoints {
         @PathParam("version") String version,
         @PathParam("stepId") String stepId,
         @TimeZoneParam ZoneId timeZone)
-        throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
-        BuildCampaignRestException;
+        throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -119,6 +118,6 @@ public interface CampaignControllerEndpoints {
         @PathParam("version") String version,
         @QueryParam("type") Optional<StepType> type,
         @TimeZoneParam ZoneId timeZone)
-        throws UserAuthorizationRestException, CampaignRestException, BuildCampaignRestException;
+        throws UserAuthorizationRestException, CampaignRestException;
 
 }

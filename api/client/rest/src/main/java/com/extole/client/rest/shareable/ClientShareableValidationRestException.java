@@ -41,6 +41,10 @@ public class ClientShareableValidationRestException extends ExtoleRestException 
     public static final ErrorCode<ClientShareableValidationRestException> CONTENT_URL_BLOCKED =
         new ErrorCode<>("blocked_content_url", 403, "Content url is blocked", "url");
 
+    public static final ErrorCode<ClientShareableValidationRestException> CONTENT_URL_LENGTH_OUT_OF_RANGE =
+        new ErrorCode<>("content_url_length_out_of_range", 400,
+            "Content url is out of range", "url", "max_length");
+
     public static final ErrorCode<ClientShareableValidationRestException> CONTENT_DESCRIPTION_LENGTH_EXCEEDED =
         new ErrorCode<>("content_description_length_exceeded", 403, "Content description length exceeded",
             "description");

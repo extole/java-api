@@ -81,7 +81,6 @@ public interface CampaignControllerTriggerEventEndpoints {
         @UserAccessTokenParam(requiredScope = Scope.USER_SUPPORT) String accessToken,
         @PathParam("campaignId") String campaignId, @PathParam("version") String version,
         @PathParam("controllerId") String controllerId, @PathParam("triggerId") String triggerId)
-        throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException,
-        BuildCampaignRestException;
+        throws UserAuthorizationRestException, CampaignRestException, CampaignControllerRestException;
 
 }

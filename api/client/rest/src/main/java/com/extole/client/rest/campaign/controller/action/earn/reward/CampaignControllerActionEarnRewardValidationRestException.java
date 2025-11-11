@@ -44,21 +44,11 @@ public class CampaignControllerActionEarnRewardValidationRestException extends C
             400, "Expression can't be empty", "expression");
 
     public static final ErrorCode<
-        CampaignControllerActionEarnRewardValidationRestException> DATA_ATTRIBUTE_NAME_INVALID =
-            new ErrorCode<>("campaign_controller_action_earn_reward_data_attribute_name_invalid", 400,
-                "Data attribute name is invalid", "name");
-
-    public static final ErrorCode<
-        CampaignControllerActionEarnRewardValidationRestException> DATA_ATTRIBUTE_NAME_LENGTH_OUT_OF_RANGE =
+        CampaignControllerActionEarnRewardValidationRestException> DATA_ENTRY_NAME_OUT_OF_RANGE =
             new ErrorCode<>(
-                "campaign_controller_action_earn_reward_data_attribute_name_too_long", 400,
-                "Data attribute name should not exceed 200 characters", "name");
-
-    public static final ErrorCode<
-        CampaignControllerActionEarnRewardValidationRestException> DATA_ATTRIBUTE_VALUE_LENGTH_OUT_OF_RANGE =
-            new ErrorCode<>(
-                "campaign_controller_action_earn_reward_data_attribute_value_too_long", 400,
-                "Data attribute value should not exceed 2048 characters", "name");
+                "campaign_controller_action_earn_reward_data_entry_name_out_of_range", 400,
+                "Data entry name cannot be blank or exceed the maximum allowed length of 200 characters",
+                "data_entry_name");
 
     public static final ErrorCode<
         CampaignControllerActionEarnRewardValidationRestException> DUPLICATE_DATA_ENTRY_NAME =

@@ -31,6 +31,7 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
     private static final String JSON_DATES = "dates";
     private static final String JSON_FORCE = "force";
     private static final String JSON_DATA = "data";
+    private static final String JSON_EXTRA_DATA = "extra_data";
 
     private final Omissible<CampaignControllerActionQuality> quality;
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled;
@@ -39,8 +40,15 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
     private final Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, List<Duration>>> delays;
     private final Omissible<List<ZonedDateTime>> dates;
     private final Omissible<Boolean> force;
-    private final Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-        RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>>> data;
+    private final Omissible<Map<
+        BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+        BuildtimeEvaluatable<
+            ControllerBuildtimeContext,
+            RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>>> data;
+    private final Omissible<
+        BuildtimeEvaluatable<
+            ControllerBuildtimeContext,
+            RuntimeEvaluatable<ScheduleActionContext, Map<String, Optional<Object>>>>> extraData;
 
     @JsonCreator
     public CampaignControllerActionScheduleUpdateRequest(
@@ -53,8 +61,15 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
         @JsonProperty(JSON_DELAYS) Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, List<Duration>>> delays,
         @JsonProperty(JSON_DATES) Omissible<List<ZonedDateTime>> dates,
         @JsonProperty(JSON_FORCE) Omissible<Boolean> force,
-        @JsonProperty(JSON_DATA) Omissible<Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-            RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>>> data) {
+        @JsonProperty(JSON_DATA) Omissible<Map<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+            BuildtimeEvaluatable<
+                ControllerBuildtimeContext,
+                RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>>> data,
+        @JsonProperty(JSON_EXTRA_DATA) Omissible<
+            BuildtimeEvaluatable<
+                ControllerBuildtimeContext,
+                RuntimeEvaluatable<ScheduleActionContext, Map<String, Optional<Object>>>>> extraData) {
         super(componentReferences, componentIds);
         this.quality = quality;
         this.enabled = enabled;
@@ -63,6 +78,7 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
         this.dates = dates;
         this.force = force;
         this.data = data;
+        this.extraData = extraData;
     }
 
     @JsonProperty(JSON_QUALITY)
@@ -94,8 +110,10 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
 
     @JsonProperty(JSON_DATA)
     public
-        Omissible<Map<String,
-            BuildtimeEvaluatable<ControllerBuildtimeContext,
+        Omissible<Map<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+            BuildtimeEvaluatable<
+                ControllerBuildtimeContext,
                 RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>>>
         getData() {
         return data;
@@ -106,11 +124,21 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
         return force;
     }
 
+    @JsonProperty(JSON_EXTRA_DATA)
+    public Omissible<
+        BuildtimeEvaluatable<
+            ControllerBuildtimeContext,
+            RuntimeEvaluatable<ScheduleActionContext, Map<String, Optional<Object>>>>>
+        getExtraData() {
+        return extraData;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
 
     public static final class Builder extends ComponentElementRequest.Builder<Builder> {
+
         private Omissible<CampaignControllerActionQuality> quality = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext, Boolean>> enabled = Omissible.omitted();
         private Omissible<BuildtimeEvaluatable<ControllerBuildtimeContext,
@@ -120,9 +148,15 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
             Omissible.omitted();
         private Omissible<List<ZonedDateTime>> dates = Omissible.omitted();
         private Omissible<Boolean> force = Omissible.omitted();
-        private Omissible<Map<String,
-            BuildtimeEvaluatable<ControllerBuildtimeContext,
-                RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>>> data =
+        private Omissible<Map<
+            BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+            BuildtimeEvaluatable<
+                ControllerBuildtimeContext,
+                RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>>> data = Omissible.omitted();
+        private Omissible<
+            BuildtimeEvaluatable<
+                ControllerBuildtimeContext,
+                RuntimeEvaluatable<ScheduleActionContext, Map<String, Optional<Object>>>>> extraData =
                     Omissible.omitted();
 
         private Builder() {
@@ -166,9 +200,20 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
         }
 
         public Builder withData(
-            Map<String, BuildtimeEvaluatable<ControllerBuildtimeContext,
-                RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>> data) {
+            Map<
+                BuildtimeEvaluatable<ControllerBuildtimeContext, String>,
+                BuildtimeEvaluatable<
+                    ControllerBuildtimeContext,
+                    RuntimeEvaluatable<ScheduleActionContext, Optional<Object>>>> data) {
             this.data = Omissible.of(data);
+            return this;
+        }
+
+        public Builder withExtraData(
+            BuildtimeEvaluatable<
+                ControllerBuildtimeContext,
+                RuntimeEvaluatable<ScheduleActionContext, Map<String, Optional<Object>>>> extraData) {
+            this.extraData = Omissible.of(extraData);
             return this;
         }
 
@@ -192,7 +237,10 @@ public class CampaignControllerActionScheduleUpdateRequest extends ComponentElem
                 delays,
                 dates,
                 force,
-                data);
+                data,
+                extraData);
         }
+
     }
+
 }

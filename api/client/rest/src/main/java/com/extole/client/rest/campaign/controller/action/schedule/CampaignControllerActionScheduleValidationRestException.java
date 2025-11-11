@@ -39,28 +39,12 @@ public class CampaignControllerActionScheduleValidationRestException extends Cam
         new ErrorCode<>("campaign_controller_action_schedule_backdated_date_not_allowed", 400,
             "Backdated dates are not allowed", "date");
 
-    public static final ErrorCode<CampaignControllerActionScheduleValidationRestException> DATA_ATTRIBUTE_NAME_INVALID =
-        new ErrorCode<>("campaign_controller_action_schedule_data_attribute_name_invalid", 400,
-            "Data attribute name is invalid", "name");
-
     public static final ErrorCode<
-        CampaignControllerActionScheduleValidationRestException> DATA_ATTRIBUTE_NAME_LENGTH_OUT_OF_RANGE =
+        CampaignControllerActionScheduleValidationRestException> DATA_ENTRY_NAME_OUT_OF_RANGE =
             new ErrorCode<>(
-                "campaign_controller_action_schedule_data_attribute_name_length_out_of_range", 400,
-                "Data attribute name length is out of range. Max 200 chars", "name");
-
-    public static final ErrorCode<
-        CampaignControllerActionScheduleValidationRestException> DATA_ATTRIBUTE_VALUE_INVALID =
-            new ErrorCode<>(
-                "campaign_controller_action_schedule_data_attribute_value_invalid", 400,
-                "Data attribute value is invalid",
-                "name");
-
-    public static final ErrorCode<
-        CampaignControllerActionScheduleValidationRestException> DATA_ATTRIBUTE_VALUE_LENGTH_OUT_OF_RANGE =
-            new ErrorCode<>(
-                "campaign_controller_action_schedule_data_attribute_value_length_out_of_range", 400,
-                "Data attribute value length is out of range. Max 2048 chars", "name");
+                "campaign_controller_action_schedule_data_entry_name_out_of_range", 400,
+                "Data entry name cannot be blank or exceed the maximum allowed length of 255 characters",
+                "data_entry_name");
 
     public static final ErrorCode<
         CampaignControllerActionScheduleValidationRestException> DELAYS_AND_DATES_NOT_SUPPORTED_TOGETHER =
@@ -68,9 +52,15 @@ public class CampaignControllerActionScheduleValidationRestException extends Cam
                 "campaign_controller_action_schedule_delays_and_dates_not_supported_together", 400,
                 "It is not allowed to configure both, date and delay and the same time");
 
+    public static final ErrorCode<CampaignControllerActionScheduleValidationRestException> DUPLICATE_DATA_ENTRY_NAME =
+        new ErrorCode<>("campaign_controller_action_schedule_duplicate_data_entry_name",
+            400, "Two data entry names evaluated to the same value", "evaluated_data_entry_name",
+            "first_data_entry_name_evaluatable", "second_data_entry_name_evaluatable");
+
     public CampaignControllerActionScheduleValidationRestException(String uniqueId,
         ErrorCode<CampaignControllerActionScheduleValidationRestException> code, Map<String, Object> attributes,
         Throwable cause) {
         super(uniqueId, code, attributes, cause);
     }
+
 }

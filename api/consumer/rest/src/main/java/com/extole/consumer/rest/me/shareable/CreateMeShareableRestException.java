@@ -39,6 +39,10 @@ public class CreateMeShareableRestException extends ExtoleRestException {
     public static final ErrorCode<CreateMeShareableRestException> CONTENT_URL_BLOCKED =
         new ErrorCode<>("blocked_content_url", 403, "Content url is blocked", "url");
 
+    public static final ErrorCode<CreateMeShareableRestException> CONTENT_URL_LENGTH_OUT_OF_RANGE =
+        new ErrorCode<>("content_url_length_out_of_range", 400,
+            "Content url is out of range", "url", "max_length");
+
     public CreateMeShareableRestException(String uniqueId, ErrorCode<CreateMeShareableRestException> errorCode,
         Map<String, Object> parameters, Throwable cause) {
         super(uniqueId, errorCode, parameters, cause);

@@ -27,13 +27,12 @@ public class CampaignControllerActionFireAsPersonValidationRestException extends
             new ErrorCode<>("campaign_controller_action_fire_as_person_journey_field_invalid",
                 400, "A person journey field value is invalid", "field_name");
 
-    public static final ErrorCode<CampaignControllerActionFireAsPersonValidationRestException> DATA_VALUE_INVALID =
-        new ErrorCode<>("campaign_controller_action_fire_as_person_data_value_invalid",
-            400, "A data value is invalid.", "data_name");
-
-    public static final ErrorCode<CampaignControllerActionFireAsPersonValidationRestException> DATA_NAME_OUT_OF_RANGE =
-        new ErrorCode<>("campaign_controller_action_fire_as_person_data_name_out_of_range",
-            400, "A data name is out of range. Maximum length is 200 characters.", "data_name");
+    public static final ErrorCode<
+        CampaignControllerActionFireAsPersonValidationRestException> DATA_ENTRY_NAME_OUT_OF_RANGE =
+            new ErrorCode<>(
+                "campaign_controller_action_fire_as_person_data_entry_name_out_of_range", 400,
+                "Data entry name cannot be blank or exceed the maximum allowed length of 200 characters",
+                "data_entry_name");
 
     public static final ErrorCode<
         CampaignControllerActionFireAsPersonValidationRestException> DUPLICATE_DATA_ENTRY_NAME =
